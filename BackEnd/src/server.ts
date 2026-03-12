@@ -6,7 +6,7 @@ import { userController } from "./Controllers/user/userControllers.ts";
 import { userRepository } from "./Repository/user/userRepository.ts";
 import { userService } from "./Service/user/userService.ts";
 import { authRoutes } from "./Routes/auth.routes.ts";
-import { AdminRoutes } from "./modules/admin/admin.routes.ts";
+import { adminRoutes } from "./Routes/admin/adminRoutes.ts";
 
 const app = express();
 dotenv.config();
@@ -25,7 +25,7 @@ const authRouter = new authRoutes();
 app.use("/", userRouter.getUserRoutes());
 app.use("/auth", authRouter.getAuthRoutes());
 
-const adminRouter = new AdminRoutes();
+const adminRouter = new adminRoutes();
 app.use("/admin", adminRouter.getAdminRoutes());
 
 
