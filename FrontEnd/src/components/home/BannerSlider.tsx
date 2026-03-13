@@ -57,7 +57,7 @@ export default function BannerSlider() {
     }, [banners]);
 
     if (loading) {
-        return <div className="w-full h-[300px] md:h-[500px] bg-slate-100 rounded-3xl animate-pulse mb-10"></div>;
+        return <div className="w-full h-[60vh] md:h-screen bg-slate-100 animate-pulse"></div>;
     }
 
     if (banners.length === 0) return null;
@@ -66,66 +66,81 @@ export default function BannerSlider() {
     const prevSlide = () => setCurrent(current === 0 ? banners.length - 1 : current - 1);
 
     return (
-        <div className="relative w-full group mb-12 overflow-hidden rounded-[2rem] md:rounded-[3rem] shadow-2xl">
+        <div className="relative w-full group overflow-hidden shadow-2xl">
             {/* Slides */}
             <div 
-                className="flex transition-transform duration-700 ease-in-out h-[300px] md:h-[500px]"
+                className="flex transition-transform duration-1000 cubic-bezier(0.4, 0, 0.2, 1) h-[60vh] sm:h-[75vh] lg:h-screen"
                 style={{ transform: `translateX(-${current * 100}%)` }}
             >
                 {banners.map((banner) => (
                     <div key={banner.id} className="min-w-full h-full relative">
-                        <img 
-                            src={banner.imageUrl} 
-                            alt={banner.title} 
-                            className="w-full h-full object-cover"
-                        />
-                        {/* Overlay Gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
+                        <picture>
+                            <img 
+                                src={banner.imageUrl} 
+                                alt={banner.title} 
+                                className="w-full h-full object-cover select-none"
+                                loading="eager"
+                            />
+                        </picture>
                         
-                        {/* Content */}
-                        <div className="absolute bottom-10 left-10 md:bottom-16 md:left-16 text-white max-w-xl">
-                            <h2 className="text-3xl md:text-6xl font-black mb-4 uppercase tracking-tighter animate-in slide-in-from-bottom-4 duration-700 drop-shadow-lg">
-                                {banner.title}
-                            </h2>
-                            {banner.link && (
-                                <a 
-                                    href={banner.link}
-                                    className="inline-flex items-center gap-2 bg-brand-orange hover:bg-white hover:text-brand-orange px-8 py-3 rounded-full font-black uppercase text-sm tracking-widest transition-all duration-300 transform hover:-translate-y-1 shadow-lg shadow-brand-orange/30"
-                                >
-                                    Explore Now
-                                </a>
-                            )}
+                        {/* Elegant Overlay Gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent hidden md:block"></div>
+                        
+                        {/* Responsive Content Container */}
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="container mx-auto px-6 md:px-12 lg:px-20">
+                                <div className="max-w-3xl text-white">
+                                    <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-6 uppercase tracking-tighter leading-none animate-in slide-in-from-bottom-8 duration-1000 drop-shadow-2xl">
+                                        {banner.title}
+                                    </h2>
+                                    {banner.link && (
+                                        <div className="animate-in slide-in-from-bottom-12 duration-1000 delay-300">
+                                            <a 
+                                                href={banner.link}
+                                                className="inline-flex items-center gap-3 bg-brand-orange hover:bg-white hover:text-brand-orange px-6 py-3 md:px-10 md:py-4 rounded-full font-black uppercase text-xs md:text-sm tracking-widest transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-brand-orange/40"
+                                            >
+                                                Explore Now
+                                            </a>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 ))}
             </div>
 
-            {/* Navigation Arrows */}
+            {/* Navigation Arrows - hidden on small touch devices for cleaner look */}
             {banners.length > 1 && (
                 <>
                     <button 
                         onClick={prevSlide}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 backdrop-blur-md text-white opacity-0 group-hover:opacity-100 transition-all hover:bg-white/20"
+                        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 p-3 md:p-5 rounded-full bg-white/5 backdrop-blur-xl text-white border border-white/10 opacity-0 group-hover:opacity-100 transition-all hover:bg-brand-orange hover:border-brand-orange hidden sm:flex items-center justify-center z-20"
                     >
-                        <ChevronLeft size={24} />
+                        <ChevronLeft size={28} />
                     </button>
                     <button 
                         onClick={nextSlide}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 backdrop-blur-md text-white opacity-0 group-hover:opacity-100 transition-all hover:bg-white/20"
+                        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 p-3 md:p-5 rounded-full bg-white/5 backdrop-blur-xl text-white border border-white/10 opacity-0 group-hover:opacity-100 transition-all hover:bg-brand-orange hover:border-brand-orange hidden sm:flex items-center justify-center z-20"
                     >
-                        <ChevronRight size={24} />
+                        <ChevronRight size={28} />
                     </button>
                     
-                    {/* Indicators */}
-                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+                    {/* Premium Pulse Indicators */}
+                    <div className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-3 z-20">
                         {banners.map((_, i) => (
                             <button
                                 key={i}
                                 onClick={() => setCurrent(i)}
-                                className={`w-3 h-3 rounded-full transition-all ${
-                                    current === i ? "bg-brand-orange w-8" : "bg-white/40 hover:bg-white/60"
+                                className={`group relative h-1.5 transition-all duration-500 rounded-full ${
+                                    current === i ? "w-12 bg-brand-orange" : "w-4 bg-white/30 hover:bg-white/60"
                                 }`}
-                            />
+                            >
+                                <span className={`absolute -top-4 left-1/2 -translate-x-1/2 text-[10px] font-bold text-white transition-opacity duration-300 ${current === i ? "opacity-100" : "opacity-0"}`}>
+                                    0{i + 1}
+                                </span>
+                            </button>
                         ))}
                     </div>
                 </>

@@ -127,14 +127,13 @@ export default function BannerManager() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Banner Title</label>
+                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Banner Title(Optional)</label>
                                 <input 
                                     type="text" 
                                     placeholder="e.g. Summer Sale 2024"
                                     className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange"
                                     value={formData.title}
                                     onChange={e => setFormData({...formData, title: e.target.value})}
-                                    required
                                 />
                             </div>
                             <div>

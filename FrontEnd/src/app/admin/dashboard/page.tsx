@@ -30,7 +30,7 @@ export default function AdminDashboardPage() {
                     <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
                         <button 
                             onClick={() => setCurrentView("dashboard")}
-                            className={`flex items-center w-full gap-3 px-4 py-3 rounded-xl font-bold transition-all shadow-sm ${
+                            className={`flex items-center w-full gap-3 px-4 py-3 rounded-xl font-bold transition-all shadow-sm cursor-pointer ${
                                 currentView === "dashboard" 
                                 ? "bg-brand-orange/10 text-brand-orange border border-brand-orange/20" 
                                 : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
@@ -41,7 +41,7 @@ export default function AdminDashboardPage() {
                         </button>
                         <button 
                             onClick={() => setCurrentView("banners")}
-                            className={`flex items-center w-full gap-3 px-4 py-3 rounded-xl font-bold transition-all shadow-sm ${
+                            className={`flex items-center w-full gap-3 px-4 py-3 rounded-xl font-bold transition-all shadow-sm cursor-pointer ${
                                 currentView === "banners" 
                                 ? "bg-brand-orange/10 text-brand-orange border border-brand-orange/20" 
                                 : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
