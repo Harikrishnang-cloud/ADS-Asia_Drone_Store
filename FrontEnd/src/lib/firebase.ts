@@ -12,6 +12,8 @@ const firebaseConfig = {
 };
 
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -21,5 +23,8 @@ if (typeof window !== "undefined") {
 }
 
 export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
 export const googleProvider = new GoogleAuthProvider();
 export { app, analytics };
+
