@@ -1,5 +1,14 @@
-import ProfilePage from "../page";
+"use client";
+
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import UserProfile from "@/components/profile/UserProfile";
 
 export default function ProfileEditPage() {
-    return <ProfilePage />;
+    return (
+        <ProtectedRoute allowedRole="user">
+            <div className="py-12 px-4 min-h-[80vh] bg-slate-50/50">
+                <UserProfile isEdit={true} />
+            </div>
+        </ProtectedRoute>
+    );
 }
