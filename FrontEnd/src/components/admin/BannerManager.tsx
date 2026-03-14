@@ -103,19 +103,11 @@ export default function BannerManager() {
     };
 
     return (
-<<<<<<< HEAD
         <div className="p-4 md:p-8 space-y-10">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h2 className="text-2xl font-black text-slate-900 tracking-tight">All Banners</h2>
                     <p className="text-slate-500 font-medium text-sm">You have {banners.length} banners currently in rotation</p>
-=======
-        <div className="space-y-8">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h2 className="text-2xl font-bold text-slate-900">Banner Management</h2>
-                    <p className="text-slate-500">Manage promotional banners for the home page</p>
->>>>>>> 96d90d2309866ddeb522f005ec6c9723c9d2a921
                 </div>
                 <button 
                     onClick={() => {
@@ -123,17 +115,10 @@ export default function BannerManager() {
                         setEditingId(null);
                         setFormData({ title: "", imageUrl: "", link: "", status: "active" });
                     }}
-<<<<<<< HEAD
                     className="flex items-center gap-2 bg-brand-orange hover:scale-105 active:scale-95 text-white px-6 py-2.5 rounded-2xl transition-all font-bold shadow-lg shadow-brand-orange/20 cursor-pointer"
                 >
                     {isAdding ? <X size={18} /> : <Plus size={18} />}
                     {isAdding ? "Cancel" : "Create New Banner"}
-=======
-                    className="flex items-center gap-2 bg-brand-orange hover:bg-brand-orange-dark text-white px-4 py-2 rounded-xl transition-all font-bold shadow-lg shadow-brand-orange/20 cursor-pointer"
-                >
-                    {isAdding ? <X size={18} /> : <Plus size={18} />}
-                    {isAdding ? "Cancel" : "Add Banner"}
->>>>>>> 96d90d2309866ddeb522f005ec6c9723c9d2a921
                 </button>
             </div>
 
@@ -145,11 +130,7 @@ export default function BannerManager() {
                                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Banner Title(Optional)</label>
                                 <input 
                                     type="text" 
-<<<<<<< HEAD
                                     placeholder="e.g. Summer Sale 2026"
-=======
-                                    placeholder="e.g. Summer Sale 2024"
->>>>>>> 96d90d2309866ddeb522f005ec6c9723c9d2a921
                                     className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange"
                                     value={formData.title}
                                     onChange={e => setFormData({...formData, title: e.target.value})}
@@ -204,35 +185,18 @@ export default function BannerManager() {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-<<<<<<< HEAD
                 {loading ? (Array(3).fill(0).map((_, i) => (
                         <div key={i} className="bg-slate-100 animate-pulse h-64 rounded-2xl"></div>
                     ))) : banners.length > 0 ? (banners.map(banner => (
                         <div key={banner.id} className="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300">
                             <div className="relative aspect-[21/9] sm:aspect-video overflow-hidden bg-slate-50">
-=======
-                {loading ? (
-                    Array(3).fill(0).map((_, i) => (
-                        <div key={i} className="bg-slate-100 animate-pulse h-64 rounded-2xl"></div>
-                    ))
-                ) : banners.length > 0 ? (
-                    banners.map(banner => (
-                        <div key={banner.id} className="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300">
-                            <div className="relative h-48 overflow-hidden bg-slate-50">
->>>>>>> 96d90d2309866ddeb522f005ec6c9723c9d2a921
                                 {banner.imageUrl ? (
                                     <img 
                                         src={banner.imageUrl} 
                                         alt={banner.title} 
-<<<<<<< HEAD
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                         onError={(e) => {
                                             (e.target as HTMLImageElement).src = 'https://placehold.co/1200x400?text=Invalid+Image+URL';
-=======
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                        onError={(e) => {
-                                            (e.target as HTMLImageElement).src = 'https://placehold.co/600x400?text=Invalid+Image+URL';
->>>>>>> 96d90d2309866ddeb522f005ec6c9723c9d2a921
                                         }}
                                     />
                                 ) : (
@@ -240,7 +204,6 @@ export default function BannerManager() {
                                         <ImageIcon size={48} />
                                     </div>
                                 )}
-<<<<<<< HEAD
                                 
                                 {/* Overlay Gradient */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -275,33 +238,6 @@ export default function BannerManager() {
                                 {banner.link && (
                                     <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
                                         <ExternalLink size={12} className="text-brand-orange" />
-=======
-                                <div className="absolute top-4 right-4 flex gap-2 cursor-pointer">
-                                    <button 
-                                        onClick={() => handleEdit(banner)}
-                                        className="p-2 bg-white/90 backdrop-blur shadow-sm rounded-lg text-slate-600 hover:text-brand-blue transition-colors cursor-pointer"
-                                    >
-                                        <Edit2 size={16} />
-                                    </button>
-                                    <button 
-                                        onClick={() => handleDelete(banner.id)}
-                                        className="p-2 bg-white/90 backdrop-blur shadow-sm rounded-lg text-slate-600 hover:text-red-500 transition-colors cursor-pointer"
-                                    >
-                                        <Trash2 size={16} />
-                                    </button>
-                                </div>
-                                <div className={`absolute bottom-4 left-4 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
-                                    banner.status === 'active' ? 'bg-emerald-500 text-white' : 'bg-slate-500 text-white'
-                                }`}>
-                                    {banner.status}
-                                </div>
-                            </div>
-                            <div className="p-5">
-                                <h3 className="font-bold text-slate-900 mb-1 truncate">{banner.title}</h3>
-                                {banner.link && (
-                                    <div className="flex items-center gap-2 text-xs text-slate-400">
-                                        <ExternalLink size={12} />
->>>>>>> 96d90d2309866ddeb522f005ec6c9723c9d2a921
                                         <span className="truncate">{banner.link}</span>
                                     </div>
                                 )}

@@ -1,8 +1,4 @@
 node_modules
 .env
 dist
-<<<<<<< HEAD
 serviceAccountKey.json
-=======
-serviceAccountKey.json
->>>>>>> 96d90d2309866ddeb522f005ec6c9723c9d2a921

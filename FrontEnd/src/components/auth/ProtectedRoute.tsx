@@ -42,7 +42,6 @@ export default function ProtectedRoute({ children, allowedRole }: ProtectedRoute
             try {
                 const user = JSON.parse(storedUserStr);
                 
-<<<<<<< HEAD
                 // Check if user is blocked
                 if (user.status === 'blocked') {
                     console.warn("Access denied: User account is blocked.");
@@ -52,8 +51,6 @@ export default function ProtectedRoute({ children, allowedRole }: ProtectedRoute
                     return;
                 }
 
-=======
->>>>>>> 96d90d2309866ddeb522f005ec6c9723c9d2a921
                 // Role-based logic
                 if (targetRole && user.role !== targetRole) {
                     console.warn(`Access denied: context requires ${targetRole}, but user is ${user.role}`);

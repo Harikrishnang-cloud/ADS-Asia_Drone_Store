@@ -3,21 +3,15 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Logo } from "@/components/ui/Logo";
-<<<<<<< HEAD
 import { Sidebar } from "@/components/admin/Sidebar";
 import { LogOut, Menu, ShieldCheck } from "lucide-react";
-=======
->>>>>>> 96d90d2309866ddeb522f005ec6c9723c9d2a921
 
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const pathname = usePathname();
     const [loading, setLoading] = useState(true);
-<<<<<<< HEAD
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-=======
->>>>>>> 96d90d2309866ddeb522f005ec6c9723c9d2a921
 
     useEffect(() => {
         if (pathname === "/admin/login") {
@@ -43,7 +37,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         }
     }, [pathname, router]);
 
-<<<<<<< HEAD
     const handleLogout = () => {
         localStorage.removeItem("adminData");
         localStorage.removeItem("adminAccessToken");
@@ -103,17 +96,4 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
         </div>
     );
-=======
-    if (loading && pathname !== "/admin/login") {
-        return (
-            <div className="flex flex-col gap-6 justify-center items-center min-h-screen bg-slate-900 text-white">
-                <Logo width={100} height={100} />
-                <p className="text-xl animate-pulse text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-300">Checking Admin Access...</p>
-            </div>
-
-        );
-    }
-
-    return <>{children}</>;
->>>>>>> 96d90d2309866ddeb522f005ec6c9723c9d2a921
 }

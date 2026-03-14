@@ -25,7 +25,7 @@ export default function BannerSlider() {
                 // Simplified query to avoid missing index errors
                 const q = query(collection(db, "banners"));
                 const querySnapshot = await getDocs(q);
-                
+
                 const bannerData = querySnapshot.docs
                     .map(doc => ({
                         id: doc.id,
@@ -33,7 +33,7 @@ export default function BannerSlider() {
                     } as Banner))
                     .filter(b => b.status === "active") // Filter in JS
                     .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); // Sort in JS
-                
+
                 setBanners(bannerData);
             } catch (error) {
                 console.error("Error fetching banners:", error);
@@ -48,11 +48,11 @@ export default function BannerSlider() {
     // Auto-slide every 5 seconds
     useEffect(() => {
         if (banners.length <= 1) return;
-        
+
         const timer = setInterval(() => {
             setCurrent(prev => (prev === banners.length - 1 ? 0 : prev + 1));
         }, 5000);
-        
+
         return () => clearInterval(timer);
     }, [banners]);
 
@@ -68,29 +68,24 @@ export default function BannerSlider() {
     return (
         <div className="relative w-full group overflow-hidden shadow-2xl">
             {/* Slides */}
-            <div 
+            <div
                 className="flex transition-transform duration-1000 cubic-bezier(0.4, 0, 0.2, 1) h-[60vh] sm:h-[75vh] lg:h-screen"
-<<<<<<< HEAD
                 style={{ transform: `translateX(-${current * 100}%)` }}>
-=======
-                style={{ transform: `translateX(-${current * 100}%)` }}
-            >
->>>>>>> 96d90d2309866ddeb522f005ec6c9723c9d2a921
                 {banners.map((banner) => (
                     <div key={banner.id} className="min-w-full h-full relative">
                         <picture>
-                            <img 
-                                src={banner.imageUrl} 
-                                alt={banner.title} 
+                            <img
+                                src={banner.imageUrl}
+                                alt={banner.title}
                                 className="w-full h-full object-cover select-none"
                                 loading="eager"
                             />
                         </picture>
-                        
+
                         {/* Elegant Overlay Gradient */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                         <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent hidden md:block"></div>
-                        
+
                         {/* Responsive Content Container */}
                         <div className="absolute inset-0 flex items-center">
                             <div className="container mx-auto px-6 md:px-12 lg:px-20">
@@ -100,15 +95,8 @@ export default function BannerSlider() {
                                     </h2>
                                     {banner.link && (
                                         <div className="animate-in slide-in-from-bottom-12 duration-1000 delay-300">
-<<<<<<< HEAD
                                             <a href={banner.link}
                                                 className="inline-flex items-center gap-3 bg-brand-orange hover:bg-white hover:text-brand-orange px-6 py-3 md:px-10 md:py-4 rounded-full font-black uppercase text-xs md:text-sm tracking-widest transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-brand-orange/40">
-=======
-                                            <a 
-                                                href={banner.link}
-                                                className="inline-flex items-center gap-3 bg-brand-orange hover:bg-white hover:text-brand-orange px-6 py-3 md:px-10 md:py-4 rounded-full font-black uppercase text-xs md:text-sm tracking-widest transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-brand-orange/40"
-                                            >
->>>>>>> 96d90d2309866ddeb522f005ec6c9723c9d2a921
                                                 Explore Now
                                             </a>
                                         </div>
@@ -123,44 +111,26 @@ export default function BannerSlider() {
             {/* Navigation Arrows - hidden on small touch devices for cleaner look */}
             {banners.length > 1 && (
                 <>
-                    <button 
+                    <button
                         onClick={prevSlide}
-<<<<<<< HEAD
                         className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 p-3 md:p-5 rounded-full bg-white/5 backdrop-blur-xl text-white border border-white/10 opacity-0 group-hover:opacity-100 transition-all hover:bg-brand-orange hover:border-brand-orange hidden sm:flex items-center justify-center z-20">
-=======
-                        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 p-3 md:p-5 rounded-full bg-white/5 backdrop-blur-xl text-white border border-white/10 opacity-0 group-hover:opacity-100 transition-all hover:bg-brand-orange hover:border-brand-orange hidden sm:flex items-center justify-center z-20"
-                    >
->>>>>>> 96d90d2309866ddeb522f005ec6c9723c9d2a921
                         <ChevronLeft size={28} />
                     </button>
-                    <button 
+                    <button
                         onClick={nextSlide}
-<<<<<<< HEAD
                         className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 p-3 md:p-5 rounded-full bg-white/5 backdrop-blur-xl text-white border border-white/10 opacity-0 group-hover:opacity-100 transition-all hover:bg-brand-orange hover:border-brand-orange hidden sm:flex items-center justify-center z-20">
-=======
-                        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 p-3 md:p-5 rounded-full bg-white/5 backdrop-blur-xl text-white border border-white/10 opacity-0 group-hover:opacity-100 transition-all hover:bg-brand-orange hover:border-brand-orange hidden sm:flex items-center justify-center z-20"
-                    >
->>>>>>> 96d90d2309866ddeb522f005ec6c9723c9d2a921
                         <ChevronRight size={28} />
                     </button>
-                    
+
                     {/* Premium Pulse Indicators */}
                     <div className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-3 z-20">
                         {banners.map((_, i) => (
                             <button
                                 key={i}
                                 onClick={() => setCurrent(i)}
-                                className={`group relative h-1.5 transition-all duration-500 rounded-full ${
-                                    current === i ? "w-12 bg-brand-orange" : "w-4 bg-white/30 hover:bg-white/60"
-<<<<<<< HEAD
-                                }`}>
+                                className={`group relative h-1.5 transition-all duration-500 rounded-full ${current === i ? "w-12 bg-brand-orange" : "w-4 bg-white/30 hover:bg-white/60"
+                                    }`}>
                                 <span className={`absolute -top-4 left-1/2 -translate-x-1/2 text-[10px] font-bold text-white transition-opacity duration-300 ${current === i ? "opacity-100" : "opacity-0"}`}>
-=======
-                                }`}
-                            >
-                                <span className={`absolute -top-4 left-1/2 -translate-x-1/2 text-[10px] font-bold text-white transition-opacity duration-300 ${current === i ? "opacity-100" : "opacity-0"}`}>
-                                    0{i + 1}
->>>>>>> 96d90d2309866ddeb522f005ec6c9723c9d2a921
                                 </span>
                             </button>
                         ))}
