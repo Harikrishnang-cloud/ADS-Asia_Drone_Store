@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
@@ -47,6 +48,7 @@ export default function ProtectedRoute({ children, allowedRole }: ProtectedRoute
                     console.warn("Access denied: User account is blocked.");
                     localStorage.removeItem(tokenKey);
                     localStorage.removeItem(userKey);
+                    toast.error("Your account has been blocked. Please contact support.");
                     router.push(isAdminPath ? "/admin/login?error=blocked" : "/auth/login?error=blocked");
                     return;
                 }

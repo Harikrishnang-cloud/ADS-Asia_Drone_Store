@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { Logo } from "@/components/ui/Logo";
 import { Sidebar } from "@/components/admin/Sidebar";
 import { LogOut, Menu, ShieldCheck } from "lucide-react";
+import toast from "react-hot-toast";
 
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -41,6 +42,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         localStorage.removeItem("adminData");
         localStorage.removeItem("adminAccessToken");
         localStorage.removeItem("adminRefreshToken");
+        toast.success("Successfully logged out");
         router.push("/admin/login");
     };
 

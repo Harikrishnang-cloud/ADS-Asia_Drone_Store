@@ -23,6 +23,7 @@ import {
     XCircle,
     Loader2
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface User {
     id: string;
@@ -54,6 +55,7 @@ export default function UserManager() {
             setUsers(userData);
         } catch (error) {
             console.error("Error fetching users:", error);
+            toast.error("Failed to load users. Please refresh.");
         } finally {
             setLoading(false);
         }
@@ -61,11 +63,13 @@ export default function UserManager() {
 
     const toggleUserStatus = async (user: User) => {
         const newStatus = user.status === "active" ? "blocked" : "active";
-        const message = `Are you sure you want to ${newStatus === "blocked" ? "BLOCK" : "UNBLOCK"} ${user.name}?`;
         
-        if (!confirm(message)) return;
+        // Use custom confirmation toast or just standard confirm
+        if (!confirm(`Are you sure you want to ${newStatus === "blocked" ? "BLOCK" : "UNBLOCK"} ${user.name}?`)) return;
 
         setUpdatingId(user.id);
+        const loadingToast = toast.loading(`${newStatus === "blocked" ? "Blocking" : "Unblocking"} user...`);
+        
         try {
             const userRef = doc(db, "users", user.id);
             await updateDoc(userRef, {
@@ -75,9 +79,10 @@ export default function UserManager() {
             
             // Update local state
             setUsers(users.map(u => u.id === user.id ? { ...u, status: newStatus } : u));
+            toast.success(`User ${newStatus === "blocked" ? "blocked" : "unblocked"} successfully`, { id: loadingToast });
         } catch (error) {
             console.error("Error updating user status:", error);
-            alert("Failed to update user status");
+            toast.error("Failed to update user status", { id: loadingToast });
         } finally {
             setUpdatingId(null);
         }

@@ -20,6 +20,7 @@ import {
     Bolt
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import toast from "react-hot-toast";
 
 interface NavItem {
     label: string;
@@ -63,6 +64,7 @@ export function Sidebar() {
         localStorage.removeItem("adminData");
         localStorage.removeItem("adminAccessToken");
         localStorage.removeItem("adminRefreshToken");
+        toast.success("Logged out successfully");
         router.push("/admin/login");
     };
 

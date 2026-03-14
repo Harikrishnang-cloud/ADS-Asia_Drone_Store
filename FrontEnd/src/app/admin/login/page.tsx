@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { PasswordInput } from "@/components/PasswordInput";
 import { ShieldAlert } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import toast from "react-hot-toast";
 
 
 export default function AdminLoginPage() {
@@ -51,12 +52,17 @@ export default function AdminLoginPage() {
                 localStorage.setItem("adminAccessToken", data.accessToken);
                 localStorage.setItem("adminRefreshToken", data.refreshToken);
                 localStorage.setItem("adminData", JSON.stringify(data.result));
+                toast.success("Welcome back, Administrator");
                 router.push("/admin/dashboard");
             } else {
-                setError(data.message || "Invalid Admin Credentials");
+                const errorMsg = data.message || "Invalid Admin Credentials";
+                setError(errorMsg);
+                toast.error(errorMsg);
             }
         } catch (err) {
-            setError("Network Error. Is the backend running?");
+            const errorMsg = "Network Error. Is the backend running?";
+            setError(errorMsg);
+            toast.error(errorMsg);
         } finally {
             setLoading(false);
         }

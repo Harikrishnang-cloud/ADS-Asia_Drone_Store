@@ -7,6 +7,7 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
 import { PasswordInput } from "@/components/PasswordInput";
 import { Logo } from "@/components/ui/Logo";
+import toast from "react-hot-toast";
 
 
 export default function RegisterPage() {
@@ -58,16 +59,17 @@ export default function RegisterPage() {
             const data = await res.json();
 
             if (res.ok && data.success) {
+                toast.success("Account created successfully! Please log in.");
                 router.push("/auth/login");
             } else {
-                setError(data.message || "Registration failed");
+                const errorMsg = data.message || "Registration failed";
+                setError(errorMsg);
+                toast.error(errorMsg);
             }
         } catch (err) {
-            if (err instanceof Error) {
-                setError(err.message || "Network Error. Please try again.");
-            } else {
-                setError("Network Error. Please try again.");
-            }
+            const errorMsg = err instanceof Error ? err.message : "Network Error. Please try again.";
+            setError(errorMsg);
+            toast.error(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -95,12 +97,17 @@ export default function RegisterPage() {
                 localStorage.setItem("accessToken", data.accessToken);
                 localStorage.setItem("refreshToken", data.refreshToken);
                 localStorage.setItem("userData", JSON.stringify(data.user));
+                toast.success("Signed in with Google!");
                 router.push("/");
             } else {
-                setError(data.message || "Google registration failed");
+                const errorMsg = data.message || "Google registration failed";
+                setError(errorMsg);
+                toast.error(errorMsg);
             }
         } catch (err: any) {
-            setError(err.message || "Google registration failed");
+            const errorMsg = err.message || "Google registration failed";
+            setError(errorMsg);
+            toast.error(errorMsg);
         } finally {
             setLoading(false);
         }

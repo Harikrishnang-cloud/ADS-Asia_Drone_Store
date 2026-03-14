@@ -13,6 +13,7 @@ import {
     orderBy 
 } from "firebase/firestore";
 import { Plus, Trash2, Edit2, Save, X, Image as ImageIcon, ExternalLink } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface Banner {
     id: string;
@@ -28,6 +29,7 @@ export default function BannerManager() {
     const [loading, setLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
 
     // Form states
     const [formData, setFormData] = useState({
@@ -53,6 +55,7 @@ export default function BannerManager() {
             setBanners(bannerData);
         } catch (error) {
             console.error("Error fetching banners:", error);
+            toast.error("Failed to load banners");
         } finally {
             setLoading(false);
         }
@@ -60,17 +63,22 @@ export default function BannerManager() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsSaving(true);
+        const loadingToast = toast.loading(editingId ? "Updating banner..." : "Creating banner...");
+        
         try {
             if (editingId) {
                 await updateDoc(doc(db, "banners", editingId), {
                     ...formData,
                     updatedAt: Date.now()
                 });
+                toast.success("Banner updated successfully", { id: loadingToast });
             } else {
                 await addDoc(collection(db, "banners"), {
                     ...formData,
                     createdAt: Date.now()
                 });
+                toast.success("Banner created successfully", { id: loadingToast });
             }
             setIsAdding(false);
             setEditingId(null);
@@ -78,16 +86,23 @@ export default function BannerManager() {
             fetchBanners();
         } catch (error) {
             console.error("Error saving banner:", error);
+            toast.error("Failed to save banner", { id: loadingToast });
+        } finally {
+            setIsSaving(false);
         }
     };
 
     const handleDelete = async (id: string) => {
         if (!confirm("Are you sure you want to delete this banner?")) return;
+        
+        const loadingToast = toast.loading("Deleting banner...");
         try {
             await deleteDoc(doc(db, "banners", id));
+            toast.success("Banner deleted successfully", { id: loadingToast });
             fetchBanners();
         } catch (error) {
             console.error("Error deleting banner:", error);
+            toast.error("Failed to delete banner", { id: loadingToast });
         }
     };
 
@@ -172,12 +187,17 @@ export default function BannerManager() {
                             </div>
                         </div>
                     </div>
-                    <div className="mt-6 flex justify-end cursor-pointer">
+                    <div className="mt-6 flex justify-end">
                         <button 
                             type="submit"
-                            className="flex items-center gap-2 bg-brand-blue-dark text-white px-8 py-3 rounded-xl font-bold hover:bg-slate-900 transition-all shadow-lg cursor-pointer"
+                            disabled={isSaving}
+                            className="flex items-center gap-2 bg-brand-blue-dark text-white px-8 py-3 rounded-xl font-bold hover:bg-slate-900 transition-all shadow-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <Save size={18} />
+                            {isSaving ? (
+                                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            ) : (
+                                <Save size={18} />
+                            )}
                             {editingId ? "Update Banner" : "Save Banner"}
                         </button>
                     </div>

@@ -7,6 +7,7 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
 import { PasswordInput } from "@/components/PasswordInput";
 import { Logo } from "@/components/ui/Logo";
+import toast from "react-hot-toast";
 
 
 export default function LoginPage() {
@@ -53,16 +54,17 @@ export default function LoginPage() {
                 localStorage.setItem("accessToken", data.accessToken);
                 localStorage.setItem("refreshToken", data.refreshToken);
                 localStorage.setItem("userData", JSON.stringify(data.result));
+                toast.success("Login successful! Welcome back.");
                 router.push("/");
             } else {
-                setError(data.message || "Invalid credentials");
+                const errorMsg = data.message || "Invalid credentials";
+                setError(errorMsg);
+                toast.error(errorMsg);
             }
         } catch (err) {
-            if (err instanceof Error) {
-                setError(err.message || "Network Error. Please try again.");
-            } else {
-                setError("Network Error. Please try again.");
-            }
+            const errorMsg = err instanceof Error ? err.message : "Network Error. Please try again.";
+            setError(errorMsg);
+            toast.error(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -90,12 +92,17 @@ export default function LoginPage() {
                 localStorage.setItem("accessToken", data.accessToken);
                 localStorage.setItem("refreshToken", data.refreshToken);
                 localStorage.setItem("userData", JSON.stringify(data.user));
+                toast.success("Signed in with Google!");
                 router.push("/");
             } else {
-                setError(data.message || "Google authentication failed");
+                const errorMsg = data.message || "Google authentication failed";
+                setError(errorMsg);
+                toast.error(errorMsg);
             }
         } catch (err: any) {
-            setError(err.message || "Google authentication failed");
+            const errorMsg = err.message || "Google authentication failed";
+            setError(errorMsg);
+            toast.error(errorMsg);
         } finally {
             setLoading(false);
         }

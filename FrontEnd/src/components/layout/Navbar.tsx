@@ -9,6 +9,7 @@ import { User, LogOut, Menu, X, Heart, ShoppingCart, Bell,
 } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
+import toast from "react-hot-toast";
 
 export interface UserProfile {
     id?: string;
@@ -79,6 +80,7 @@ export function Navbar() {
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("userData");
         setUser(null);
+        toast.success("Successfully logged out!");
         router.push("/auth/login");
     };
 
