@@ -1,6 +1,6 @@
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
-// import { Footer } from "@/components/layout/Footer";
+import { Footer } from "@/components/layout/Footer";
 
 export const metadata = {
   title: "Asia Drone Store",
@@ -21,8 +21,10 @@ export default function RootLayout({
         <div className="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-brand-blue/5 blur-[500px] pointer-events-none -z-10"></div>
         <div className="fixed bottom-[20%] right-[-10%] w-[40vw] h-[40vw] rounded-full bg-brand-orange/5 blur-[100px] pointer-events-none -z-10"></div>
         <Navbar />
-        {children}
-        {/* <Footer /> */}
+        <main className="flex-1">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );

@@ -22,16 +22,6 @@ export const Logo = ({ className = "", width = 120, height = 120, showText = fal
           priority
         />
       </div>
-      {/* {showText && (
-        <div className="flex flex-col justify-center">
-          <h1 className={`text-2xl font-black tracking-tight ${textColor} leading-none`}>
-            A<span className="text-brand-orange">D</span>S
-          </h1>
-          <span className="text-[9px] uppercase tracking-[0.25em] font-bold text-brand-orange mt-1">
-            Fly Your Passion
-          </span>
-        </div>
-      )} */}
     </Link>
   );
 };
