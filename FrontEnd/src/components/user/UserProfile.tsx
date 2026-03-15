@@ -95,7 +95,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
             localStorage.setItem("userData", JSON.stringify(updatedUser));
             window.dispatchEvent(new Event('storage'));
             toast.success("Profile updated!");
-            router.push("/profile");
+            router.push("/user/profile");
         } catch (error) {
             toast.error("Update failed");
         } finally {
@@ -164,7 +164,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                 <h1 className="text-2xl font-bold">{isEdit ? "Edit Profile" : "My Profile"}</h1>
                 {!isEdit && (
                     <Link 
-                        href="/profile/edit" 
+                        href="/user/profile/edit" 
                         className="flex items-center gap-2 px-4 py-2 bg-brand-blue text-white rounded-lg text-sm font-bold hover:bg-brand-blue-dark transition-all cursor-pointer"
                     >
                         <Edit3 size={16} /> Edit
@@ -172,7 +172,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                 )}
                 {isEdit && (
                     <Link 
-                        href="/profile" 
+                        href="/user/profile" 
                         className="flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-all font-medium text-sm"
                     >
                         <ChevronLeft size={16} /> Back
