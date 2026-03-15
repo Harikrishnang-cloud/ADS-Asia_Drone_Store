@@ -11,6 +11,8 @@ import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 import toast from "react-hot-toast";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
+import { collection, query, orderBy, limit, getDocs, where } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export interface UserProfile {
     id?: string;
@@ -34,6 +36,7 @@ export function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+    const [notificationCount, setNotificationCount] = useState(0);
 
     // Handle scroll effect for dynamic navbar styling
     useEffect(() => {
@@ -69,6 +72,26 @@ export function Navbar() {
 
         checkUser();
         window.addEventListener('storage', checkUser);
+        
+        // Check for new notifications since last visit
+        const checkNotifications = async () => {
+            try {
+                const lastRead = typeof window !== "undefined" ? localStorage.getItem("ads_notifications_last_read") : null;
+                const lastReadTime = lastRead ? parseInt(lastRead) : 0;
+                
+                const q = query(
+                    collection(db, "notifications"), 
+                    where("createdAt", ">", lastReadTime),
+                    orderBy("createdAt", "desc")
+                );
+                const querySnapshot = await getDocs(q);
+                setNotificationCount(querySnapshot.size);
+            } catch (error) {
+                console.error("Error checking notifications:", error);
+            }
+        };
+        checkNotifications();
+
         return () => window.removeEventListener('storage', checkUser);
     }, [pathname]);
 
@@ -136,8 +159,13 @@ export function Navbar() {
                         <Link href={user ? "/cart" : "/auth/login"} className={`hover:text-brand-orange transition-colors ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
                             <ShoppingCart size={20} strokeWidth={2} />
                         </Link>
-                        <Link href={user ? "/notifications" : "/auth/login"} className={`hover:text-brand-orange transition-colors ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
+                        <Link href={user ? "/notifications" : "/auth/login"} className={`relative hover:text-brand-orange transition-colors ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
                             <Bell size={20} strokeWidth={2} />
+                            {notificationCount > 0 && (
+                                <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
+                                    {notificationCount > 9 ? '9+' : notificationCount}
+                                </span>
+                            )}
                         </Link>
                     </div>
 
@@ -199,14 +227,14 @@ export function Navbar() {
 
                                         {/* Group 2: Comms */}
                                         <div className="py-1 border-b border-slate-100">
-                                            <button className="w-full flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                             <Link href="/notifications" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
                                                 <Bell size={18} />
                                                 <span>Notifications</span>
-                                            </button>
-                                            <button className="w-full flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                            </Link>
+                                             <Link href="/messages" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
                                                 <MessageCircle size={18} />
                                                 <span>Messages</span>
-                                            </button>
+                                            </Link>
                                         </div>
 
                                         {/* Group 3: Settings & Transactions */}
@@ -325,8 +353,13 @@ export function Navbar() {
                     <Link href={user ? "/cart" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="text-brand-blue-dark hover:text-brand-orange transition-colors" title="Cart">
                         <ShoppingCart size={26} strokeWidth={2} />
                     </Link>
-                    <Link href={user ? "/notifications" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="text-brand-blue-dark hover:text-brand-orange transition-colors" title="Notifications">
+                    <Link href={user ? "/notifications" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="relative text-brand-blue-dark hover:text-brand-orange transition-colors" title="Notifications">
                         <Bell size={26} strokeWidth={2} />
+                        {notificationCount > 0 && (
+                            <span className="absolute -top-1 -right-1 min-w-[20px] h-[20px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
+                                {notificationCount > 9 ? '9+' : notificationCount}
+                            </span>
+                        )}
                     </Link>
                 </div>
 
@@ -346,14 +379,14 @@ export function Navbar() {
 
                             {/* Mobile Quick Links Grid */}
                             <div className="grid grid-cols-2 gap-3 mt-2">
-                                <Link 
+                                {/* <Link 
                                     href="/my-learning" 
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="flex flex-col items-center justify-center gap-2 p-4 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-brand-blue transition-colors shadow-sm"
                                 >
                                     <BookOpen size={20} />
                                     <span className="text-[11px] font-bold uppercase tracking-tight">Learning</span>
-                                </Link>
+                                </Link> */}
                                 <Link 
                                     href="/orders" 
                                     onClick={() => setIsMobileMenuOpen(false)}

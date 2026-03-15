@@ -16,6 +16,7 @@ import {
     ChevronDown, 
     ChevronRight,
     Search,
+    Bell,
     Wrench,
     Bolt
 } from "lucide-react";
@@ -45,6 +46,7 @@ const navItems: NavItem[] = [
     { label: "Orders", icon: ShoppingCart, href: "/admin/orders" },
     { label: "Users", icon: Users, href: "/admin/users" },
     { label: "Payments", icon: CreditCard, href: "/admin/payments" },
+    { label: "User-Notifications", icon: Bell, href: "/admin/userNotifications" },
     { label: "Settings", icon: Settings, href: "/admin/settings" },
 ];
 
