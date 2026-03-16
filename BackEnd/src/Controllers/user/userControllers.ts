@@ -66,14 +66,28 @@ export class userController {
                 res.status(400).json({ success: false, message: "Refresh token is required" });
                 return;
             }
-            const result = this.userService.refreshToken(refreshToken);
+            const result = await this.userService.refreshToken(refreshToken);
             res.status(200).json({ success: true, message: "Token refreshed successfully", accessToken: result.accessToken });
         } catch (error) {
             if (error instanceof Error) {
-                res.status(401).json({ success: false, message: "Invalid or expired refresh token" });
+                res.status(401).json({ success: false, message: error.message || "Invalid or expired refresh token" });
             } else {
                 res.status(500).json({ success: false, message: "Something went wrong" });
             }
+        }
+    }
+
+    async logout(req: Request, res: Response) {
+        try {
+            const { refreshToken } = req.body;
+            if (!refreshToken) {
+                res.status(400).json({ success: false, message: "Refresh token is required" });
+                return;
+            }
+            await this.userService.logout(refreshToken);
+            res.status(200).json({ success: true, message: "Logged out successfully" });
+        } catch (error) {
+            res.status(500).json({ success: false, message: "Logout failed" });
         }
     }
 

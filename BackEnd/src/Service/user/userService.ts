@@ -49,7 +49,13 @@ export class userService implements IuserService {
         return { accessToken, refreshToken };
     }
 
-    refreshToken(refreshTokenStr: string): { accessToken: string } {
+    async refreshToken(refreshTokenStr: string): Promise<{ accessToken: string }> {
+        // Check if token is blacklisted
+        const isBlacklisted = await this.userRepository.isTokenBlacklisted(refreshTokenStr);
+        if (isBlacklisted) {
+            throw new Error("Token is blacklisted");
+        }
+
         const decoded = this.jwt.verifyRefreshToken(refreshTokenStr);
         const payload: JwtPayload = {
             id: decoded.id,
@@ -58,5 +64,18 @@ export class userService implements IuserService {
         };
         const accessToken = this.jwt.generateAccessToken(payload);
         return { accessToken };
+    }
+
+    async logout(refreshTokenStr: string): Promise<void> {
+        try {
+            const decoded = this.jwt.verifyRefreshToken(refreshTokenStr);
+            // Blacklist the token until its original expiry
+            const expiresAt = decoded.exp ? new Date(decoded.exp * 1000) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+            await this.userRepository.blacklistToken(refreshTokenStr, expiresAt);
+        } catch (error) {
+            // Even if token is invalid/expired, we don't necessarily need to throw if the goal is just logout
+            // but for security we might want to know.
+            console.error("Logout token verification failed:", error);
+        }
     }
 }

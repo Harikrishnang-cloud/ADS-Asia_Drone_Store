@@ -2,20 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { UserProfile } from "@/components/layout/Navbar";
+import { useAuthStore } from "@/store/authStore";
 
 export default function HomeClient() {
-    const [user, setUser] = useState<UserProfile | null>(null);
-
-    useEffect(() => {
-        const storedUserStr = localStorage.getItem("userData");
-        if (storedUserStr) {
-            try {
-                setUser(JSON.parse(storedUserStr));
-            } catch (e) {
-                console.error("Auth sync error", e);
-            }
-        }
-    }, []);
+    const { user } = useAuthStore();
 
     return (
         <>

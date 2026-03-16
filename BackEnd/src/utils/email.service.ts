@@ -11,7 +11,6 @@ export const sendResetOTPEmail = async (name: string, email: string, otp: string
 
             subject: "Password Reset OTP - Asia Drone Store",
             text: `Your OTP is ${otp}.`,
-            // We can still keep the nice HTML formatting alongside your custom settings:
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px;">
                     <h2 style="color: #1e293b;">Password Reset OTP from The Team ADS</h2>

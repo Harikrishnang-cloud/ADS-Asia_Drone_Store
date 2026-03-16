@@ -4,6 +4,7 @@ export interface JwtPayload {
     id: string;
     email: string;
     role: "admin" | "user";
+    exp?: number;
 }
 
 export class jwtToken {
@@ -11,8 +12,15 @@ export class jwtToken {
     private refreshSecret: string;
 
     constructor() {
-        this.accessSecret = process.env.JWT_ACCESS_SECRET || "default_access_secret";
-        this.refreshSecret = process.env.JWT_REFRESH_SECRET || "default_refresh_secret";
+        const accessSecret = process.env.JWT_ACCESS_SECRET;
+        const refreshSecret = process.env.JWT_REFRESH_SECRET;
+
+        if (!accessSecret || !refreshSecret) {
+            throw new Error("JWT secrets are not defined in environment variables");
+        }
+
+        this.accessSecret = accessSecret;
+        this.refreshSecret = refreshSecret;
     }
 
     generateAccessToken(payload: JwtPayload): string {

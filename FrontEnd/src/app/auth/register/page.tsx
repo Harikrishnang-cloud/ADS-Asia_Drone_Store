@@ -8,6 +8,7 @@ import { auth, googleProvider } from "@/lib/firebase";
 import { PasswordInput } from "@/components/PasswordInput";
 import { Logo } from "@/components/ui/Logo";
 import toast from "react-hot-toast";
+import { useAuthStore } from "@/store/authStore";
 
 
 export default function RegisterPage() {
@@ -17,6 +18,7 @@ export default function RegisterPage() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const { setAuth } = useAuthStore();
 
     const validateEmail = (email: string) => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -97,6 +99,7 @@ export default function RegisterPage() {
                 localStorage.setItem("accessToken", data.accessToken);
                 localStorage.setItem("refreshToken", data.refreshToken);
                 localStorage.setItem("userData", JSON.stringify(data.user));
+                setAuth(data.user, data.accessToken);
                 toast.success("Signed in with Google!");
                 router.push("/");
             } else {

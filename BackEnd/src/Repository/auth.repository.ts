@@ -47,4 +47,18 @@ export class authRepository {
         });
         return userData;
     }
+
+    async blacklistToken(token: string, expiresAt: Date) {
+        await db.collection("blacklistedTokens").doc(token).set({
+            token,
+            expiresAt,
+            createdAt: new Date()
+        });
+        return true;
+    }
+
+    async isTokenBlacklisted(token: string): Promise<boolean> {
+        const doc = await db.collection("blacklistedTokens").doc(token).get();
+        return doc.exists;
+    }
 }

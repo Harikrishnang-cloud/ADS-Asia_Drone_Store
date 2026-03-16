@@ -16,6 +16,10 @@ import { db } from "@/lib/firebase";
 import { WishlistDropdown } from "./dropdowns/WishlistDropdown";
 import { CartDropdown } from "./dropdowns/CartDropdown";
 import { NotificationDropdown, Notification } from "./dropdowns/NotificationDropdown";
+import { useAuthStore } from "@/store/authStore";
+import { useCartStore } from "@/store/cartStore";
+import { useWishlistStore } from "@/store/wishlistStore";
+import { useNotificationStore } from "@/store/notificationStore";
 
 export interface UserProfile {
     id?: string;
@@ -35,15 +39,21 @@ const navLinks = [
 export function Navbar() {
     const router = useRouter();
     const pathname = usePathname();
-    const [user, setUser] = useState<UserProfile | null>(null);
+    const { user, logout, setAuth } = useAuthStore();
+    const { items: cartItems } = useCartStore();
+    const { items: wishlistItems } = useWishlistStore();
+    const { notifications, unreadCount: notificationCount, setNotifications, markAllAsRead } = useNotificationStore();
+    
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-    const [notificationCount, setNotificationCount] = useState(0);
-    const [notifications, setNotifications] = useState<Notification[]>([]);
-    const [cartItems, setCartItems] = useState([]); // Will be populated from cart store/context later
-    const [wishlistItems, setWishlistItems] = useState([]); // Will be populated from wishlist store/context later
     const [searchQuery, setSearchQuery] = useState("");
+    const [hasHydrated, setHasHydrated] = useState(false);
+
+    // Handle hydration for persistent stores
+    useEffect(() => {
+        setHasHydrated(true);
+    }, []);
 
     // Handle scroll effect for dynamic navbar styling
     useEffect(() => {
@@ -54,31 +64,21 @@ export function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // Check user authentication status on load and storage updates
+    // Sync auth and notifications on mount and path changes
     useEffect(() => {
-        const checkUser = () => {
-            const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
-            const storedUserStr = typeof window !== "undefined" ? localStorage.getItem("userData") : null;
-
-            if (token && storedUserStr) {
-                try {
-                    const storedUser = JSON.parse(storedUserStr);
-                    // Explicitly only allow 'user' role on the main navbar
-                    if (storedUser.role === 'user') {
-                        setUser(storedUser);
-                    } else {
-                        setUser(null);
-                    }
-                } catch {
-                    setUser(null);
+        // Initial sync of user from localStorage if store is empty
+        const token = localStorage.getItem("accessToken");
+        const storedUserStr = localStorage.getItem("userData");
+        if (token && storedUserStr && !user) {
+            try {
+                const storedUser = JSON.parse(storedUserStr);
+                if (storedUser.role === 'user') {
+                    setAuth(storedUser, token);
                 }
-            } else {
-                setUser(null);
+            } catch (e) {
+                console.error("Auth sync error", e);
             }
-        };
-
-        checkUser();
-        window.addEventListener('storage', checkUser);
+        }
         
         // Check for new notifications since last visit
         const checkNotifications = async () => {
@@ -113,18 +113,12 @@ export function Navbar() {
                 }) as Notification[];
                 
                 setNotifications(fetchedNotifications);
-                
-                // New notifications are those created after lastReadTime
-                const newCount = fetchedNotifications.filter(n => n.createdAt > lastReadTime).length;
-                setNotificationCount(newCount);
             } catch (error) {
                 console.error("Error checking notifications:", error);
             }
         };
         checkNotifications();
-
-        return () => window.removeEventListener('storage', checkUser);
-    }, [pathname]);
+    }, [pathname, setNotifications, user, setAuth]);
 
     // Skip rendering navbar on authentication or admin pages
     if (pathname?.startsWith("/auth") || pathname?.startsWith("/admin")) {
@@ -136,10 +130,7 @@ export function Navbar() {
     };
 
     const confirmLogout = () => {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("userData");
-        setUser(null);
+        logout();
         toast.success("Successfully logged out!");
         setIsLogoutModalOpen(false);
         router.push("/auth/login");
@@ -207,7 +198,7 @@ export function Navbar() {
                             <Link href={user ? "/user/wishlist" : "/auth/login"} className={`hover:text-brand-orange transition-colors flex items-center h-10 ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
                                 <Heart size={20} strokeWidth={2} />
                             </Link>
-                            <WishlistDropdown items={wishlistItems} />
+                            {hasHydrated && <WishlistDropdown items={wishlistItems} />}
                         </div>
 
                         {/* Cart Icon with Dropdown */}
@@ -215,7 +206,7 @@ export function Navbar() {
                             <Link href={user ? "/user/cart" : "/auth/login"} className={`hover:text-brand-orange transition-colors flex items-center h-10 ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
                                 <ShoppingCart size={20} strokeWidth={2} />
                             </Link>
-                            <CartDropdown items={cartItems} />
+                            {hasHydrated && <CartDropdown items={cartItems} />}
                         </div>
 
                         {/* Notification Icon with Dropdown */}
@@ -232,14 +223,13 @@ export function Navbar() {
                                 notifications={notifications} 
                                 onMarkAllRead={() => {
                                     localStorage.setItem("ads_notifications_last_read", Date.now().toString());
-                                    setNotificationCount(0);
-                                    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+                                    markAllAsRead();
                                 }}
                             />
                         </div>
                     </div>
 
-                    {user ? (
+                    {hasHydrated && user ? (
                         <div className="flex items-center gap-4">
                             <span className={`text-sm font-medium hidden xl:block ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
                                 Welcome, <span className="text-brand-orange capitalize">{user.name.split(' ')[0]}</span>
@@ -372,13 +362,13 @@ export function Navbar() {
                                 </div>
                             </div>
                         </div>
-                    ) : (
+                    ) : hasHydrated ? (
                         <button onClick={() => router.push("/auth/login")}
                             className="bg-brand-blue hover:bg-[#003B73] text-white px-6 py-2.5 rounded-full text-[15px] font-medium transition-all duration-300 shadow-lg shadow-brand-blue/20 flex items-center gap-2 hover:-translate-y-0.5">
                             <User size={16} />
                             Sign In
                         </button>
-                    )}
+                    ) : null}
                 </div>
 
                 {/* Mobile Menu Toggle */}
@@ -427,13 +417,13 @@ export function Navbar() {
 
                 {/* Mobile Action Icons */}
                 <div className="flex justify-center gap-10 mt-8 mb-4">
-                    <Link href={user ? "/user/wishlist" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="text-brand-blue-dark hover:text-brand-orange transition-colors" title="Wishlist">
+                    <Link href={hasHydrated && user ? "/user/wishlist" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="text-brand-blue-dark hover:text-brand-orange transition-colors" title="Wishlist">
                         <Heart size={26} strokeWidth={2} />
                     </Link>
-                    <Link href={user ? "/user/cart" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="text-brand-blue-dark hover:text-brand-orange transition-colors" title="Cart">
+                    <Link href={hasHydrated && user ? "/user/cart" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="text-brand-blue-dark hover:text-brand-orange transition-colors" title="Cart">
                         <ShoppingCart size={26} strokeWidth={2} />
                     </Link>
-                    <Link href={user ? "/user/notifications" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="relative text-brand-blue-dark hover:text-brand-orange transition-colors" title="Notifications">
+                    <Link href={hasHydrated && user ? "/user/notifications" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="relative text-brand-blue-dark hover:text-brand-orange transition-colors" title="Notifications">
                         <Bell size={26} strokeWidth={2} />
                         {notificationCount > 0 && (
                             <span className="absolute -top-1 -right-1 min-w-[20px] h-[20px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
@@ -444,7 +434,7 @@ export function Navbar() {
                 </div>
 
                 <div className="mt-8 pb-10 flex flex-col items-center gap-6">
-                    {user ? (
+                    {hasHydrated && user ? (
                         <div className="w-full flex flex-col gap-4">
                             {/* Mobile Profile Header */}
                             <div className="flex items-center gap-4 bg-slate-50 p-5 rounded-2xl w-full border border-slate-100 shadow-sm">
@@ -516,7 +506,7 @@ export function Navbar() {
                                 Sign Out
                             </button>
                         </div>
-                    ) : (
+                    ) : hasHydrated ? (
                         <button 
                             onClick={() => {
                                 router.push("/auth/login");
@@ -527,7 +517,7 @@ export function Navbar() {
                             <User size={18} />
                             Sign In / Register
                         </button>
-                    )}
+                    ) : null}
                 </div>
             </div>
             <ConfirmationModal 

@@ -24,6 +24,9 @@ export class userRoutes {
         this.userRoutes.post("/user/refresh-token", (req: Request, res: Response) => {
             this.userController.refreshToken(req, res);
         });
+        this.userRoutes.post("/user/logout", (req: Request, res: Response) => {
+            this.userController.logout(req, res);
+        });
 
         // Protected routes (auth required)
         this.userRoutes.get("/user/profile", userMiddleware, (req: Request, res: Response) => {

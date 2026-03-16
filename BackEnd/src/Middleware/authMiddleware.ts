@@ -2,8 +2,6 @@ import type { Request, Response, NextFunction } from "express";
 import { jwtToken } from "../utils/jwt.ts";
 import type { JwtPayload } from "../utils/jwt.ts";
 
-
-// Extend Express Request to include user data
 declare global {
     namespace Express {
         interface Request {
@@ -38,7 +36,6 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
 };
 
 export const adminMiddleware = (req: Request, res: Response, next: NextFunction): void => {
-    // First run the authMiddleware to verify token and attach req.user
     authMiddleware(req, res, () => {
         if (req.user && req.user.role === "admin") {
             next();
@@ -50,7 +47,6 @@ export const adminMiddleware = (req: Request, res: Response, next: NextFunction)
 };
 
 export const userMiddleware = (req: Request, res: Response, next: NextFunction): void => {
-    // First run the authMiddleware to verify token and attach req.user
     authMiddleware(req, res, () => {
         if (req.user && req.user.role === "user") {
             next();

@@ -13,7 +13,7 @@ export const metadata = {
   title: "Asia Drone Store",
   description: "Drone e-commerce platform by asia softlab",
   icons: {
-    icon: "/ADS-logo.webp",
+    icon: "/favicon.webp",
   },
 };
 

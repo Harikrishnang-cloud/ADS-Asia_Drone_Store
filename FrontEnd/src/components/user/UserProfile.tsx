@@ -9,12 +9,14 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
+import { useAuthStore } from "@/store/authStore";
 
 interface UserProfileProps {
     isEdit?: boolean;
 }
 
 export default function UserProfile({ isEdit = false }: UserProfileProps) {
+    const { user: authUser, setAuth } = useAuthStore();
     const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -35,16 +37,34 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
 
     useEffect(() => {
         const fetchData = async () => {
-            const storedUser = JSON.parse(localStorage.getItem("userData") || "{}");
-            const userId = storedUser.id || storedUser.uid;
+            const userId = authUser?.id;
             
             if (!userId) {
-                router.push("/auth/login");
+                // If not in store, check localStorage as fallback
+                const storedUserStr = localStorage.getItem("userData");
+                if (storedUserStr) {
+                    const storedUser = JSON.parse(storedUserStr);
+                    if (storedUser.id || storedUser.uid) {
+                        // We have a user in localStorage, but maybe not in store yet
+                        // (though authStore persist should handle this)
+                    } else {
+                        router.push("/auth/login");
+                        return;
+                    }
+                } else {
+                    router.push("/auth/login");
+                    return;
+                }
+            }
+
+            if (!userId) {
+                // ... logic to handle redirect or check localStorage ...
+                setLoading(false);
                 return;
             }
 
             try {
-                const docSnap = await getDoc(doc(db, "users", userId));
+                const docSnap = await getDoc(doc(db, "users", userId as string));
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     setUser({ ...data, id: docSnap.id });
@@ -93,7 +113,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
             await updateDoc(doc(db, "users", user.id), { ...formData });
             const updatedUser = { ...user, ...formData };
             localStorage.setItem("userData", JSON.stringify(updatedUser));
-            window.dispatchEvent(new Event('storage'));
+            setAuth(updatedUser, localStorage.getItem("accessToken"));
             toast.success("Profile updated!");
             router.push("/user/profile");
         } catch (error) {
@@ -128,7 +148,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                 const updatedUser = { ...user, profileImage: url };
                 setUser(updatedUser);
                 localStorage.setItem("userData", JSON.stringify(updatedUser));
-                window.dispatchEvent(new Event('storage'));
+                setAuth(updatedUser, localStorage.getItem("accessToken"));
                 toast.success("Image updated!");
                 setIsUploading(false);
             }

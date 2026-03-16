@@ -33,4 +33,18 @@ export class userRepository implements IuserRepository {
         const docRef = await usersCollection.add(newUser);
         return { ...newUser, _id: docRef.id };
     }
+
+    async blacklistToken(token: string, expiresAt: Date): Promise<boolean> {
+        await db.collection("blacklistedTokens").doc(token).set({
+            token,
+            expiresAt,
+            createdAt: new Date()
+        });
+        return true;
+    }
+
+    async isTokenBlacklisted(token: string): Promise<boolean> {
+        const doc = await db.collection("blacklistedTokens").doc(token).get();
+        return doc.exists;
+    }
 }
