@@ -11,8 +11,11 @@ import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 import toast from "react-hot-toast";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
-import { collection, query, orderBy, limit, getDocs, where } from "firebase/firestore";
+import { collection, query, orderBy, limit, getDocs, where, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { WishlistDropdown } from "./dropdowns/WishlistDropdown";
+import { CartDropdown } from "./dropdowns/CartDropdown";
+import { NotificationDropdown, Notification } from "./dropdowns/NotificationDropdown";
 
 export interface UserProfile {
     id?: string;
@@ -37,6 +40,9 @@ export function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [notificationCount, setNotificationCount] = useState(0);
+    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [cartItems, setCartItems] = useState([]); // Will be populated from cart store/context later
+    const [wishlistItems, setWishlistItems] = useState([]); // Will be populated from wishlist store/context later
     const [searchQuery, setSearchQuery] = useState("");
 
     // Handle scroll effect for dynamic navbar styling
@@ -82,11 +88,35 @@ export function Navbar() {
                 
                 const q = query(
                     collection(db, "notifications"), 
-                    where("createdAt", ">", lastReadTime),
-                    orderBy("createdAt", "desc")
+                    orderBy("createdAt", "desc"),
+                    limit(10)
                 );
                 const querySnapshot = await getDocs(q);
-                setNotificationCount(querySnapshot.size);
+                
+                const fetchedNotifications = querySnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    // Handle Firestore Timestamp if needed
+                    const createdAt = data.createdAt instanceof Timestamp 
+                        ? data.createdAt.toMillis() 
+                        : typeof data.createdAt === 'number' 
+                            ? data.createdAt 
+                            : Date.now();
+                            
+                    return {
+                        id: doc.id,
+                        title: data.title || "Notification",
+                        message: data.message || "",
+                        createdAt: createdAt,
+                        type: data.type || "info",
+                        read: createdAt <= lastReadTime
+                    };
+                }) as Notification[];
+                
+                setNotifications(fetchedNotifications);
+                
+                // New notifications are those created after lastReadTime
+                const newCount = fetchedNotifications.filter(n => n.createdAt > lastReadTime).length;
+                setNotificationCount(newCount);
             } catch (error) {
                 console.error("Error checking notifications:", error);
             }
@@ -172,20 +202,41 @@ export function Navbar() {
 
                     {/* Action Icons */}
                     <div className="flex items-center gap-5 mr-2">
-                        <Link href={user ? "/user/wishlist" : "/auth/login"} className={`hover:text-brand-orange transition-colors ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
-                            <Heart size={20} strokeWidth={2} />
-                        </Link>
-                        <Link href={user ? "/user/cart" : "/auth/login"} className={`hover:text-brand-orange transition-colors ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
-                            <ShoppingCart size={20} strokeWidth={2} />
-                        </Link>
-                        <Link href={user ? "/user/notifications" : "/auth/login"} className={`relative hover:text-brand-orange transition-colors ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
-                            <Bell size={20} strokeWidth={2} />
-                            {notificationCount > 0 && (
-                                <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
-                                    {notificationCount > 9 ? '9+' : notificationCount}
-                                </span>
-                            )}
-                        </Link>
+                        {/* Wishlist Icon with Dropdown */}
+                        <div className="relative group cursor-pointer">
+                            <Link href={user ? "/user/wishlist" : "/auth/login"} className={`hover:text-brand-orange transition-colors flex items-center h-10 ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
+                                <Heart size={20} strokeWidth={2} />
+                            </Link>
+                            <WishlistDropdown items={wishlistItems} />
+                        </div>
+
+                        {/* Cart Icon with Dropdown */}
+                        <div className="relative group cursor-pointer">
+                            <Link href={user ? "/user/cart" : "/auth/login"} className={`hover:text-brand-orange transition-colors flex items-center h-10 ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
+                                <ShoppingCart size={20} strokeWidth={2} />
+                            </Link>
+                            <CartDropdown items={cartItems} />
+                        </div>
+
+                        {/* Notification Icon with Dropdown */}
+                        <div className="relative group cursor-pointer">
+                            <Link href={user ? "/user/notifications" : "/auth/login"} className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
+                                <Bell size={20} strokeWidth={2} />
+                                {notificationCount > 0 && (
+                                    <span className="absolute top-1 -right-2 min-w-[18px] h-[18px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
+                                        {notificationCount > 9 ? '9+' : notificationCount}
+                                    </span>
+                                )}
+                            </Link>
+                            <NotificationDropdown 
+                                notifications={notifications} 
+                                onMarkAllRead={() => {
+                                    localStorage.setItem("ads_notifications_last_read", Date.now().toString());
+                                    setNotificationCount(0);
+                                    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+                                }}
+                            />
+                        </div>
                     </div>
 
                     {user ? (

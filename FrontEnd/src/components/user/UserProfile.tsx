@@ -301,16 +301,11 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                         </div>
                     </div>
                 )}
-                <ConfirmationModal 
-                isOpen={isDeleteModalOpen}
-                onClose={() => setIsDeleteModalOpen(false)}
-                onConfirm={confirmDelete}
-                title="Delete Account"
+                <ConfirmationModal isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)} onConfirm={confirmDelete} title="Delete Account"
                 message="Are you sure you want to delete your account? This action is permanent and cannot be undone. All your data will be removed."
-                confirmText="Yes, Delete Account"
-                type="danger"
-                isLoading={isDeleting}
-            />
-        </div></div>
+                confirmText="Yes, Delete Account" type="danger"isLoading={isDeleting}/>
+                </div>
+        </div>
     )
 }
