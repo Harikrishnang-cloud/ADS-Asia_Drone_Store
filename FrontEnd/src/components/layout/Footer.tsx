@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-    Facebook, 
-    Twitter, 
-    Instagram, 
-    Youtube, 
-    Mail, 
-    Phone, 
-    MapPin, 
+import {
+    Facebook,
+    Twitter,
+    Instagram,
+    Youtube,
+    Mail,
+    Phone,
+    MapPin,
     ArrowRight,
     Send
 } from "lucide-react";
@@ -37,6 +37,7 @@ export function Footer() {
             { name: "About ADS", href: "/about" },
             { name: "Our Gallery", href: "/gallery" },
             { name: "Contact Us", href: "/contact" },
+            { name: "Help Center", href: "/help" },
             { name: "Terms of Service", href: "/terms" },
             { name: "Privacy Policy", href: "/privacy" },
         ],
@@ -56,19 +57,19 @@ export function Footer() {
 
             <div className="container mx-auto px-6 lg:px-12 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
-                    
+
                     {/* Brand Info */}
                     <div className="space-y-6">
                         <Logo width={180} height={180} showText={true} textColor="text-white" />
                         <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
-                             Asia Drone Store (ADS) is your premium destination for high-end drones, spare parts, and professional aerial accessories across Asia.
+                            Asia Drone Store (ADS) is your premium destination for high-end drones, spare parts, and professional aerial accessories across Asia.
                         </p>
                         <div className="flex items-center gap-4">
                             {footerLinks.social.map((item) => (
-                                <a 
-                                    key={item.name} 
-                                    href={item.href} 
-                                    target="_blank" 
+                                <a
+                                    key={item.name}
+                                    href={item.href}
+                                    target="_blank"
                                     rel="noopener noreferrer"
                                     className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-orange transition-all duration-300 hover:-translate-y-1 group"
                                 >
@@ -81,14 +82,14 @@ export function Footer() {
                     {/* Quick Links: Shop */}
                     <div>
                         <h4 className="text-lg font-bold mb-6 flex items-center gap-2">
-                             Quick Shop
-                             <span className="w-8 h-[2px] bg-brand-orange"></span>
+                            Quick Shop
+                            <span className="w-8 h-[2px] bg-brand-orange"></span>
                         </h4>
                         <ul className="space-y-4">
                             {footerLinks.shop.map((link) => (
                                 <li key={link.name}>
-                                    <Link 
-                                        href={link.href} 
+                                    <Link
+                                        href={link.href}
                                         className="text-slate-400 hover:text-brand-orange transition-colors flex items-center gap-2 group text-sm"
                                     >
                                         <ArrowRight size={14} className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
@@ -98,19 +99,19 @@ export function Footer() {
                             ))}
                         </ul>
                     </div>
-                    
+
 
                     {/* Quick Links: Company */}
                     <div>
                         <h4 className="text-lg font-bold mb-6 flex items-center gap-2">
-                             Company
-                             <span className="w-8 h-[2px] bg-brand-orange"></span>
+                            Company
+                            <span className="w-8 h-[2px] bg-brand-orange"></span>
                         </h4>
                         <ul className="space-y-4">
                             {footerLinks.company.map((link) => (
                                 <li key={link.name}>
-                                    <Link 
-                                        href={link.href} 
+                                    <Link
+                                        href={link.href}
                                         className="text-slate-400 hover:text-brand-orange transition-colors flex items-center gap-2 group text-sm"
                                     >
                                         <ArrowRight size={14} className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
@@ -125,14 +126,14 @@ export function Footer() {
                     <div className="space-y-8">
                         <div>
                             <h4 className="text-lg font-bold mb-6 flex items-center gap-2">
-                                 Newsletter
-                                 <span className="w-8 h-[2px] bg-brand-orange"></span>
+                                Newsletter
+                                <span className="w-8 h-[2px] bg-brand-orange"></span>
                             </h4>
                             <p className="text-slate-400 text-sm mb-4">Subscribe to get latest updates and offers.</p>
                             <div className="relative group">
-                                <input 
-                                    type="email" 
-                                    placeholder="your@email.com" 
+                                <input
+                                    type="email"
+                                    placeholder="your@email.com"
                                     className="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 pl-4 pr-12 text-sm focus:outline-none focus:border-brand-orange transition-all"
                                 />
                                 <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-brand-orange p-2 rounded-lg hover:bg-white hover:text-brand-orange transition-all duration-300">

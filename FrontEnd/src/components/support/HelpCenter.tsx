@@ -1,0 +1,237 @@
+"use client";
+
+import React, { useState } from "react";
+import { Search, ChevronDown, MessageCircle, Mail, Phone, Clock, ExternalLink, ShoppingBag, Truck, Shield, Key, CreditCard, User,ArrowRight } from "lucide-react";
+
+const FAQS = [
+    {
+        category: "Ordering",
+        question: "How do I track my drone order?",
+        answer: "You can track your order by logging into your account and visiting the 'Orders' section. Once your drone is shipped, you'll receive an email with a tracking number and a link to our shipping partner's portal."
+    },
+    {
+        category: "Ordering",
+        question: "Can I cancel my order after it has been placed?",
+        answer: "Orders can only be canceled within 1 hour of placement. After this window, the order enters our automated processing system and cannot be stopped. You may initiate a return once the item arrives."
+    },
+    {
+        category: "Shipping",
+        question: "What is your return policy for accessories?",
+        answer: "We offer a 14-day return policy for unopened accessories. For drones and electronic components, returns are only accepted if the product is DOA (Dead on Arrival) or has a verified manufacturing defect."
+    },
+    {
+        category: "Warranty",
+        question: "How long does the warranty last?",
+        answer: "Most of our drones come with a 1-year limited manufacturer warranty. Spare parts and batteries usually have a 6-month warranty. You can find specific warranty details on each product page."
+    },
+    {
+        category: "Shipping",
+        question: "Do you offer international shipping?",
+        answer: "Yes, we ship to most countries in Asia. Shipping costs and delivery times vary by location. You can estimate shipping costs at checkout after entering your delivery address."
+    },
+    {
+        category: "Account",
+        question: "How do I reset my account password?",
+        answer: "You can reset your password by clicking 'Forgot Password' on the login page. Follow the instructions sent to your registered email address to create a new secure password."
+    },
+    {
+        category: "Pilot Support",
+        question: "Where can I find the latest firmware for my ADS drone?",
+        answer: "Latest firmware updates are available through the ADS Pilot App or on our official website's 'Downloads' page. We recommend keeping your drone updated for the best flight experience and safety."
+    },
+    {
+        category: "Payments",
+        question: "What payment methods do you accept?",
+        answer: "We accept all major credit cards, PayPal, and local bank transfers. For enterprise clients, we also offer invoice-based payment terms upon credit approval."
+    }
+];
+
+const CATEGORIES = [
+    { icon: ShoppingBag, color: 'text-brand-blue', name: "Ordering", description: "Payment methods, taxes, and order status" },
+    { icon: Truck, color: 'text-brand-orange', name: "Shipping", description: "Delivery times, tracking, and shipping costs" },
+    { icon: Shield, color: 'text-brand-blue', name: "Warranty", description: "Policy details, claims, and repairs" },
+    { icon: Key, color: 'text-brand-orange', name: "Account", description: "Login issues, security, and profile settings" },
+    { icon: CreditCard, color: 'text-brand-blue', name: "Payments", description: "Invoices, refunds, and promo codes" },
+    { icon: User, color: 'text-brand-orange', name: "Pilot Support", description: "Technical help, apps, and firmware" },
+];
+
+export default function HelpCenter() {
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const [openFaq, setOpenFaq] = useState<number | null>(0);
+
+    const filteredFaqs = FAQS.filter(faq => {
+        const matchesCategory = selectedCategory ? faq.category === selectedCategory : true;
+        const matchesSearch = faq.question.toLowerCase().includes(searchQuery.toLowerCase()) || faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesCategory && matchesSearch;
+    });
+
+    return (
+        <div className="bg-slate-50 min-h-screen">
+            {/* Hero Section */}
+            <section className="bg-brand-blue-dark pt-32 pb-20 md:pt-48 md:pb-32 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-brand-orange/10 blur-[100px] rounded-full"></div>
+                <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-blue/10 blur-[100px] rounded-full"></div>
+                
+                <div className="container mx-auto px-6 relative z-10 text-center">
+                    <h1 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tighter">
+                        How can we <span className="text-brand-orange italic underline decoration-white/20 underline-offset-8">help</span> you today?
+                    </h1>
+                    <p className="text-blue-100/70 text-lg mb-10 max-w-2xl mx-auto font-medium">
+                        Search our knowledge base or browse categories below to find answers to your questions.
+                    </p>
+                    
+                    <div className="max-w-2xl mx-auto relative group">
+                        <div className="absolute inset-0 bg-brand-orange/20 blur-xl group-focus-within:bg-brand-orange/30 transition-all rounded-2xl"></div>
+                        <div className="relative flex items-center bg-white rounded-md shadow-2xl p-2">
+                            <Search className="text-slate-400 ml-4" size={24} />
+                            <input type="text" 
+                                placeholder="Search for troubleshooting, warranty, orders..." 
+                                className="w-full px-4 py-4 text-slate-900 outline-none font-medium placeholder:text-slate-400"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}/>
+                            <button className="bg-brand-blue hover:bg-brand-blue-dark text-white px-8 py-4 rounded-lg font-bold transition-all flex items-center gap-2 group cursor-pointer">
+                                Search 
+                                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-sm">
+                        <span className="text-blue-100/50 font-bold uppercase tracking-widest text-[10px]"></span>
+                        {["Warranty", "Shipping", "Refunds", "Account"].map(tag => (
+                            <button 
+                                key={tag}
+                                onClick={() => setSearchQuery(tag)}
+                                className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/20 hover:border-white/30 transition-all font-medium"
+                            >
+                                {tag}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Categories Grid */}
+            <section className="container mx-auto px-6 py-20 -mt-10 relative z-20">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {CATEGORIES.map((category, index) => (
+                        <div 
+                            key={index} 
+                            onClick={() => setSelectedCategory(selectedCategory === category.name ? null : category.name)}
+                            className={`p-8 rounded-lg border transition-all hover:-translate-y-1 group cursor-pointer ${
+                                selectedCategory === category.name 
+                                ? "bg-white border-brand-orange shadow-lg ring-1 ring-brand-orange/20" 
+                                : "bg-white border-slate-100 shadow-sm hover:shadow-md"
+                            }`}
+                        >
+                            <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 transition-colors ${
+                                selectedCategory === category.name ? "bg-brand-orange/10" : "bg-slate-50 group-hover:bg-white group-hover:shadow-inner"
+                            }`}>
+                                <category.icon size={28} className={selectedCategory === category.name ? "text-brand-orange" : category.color} />
+                            </div>
+                            <h3 className={`text-xl font-bold mb-2 transition-colors ${
+                                selectedCategory === category.name ? "text-brand-orange" : "text-brand-blue-dark group-hover:text-brand-blue"
+                            }`}>{category.name}</h3>
+                            <p className="text-slate-500 leading-relaxed font-medium">{category.description}</p>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* FAQ Section */}
+            <section className="container mx-auto px-6 py-20">
+                <div className="max-w-4xl mx-auto">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-4xl font-black text-brand-blue-dark mb-4">Frequently Asked Questions</h2>
+                        <div className="w-20 h-1.5 bg-brand-orange mx-auto rounded-full"></div>
+                    </div>
+
+                    <div className="space-y-4 cursor-pointer">
+                        {filteredFaqs.length > 0 ? (
+                            filteredFaqs.map((faq, index) => (
+                                <div 
+                                    key={index} 
+                                    className="bg-white rounded-lg border border-slate-100 overflow-hidden transition-all shadow-sm hover:shadow-md">
+                                    <button 
+                                        className="w-full px-8 py-6 flex items-center justify-between text-left group cursor-pointer"
+                                        onClick={() => setOpenFaq(openFaq === index ? null : index)}>
+                                        <span className={`text-lg font-bold transition-colors ${openFaq === index ? 'text-brand-orange' : 'text-brand-blue-dark group-hover:text-brand-blue'}`}>
+                                            {faq.question}
+                                        </span>
+                                        <ChevronDown 
+                                            size={20} 
+                                            className={`text-slate-400 transition-transform duration-300 ${openFaq === index ? 'rotate-180 text-brand-orange' : ''}`} />
+                                    </button>
+                                    <div className={`px-8 transition-all duration-300 ease-in-out ${openFaq === index ? 'max-h-96 pb-8' : 'max-h-0 overflow-hidden'}`}>
+                                        <p className="text-slate-600 leading-relaxed font-medium">
+                                            {faq.answer}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-center py-12 bg-white rounded-2xl border border-slate-100 border-dashed">
+                                <p className="text-slate-400 font-bold italic">No questions found matching your search.</p>
+                                <button 
+                                    onClick={() => {setSearchQuery(""); setSelectedCategory(null);}}
+                                    className="mt-4 text-brand-blue font-bold hover:underline"
+                                >
+                                    Clear all filters
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </section>
+
+            {/* Contact Support Section */}
+            <section className="bg-white py-24">
+                <div className="container mx-auto px-6 text-center">
+                    <h2 className="text-3xl md:text-5xl font-black text-brand-blue-dark mb-6">Still need assistance?</h2>
+                    <p className="text-slate-500 text-lg mb-16 max-w-2xl mx-auto font-medium">
+                        Our expert support team is ready to help you with any technical issues or inquiries.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 cursor-pointer">
+                        <div className="p-8 rounded-xl bg-slate-50 border border-slate-100 group hover:bg-brand-blue-dark transition-all duration-500">
+                            <MessageCircle className="mx-auto text-brand-blue mb-6 group-hover:text-white group-hover:scale-110 transition-all" size={40} />
+                            <h4 className="text-xl font-bold mb-2 group-hover:text-white">Live Chat</h4>
+                            <p className="text-slate-500 text-sm mb-6 group-hover:text-white/70">Wait time: &lt; 2 mins</p>
+                            <button className="text-brand-blue font-bold flex items-center gap-2 mx-auto group-hover:text-brand-orange transition-colors">
+                                Start Chat <ExternalLink size={16} />
+                            </button>
+                        </div>
+
+                        <div className="p-8 rounded-xl bg-slate-50 border border-slate-100 group hover:bg-brand-blue-dark transition-all duration-500">
+                            <Mail className="mx-auto text-brand-orange mb-6 group-hover:text-white group-hover:scale-110 transition-all" size={40} />
+                            <h4 className="text-xl font-bold mb-2 group-hover:text-white">Email Us</h4>
+                            <p className="text-slate-500 text-sm mb-6 group-hover:text-white/70">Response: &lt; 24 hours</p>
+                            <button className="text-brand-orange font-bold flex items-center gap-2 mx-auto group-hover:text-white transition-colors">
+                                Send Email <ArrowRight size={16} />
+                            </button>
+                        </div>
+
+                        <div className="p-8 rounded-xl bg-slate-50 border border-slate-100 group hover:bg-brand-blue-dark transition-all duration-500">
+                            <Phone className="mx-auto text-brand-blue mb-6 group-hover:text-white group-hover:scale-110 transition-all" size={40} />
+                            <h4 className="text-xl font-bold mb-2 group-hover:text-white">Call Support</h4>
+                            <p className="text-slate-500 text-sm mb-6 group-hover:text-white/70">Mon-Fri: 9am - 5pm</p>
+                            <button className="text-brand-blue font-bold flex items-center gap-2 mx-auto group-hover:text-brand-orange transition-colors">
+                                +91 123456789
+                            </button>
+                        </div>
+
+                        <div className="p-8 rounded-xl bg-slate-50 border border-slate-100 group hover:bg-brand-blue-dark transition-all duration-500">
+                            <Clock className="mx-auto text-brand-orange mb-6 group-hover:text-white group-hover:scale-110 transition-all" size={40} />
+                            <h4 className="text-xl font-bold mb-2 group-hover:text-white">WhatsApp</h4>
+                            <p className="text-slate-500 text-sm mb-6 group-hover:text-white/70">Fast responses on mobile</p>
+                            <button className="text-brand-orange font-bold flex items-center gap-2 mx-auto group-hover:text-white transition-colors">
+                                Message Us <ArrowRight size={16} />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    );
+}

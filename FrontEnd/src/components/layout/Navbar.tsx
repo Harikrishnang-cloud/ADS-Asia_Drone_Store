@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { User, LogOut, Menu, X, Heart, ShoppingCart, Bell, 
-    BookOpen, UserPlus, Presentation, MessageCircle, 
-    Settings, CreditCard, Layers, BadgeDollarSign, 
+import {
+    User, LogOut, Menu, X, Heart, ShoppingCart, Bell,
+    BookOpen, UserPlus, Presentation, MessageCircle,
+    Settings, CreditCard, Layers, BadgeDollarSign,
     History, Globe, UserCircle, HelpCircle, UserPlus2, Search
 } from "lucide-react";
 import Link from "next/link";
@@ -32,8 +33,9 @@ const navLinks = [
     { name: "Home", path: "/" },
     { name: "Products", path: "/products" },
     { name: "Gallery", path: "/gallery" },
-    { name: "About Us", path: "/about" },
-    { name: "Contact Us", path: "/contact" },
+    { name: "About", path: "/about" },
+    { name: "Contact", path: "/contact" },
+    { name: "Support", path: "/help" },
 ];
 
 export function Navbar() {
@@ -43,19 +45,18 @@ export function Navbar() {
     const { items: cartItems } = useCartStore();
     const { items: wishlistItems } = useWishlistStore();
     const { notifications, unreadCount: notificationCount, setNotifications, markAllAsRead } = useNotificationStore();
-    
+
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [hasHydrated, setHasHydrated] = useState(false);
 
-    // Handle hydration for persistent stores
     useEffect(() => {
         setHasHydrated(true);
     }, []);
 
-    // Handle scroll effect for dynamic navbar styling
+
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 20);
@@ -64,9 +65,9 @@ export function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // Sync auth and notifications on mount and path changes
+
     useEffect(() => {
-        // Initial sync of user from localStorage if store is empty
+
         const token = localStorage.getItem("accessToken");
         const storedUserStr = localStorage.getItem("userData");
         if (token && storedUserStr && !user) {
@@ -79,29 +80,29 @@ export function Navbar() {
                 console.error("Auth sync error", e);
             }
         }
-        
+
         // Check for new notifications since last visit
         const checkNotifications = async () => {
             try {
                 const lastRead = typeof window !== "undefined" ? localStorage.getItem("ads_notifications_last_read") : null;
                 const lastReadTime = lastRead ? parseInt(lastRead) : 0;
-                
+
                 const q = query(
-                    collection(db, "notifications"), 
+                    collection(db, "notifications"),
                     orderBy("createdAt", "desc"),
                     limit(10)
                 );
                 const querySnapshot = await getDocs(q);
-                
+
                 const fetchedNotifications = querySnapshot.docs.map(doc => {
                     const data = doc.data();
                     // Handle Firestore Timestamp if needed
-                    const createdAt = data.createdAt instanceof Timestamp 
-                        ? data.createdAt.toMillis() 
-                        : typeof data.createdAt === 'number' 
-                            ? data.createdAt 
+                    const createdAt = data.createdAt instanceof Timestamp
+                        ? data.createdAt.toMillis()
+                        : typeof data.createdAt === 'number'
+                            ? data.createdAt
                             : Date.now();
-                            
+
                     return {
                         id: doc.id,
                         title: data.title || "Notification",
@@ -111,7 +112,7 @@ export function Navbar() {
                         read: createdAt <= lastReadTime
                     };
                 }) as Notification[];
-                
+
                 setNotifications(fetchedNotifications);
             } catch (error) {
                 console.error("Error checking notifications:", error);
@@ -137,14 +138,13 @@ export function Navbar() {
     };
 
     return (
-        <nav 
-            className={`sticky top-0 z-50 transition-all duration-300 w-full ${
-                isScrolled 
-                ? "bg-transparent backdrop-blur-md py-3" 
-                : "bg-white py-3 border-b border-slate-100"
-            }`}>
+        <nav
+            className={`sticky top-0 z-50 transition-all duration-300 w-full ${isScrolled
+                    ? "bg-transparent backdrop-blur-md py-3"
+                    : "bg-white py-3 border-b border-slate-100"
+                }`}>
             <div className="mx-auto px-4 md:px-8 flex justify-between items-center relative">
-                
+
                 {/* Left Side: Logo */}
                 <div className="flex-shrink-0 z-50">
                     <Logo width={160} height={160} showText={true} textColor="text-brand-blue-dark" />
@@ -153,18 +153,16 @@ export function Navbar() {
                 {/* Center: Navigation Menu (Desktop) */}
                 <div className="hidden lg:flex items-center space-x-8 lg:space-x-10">
                     {navLinks.map((link) => (
-                        <Link 
-                            key={link.name} 
+                        <Link
+                            key={link.name}
                             href={link.path}
-                            className={`relative text-[15px] font-medium transition-colors hover:text-brand-orange group py-2 ${
-                                pathname === link.path ? "text-brand-orange" : isScrolled ? "text-white" : "text-brand-blue-dark"
-                            }`}
+                            className={`relative text-[15px] font-medium transition-colors hover:text-brand-orange group py-2 ${pathname === link.path ? "text-brand-orange" : isScrolled ? "text-white" : "text-brand-blue-dark"
+                                }`}
                         >
                             {link.name}
-                            <span 
-                                className={`absolute bottom-0 left-0 w-full h-[2px] bg-brand-orange transform origin-left transition-transform duration-300 ease-out ${
-                                    pathname === link.path ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                                }`}
+                            <span
+                                className={`absolute bottom-0 left-0 w-full h-[2px] bg-brand-orange transform origin-left transition-transform duration-300 ease-out ${pathname === link.path ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                                    }`}
                             ></span>
                         </Link>
                     ))}
@@ -172,23 +170,21 @@ export function Navbar() {
 
                 {/* Right Side: Profile / Actions */}
                 <div className="hidden md:flex items-center gap-6 z-50">
-                    
+
                     {/* Search Bar - Desktop */}
                     <div className="relative group hidden lg:flex items-center">
-                        <input 
-                            type="text" 
-                            placeholder="Search" 
+                        <input
+                            type="text"
+                            placeholder="Search"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className={`w-48 lg:w-64 px-4 py-2 pl-10 text-sm rounded-full border transition-all duration-300 focus:w-64 lg:focus:w-80 outline-none ${
-                                isScrolled 
-                                    ? "bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:bg-white/20 focus:border-white/40" 
+                            className={`w-48 lg:w-64 px-4 py-2 pl-10 text-sm rounded-full border transition-all duration-300 focus:w-64 lg:focus:w-80 outline-none ${isScrolled
+                                    ? "bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:bg-white/20 focus:border-white/40"
                                     : "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand-blue/30 focus:shadow-md"
-                            }`}
+                                }`}
                         />
-                        <Search size={16} className={`absolute left-3.5 transition-colors ${
-                            isScrolled ? "text-white/60 group-focus-within:text-white" : "text-slate-400 group-focus-within:text-brand-blue"
-                        }`} />
+                        <Search size={16} className={`absolute left-3.5 transition-colors ${isScrolled ? "text-white/60 group-focus-within:text-white" : "text-slate-400 group-focus-within:text-brand-blue"
+                            }`} />
                     </div>
 
                     {/* Action Icons */}
@@ -219,8 +215,8 @@ export function Navbar() {
                                     </span>
                                 )}
                             </Link>
-                            <NotificationDropdown 
-                                notifications={notifications} 
+                            <NotificationDropdown
+                                notifications={notifications}
                                 onMarkAllRead={() => {
                                     localStorage.setItem("ads_notifications_last_read", Date.now().toString());
                                     markAllAsRead();
@@ -234,16 +230,16 @@ export function Navbar() {
                             <span className={`text-sm font-medium hidden xl:block ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
                                 Welcome, <span className="text-brand-orange capitalize">{user.name.split(' ')[0]}</span>
                             </span>
-                            
+
                             <div className="relative group cursor-pointer">
-                               
+
                                 <div className="w-[42px] h-[42px] rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-brand-blue-dark transition-all duration-300 group-hover:border-brand-orange group-hover:text-brand-orange group-hover:shadow-[0_0_12px_rgba(241,90,34,0.15)]">
                                     <User size={18} strokeWidth={2.5} />
                                 </div>
-                                
+
                                 {/* User Dropdown Menu - Redesigned Premium Style */}
                                 <div className="absolute top-[120%] right-0 w-72 bg-white rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right border border-slate-100 overflow-hidden translate-y-4 group-hover:translate-y-0 z-[100]">
-                                    
+
                                     {/* User Header Section */}
                                     <div className="p-5 flex items-center gap-4 border-b border-slate-100 bg-slate-50/50">
                                         <div className="w-12 h-12 rounded-full bg-brand-blue-dark text-white flex items-center justify-center font-bold text-lg shadow-inner">
@@ -257,7 +253,7 @@ export function Navbar() {
 
                                     {/* Dropdown Scrollable Content */}
                                     <div className="max-h-[70vh] overflow-y-auto custom-scrollbar pt-2 pb-2">
-                                        
+
                                         {/* Group 1: Learning & Shopping */}
                                         <div className="py-1 border-b border-slate-100">
                                             {/* <Link href="/my-learning" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
@@ -279,16 +275,16 @@ export function Navbar() {
                                                 <UserPlus size={18} />
                                                 <span>Refer a friend</span>
                                             </Link>
-                                            
+
                                         </div>
 
                                         {/* Group 2: Comms */}
                                         <div className="py-1 border-b border-slate-100">
-                                             <Link href="/user/notifications" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                            <Link href="/user/notifications" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
                                                 <Bell size={18} />
                                                 <span>Notifications</span>
                                             </Link>
-                                             <Link href="/user/messages" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                            <Link href="/user/messages" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
                                                 <MessageCircle size={18} />
                                                 <span>Messages</span>
                                             </Link>
@@ -350,7 +346,7 @@ export function Navbar() {
                                                 <HelpCircle size={18} />
                                                 <span>Help and Support</span>
                                             </Link>
-                                            <button 
+                                            <button
                                                 onClick={handleLogout}
                                                 className="w-full text-left px-5 py-3 text-sm font-bold text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors mt-1"
                                             >
@@ -373,7 +369,7 @@ export function Navbar() {
 
                 {/* Mobile Menu Toggle */}
                 <div className="lg:hidden flex items-center z-50">
-                    <button 
+                    <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         className="text-brand-blue-dark hover:text-brand-orange transition-colors focus:outline-none p-2"
                         aria-label="Toggle Menu"
@@ -384,16 +380,15 @@ export function Navbar() {
             </div>
 
             {/* Mobile Navigation Menu */}
-            <div 
-                className={`fixed inset-0 bg-white z-40 lg:hidden flex flex-col pt-28 px-6 overflow-y-auto transition-transform duration-300 ease-in-out ${
-                    isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-                }`}>
-                
+            <div
+                className={`fixed inset-0 bg-white z-40 lg:hidden flex flex-col pt-28 px-6 overflow-y-auto transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+                    }`}>
+
                 {/* Mobile Search Bar */}
                 <div className="relative group flex items-center mb-6">
-                    <input 
-                        type="text" 
-                        placeholder="Search" 
+                    <input
+                        type="text"
+                        placeholder="Search"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full px-4 py-3 pl-12 text-base rounded-2xl border border-slate-100 bg-slate-50 text-slate-900 placeholder:text-slate-400 outline-none focus:bg-white focus:border-brand-blue/30 focus:shadow-sm"
@@ -403,13 +398,12 @@ export function Navbar() {
 
                 <div className="flex flex-col space-y-2 text-center">
                     {navLinks.map((link) => (
-                        <Link 
-                            key={link.name} 
+                        <Link
+                            key={link.name}
                             href={link.path}
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className={`text-xl font-medium tracking-wide py-4 border-b border-slate-100 ${
-                                pathname === link.path ? "text-brand-orange" : "text-brand-blue-dark hover:text-brand-blue"
-                            }`}>
+                            className={`text-xl font-medium tracking-wide py-4 border-b border-slate-100 ${pathname === link.path ? "text-brand-orange" : "text-brand-blue-dark hover:text-brand-blue"
+                                }`}>
                             {link.name}
                         </Link>
                     ))}
@@ -457,24 +451,24 @@ export function Navbar() {
                                     <BookOpen size={20} />
                                     <span className="text-[11px] font-bold uppercase tracking-tight">Learning</span>
                                 </Link> */}
-                                <Link 
-                                    href="/user/orders" 
+                                <Link
+                                    href="/user/orders"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="flex flex-col items-center justify-center gap-2 p-4 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-brand-blue transition-colors shadow-sm"
                                 >
                                     <History size={20} />
                                     <span className="text-[11px] font-bold uppercase tracking-tight">Orders</span>
                                 </Link>
-                                <Link 
-                                    href="/user/profile" 
+                                <Link
+                                    href="/user/profile"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="flex flex-col items-center justify-center gap-2 p-4 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-brand-blue transition-colors shadow-sm"
                                 >
                                     <UserCircle size={20} />
                                     <span className="text-[11px] font-bold uppercase tracking-tight">Profile</span>
                                 </Link>
-                                <Link 
-                                    href="/user/settings" 
+                                <Link
+                                    href="/user/settings"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="flex flex-col items-center justify-center gap-2 p-4 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-brand-blue transition-colors shadow-sm"
                                 >
@@ -495,7 +489,7 @@ export function Navbar() {
                                 </Link>
                             </div>
 
-                            <button 
+                            <button
                                 onClick={() => {
                                     handleLogout();
                                     setIsMobileMenuOpen(false);
@@ -507,7 +501,7 @@ export function Navbar() {
                             </button>
                         </div>
                     ) : hasHydrated ? (
-                        <button 
+                        <button
                             onClick={() => {
                                 router.push("/auth/login");
                                 setIsMobileMenuOpen(false);
@@ -520,7 +514,7 @@ export function Navbar() {
                     ) : null}
                 </div>
             </div>
-            <ConfirmationModal 
+            <ConfirmationModal
                 isOpen={isLogoutModalOpen}
                 onClose={() => setIsLogoutModalOpen(false)}
                 onConfirm={confirmLogout}

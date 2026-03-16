@@ -33,7 +33,6 @@ export default function ProtectedRoute({ children, allowedRole }: ProtectedRoute
                 } else if (allowedRole === 'user') {
                     router.push("/auth/login");
                 } else {
-                    // Default fallback
                     setIsAuthorized(false);
                     router.push("/auth/login");
                 }
@@ -42,8 +41,6 @@ export default function ProtectedRoute({ children, allowedRole }: ProtectedRoute
 
             try {
                 const user = JSON.parse(storedUserStr);
-                
-                // Check if user is blocked
                 if (user.status === 'blocked') {
                     console.warn("Access denied: User account is blocked.");
                     localStorage.removeItem(tokenKey);
@@ -53,14 +50,12 @@ export default function ProtectedRoute({ children, allowedRole }: ProtectedRoute
                     return;
                 }
 
-                // Role-based logic
                 if (targetRole && user.role !== targetRole) {
                     console.warn(`Access denied: context requires ${targetRole}, but user is ${user.role}`);
-                    // Redirect to their respective dashboard
+                    
                     router.push(user.role === 'admin' ? "/admin/dashboard" : "/");
                     return;
                 }
-
                 setIsAuthorized(true);
             } catch (err) {
                 localStorage.removeItem(tokenKey);
