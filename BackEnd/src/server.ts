@@ -1,4 +1,5 @@
-import dotenv from "dotenv";
+import "dotenv/config";
+
 import express from "express";
 import cors from "cors";
 import { userRoutes } from "./Routes/user/userRoutes.ts";
@@ -9,9 +10,6 @@ import { authRoutes } from "./Routes/auth.routes.ts";
 import { adminRoutes } from "./Routes/admin/adminRoutes.ts";
 
 const app = express();
-dotenv.config({
-    quiet: true
-})
 
 app.use(cors());
 app.use(express.json());
@@ -20,7 +18,6 @@ const userRepo = new userRepository();
 const userSvc = new userService(userRepo);
 const userCtrl = new userController(userSvc);
 const userRouter = new userRoutes(userCtrl);
-
 
 const authRouter = new authRoutes();
 

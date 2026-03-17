@@ -10,7 +10,14 @@ declare global {
     }
 }
 
-const jwt = new jwtToken();
+let jwtInstance: jwtToken | null = null;
+const getJwt = (): jwtToken => {
+    if (!jwtInstance) {
+        jwtInstance = new jwtToken();
+    }
+    return jwtInstance;
+};
+
 export const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
     try {
         const authHeader = req.headers.authorization;
@@ -26,6 +33,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
             return;
         }
 
+        const jwt = getJwt();
         const decoded = jwt.verifyAccessToken(token);
         req.user = decoded;
         next();
