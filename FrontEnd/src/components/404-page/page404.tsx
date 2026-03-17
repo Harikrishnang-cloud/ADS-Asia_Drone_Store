@@ -7,8 +7,8 @@ import { Home, Search, ArrowLeft, MessageSquare, Compass, ShieldAlert } from 'lu
 export default function Page404() {
     return (
         <div className="min-h-[80vh] flex items-center justify-center p-6 overflow-hidden relative">
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-orange/5 blur-[120px] rounded-full animate-pulse"></div>
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-brand-blue/5 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }}></div>
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-orange/5 blur-[120px] rounded-xl animate-pulse"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-brand-blue/5 blur-[120px] rounded-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
 
             <div className="relative z-10 max-w-2xl w-full text-center">
                 <div className="relative mb-12">
@@ -16,7 +16,7 @@ export default function Page404() {
                         404
                     </h1>
                     <div className="absolute inset-0 flex items-center justify-center translate-y-8">
-                        <div className="bg-white/80 backdrop-blur-md px-8 py-4 rounded-2xl border border-white shadow-2xl transform -rotate-2 hover:rotate-0 transition-transform duration-500">
+                        <div className="bg-white/80 backdrop-blur-md px-8 py-4 rounded-lg border border-white shadow-2xl transform -rotate-2 hover:rotate-0 transition-transform duration-500">
                              <ShieldAlert className="text-brand-orange mx-auto mb-2 animate-bounce" size={48} />
                              <p className="text-brand-blue-dark font-black text-2xl uppercase tracking-widest">
                                 Lost in the Sky?
@@ -36,18 +36,17 @@ export default function Page404() {
 
                 {/* Navigation Options */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto">
-                    <Link href="/" className="flex items-center justify-center gap-3 bg-brand-blue-dark text-white px-8 py-4 rounded-xl font-bold hover:bg-black transition-all group shadow-xl shadow-brand-blue/20">
+                    <Link href="/" className="flex items-center justify-center gap-3 bg-brand-blue-dark text-white px-8 py-4 rounded-md font-bold hover:bg-black transition-all group shadow-xl shadow-brand-blue/20">
                         <Home size={20} className="group-hover:-translate-y-1 transition-transform" />
                         Back to Home
                     </Link>
                     
-                    <Link href="/support" className="flex items-center justify-center gap-3 bg-white text-brand-blue-dark border border-slate-200 px-8 py-4 rounded-xl font-bold hover:border-brand-orange hover:text-brand-orange transition-all group shadow-sm">
+                    <Link href="/support" className="flex items-center justify-center gap-3 bg-white text-brand-blue-dark border border-slate-200 px-8 py-4 rounded-md font-bold hover:border-brand-orange hover:text-brand-orange transition-all group shadow-sm">
                         <MessageSquare size={20} className="group-hover:translate-x-1 transition-transform" />
                         Get Support
                     </Link>
 
-                    <button 
-                        onClick={() => window.history.back()}
+                    <button onClick={() => window.history.back()}
                         className="sm:col-span-2 flex items-center justify-center gap-2 text-slate-400 font-bold py-2 hover:text-brand-blue-dark transition-colors group">
                         <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
                         Go Back to Previous Page

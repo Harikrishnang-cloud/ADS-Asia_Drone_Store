@@ -118,7 +118,7 @@ export default function HelpCenter() {
                         return (
                             <button key={category.name + category.description}
                                 onClick={() => setSelectedCategory(isSelected ? null : category.name + category.description)}
-                                className={`relative overflow-hidden p-8 rounded-2xl border text-left transition-all duration-1000 group cursor-pointer hover:-translate-y-2 ${isSelected
+                                className={`relative overflow-hidden p-8 rounded-xl border text-left transition-all duration-1000 group cursor-pointer hover:-translate-y-2 ${isSelected
                                     ? "bg-white border-brand-orange shadow-2xl ring-4 ring-brand-orange/5"
                                     : "bg-white border-slate-100 shadow-sm hover:shadow-xl"
                                     }`}>
@@ -208,8 +208,8 @@ export default function HelpCenter() {
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 cursor-pointer">
                         {/* Live Chat */}
-                        <button className="relative p-8 rounded-2xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-xl text-center">
-                            {/* Opposite Direction Background (Top → Bottom) */}
+                        <button className="relative p-8 rounded-xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-xl text-center">
+                            {/* Opposite Direction Background */}
                             <div className="absolute -top-1/4 -right-1/4 w-[150%] h-[150%] bg-brand-blue-dark transition-all duration-1000 ease-out rotate-12 -translate-y-full group-hover:translate-y-0 group-hover:rotate-0 z-0" />
                             <div className="relative z-10 flex flex-col items-center">
                                 <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-slate-50 mb-8 transition-all duration-1000 group-hover:bg-white/10 group-hover:shadow-lg">
@@ -230,7 +230,7 @@ export default function HelpCenter() {
                         </button>
 
                         {/* Email Support */}
-                        <button className="relative p-8 rounded-2xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-1000 hover:-translate-y-2 hover:shadow-xl text-center">
+                        <button className="relative p-8 rounded-xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-1000 hover:-translate-y-2 hover:shadow-xl text-center">
                             <div className="absolute -bottom-1/4 -right-1/4 w-[150%] h-[150%] bg-brand-blue-dark transition-all duration-1000 ease-out rotate-12 translate-y-full group-hover:translate-y-0 group-hover:rotate-0 z-0" />
                             <div className="relative z-10 flex flex-col items-center">
                                 <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-slate-50 mb-8 transition-all duration-1000 group-hover:bg-white/10 group-hover:shadow-lg">
@@ -246,7 +246,7 @@ export default function HelpCenter() {
                         </button>
 
                         {/* Phone Support */}
-                        <button className="relative p-8 rounded-2xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-1000 hover:-translate-y-2 hover:shadow-xl text-center">
+                        <button className="relative p-8 rounded-xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-1000 hover:-translate-y-2 hover:shadow-xl text-center">
 
                             <div className="absolute -top-1/4 -right-1/4 w-[150%] h-[150%] bg-brand-blue-dark transition-all duration-1000 ease-out rotate-12 -translate-y-full group-hover:translate-y-0 group-hover:rotate-0 z-0" />
                             <div className="relative z-10 flex flex-col items-center">
@@ -273,7 +273,7 @@ export default function HelpCenter() {
                             </div>
                         </button>
                         {/* WhatsApp Support */}
-                        <button className="relative p-8 rounded-2xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-1000 hover:-translate-y-2 hover:shadow-xl text-center">
+                        <button className="relative p-8 rounded-xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-1000 hover:-translate-y-2 hover:shadow-xl text-center">
                             <div className="absolute -bottom-1/4 -right-1/4 w-[150%] h-[150%] bg-brand-blue-dark transition-all duration-1000 ease-out rotate-12 translate-y-full group-hover:translate-y-0 group-hover:rotate-0 z-0" />
                             <div className="relative z-10 flex flex-col items-center">
                                 <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-slate-50 mb-8 transition-all duration-1000 group-hover:bg-white/10 group-hover:shadow-lg">

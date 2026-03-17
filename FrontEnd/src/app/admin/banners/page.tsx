@@ -10,7 +10,7 @@ export default function AdminBannersPage() {
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                 <div className="mb-10">
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-brand-orange/10 rounded-lg">
+                        <div className="p-2 bg-brand-orange/10 rounded-xl">
                             <ImageIcon className="text-brand-orange w-5 h-5" />
                         </div>
                         <h2 className="text-3xl font-black text-slate-900 tracking-tight">Banner Management</h2>
@@ -18,7 +18,7 @@ export default function AdminBannersPage() {
                     <p className="text-slate-500 font-medium">Manage your homepage sliders and promotional banners.</p>
                 </div>
 
-                <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                     <BannerManager />
                 </div>
             </div>
