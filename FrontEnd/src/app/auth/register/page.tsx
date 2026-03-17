@@ -10,6 +10,8 @@ import { Logo } from "@/components/ui/Logo";
 import toast from "react-hot-toast";
 import { useAuthStore } from "@/store/authStore";
 
+import { authService } from "@/services/auth.service";
+
 
 export default function RegisterPage() {
     const [name, setName] = useState("");
@@ -25,7 +27,6 @@ export default function RegisterPage() {
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
-        // ... (same logic)
         e.preventDefault();
 
         if (name.trim().length < 3) {
@@ -45,22 +46,14 @@ export default function RegisterPage() {
         setError("");
 
         try {
-            const res = await fetch("http://localhost:7878/user/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    name,
-                    email,
-                    password,
-                    role: "user"
-                }),
+            const data = await authService.register({
+                name,
+                email,
+                password,
+                role: "user"
             });
 
-            const data = await res.json();
-
-            if (res.ok && data.success) {
+            if (data.success) {
                 toast.success("Account created successfully! Please log in.");
                 router.push("/auth/login");
             } else {
@@ -68,8 +61,8 @@ export default function RegisterPage() {
                 setError(errorMsg);
                 toast.error(errorMsg);
             }
-        } catch (err) {
-            const errorMsg = err instanceof Error ? err.message : "Network Error. Please try again.";
+        } catch (err: any) {
+            const errorMsg = err.response?.data?.message || err.message || "Network Error. Please try again.";
             setError(errorMsg);
             toast.error(errorMsg);
         } finally {
@@ -85,17 +78,9 @@ export default function RegisterPage() {
             const user = result.user;
             const token = await user.getIdToken();
 
-            const res = await fetch("http://localhost:7878/auth/google-login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ token })
-            });
+            const data = await authService.googleLogin(token);
 
-            const data = await res.json();
-
-            if (res.ok && data.success) {
+            if (data.success) {
                 localStorage.setItem("accessToken", data.accessToken);
                 localStorage.setItem("refreshToken", data.refreshToken);
                 localStorage.setItem("userData", JSON.stringify(data.user));
@@ -108,7 +93,7 @@ export default function RegisterPage() {
                 toast.error(errorMsg);
             }
         } catch (err: any) {
-            const errorMsg = err.message || "Google registration failed";
+            const errorMsg = err.response?.data?.message || err.message || "Google registration failed";
             setError(errorMsg);
             toast.error(errorMsg);
         } finally {

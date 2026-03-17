@@ -6,6 +6,8 @@ import { PasswordInput } from "@/components/PasswordInput";
 import { ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 
+import { authService } from "@/services/auth.service";
+
 
 export default function ResetPasswordPage() {
     const [password, setPassword] = useState("");
@@ -45,15 +47,9 @@ export default function ResetPasswordPage() {
         }
 
         try {
-            const res = await fetch("http://localhost:7878/auth/reset-password", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
-            });
+            const data = await authService.resetPassword({ email, password });
 
-            const data = await res.json();
-
-            if (res.ok && data.success) {
+            if (data.success) {
                 setSuccess(data.message);
                 localStorage.removeItem("resetEmail");
                 setTimeout(() => {
@@ -63,7 +59,8 @@ export default function ResetPasswordPage() {
                 setError(data.message || "Failed to establish new security key");
             }
         } catch (err: any) {
-            setError(err.message || "Network Error.");
+            const errorMsg = err.response?.data?.message || err.message || "Network Error.";
+            setError(errorMsg);
         } finally {
             setLoading(false);
         }

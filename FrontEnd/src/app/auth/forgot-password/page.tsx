@@ -6,6 +6,8 @@ import Link from "next/link";
 import { ShieldAlert } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 
+import { authService } from "@/services/auth.service";
+
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState("");
@@ -21,17 +23,9 @@ export default function ForgotPasswordPage() {
         setSuccess("");
 
         try {
-            const res = await fetch("http://localhost:7878/auth/forgot-password", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email }),
-            });
+            const data = await authService.forgotPassword(email);
 
-            const data = await res.json();
-
-            if (res.ok && data.success) {
+            if (data.success) {
                 setSuccess(data.message);
                 localStorage.setItem("resetEmail", email);
                 setTimeout(() => {
@@ -41,7 +35,8 @@ export default function ForgotPasswordPage() {
                 setError(data.message || "Failed to send OTP");
             }
         } catch (err: any) {
-            setError(err.message || "Network Error. Please try again.");
+            const errorMsg = err.response?.data?.message || err.message || "Network Error. Please try again.";
+            setError(errorMsg);
         } finally {
             setLoading(false);
         }

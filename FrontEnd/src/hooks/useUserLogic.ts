@@ -15,7 +15,7 @@ export const useUserLogic = () => {
         refresh: fetchUsers 
     } = useFirestoreCollection<User>({
         collectionName: "users",
-        orderByField: "createdAt", // This will be used for client-side sorting now
+        orderByField: "createdAt",
         orderDirection: "desc"
     });
 

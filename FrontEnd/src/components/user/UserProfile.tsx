@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import { useAuthStore } from "@/store/authStore";
+import { authService } from "@/services/auth.service";
 
 interface UserProfileProps {
     isEdit?: boolean;
@@ -204,16 +205,10 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
 
         setIsResetting(true);
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7878'}/auth/reset-password`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: user.email,
-                    password: resetData.newPassword
-                }),
+            const data = await authService.resetPassword({
+                email: user.email,
+                password: resetData.newPassword
             });
-
-            const data = await response.json();
 
             if (data.success) {
                 toast.success("Password reset successfully!");
@@ -221,8 +216,9 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
             } else {
                 toast.error(data.message || "Reset failed");
             }
-        } catch (error) {
-            toast.error("An error occurred during password reset");
+        } catch (err: any) {
+            const errorMsg = err.response?.data?.message || err.message || "An error occurred during password reset";
+            toast.error(errorMsg);
         } finally {
             setIsResetting(false);
         }

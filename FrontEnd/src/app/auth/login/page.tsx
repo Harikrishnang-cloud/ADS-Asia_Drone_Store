@@ -10,6 +10,8 @@ import { Logo } from "@/components/ui/Logo";
 import toast from "react-hot-toast";
 import { useAuthStore } from "@/store/authStore";
 
+import { authService } from "@/services/auth.service";
+
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -39,20 +41,9 @@ export default function LoginPage() {
         setError("");
 
         try {
-            const res = await fetch("http://localhost:7878/user/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email,
-                    password
-                }),
-            });
+            const data = await authService.login({ email, password });
 
-            const data = await res.json();
-
-            if (res.ok && data.success) {
+            if (data.success) {
                 localStorage.setItem("accessToken", data.accessToken);
                 localStorage.setItem("refreshToken", data.refreshToken);
                 localStorage.setItem("userData", JSON.stringify(data.result));
@@ -64,8 +55,8 @@ export default function LoginPage() {
                 setError(errorMsg);
                 toast.error(errorMsg);
             }
-        } catch (err) {
-            const errorMsg = err instanceof Error ? err.message : "Network Error. Please try again.";
+        } catch (err: any) {
+            const errorMsg = err.response?.data?.message || err.message || "Network Error. Please try again.";
             setError(errorMsg);
             toast.error(errorMsg);
         } finally {
@@ -81,17 +72,9 @@ export default function LoginPage() {
             const user = result.user;
             const token = await user.getIdToken();
 
-            const res = await fetch("http://localhost:7878/auth/google-login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ token })
-            });
+            const data = await authService.googleLogin(token);
 
-            const data = await res.json();
-
-            if (res.ok && data.success) {
+            if (data.success) {
                 localStorage.setItem("accessToken", data.accessToken);
                 localStorage.setItem("refreshToken", data.refreshToken);
                 localStorage.setItem("userData", JSON.stringify(data.user));
@@ -104,7 +87,7 @@ export default function LoginPage() {
                 toast.error(errorMsg);
             }
         } catch (err: any) {
-            const errorMsg = err.message || "Google authentication failed";
+            const errorMsg = err.response?.data?.message || err.message || "Google authentication failed";
             setError(errorMsg);
             toast.error(errorMsg);
         } finally {

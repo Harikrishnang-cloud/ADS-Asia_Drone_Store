@@ -21,37 +21,22 @@ export function useFirestoreCollection<T>({
     const [data, setData] = useState<T[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
-    // Filter out undefined constraints and memoize the array
     const memoizedConstraints = useMemo(() => constraints || [], [constraints]);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
-            // We fetch without server-side orderBy to ensure we don't exclude documents
-            // that are missing the field (Firebase excludes documents missing the orderBy field).
-            const q = query(
-                collection(db, collectionName),
-                ...memoizedConstraints
-            );
-
+            const q = query(collection(db, collectionName), ...memoizedConstraints);
             const querySnapshot = await getDocs(q);
-            const docs = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            } as any));
-
-            // Client-side sorting
+            const docs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
             if (orderByField) {
                 docs.sort((a, b) => {
                     const getVal = (v: any) => {
                         if (v === undefined || v === null) return -Infinity;
-                        // Handle Firestore Timestamp
                         if (typeof v === 'object' && 'seconds' in v) {
                             return v.seconds * 1000 + (v.nanoseconds / 1000000 || 0);
                         }
-                        // Handle Date object
                         if (v instanceof Date) return v.getTime();
                         return v;
                     };

@@ -6,6 +6,8 @@ import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 
+import { authService } from "@/services/auth.service";
+
 
 export default function VerifyOtpPage() {
     const [otp, setOtp] = useState("");
@@ -41,15 +43,9 @@ export default function VerifyOtpPage() {
         setError("");
 
         try {
-            const res = await fetch("http://localhost:7878/auth/verify-reset-otp", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, otp }),
-            });
+            const data = await authService.verifyResetOtp({ email, otp });
 
-            const data = await res.json();
-
-            if (res.ok && data.success) {
+            if (data.success) {
                 setSuccess(data.message);
                 setTimeout(() => {
                     router.push("/auth/reset-password");
@@ -58,7 +54,8 @@ export default function VerifyOtpPage() {
                 setError(data.message || "Invalid Authorization Sequence");
             }
         } catch (err: any) {
-            setError(err.message || "Network Error. Sequence rejected.");
+            const errorMsg = err.response?.data?.message || err.message || "Network Error. Sequence rejected.";
+            setError(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -72,22 +69,17 @@ export default function VerifyOtpPage() {
         setSuccess("");
 
         try {
-            const res = await fetch("http://localhost:7878/auth/resend-reset-otp", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
-            });
+            const data = await authService.resendResetOtp(email);
 
-            const data = await res.json();
-
-            if (res.ok && data.success) {
+            if (data.success) {
                 setSuccess(data.message);
                 setCountdown(60);
             } else {
                 setError(data.message || "Failed to transmit new sequence");
             }
         } catch (err: any) {
-            setError(err.message || "Network Error.");
+            const errorMsg = err.response?.data?.message || err.message || "Network Error.";
+            setError(errorMsg);
         } finally {
             setResendLoading(false);
         }

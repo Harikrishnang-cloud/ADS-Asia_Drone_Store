@@ -7,6 +7,8 @@ import { ShieldAlert } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import toast from "react-hot-toast";
 
+import { authService } from "@/services/auth.service";
+
 
 export default function AdminLoginPage() {
     const [email, setEmail] = useState("");
@@ -35,20 +37,9 @@ export default function AdminLoginPage() {
         setError("");
 
         try {
-            const res = await fetch("http://localhost:7878/admin/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email,
-                    password
-                }),
-            });
+            const data = await authService.adminLogin({ email, password });
 
-            const data = await res.json();
-
-            if (res.ok && data.success) {
+            if (data.success) {
                 localStorage.setItem("adminAccessToken", data.accessToken);
                 localStorage.setItem("adminRefreshToken", data.refreshToken);
                 localStorage.setItem("adminData", JSON.stringify(data.result));
@@ -59,8 +50,8 @@ export default function AdminLoginPage() {
                 setError(errorMsg);
                 toast.error(errorMsg);
             }
-        } catch (err) {
-            const errorMsg = "Network Error. Is the backend running?";
+        } catch (err: any) {
+            const errorMsg = err.response?.data?.message || err.message || "Network Error. Please try again.";
             setError(errorMsg);
             toast.error(errorMsg);
         } finally {

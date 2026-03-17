@@ -55,16 +55,10 @@ export const useBannerLogic = () => {
         
         try {
             if (editingId) {
-                await updateDoc(doc(db, "banners", editingId), {
-                    ...formData,
-                    updatedAt: Date.now()
-                });
+                await updateDoc(doc(db, "banners", editingId), {...formData, updatedAt: Date.now()});
                 toast.success("Banner updated successfully", { id: loadingToast });
             } else {
-                await addDoc(collection(db, "banners"), {
-                    ...formData,
-                    createdAt: Date.now()
-                });
+                await addDoc(collection(db, "banners"), {...formData, createdAt: Date.now()});
                 toast.success("Banner created successfully", { id: loadingToast });
             }
             resetForm();

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { authService } from '../services/auth.service';
 
 interface UserProfile {
     id?: string;
@@ -25,11 +26,7 @@ export const useAuthStore = create<AuthState>()(
                 try {
                     const refreshToken = localStorage.getItem('refreshToken');
                     if (refreshToken) {
-                        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7878'}/user/logout`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ refreshToken }),
-                        });
+                        await authService.logout(refreshToken);
                     }
                 } catch (error) {
                     console.error("Backend logout failed:", error);
@@ -37,6 +34,12 @@ export const useAuthStore = create<AuthState>()(
                     localStorage.removeItem('accessToken');
                     localStorage.removeItem('refreshToken');
                     localStorage.removeItem('userData');
+                    
+                    // Also clear admin tokens just in case
+                    localStorage.removeItem('adminAccessToken');
+                    localStorage.removeItem('adminRefreshToken');
+                    localStorage.removeItem('adminData');
+                    
                     set({ user: null, accessToken: null });
                 }
             },
