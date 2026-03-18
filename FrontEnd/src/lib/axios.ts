@@ -36,9 +36,8 @@ api.interceptors.response.use(
         } else if (error.response?.status === 429) {
             toast.error("Too many requests. Please try again later.");
         }
-        
         return Promise.reject(error);
     }
 );
 
-export default api;
+export default api;

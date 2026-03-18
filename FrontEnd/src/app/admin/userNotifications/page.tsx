@@ -1,7 +1,7 @@
 "use client";
 
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import NotificationManager from "@/components/admin/NotificationManager";
+import NotificationManager from "@/components/admin/Notification/View/NotificationManager";
 
 export default function AdminNotificationsPage() {
     return (
