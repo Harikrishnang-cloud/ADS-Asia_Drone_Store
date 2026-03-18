@@ -27,6 +27,7 @@ export default function BannerManager() {
         confirmDelete,
         resetForm
     } = useBannerLogic();
+    
 
     return (
         <div className="p-4 md:p-8 space-y-10">

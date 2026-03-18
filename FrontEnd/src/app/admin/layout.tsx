@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Logo } from "@/components/ui/Logo";
-import { Sidebar } from "@/components/admin/Sidebar";
+import Sidebar from "@/components/admin/Sidebar/View/Sidebar";
 import { LogOut, Menu, ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
 

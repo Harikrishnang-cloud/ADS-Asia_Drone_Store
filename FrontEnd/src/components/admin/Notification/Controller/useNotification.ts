@@ -1,16 +1,14 @@
-import react from "react";
-import { useState, useEffect } from "react";
+import react, { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
-import { 
-    collection, 
-    addDoc, 
-    getDocs, 
-    deleteDoc, 
-    doc, 
-    query, 
-    orderBy 
+import {
+    collection,
+    addDoc,
+    getDocs,
+    deleteDoc,
+    doc,
+    query,
+    orderBy
 } from "firebase/firestore";
-import { Plus, Trash2, Bell, Tag, AlertCircle, Save, Loader2, Calendar } from "lucide-react";
 import toast from "react-hot-toast";
 // import Modal from "@/components/ui/Modal";
 // import ConfirmationModal from "@/components/ui/ConfirmationModal";

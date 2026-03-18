@@ -1,5 +1,4 @@
 "use client";
-
 import { Plus, Trash2, Bell, Tag, AlertCircle, Loader2 } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
@@ -16,10 +15,8 @@ export default function NotificationManager() {
                     <h2 className="text-xl font-bold text-slate-800">User Notifications</h2>
                     <p className="text-slate-500 text-sm">Broadcast updates to all users</p>
                 </div>
-                <button
-                    onClick={toggleIsAdding}
-                    className="bg-brand-orange text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-600 transition-colors flex items-center gap-2 cursor-pointer"
-                >
+                <button onClick={toggleIsAdding}
+                    className="bg-brand-orange text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-600 transition-colors flex items-center gap-2 cursor-pointer">
                     <Plus size={18} />
                     New Notification
                 </button>
@@ -44,34 +41,22 @@ export default function NotificationManager() {
                             className="w-full border border-slate-300 rounded-lg p-2 h-32 focus:ring-2 focus:ring-brand-orange focus:outline-none"
                             value={formData.message}
                             onChange={formdataUpdate}
-                            required
-                        />
+                            required/>
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-1">Type</label>
                         <select
                             className="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-brand-orange focus:outline-none"
                             value={formData.type}
-                            onChange={e => setFormData({ ...formData, type: e.target.value as any })}
-                        >
+                            onChange={e => setFormData({ ...formData, type: e.target.value as any })}>
                             <option value="info">Information</option>
                             <option value="offer">Special Offer</option>
                             <option value="alert">Alert/Warning</option>
                         </select>
                     </div>
                     <div className="flex justify-end gap-2 pt-2">
-                        <button
-                            type="button"
-                            onClick={toggleIsAdding}
-                            className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg cursor-pointer"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={isSaving}
-                            className="bg-brand-blue-dark text-white px-6 py-2 rounded-lg font-medium disabled:opacity-50 cursor-pointer flex items-center gap-2"
-                        >
+                        <button type="button" onClick={toggleIsAdding} className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg cursor-pointer">Cancel</button>
+                        <button type="submit" disabled={isSaving} className="bg-brand-blue-dark text-white px-6 py-2 rounded-lg font-medium disabled:opacity-50 cursor-pointer flex items-center gap-2">
                             {isSaving && <Loader2 size={16} className="animate-spin" />}
                             Send Now
                         </button>
@@ -115,10 +100,7 @@ export default function NotificationManager() {
                                         {new Date(notif.createdAt).toLocaleDateString()}
                                     </td>
                                     <td className="px-6 py-4 text-right">
-                                        <button
-                                            onClick={() => setNotificationToDelete(notif.id)}
-                                            className="text-red-500 hover:bg-red-50 p-1 rounded cursor-pointer transition-colors"
-                                        >
+                                        <button onClick={() => setNotificationToDelete(notif.id)} className="text-red-500 hover:bg-red-50 p-1 rounded cursor-pointer transition-colors">
                                             <Trash2 size={18} />
                                         </button>
                                     </td>
