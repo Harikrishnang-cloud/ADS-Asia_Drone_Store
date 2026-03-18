@@ -1,67 +1,45 @@
 "use client";
 
-import { Search, Mail, Phone, ShieldAlert, ShieldCheck, Calendar, User as UserIcon,
-    CheckCircle2,
-    XCircle,
-    Users as UsersIcon,
-    ShieldBan,
-    UserCheck
-} from "lucide-react";
+import React from "react";
+import { Search, Mail, Phone, ShieldAlert, ShieldCheck, Calendar, User as UserIcon, CheckCircle2, XCircle, Users as UsersIcon, ShieldBan, UserCheck } from "lucide-react";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import AdminHeader from "@/components/ui/AdminHeader";
 import StatsCard from "@/components/ui/StatsCard";
 import TableSkeleton from "@/components/ui/TableSkeleton";
 import Button from "@/components/ui/button";
-import { useUserLogic } from "@/hooks/useUserLogic";
+import { useUserManager } from "../Controller/useManager";
 
 export default function UserManager() {
     const {
-        users,
-        loading,
-        searchTerm,
-        setSearchTerm,
-        updatingId,
-        userToUpdate,
-        setUserToUpdate,
-        handleToggleStatus,
-        stats
-    } = useUserLogic();
-
-    const getAuthLabel = (provider: string) => {
-        if (provider === "google") return "Google Authentication";
-        return "Email Authentication";
-    };
-
-    const formatDate = (timestamp: any) => {
-        if (!timestamp) return "N/A";
-        const date = timestamp.seconds ? new Date(timestamp.seconds * 1000) : new Date(timestamp);
-        return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-    };
-
-    const formatTime = (timestamp: any) => {
-        if (!timestamp) return "N/A";
-        const date = timestamp.seconds ? new Date(timestamp.seconds * 1000) : new Date(timestamp);
-        return date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-    };
+        users, 
+        loading, 
+        searchTerm, 
+        setSearchTerm, 
+        updatingId, 
+        userToUpdate, 
+        setUserToUpdate, 
+        handleToggleStatus, 
+        stats,
+        getAuthLabel,
+        formatDate,
+        formatTime
+    } = useUserManager();
 
     return (
         <div className="p-4 md:p-8 space-y-8 animate-in fade-in duration-500">
             <AdminHeader 
-                title="Users Management"
-                description="Manage and monitor application users"
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                searchPlaceholder="Search by name or email..."
-            />
+                title="Users Management" 
+                description="Manage and monitor application users" 
+                searchTerm={searchTerm} 
+                onSearchChange={setSearchTerm} 
+                searchPlaceholder="Search by name or email..."/>
 
-            {/* Summary Information */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <StatsCard label="Total Registered" value={stats.total} icon={<UsersIcon size={20} />} />
                 <StatsCard label="Active Accounts" value={stats.active} icon={<UserCheck size={20} />} />
                 <StatsCard label="Blocked Accounts" value={stats.blocked} icon={<ShieldBan size={20} />} />
             </div>
 
-            {/* Users Table / List */}
             {loading ? (
                 <TableSkeleton rows={5} cols={5} />
             ) : (
@@ -134,8 +112,7 @@ export default function UserManager() {
                                                     loading={updatingId === user.id}
                                                     variant={user.status === 'blocked' ? 'secondary' : 'danger'}
                                                     className="p-2.5 min-w-[40px]"
-                                                    title={user.status === 'blocked' ? 'Unblock User' : 'Block User'}
-                                                >
+                                                    title={user.status === 'blocked' ? 'Unblock User' : 'Block User'}>
                                                     {user.status === 'blocked' ? <CheckCircle2 size={18} /> : <XCircle size={18} />}
                                                 </Button>
                                             </td>

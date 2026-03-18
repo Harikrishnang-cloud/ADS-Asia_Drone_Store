@@ -1,20 +1,8 @@
 import react, { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
-import {
-    collection,
-    addDoc,
-    getDocs,
-    deleteDoc,
-    doc,
-    query,
-    orderBy
-} from "firebase/firestore";
+import {collection, addDoc, getDocs, deleteDoc, doc, query, orderBy} from "firebase/firestore";
 import toast from "react-hot-toast";
-// import Modal from "@/components/ui/Modal";
-// import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import { Notification } from "../Model/notification";
-
-
 
 function useNotification(){
     const [notifications, setNotifications] = useState<Notification[]>([]);

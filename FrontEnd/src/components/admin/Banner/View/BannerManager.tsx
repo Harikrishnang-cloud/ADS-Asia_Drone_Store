@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Plus, Trash2, Edit2, Save, X, Image as ImageIcon, ExternalLink, LayoutPanelLeft } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
@@ -7,42 +8,21 @@ import AdminHeader from "@/components/ui/AdminHeader";
 import StatsCard from "@/components/ui/StatsCard";
 import TableSkeleton from "@/components/ui/TableSkeleton";
 import Button from "@/components/ui/button";
-import { useBannerLogic } from "@/hooks/useBannerLogic";
+import { useBannerManager } from "../Controller/useBanner";
 
 export default function BannerManager() {
-    const {
-        banners,
-        loading,
-        isAdding,
-        setIsAdding,
-        editingId,
-        isSaving,
-        isDeleting,
-        bannerToDelete,
-        setBannerToDelete,
-        formData,
-        setFormData,
-        handleEdit,
-        handleSubmit,
-        confirmDelete,
-        resetForm
-    } = useBannerLogic();
-    
+    const {banners,loading,isAdding,setIsAdding,editingId,isSaving,isDeleting,bannerToDelete,setBannerToDelete,formData,setFormData,handleEdit,handleSubmit,confirmDelete,resetForm} = useBannerManager();
 
     return (
         <div className="p-4 md:p-8 space-y-10">
             <AdminHeader 
-                title="All Banners"
+                title="Banner Management"
                 description={`You have ${banners.length} banners currently in rotation`}
                 actionButton={
                     <Button 
-                        onClick={() => {
-                            if (isAdding) resetForm();
-                            else setIsAdding(true);
-                        }}
+                        onClick={() => {if (isAdding) resetForm(); else setIsAdding(true);}}
                         variant="orange"
-                        icon={isAdding ? <X size={18} /> : <Plus size={18} />}
-                    >
+                        icon={isAdding ? <X size={18} /> : <Plus size={18} />}>
                         {isAdding ? "Cancel" : "Create New Banner"}
                     </Button>
                 }
@@ -54,12 +34,7 @@ export default function BannerManager() {
                 <StatsCard label="Inactive" value={banners.filter(b => b.status === 'inactive').length} />
             </div>
 
-            <Modal 
-                isOpen={isAdding} 
-                onClose={resetForm} 
-                title={editingId ? "Edit Banner" : "Create New Banner"}
-                maxWidth="2xl"
-            >
+            <Modal isOpen={isAdding} onClose={resetForm} title={editingId ? "Edit Banner" : "Create New Banner"} maxWidth="2xl">
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-4">
@@ -136,31 +111,24 @@ export default function BannerManager() {
                                         src={banner.imageUrl} 
                                         alt={banner.title} 
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                        onError={(e) => {
-                                            (e.target as HTMLImageElement).src = 'https://placehold.co/1200x400?text=Invalid+Image+URL';
-                                        }}
-                                    />
+                                        onError={(e) => {(e.target as HTMLImageElement).src = 'https://placehold.co/1200x400?text=Invalid+Image+URL';}}/>
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-slate-300">
                                         <ImageIcon size={48} />
                                     </div>
                                 )}
-                                
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
                                 <div className="absolute top-4 right-4 flex gap-2 z-10 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
                                     <button 
                                         onClick={() => handleEdit(banner)}
                                         className="p-2.5 bg-white/95 backdrop-blur shadow-xl rounded-xl text-slate-700 hover:text-brand-orange transition-colors cursor-pointer"
-                                        title="Edit Banner"
-                                    >
+                                        title="Edit Banner">
                                         <Edit2 size={16} strokeWidth={2.5} />
                                     </button>
                                     <button 
                                         onClick={() => setBannerToDelete(banner.id)}
                                         className="p-2.5 bg-white/95 backdrop-blur shadow-xl rounded-xl text-slate-700 hover:text-red-500 transition-colors cursor-pointer"
-                                        title="Delete Banner"
-                                    >
+                                        title="Delete Banner">
                                         <Trash2 size={16} strokeWidth={2.5} />
                                     </button>
                                 </div>
@@ -200,9 +168,7 @@ export default function BannerManager() {
                 message="Are you sure you want to delete this banner? This action cannot be undone and it will be removed from the home page rotation."
                 confirmText="Yes, Delete it"
                 type="danger"
-                isLoading={isDeleting}
-            />
+                isLoading={isDeleting}/>
         </div>
     );
 }
-

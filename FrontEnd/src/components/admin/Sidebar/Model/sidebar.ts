@@ -9,8 +9,8 @@ export interface NavItem {
 export interface SidebarViewProps {
     navItems: NavItem[]
     openMenus: string[]
-    toggleMenu: (label: string) => void;
-    handleLogout: () => void;
-    isActive: (href: string) => boolean;
-    isChildActive: (subItems: any[]) => boolean;
+    toggleMenu: (label: string) => void
+    handleLogout: () => void
+    isActive: (href: string) => boolean
+    isChildActive: (subItems: any[]) => boolean
 }
