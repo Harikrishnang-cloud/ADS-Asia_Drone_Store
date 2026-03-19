@@ -1,18 +1,74 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useFirestoreCollection } from "@/hooks/useFirestore";
 import { Product } from "@/types/product.types";
 import { useParams, useRouter } from "next/navigation";
 import { ChevronLeft, ShoppingCart, Share2, ShieldCheck, Truck, RefreshCw, Package } from "lucide-react";
 import Button from "@/components/ui/button";
 
+function ImageMagnifier({ src }: { src: string }) {
+    const [[x, y], setXY] = useState([0, 0]);
+    const [[imgWidth, imgHeight], setSize] = useState([0, 0]);
+    const [showMagnifier, setShowMagnifier] = useState(false);
+    const magnifierSize = 250;
+    const zoomLevel = 2.5;
+
+    return (
+        <div className="relative w-full h-full cursor-none">
+            <img
+                src={src}
+                className="w-full h-full object-cover"
+                onMouseEnter={(e) => {
+                    const elem = e.currentTarget;
+                    const { width, height } = elem.getBoundingClientRect();
+                    setSize([width, height]);
+                    setShowMagnifier(true);
+                }}
+                onMouseMove={(e) => {
+                    const elem = e.currentTarget;
+                    const { top, left } = elem.getBoundingClientRect();
+                    // Calculate mouse position relative to image
+                    const x = e.clientX - left;
+                    const y = e.clientY - top;
+                    setXY([x, y]);
+                }}
+                onMouseLeave={() => setShowMagnifier(false)}
+                alt="Product"
+            />
+
+            <div
+                style={{
+                    display: showMagnifier ? "block" : "none",
+                    position: "absolute",
+                    pointerEvents: "none",
+                    height: `${magnifierSize}px`,
+                    width: `${magnifierSize}px`,
+                    top: `${y - magnifierSize / 2}px`,
+                    left: `${x - magnifierSize / 2}px`,
+                    opacity: "1",
+                    border: "2px solid white",
+                    backgroundColor: "white",
+                    backgroundImage: `url('${src}')`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: `${imgWidth * zoomLevel}px ${imgHeight * zoomLevel}px`,
+                    backgroundPositionX: `${-x * zoomLevel + magnifierSize / 2}px`,
+                    backgroundPositionY: `${-y * zoomLevel + magnifierSize / 2}px`,
+                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.2)",
+                    borderRadius: "8px", // small rounding for modern premium feel, but still a square
+                    zIndex: 50
+                }}
+            />
+        </div>
+    );
+}
+
 export default function ProductDetailPage() {
     const { id } = useParams();
     const router = useRouter();
-    const { data: products, loading } = useFirestoreCollection<Product>({
-        collectionName: "products"
-    });
+    const { data: products, loading } = useFirestoreCollection<Product>({collectionName: "products"});
+    
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const product = React.useMemo(() => {
         return products.find(p => p.id === id);
@@ -47,27 +103,29 @@ export default function ProductDetailPage() {
 
     return (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 md:pt-32 pb-20 relative z-10">
-            <button 
-                onClick={() => router.back()}
-                className="flex items-center gap-2 text-slate-400 hover:text-brand-orange transition-colors font-bold uppercase text-[10px] tracking-widest mb-10"
-            >
+            <button onClick={() => router.back()}
+                className="flex items-center gap-2 text-slate-400 hover:text-brand-orange transition-colors font-bold uppercase text-[10px] tracking-widest mb-10">
                 <ChevronLeft size={16} /> Back
             </button>
 
             <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
                 {/* Image Gallery */}
                 <div className="w-full lg:w-1/2 space-y-6">
-                    <div className="aspect-square bg-white rounded-[40px] border border-slate-100 overflow-hidden shadow-2xl shadow-slate-200/50">
-                        <img 
-                            src={product.imageUrl} 
-                            alt={product.name} 
-                            className="w-full h-full object-cover" 
-                        />
+                    <div className="group aspect-square bg-white rounded-md border border-slate-100 overflow-hidden shadow-2xl shadow-slate-200/50">
+                        <ImageMagnifier src={selectedImage || product.imageUrl} />
                     </div>
                     {product.images && product.images.length > 0 && (
                         <div className="grid grid-cols-4 gap-4">
+                            <div 
+                                onClick={() => setSelectedImage(product.imageUrl)} 
+                                className={`aspect-square rounded-2xl border ${selectedImage === product.imageUrl || !selectedImage ? 'border-brand-orange' : 'border-slate-100'} overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer`}>
+                                <img src={product.imageUrl} alt={`${product.name} Main`} className="w-full h-full object-cover" />
+                            </div>
                             {product.images.map((img, i) => (
-                                <div key={i} className="aspect-square rounded-2xl border border-slate-100 overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer">
+                                <div 
+                                    key={i} 
+                                    onClick={() => setSelectedImage(img)}
+                                    className={`aspect-square rounded-2xl border ${selectedImage === img ? 'border-brand-orange' : 'border-slate-100'} overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer`}>
                                     <img src={img} alt={`${product.name} ${i}`} className="w-full h-full object-cover" />
                                 </div>
                             ))}
@@ -91,13 +149,13 @@ export default function ProductDetailPage() {
                         <p className="text-slate-400 font-medium text-lg leading-relaxed">{product.description || "Designed for ultimate performance and reliability. This professional-grade drone solution is built to handle the most demanding environments in Asia."}</p>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex flex-col sm:flex-row gap-2">
                         <Button className="flex-1 py-4 text-sm tracking-widest" icon={<ShoppingCart size={20} />}>Add to Cart</Button>
-                        <button className="p-4 bg-slate-50 text-slate-400 rounded-2xl hover:bg-slate-100 transition-all active:scale-95 shadow-sm">
+                        <Button className="flex-1 py-4 text-sm tracking-widest">Buy Now</Button>
+                        <button className="p-4 bg-slate-50 text-slate-400 rounded-lg hover:bg-slate-100 transition-all active:scale-95 shadow-sm">
                             <Share2 size={24} />
                         </button>
                     </div>
-
                     {/* Features/Trust badges */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-10 border-t border-slate-100">
                         {[
@@ -106,7 +164,7 @@ export default function ProductDetailPage() {
                             { icon: <RefreshCw size={20} />, label: "Easy Returns" }
                         ].map((item, i) => (
                             <div key={i} className="flex flex-col gap-2 items-center sm:items-start text-center sm:text-left">
-                                <div className="p-2.5 bg-brand-blue/5 text-brand-blue rounded-xl w-fit">
+                                <div className="p-2.5 bg-brand-blue/5 text-brand-blue rounded-lg w-fit">
                                     {item.icon}
                                 </div>
                                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{item.label}</span>

@@ -10,6 +10,7 @@
     --color-brand-orange: #f15a22;
     --color-brand-blue-dark: #00366b;
     --color-brand-orange-dark: #d94917;
+    --breakpoint-3xl: 1920px;
 }
 
 body {
