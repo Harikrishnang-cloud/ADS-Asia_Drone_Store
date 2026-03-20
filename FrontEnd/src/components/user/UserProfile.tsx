@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { db, storage } from "@/lib/firebase";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { User, Mail, Phone, MapPin, Camera, Save, Trash2, Loader2, Edit3, ChevronLeft, Lock, RefreshCcw } from "lucide-react";
+import { User, Mail, Phone, MapPin, Camera, Save, Trash2, Loader2, Edit3, ChevronLeft, Lock, RefreshCcw, Wallet, CreditCard } from "lucide-react";
 import { PasswordInput } from "@/components/PasswordInput";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -32,11 +32,17 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
         profileImage: "",
         name: "",
         phone: "",
-        address: ""
+        address: "",
+        city: "",
+        state: "",
+        pin: ""
     });
 
     const [errors, setErrors] = useState<any>({});
     
+    const [addMoneyAmount, setAddMoneyAmount] = useState("");
+    const [isAddingMoney, setIsAddingMoney] = useState(false);
+
     // Reset Password States
     const [resetData, setResetData] = useState({
         newPassword: "",
@@ -82,7 +88,10 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                         profileImage: data.profileImage || "",
                         name: data.name || "",
                         phone: data.phone || "",
-                        address: data.address || ""
+                        address: data.address || "",
+                        city: data.city || "",
+                        state: data.state || "",
+                        pin: data.pin || ""
                     });
                 }
             } catch (error) {
@@ -105,6 +114,9 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
         }
         if (formData.address && formData.address.trim().length < 10) {
             newErrors.address = "Address should be at least 10 characters long";
+        }
+        if (formData.pin && !/^\d{6}$/.test(formData.pin)) {
+            newErrors.pin = "PIN code must be exactly 6 digits";
         }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -224,13 +236,43 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
         }
     };
 
+    const handleAddMoney = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const amount = parseInt(addMoneyAmount);
+        if (isNaN(amount) || amount <= 0) {
+            toast.error("Please enter a valid amount");
+            return;
+        }
+
+        setIsAddingMoney(true);
+
+        // Simulate secure online payment delay
+        setTimeout(async () => {
+            try {
+                const newBalance = (user.walletBalance || 0) + amount;
+                await updateDoc(doc(db, "users", user.id), { walletBalance: newBalance });
+                const updatedUser = { ...user, walletBalance: newBalance };
+                setUser(updatedUser);
+                localStorage.setItem("userData", JSON.stringify(updatedUser));
+                setAuth(updatedUser, localStorage.getItem("accessToken"));
+                
+                toast.success(`Successfully added ₹${amount.toLocaleString('en-IN')} to wallet!`);
+                setAddMoneyAmount("");
+            } catch (error) {
+                toast.error("Failed to add money");
+            } finally {
+                setIsAddingMoney(false);
+            }
+        }, 1500);
+    };
+
     if (loading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-brand-blue" size={40} /></div>;
     if (!user) return null;
 
     return (
-        <div className={`mx-auto space-y-8 ${isEdit ? "max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8 space-y-0" : "max-w-2xl"}`}>
+        <div className="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Main Profile Info Card */}
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 h-full">
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 h-full">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-2xl font-bold">{isEdit ? "Edit Profile" : "My Profile"}</h1>
                     {!isEdit && (
@@ -331,22 +373,45 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                     <div>
                         <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wide opacity-70">Delivery Address with Pincode</label>
                         {isEdit ? (
-                            <div className="space-y-1">
-                                <div className="relative">
-                                    <MapPin className="absolute left-4 top-4 text-slate-400" size={18} />
-                                    <textarea 
-                                        className={`w-full p-4 pl-12 border rounded-xl outline-none transition-all min-h-[120px] resize-none ${errors.address ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5'}`}
-                                        value={formData.address}
-                                        onChange={(e) => setFormData({...formData, address: e.target.value})}
-                                        placeholder="Enter your full delivery address"
-                                    />
+                            <div className="space-y-4">
+                                <div className="space-y-1">
+                                    <div className="relative">
+                                        <MapPin className="absolute left-4 top-4 text-slate-400" size={18} />
+                                        <textarea 
+                                            className={`w-full p-4 pl-12 border rounded-xl outline-none transition-all min-h-[120px] resize-none ${errors.address ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5'}`}
+                                            value={formData.address}
+                                            onChange={(e) => setFormData({...formData, address: e.target.value})}
+                                            placeholder="Enter your full delivery address"
+                                        />
+                                    </div>
+                                    {errors.address && <p className="text-red-500 text-xs font-medium ml-1">{errors.address}</p>}
                                 </div>
-                                {errors.address && <p className="text-red-500 text-xs font-medium ml-1">{errors.address}</p>}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="space-y-1">
+                                        <input type="text" className="w-full p-4 border rounded-xl outline-none transition-all border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5" placeholder="City" value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <input type="text" className="w-full p-4 border rounded-xl outline-none transition-all border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5" placeholder="State/UT" value={formData.state} onChange={(e) => setFormData({...formData, state: e.target.value})} />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <input type="text" className={`w-full p-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-brand-blue/5 ${errors.pin ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue'}`} placeholder="PIN Code" value={formData.pin} onChange={(e) => setFormData({...formData, pin: e.target.value})} />
+                                        {errors.pin && <p className="text-red-500 text-xs font-medium ml-1">{errors.pin}</p>}
+                                    </div>
+                                </div>
                             </div>
                         ) : (
                             <div className="flex items-start gap-2 p-4 bg-white border border-slate-100 rounded-xl font-bold text-slate-800 leading-relaxed">
                                  <MapPin size={16} className="text-slate-400 mt-1" />
-                                 <span>{user.address || "Not set"}</span>
+                                 <span>
+                                     {user.address ? (
+                                         <>
+                                            {user.address} <br/>
+                                            <span className="text-sm font-medium text-slate-500 block mt-1">
+                                                {user.city && `${user.city}, `}{user.state && `${user.state}`} {user.pin && `- ${user.pin}`}
+                                            </span>
+                                         </>
+                                     ) : "Not set"}
+                                 </span>
                             </div>
                         )}
                     </div>
@@ -375,9 +440,54 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                 </div>
             </div>
 
+            {/* Wallet Card */}
+            {!isEdit && (
+                <div className="bg-white p-8 rounded-lg shadow-sm border border-slate-100 h-fit">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="w-10 h-10 rounded-lg bg-brand-blue/10 flex items-center justify-center">
+                            <Wallet size={20} className="text-brand-blue" />
+                        </div>
+                        <h2 className="text-xl font-bold text-slate-800">My Wallet</h2>
+                    </div>
+
+                    <div className="bg-brand-blue/5 border border-brand-blue/20 rounded-lg p-6 mb-8 flex items-center justify-between overflow-hidden relative">
+                        <div className="relative z-10">
+                            <p className="text-sm font-semibold text-brand-blue-dark/70 uppercase tracking-wider mb-1">Available Balance</p>
+                            <p className="text-4xl font-black text-brand-blue-dark">₹{(user.walletBalance || 0).toLocaleString('en-IN')}</p>
+                        </div>
+                        <Wallet size={80} className="text-brand-blue opacity-10 absolute -right-4 -bottom-4 z-0 rotate-[-15deg]" />
+                    </div>
+
+                    <form onSubmit={handleAddMoney} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-2">Add Money to Wallet (Online Payment)</label>
+                            <div className="relative">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg">₹</span>
+                                <input 
+                                    type="number" 
+                                    className="w-full p-4 pl-10 border border-slate-200 rounded-lg outline-none focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5 transition-all text-lg font-bold"
+                                    placeholder="Enter amount"
+                                    value={addMoneyAmount}
+                                    onChange={(e) => setAddMoneyAmount(e.target.value)}
+                                    min="10"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <button
+                            type="submit"
+                            disabled={isAddingMoney}
+                            className="w-fit px-4 py-2 bg-slate-900 text-white rounded-lg font-bold hover:bg-black transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg mt-2"
+                        >
+                            {isAddingMoney ? <Loader2 className="animate-spin" size={20} /> : <><CreditCard size={18} /> Pay Online</>}
+                        </button>
+                    </form>
+                </div>
+            )}
+
             {/* Reset Password Card */}
             {isEdit && (
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 h-fit">
+                <div className="bg-white p-8 rounded-lg shadow-sm border border-slate-100 h-fit">
                     <div className="flex items-center gap-3 mb-8">
                         <div className="w-10 h-10 rounded-xl bg-brand-orange/10 flex items-center justify-center">
                             <Lock size={20} className="text-brand-orange" />

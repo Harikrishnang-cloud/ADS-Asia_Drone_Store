@@ -7,6 +7,12 @@ interface UserProfile {
     name: string;
     email: string;
     role: string;
+    phone?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    pin?: string;
+    walletBalance?: number;
 }
 
 interface AuthState {

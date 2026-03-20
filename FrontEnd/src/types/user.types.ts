@@ -3,6 +3,11 @@ export interface User {
     name: string;
     email: string;
     phone?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    pin?: string;
+    walletBalance?: number;
     authProvider: string;
     status: "active" | "blocked";
     createdAt: any;
@@ -12,5 +17,9 @@ export interface User {
 export interface UserFormData {
     name: string;
     phone: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    pin?: string;
     status: "active" | "blocked";
 }

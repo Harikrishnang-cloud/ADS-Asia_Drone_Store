@@ -23,8 +23,11 @@ export default function WishlistPage() {
     if (!hasHydrated) {
         return (
             <ProtectedRoute allowedRole="user">
-                <div className="min-h-screen pt-24 md:pt-32 pb-12 bg-slate-50 flex items-center justify-center">
-                    <div className="animate-spin rounded-xl h-12 w-12 border-t-2 border-b-2 border-brand-blue"></div>
+                <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                    <div className="relative">
+                        <div className="animate-spin rounded-full h-16 w-16 border-4 border-slate-200 border-t-brand-orange"></div>
+                        <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-slate-400">ADS</div>
+                    </div>
                 </div>
             </ProtectedRoute>
         );
@@ -65,7 +68,7 @@ export default function WishlistPage() {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {items.map((item) => (
-                                <div key={item.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-brand-blue/10 transition-all border border-slate-100 group flex flex-col">
+                                <div key={item.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:shadow-brand-blue/10 transition-all border border-slate-100 group flex flex-col">
                                     <div className="aspect-square bg-slate-50 relative overflow-hidden">
                                         <Link href={`/products/${item.id}`} className="block w-full h-full">
                                             <img 
@@ -85,16 +88,18 @@ export default function WishlistPage() {
                                             ₹{Number(item.price).toLocaleString('en-IN')}
                                         </div>
                                         <div className="flex gap-2 mt-auto">
-                                            <button 
+                                            <Button 
+                                                variant="ghost-danger"
+                                                size="icon"
                                                 onClick={() => setItemToDelete(item.id)}
-                                                className="p-3 bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all shadow-sm"
+                                                className="bg-slate-50 border-none shadow-sm"
                                                 title="Remove from wishlist"
                                             >
                                                 <Trash2 size={20} />
-                                            </button>
+                                            </Button>
                                             <Button 
                                                 onClick={() => handleMoveToCart(item)}
-                                                className="flex-1 py-3 text-sm" 
+                                                className="flex-1 py-3 text-sm rounded-xl" 
                                                 icon={<ShoppingCart size={18} />}
                                             >
                                                 Move to Cart

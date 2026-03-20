@@ -21,8 +21,11 @@ export default function CartPage() {
     if (!hasHydrated) {
         return (
             <ProtectedRoute allowedRole="user">
-                <div className="min-h-screen pt-24 md:pt-32 pb-12 bg-slate-50 flex items-center justify-center">
-                    <div className="animate-spin rounded-xl h-12 w-12 border-t-2 border-b-2 border-brand-blue"></div>
+                <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                    <div className="relative">
+                        <div className="animate-spin rounded-full h-16 w-16 border-4 border-slate-200 border-t-brand-orange"></div>
+                        <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-slate-400">ADS</div>
+                    </div>
                 </div>
             </ProtectedRoute>
         );
@@ -71,34 +74,40 @@ export default function CartPage() {
                                             <div className="flex items-center gap-6">
                                                 {/* Quantity Control */}
                                                 <div className="flex items-center gap-3 bg-slate-50 p-1.5 rounded-xl border border-slate-100">
-                                                    <button 
+                                                    <Button 
+                                                        variant="secondary"
+                                                        size="icon-sm"
                                                         onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                                                        className="w-8 h-8 flex items-center justify-center rounded-lg bg-white text-slate-500 hover:text-brand-blue hover:shadow-sm transition-all shadow-sm"
+                                                        className="rounded-lg bg-white text-slate-500 hover:text-brand-blue border-none shadow-sm"
                                                     >
                                                         <Minus size={14} strokeWidth={3} />
-                                                    </button>
+                                                    </Button>
                                                     <span className="w-8 text-center font-bold text-sm text-slate-700">{item.quantity}</span>
-                                                    <button 
+                                                    <Button 
+                                                        variant="secondary"
+                                                        size="icon-sm"
                                                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                                        className="w-8 h-8 flex items-center justify-center rounded-lg bg-white text-slate-500 hover:text-brand-blue hover:shadow-sm transition-all shadow-sm"
+                                                        className="rounded-lg bg-white text-slate-500 hover:text-brand-blue border-none shadow-sm"
                                                     >
                                                         <Plus size={14} strokeWidth={3} />
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                                 
                                                 {/* Remove Button */}
-                                                <button 
+                                                <Button 
+                                                    variant="ghost-danger"
+                                                    size="icon"
                                                     onClick={() => setItemToDelete(item.id)}
-                                                    className="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors"
                                                     title="Remove item"
                                                 >
                                                     <Trash2 size={20} />
-                                                </button>
+                                                </Button>
                                             </div>
                                         </div>
                                         
                                         <div className="hidden sm:block text-right self-start">
                                             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total</p>
+                                            <p className="text-sm text-slate-500 mt-2">₹{item.price} x {item.quantity} = ₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
                                             <p className="text-xl font-black text-slate-900">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
                                         </div>
                                     </div>
@@ -130,10 +139,19 @@ export default function CartPage() {
                                             <span>Subtotal ({getItemCount()} items)</span>
                                             <span className="font-bold">₹{subtotal.toLocaleString('en-IN')}</span>
                                         </div>
-                                        <div className="flex items-center justify-between text-slate-600">
-                                            <span>Shipping estimate</span>
-                                            <span className="font-bold text-emerald-500">Free</span>
-                                        </div>
+                                        {subtotal < 10000 && (
+                                            <div className="flex items-center justify-between text-slate-600">
+                                                <span>Shipping estimate</span>
+                                                <span className="font-bold text-emerald-500">Free</span>
+                                            </div>
+                                        )}
+                                        {subtotal > 10000 && (
+                                            <div className="flex items-center justify-between text-slate-600">
+                                                <span>Shipping estimate</span>
+                                                <span className="font-bold text-emerald-500">₹200</span>
+                                            </div>
+                                        )}
+                                        <p className="text-xs text-slate-500 mt-2">Free shipping on orders above ₹10,000</p>
                                     </div>
                                     
                                     <div className="border-t border-slate-100 pt-6 mb-8">
@@ -144,9 +162,11 @@ export default function CartPage() {
                                         <p className="text-xs text-slate-500 mt-2">Includes all taxes and duties</p>
                                     </div>
                                     
-                                    <Button fullWidth icon={<ArrowRight size={20} />} className="py-4 text-base">
-                                        Proceed to Checkout
-                                    </Button>
+                                    <Link href="/user/checkout" className="block w-full">
+                                        <Button fullWidth icon={<ArrowRight size={20} />} className="py-4 text-base">
+                                            Proceed to Checkout
+                                        </Button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
