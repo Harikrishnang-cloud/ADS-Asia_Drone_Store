@@ -1,16 +1,129 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import { useWishlistStore } from "@/store/wishlistStore";
+import { useCartStore } from "@/store/cartStore";
+import { Heart, Trash2, ShoppingCart } from "lucide-react";
+import Link from "next/link";
+import Button from "@/components/ui/button";
+import ConfirmationModal from "@/components/ui/ConfirmationModal";
+import toast from "react-hot-toast";
 
 export default function WishlistPage() {
+    const { items, removeItem } = useWishlistStore();
+    const { addItem } = useCartStore();
+    const [hasHydrated, setHasHydrated] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+
+    useEffect(() => {
+        setHasHydrated(true);
+    }, []);
+
+    if (!hasHydrated) {
+        return (
+            <ProtectedRoute allowedRole="user">
+                <div className="min-h-screen pt-24 md:pt-32 pb-12 bg-slate-50 flex items-center justify-center">
+                    <div className="animate-spin rounded-xl h-12 w-12 border-t-2 border-b-2 border-brand-blue"></div>
+                </div>
+            </ProtectedRoute>
+        );
+    }
+
+    const handleMoveToCart = (item: any) => {
+        addItem({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            image: item.image,
+            quantity: 1
+        });
+        removeItem(item.id);
+        toast.success(`${item.name} moved to cart!`);
+    };
+
     return (
         <ProtectedRoute allowedRole="user">
             <div className="min-h-screen pt-24 md:pt-32 pb-12 md:pb-20 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h1 className="text-2xl md:text-3xl font-bold text-brand-blue-dark mb-6 md:mb-8">My Wishlist</h1>
-                    <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100 min-h-[300px] md:min-h-[400px] flex flex-col items-center justify-center text-center">
-                        <p className="text-slate-500 text-base md:text-lg">Your wishlist is currently empty.</p>
-                    </div>
+                    <h1 className="text-2xl md:text-3xl font-black text-brand-blue-dark mb-8 flex items-center gap-3">
+                        <Heart className="text-red-500 fill-red-500" size={28} />
+                        My Wishlist
+                    </h1>
+
+                    {items.length === 0 ? (
+                        <div className="bg-white rounded-xl p-12 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
+                            <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+                                <Heart size={40} className="text-slate-300" />
+                            </div>
+                            <h2 className="text-xl font-bold text-slate-900 mb-2">Your wishlist is empty</h2>
+                            <p className="text-slate-500 mb-8 max-w-sm">Save your favorite drones and accessories here to easily find them later.</p>
+                            <Link href="/products">
+                                <Button>Start Browsing</Button>
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {items.map((item) => (
+                                <div key={item.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-brand-blue/10 transition-all border border-slate-100 group flex flex-col">
+                                    <div className="aspect-square bg-slate-50 relative overflow-hidden">
+                                        <Link href={`/products/${item.id}`} className="block w-full h-full">
+                                            <img 
+                                                src={item.image} 
+                                                alt={item.name} 
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                                            />
+                                        </Link>
+                                    </div>
+                                    <div className="p-5 flex flex-col flex-1">
+                                        <Link href={`/products/${item.id}`} className="block mb-2 flex-1">
+                                            <h3 className="text-base font-bold text-slate-900 group-hover:text-brand-orange transition-colors duration-300 line-clamp-2">
+                                                {item.name}
+                                            </h3>
+                                        </Link>
+                                        <div className="font-black text-brand-blue text-lg mb-4">
+                                            ₹{Number(item.price).toLocaleString('en-IN')}
+                                        </div>
+                                        <div className="flex gap-2 mt-auto">
+                                            <button 
+                                                onClick={() => setItemToDelete(item.id)}
+                                                className="p-3 bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all shadow-sm"
+                                                title="Remove from wishlist"
+                                            >
+                                                <Trash2 size={20} />
+                                            </button>
+                                            <Button 
+                                                onClick={() => handleMoveToCart(item)}
+                                                className="flex-1 py-3 text-sm" 
+                                                icon={<ShoppingCart size={18} />}
+                                            >
+                                                Move to Cart
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
+
+            <ConfirmationModal
+                isOpen={!!itemToDelete}
+                onClose={() => setItemToDelete(null)}
+                onConfirm={() => {
+                    if (itemToDelete) {
+                        removeItem(itemToDelete);
+                        setItemToDelete(null);
+                        toast.success("Item removed from wishlist");
+                    }
+                }}
+                title="Remove from Wishlist?"
+                message="Are you sure you want to remove this item from your wishlist?"
+                confirmText="Yes, Remove it"
+                cancelText="Keep Item"
+                type="danger"
+            />
         </ProtectedRoute>
     );
 }

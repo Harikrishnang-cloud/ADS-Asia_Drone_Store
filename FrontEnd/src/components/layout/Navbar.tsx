@@ -42,8 +42,10 @@ export function Navbar() {
     const router = useRouter();
     const pathname = usePathname();
     const { user, logout, setAuth } = useAuthStore();
-    const { items: cartItems } = useCartStore();
+    const { items: cartItems, getItemCount } = useCartStore();
+    const cartItemCount = getItemCount();
     const { items: wishlistItems } = useWishlistStore();
+    const wishlistItemCount = wishlistItems.length;
     const { notifications, unreadCount: notificationCount, setNotifications, markAllAsRead } = useNotificationStore();
 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -191,16 +193,25 @@ export function Navbar() {
                     <div className="flex items-center gap-5 mr-2">
                         {/* Wishlist Icon with Dropdown */}
                         <div className="relative group cursor-pointer">
-                            <Link href={user ? "/user/wishlist" : "/auth/login"} className={`hover:text-brand-orange transition-colors flex items-center h-10 ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
+                            <Link href={user ? "/user/wishlist" : "/auth/login"} className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
                                 <Heart size={20} strokeWidth={2} />
+                                {hasHydrated && wishlistItemCount > 0 && (
+                                    <span className="absolute top-1 -right-2 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
+                                        {wishlistItemCount > 99 ? '99+' : wishlistItemCount}
+                                    </span>
+                                )}
                             </Link>
                             {hasHydrated && <WishlistDropdown items={wishlistItems} />}
                         </div>
 
-                        {/* Cart Icon with Dropdown */}
                         <div className="relative group cursor-pointer">
-                            <Link href={user ? "/user/cart" : "/auth/login"} className={`hover:text-brand-orange transition-colors flex items-center h-10 ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
+                            <Link href={user ? "/user/cart" : "/auth/login"} className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
                                 <ShoppingCart size={20} strokeWidth={2} />
+                                {hasHydrated && cartItemCount > 0 && (
+                                    <span className="absolute top-1 -right-2 min-w-[18px] h-[18px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
+                                        {cartItemCount > 99 ? '99+' : cartItemCount}
+                                    </span>
+                                )}
                             </Link>
                             {hasHydrated && <CartDropdown items={cartItems} />}
                         </div>
@@ -265,11 +276,22 @@ export function Navbar() {
                                                     <ShoppingCart size={18} />
                                                     <span>My cart</span>
                                                 </div>
-                                                {/* <span className="w-5 h-5 bg-brand-orange text-white text-[10px] rounded-full flex items-center justify-center font-bold"></span> */}
+                                                {hasHydrated && cartItemCount > 0 && (
+                                                    <span className="w-5 h-5 bg-brand-orange text-white text-[10px] rounded-full flex items-center justify-center font-bold">
+                                                        {cartItemCount > 99 ? '99+' : cartItemCount}
+                                                    </span>
+                                                )}
                                             </Link>
-                                            <Link href="/user/wishlist" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <Heart size={18} />
-                                                <span>My Wishlist</span>
+                                            <Link href="/user/wishlist" className="flex items-center justify-between px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                <div className="flex items-center gap-3">
+                                                    <Heart size={18} />
+                                                    <span>My Wishlist</span>
+                                                </div>
+                                                {hasHydrated && wishlistItemCount > 0 && (
+                                                    <span className="w-5 h-5 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold">
+                                                        {wishlistItemCount > 99 ? '99+' : wishlistItemCount}
+                                                    </span>
+                                                )}
                                             </Link>
                                             <Link href="/user/refer" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
                                                 <UserPlus size={18} />
@@ -411,11 +433,21 @@ export function Navbar() {
 
                 {/* Mobile Action Icons */}
                 <div className="flex justify-center gap-10 mt-8 mb-4">
-                    <Link href={hasHydrated && user ? "/user/wishlist" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="text-brand-blue-dark hover:text-brand-orange transition-colors" title="Wishlist">
+                    <Link href={hasHydrated && user ? "/user/wishlist" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="relative text-brand-blue-dark hover:text-brand-orange transition-colors" title="Wishlist">
                         <Heart size={26} strokeWidth={2} />
+                        {hasHydrated && wishlistItemCount > 0 && (
+                            <span className="absolute -top-1 -right-1 min-w-[20px] h-[20px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
+                                {wishlistItemCount > 99 ? '99+' : wishlistItemCount}
+                            </span>
+                        )}
                     </Link>
-                    <Link href={hasHydrated && user ? "/user/cart" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="text-brand-blue-dark hover:text-brand-orange transition-colors" title="Cart">
+                    <Link href={hasHydrated && user ? "/user/cart" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="relative text-brand-blue-dark hover:text-brand-orange transition-colors" title="Cart">
                         <ShoppingCart size={26} strokeWidth={2} />
+                        {hasHydrated && cartItemCount > 0 && (
+                            <span className="absolute -top-1 -right-1 min-w-[20px] h-[20px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
+                                {cartItemCount > 99 ? '99+' : cartItemCount}
+                            </span>
+                        )}
                     </Link>
                     <Link href={hasHydrated && user ? "/user/notifications" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="relative text-brand-blue-dark hover:text-brand-orange transition-colors" title="Notifications">
                         <Bell size={26} strokeWidth={2} />

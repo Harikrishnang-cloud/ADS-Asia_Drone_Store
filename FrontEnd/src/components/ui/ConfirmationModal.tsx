@@ -52,7 +52,7 @@ export default function ConfirmationModal({
     return (
         <Modal isOpen={isOpen} onClose={onClose} maxWidth="md">
             <div className="flex flex-col items-center text-center py-2">
-                <div className={`p-4 ${style.iconBg} rounded-2xl mb-6`}>
+                <div className={`p-4 ${style.iconBg} rounded-xl mb-6`}>
                     {style.icon}
                 </div>
                 

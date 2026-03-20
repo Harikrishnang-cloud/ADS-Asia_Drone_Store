@@ -4,8 +4,11 @@ import React, { useState } from "react";
 import { useFirestoreCollection } from "@/hooks/useFirestore";
 import { Product } from "@/types/product.types";
 import { useParams, useRouter } from "next/navigation";
-import { ChevronLeft, ShoppingCart, Share2, ShieldCheck, Truck, RefreshCw, Package } from "lucide-react";
+import { ChevronLeft, ShoppingCart, Share2, ShieldCheck, Truck, RefreshCw, Package, Heart } from "lucide-react";
 import Button from "@/components/ui/button";
+import { useCartStore } from "@/store/cartStore";
+import { useWishlistStore } from "@/store/wishlistStore";
+import toast from "react-hot-toast";
 
 function ImageMagnifier({ src }: { src: string }) {
     const [[x, y], setXY] = useState([0, 0]);
@@ -67,12 +70,44 @@ export default function ProductDetailPage() {
     const { id } = useParams();
     const router = useRouter();
     const { data: products, loading } = useFirestoreCollection<Product>({collectionName: "products"});
+    const { addItem } = useCartStore();
+    const { addItem: addWishlist, removeItem: removeWishlist, isInWishlist } = useWishlistStore();
     
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const product = React.useMemo(() => {
         return products.find(p => p.id === id);
     }, [products, id]);
+
+    const isWishlisted = product ? isInWishlist(product.id) : false;
+
+    const handleAddToCart = () => {
+        if (!product) return;
+        addItem({
+            id: product.id,
+            name: product.name,
+            price: Number(product.price),
+            image: product.imageUrl,
+            quantity: 1
+        });
+        toast.success(`${product.name} added to cart!`);
+    };
+
+    const handleToggleWishlist = () => {
+        if (!product) return;
+        if (isWishlisted) {
+            removeWishlist(product.id);
+            toast.success("Removed from wishlist");
+        } else {
+            addWishlist({
+                id: product.id,
+                name: product.name,
+                price: Number(product.price),
+                image: product.imageUrl
+            });
+            toast.success("Added to wishlist");
+        }
+    };
 
     if (loading) {
         return (
@@ -150,9 +185,22 @@ export default function ProductDetailPage() {
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-2">
-                        <Button className="flex-1 py-4 text-sm tracking-widest" icon={<ShoppingCart size={20} />}>Add to Cart</Button>
+                        <Button 
+                            className="flex-1 py-4 text-sm tracking-widest" 
+                            icon={<ShoppingCart size={20} />}
+                            onClick={handleAddToCart}
+                        >
+                            Add to Cart
+                        </Button>
                         <Button className="flex-1 py-4 text-sm tracking-widest">Buy Now</Button>
-                        <button className="p-4 bg-slate-50 text-slate-400 rounded-lg hover:bg-slate-100 transition-all active:scale-95 shadow-sm">
+                        <button 
+                            onClick={handleToggleWishlist}
+                            className={`p-4 rounded-xl transition-all active:scale-95 shadow-sm flex items-center justify-center ${isWishlisted ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-red-500'}`}
+                            title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+                        >
+                            <Heart size={24} className={isWishlisted ? "fill-red-500" : ""} />
+                        </button>
+                        <button className="p-4 bg-slate-50 text-slate-400 rounded-xl hover:bg-slate-100 transition-all active:scale-95 shadow-sm flex items-center justify-center">
                             <Share2 size={24} />
                         </button>
                     </div>

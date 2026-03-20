@@ -4,6 +4,9 @@ import React from "react";
 import { ShoppingCart, Heart } from "lucide-react";
 import { Product } from "@/types/product.types";
 import Link from "next/link";
+import { useCartStore } from "@/store/cartStore";
+import { useWishlistStore } from "@/store/wishlistStore";
+import toast from "react-hot-toast";
 
 interface ProductCardProps {
     product: Product;
@@ -11,6 +14,39 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
     const formattedPrice = Number(product.price).toLocaleString('en-IN');
+    const { addItem } = useCartStore();
+    const { addItem: addWishlist, removeItem: removeWishlist, isInWishlist } = useWishlistStore();
+    const isWishlisted = isInWishlist(product.id);
+
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        addItem({
+            id: product.id,
+            name: product.name,
+            price: Number(product.price),
+            image: product.imageUrl,
+            quantity: 1
+        });
+        toast.success(`${product.name} added to cart!`);
+    };
+
+    const handleToggleWishlist = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isWishlisted) {
+            removeWishlist(product.id);
+            toast.success("Removed from wishlist");
+        } else {
+            addWishlist({
+                id: product.id,
+                name: product.name,
+                price: Number(product.price),
+                image: product.imageUrl
+            });
+            toast.success("Added to wishlist");
+        }
+    };
 
     return (
         <div className="group bg-white border border-slate-100 overflow-hidden hover:shadow-xl hover:shadow-brand-blue/10 transition-all duration-500 flex flex-col h-full relative">
@@ -34,10 +70,16 @@ export default function ProductCard({ product }: ProductCardProps) {
 
                 {/* Overlay Actions */}
                 <div className="absolute inset-0 bg-brand-blue-dark/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 pointer-events-none">
-                    <button className="p-3 bg-white text-brand-blue-dark rounded-xl hover:bg-brand-orange hover:text-white transition-all shadow-xl cursor-pointer pointer-events-auto">
-                        <Heart size={20} />
+                    <button 
+                        onClick={handleToggleWishlist}
+                        className={`p-3 rounded-xl transition-all shadow-xl cursor-pointer pointer-events-auto z-20 relative ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white text-brand-blue-dark hover:bg-red-50 hover:text-red-500'}`}
+                    >
+                        <Heart size={20} className={isWishlisted ? "fill-white" : ""} />
                     </button>
-                    <button className="p-3 bg-brand-orange text-white rounded-xl hover:bg-brand-blue-dark transition-all shadow-xl cursor-pointer pointer-events-auto">
+                    <button 
+                        onClick={handleAddToCart}
+                        className="p-3 bg-brand-orange text-white rounded-xl hover:bg-brand-blue-dark transition-all shadow-xl cursor-pointer pointer-events-auto z-20 relative"
+                    >
                         <ShoppingCart size={20} />
                     </button>
                 </div>

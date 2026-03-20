@@ -60,7 +60,7 @@ export function CartDropdown({ items = [], onClose }: CartDropdownProps) {
                   <h4 className="text-sm font-bold text-slate-900 truncate mb-1">{item.name}</h4>
                   <div className="flex items-center justify-between">
                     <p className="text-xs text-slate-500">Qty: {item.quantity}</p>
-                    <p className="text-sm font-bold text-brand-blue">${(item.price * item.quantity).toFixed(2)}</p>
+                    <p className="text-sm font-bold text-brand-blue">₹{(item.price * item.quantity).toFixed(2)}</p>
                   </div>
                 </div>
               </div>
@@ -75,7 +75,7 @@ export function CartDropdown({ items = [], onClose }: CartDropdownProps) {
           <div className="flex items-center justify-between mb-4">
             <span className="text-sm font-medium text-slate-500">Subtotal</span>
             <span className="text-lg font-bold text-slate-900">
-              ${items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)}
+              ₹{items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)}
             </span>
           </div>
           <button className="w-full py-3 bg-brand-orange text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-brand-orange/90 transition-all hover:shadow-lg hover:shadow-brand-orange/20 active:scale-[0.98]">

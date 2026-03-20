@@ -3,6 +3,9 @@
 import React from "react";
 import Link from "next/link";
 import { Heart, ArrowRight, ShoppingCart } from "lucide-react";
+import { useCartStore } from "@/store/cartStore";
+import { useWishlistStore } from "@/store/wishlistStore";
+import toast from "react-hot-toast";
 
 interface WishlistItem {
   id: string;
@@ -17,6 +20,22 @@ interface WishlistDropdownProps {
 
 export function WishlistDropdown({ items = [] }: WishlistDropdownProps) {
   const isEmpty = items.length === 0;
+  const { addItem } = useCartStore();
+  const { removeItem } = useWishlistStore();
+
+  const handleMoveToCart = (e: React.MouseEvent, item: WishlistItem) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      quantity: 1
+    });
+    removeItem(item.id);
+    toast.success(`${item.name} moved to cart!`);
+  };
 
   return (
     <div className="absolute top-[120%] right-0 w-80 md:w-96 bg-white rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right border border-slate-100 overflow-hidden translate-y-4 group-hover:translate-y-0 z-[100]">
@@ -49,8 +68,12 @@ export function WishlistDropdown({ items = [] }: WishlistDropdownProps) {
                 <div className="flex-1 min-w-0">
                   <h4 className="text-sm font-bold text-slate-900 truncate mb-1">{item.name}</h4>
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-bold text-brand-blue">${item.price.toFixed(2)}</p>
-                    <button className="p-1.5 bg-slate-100 hover:bg-brand-blue hover:text-white rounded-lg transition-colors" title="Add to Cart">
+                    <p className="text-sm font-bold text-brand-blue">₹{item.price.toFixed(2)}</p>
+                    <button 
+                      onClick={(e) => handleMoveToCart(e, item)}
+                      className="p-1.5 bg-slate-100 hover:bg-brand-blue hover:text-white rounded-lg transition-colors" 
+                      title="Move to Cart"
+                    >
                       <ShoppingCart size={14} />
                     </button>
                   </div>
