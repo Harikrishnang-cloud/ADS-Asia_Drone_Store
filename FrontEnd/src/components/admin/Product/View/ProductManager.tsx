@@ -54,17 +54,31 @@ export default function ProductManager({ category }: { category?: string }) {
                                     required
                                 />
                             </div>
-                            <div>
-                                <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Price (INR)</label>
-                                <div className="relative">
-                                    <input 
-                                        type="number" 
-                                        placeholder="0.00"
-                                        className="w-full bg-slate-50 border border-slate-200 pl-10 pr-3 py-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold"
-                                        value={formData.price}
-                                        onChange={e => setFormData({...formData, price: e.target.value})}
-                                        required
-                                    />
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Price (INR)</label>
+                                    <div className="relative">
+                                        <input 
+                                            type="number" 
+                                            placeholder="0.00"
+                                            className="w-full bg-slate-50 border border-slate-200 pl-3 pr-3 py-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold"
+                                            value={formData.price}
+                                            onChange={e => setFormData({...formData, price: e.target.value})}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Offer Price</label>
+                                    <div className="relative">
+                                        <input 
+                                            type="number" 
+                                            placeholder="0.00"
+                                            className="w-full bg-slate-50 border border-slate-200 pl-3 pr-3 py-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold"
+                                            value={formData.offerPrice || ''}
+                                            onChange={e => setFormData({...formData, offerPrice: e.target.value})}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                             <div>
@@ -195,7 +209,21 @@ export default function ProductManager({ category }: { category?: string }) {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-5 text-center font-black text-slate-700">
-                                                ₹ {Number(product.price).toLocaleString('en-IN')}
+                                                {product.offerPrice ? (
+                                                    <div className="flex flex-col items-center">
+                                                        <span className="text-brand-orange">₹ {Number(product.offerPrice).toLocaleString('en-IN')}</span>
+                                                        <div className="flex items-center gap-1.5 mt-0.5">
+                                                            <span className="text-[10px] text-slate-400 line-through">₹ {Number(product.price).toLocaleString('en-IN')}</span>
+                                                            {product.offerPercentage && (
+                                                                <span className="text-[9px] font-black bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-md">
+                                                                    -{product.offerPercentage}%
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <span>₹ {Number(product.price).toLocaleString('en-IN')}</span>
+                                                )}
                                             </td>
                                             <td className="px-6 py-5 text-center">
                                                 <div className="flex flex-col items-center gap-1">

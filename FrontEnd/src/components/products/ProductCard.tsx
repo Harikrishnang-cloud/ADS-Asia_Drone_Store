@@ -24,7 +24,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         addItem({
             id: product.id,
             name: product.name,
-            price: Number(product.price),
+            price: Number(product.offerPrice || product.price),
             image: product.imageUrl,
             quantity: 1
         });
@@ -41,7 +41,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             addWishlist({
                 id: product.id,
                 name: product.name,
-                price: Number(product.price),
+                price: Number(product.offerPrice || product.price),
                 image: product.imageUrl
             });
             toast.success("Added to wishlist");
@@ -98,7 +98,21 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <div className="flex items-center justify-between pt-4 border-t border-slate-50">
                     <div className="flex flex-col">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Starting from</span>
-                        <span className="text-xl font-black text-brand-blue-dark">₹{formattedPrice}</span>
+                        {product.offerPrice ? (
+                            <div className="flex flex-col">
+                                <span className="text-xl font-black text-brand-orange">₹{Number(product.offerPrice).toLocaleString('en-IN')}</span>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[10px] text-slate-400 font-bold line-through">₹{formattedPrice}</span>
+                                    {product.offerPercentage && (
+                                        <span className="text-[9px] font-black uppercase bg-emerald-100 text-emerald-700 px-1 py-0.5 rounded">
+                                            {product.offerPercentage}% OFF
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        ) : (
+                            <span className="text-xl font-black text-brand-blue-dark">₹{formattedPrice}</span>
+                        )}
                     </div>
                     <Link href={`/products/${product.id}`} className="px-5 py-2.5 bg-slate-900 text-white text-xs font-black uppercase tracking-widest rounded cursor-pointer hover:bg-brand-orange transition-all shadow-lg active:scale-95">
                         Details

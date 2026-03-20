@@ -86,7 +86,7 @@ export default function ProductDetailPage() {
         addItem({
             id: product.id,
             name: product.name,
-            price: Number(product.price),
+            price: Number(product.offerPrice || product.price),
             image: product.imageUrl,
             quantity: 1
         });
@@ -102,7 +102,7 @@ export default function ProductDetailPage() {
             addWishlist({
                 id: product.id,
                 name: product.name,
-                price: Number(product.price),
+                price: Number(product.offerPrice || product.price),
                 image: product.imageUrl
             });
             toast.success("Added to wishlist");
@@ -174,7 +174,19 @@ export default function ProductDetailPage() {
                         <span className="text-[10px] font-black uppercase tracking-[0.4em] text-brand-orange">{product.category}</span>
                         <h1 className="text-4xl md:text-5xl font-black text-brand-blue-dark tracking-tight leading-tight">{product.name}</h1>
                         <div className="flex items-center gap-4">
-                            <span className="text-3xl font-bold text-brand-blue-dark">₹{Number(product.price).toLocaleString('en-IN')}</span>
+                            {product.offerPrice ? (
+                                <div className="flex flex-wrap items-center gap-3">
+                                    <span className="text-4xl font-black text-brand-orange">₹{Number(product.offerPrice).toLocaleString('en-IN')}</span>
+                                    <span className="text-xl text-slate-400 font-bold line-through">₹{Number(product.price).toLocaleString('en-IN')}</span>
+                                    {product.offerPercentage && (
+                                        <span className="text-sm font-black uppercase tracking-wider bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-lg">
+                                            {product.offerPercentage}% OFF
+                                        </span>
+                                    )}
+                                </div>
+                            ) : (
+                                <span className="text-4xl font-black text-brand-blue-dark">₹{Number(product.price).toLocaleString('en-IN')}</span>
+                            )}
                             <span className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
                                 product.stock > 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'
                             }`}>
@@ -188,8 +200,7 @@ export default function ProductDetailPage() {
                         <Button 
                             className="flex-1 py-4 text-sm tracking-widest" 
                             icon={<ShoppingCart size={20} />}
-                            onClick={handleAddToCart}
-                        >
+                            onClick={handleAddToCart}>
                             Add to Cart
                         </Button>
                         <Button className="flex-1 py-4 text-sm tracking-widest">Buy Now</Button>

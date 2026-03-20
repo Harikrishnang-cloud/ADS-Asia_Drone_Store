@@ -34,7 +34,8 @@ export const useProductLogic = (initialCategory?: string) => {
         imageUrl: "",
         images: [],
         stock: "",
-        status: "active"
+        status: "active",
+        offerPrice: ""
     });
 
     const resetForm = () => {
@@ -47,7 +48,8 @@ export const useProductLogic = (initialCategory?: string) => {
             imageUrl: "", 
             images: [], 
             stock: "", 
-            status: "active" 
+            status: "active",
+            offerPrice: ""
         });
         setEditingId(null);
         setIsAdding(false);
@@ -63,7 +65,8 @@ export const useProductLogic = (initialCategory?: string) => {
             imageUrl: product.imageUrl,
             images: product.images || [],
             stock: product.stock,
-            status: product.status
+            status: product.status,
+            offerPrice: product.offerPrice || ""
         });
         setEditingId(product.id);
         setIsAdding(true);
@@ -81,9 +84,19 @@ export const useProductLogic = (initialCategory?: string) => {
         const loadingToast = toast.loading(editingId ? "Updating product..." : "Creating product...");
         
         try {
+            const parsedPrice = Number(formData.price);
+            const parsedOfferPrice = formData.offerPrice ? Number(formData.offerPrice) : undefined;
+            
+            let offerPercentage: number | undefined = undefined;
+            if (parsedOfferPrice !== undefined && parsedOfferPrice < parsedPrice) {
+                offerPercentage = Math.round(((parsedPrice - parsedOfferPrice) / parsedPrice) * 100);
+            }
+
             const productData = {
                 ...formData,
-                price: Number(formData.price),
+                price: parsedPrice,
+                offerPrice: parsedOfferPrice,
+                offerPercentage: offerPercentage,
                 stock: Number(formData.stock),
                 updatedAt: Date.now()
             };

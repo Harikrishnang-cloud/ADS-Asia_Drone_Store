@@ -11,6 +11,8 @@ export interface Product {
     status: 'active' | 'inactive';
     createdAt: number;
     updatedAt?: number;
+    offerPrice?: number;
+    offerPercentage?: number;
 }
 
 export interface ProductFormData {
@@ -23,4 +25,5 @@ export interface ProductFormData {
     images: string[];
     stock: number | string;
     status: 'active' | 'inactive';
+    offerPrice?: number | string;
 }
