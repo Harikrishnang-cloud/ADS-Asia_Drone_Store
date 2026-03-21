@@ -67,8 +67,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 className="p-2 rounded-lg border border-slate-200 text-slate-500 hover:bg-brand-orange hover:text-white hover:border-brand-orange disabled:opacity-50 disabled:pointer-events-none transition-colors"
-                aria-label="Next Page"
-            >
+                aria-label="Next Page">
                 <ChevronRight size={20} />
             </button>
         </div>

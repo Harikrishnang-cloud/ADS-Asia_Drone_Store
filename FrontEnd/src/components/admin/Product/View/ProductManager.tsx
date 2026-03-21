@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Plus, Trash2, Edit2, Save, X, Package, Search, LayoutPanelLeft, AlertTriangle, CheckCircle2, DollarSign, Archive } from "lucide-react";
+import { Plus, Trash2, Edit2, Save, X, Package, Search, LayoutPanelLeft, AlertTriangle, CheckCircle2, DollarSign, Archive, Sparkles, Loader2 } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import AdminHeader from "@/components/ui/AdminHeader";
@@ -9,11 +9,51 @@ import StatsCard from "@/components/ui/StatsCard";
 import TableSkeleton from "@/components/ui/TableSkeleton";
 import Button from "@/components/ui/button";
 import { useProductManager } from "../Controller/useProductManager";
+import toast from "react-hot-toast";
 
 export default function ProductManager({ category }: { category?: string }) {
     const {products,loading,isAdding,setIsAdding,editingId,isSaving,isDeleting,productToDelete,setProductToDelete,formData,setFormData,handleEdit,
         handleSubmit,confirmDelete,resetForm,searchTerm,setSearchTerm,stats
     } = useProductManager(category);
+
+    const [isGeneratingDescription, setIsGeneratingDescription] = React.useState(false);
+
+    const handleGenerateDescription = async () => {
+        if (!formData.name) {
+            toast.error("Please enter a Product Name first!");
+            return;
+        }
+
+        setIsGeneratingDescription(true);
+        const loadToast = toast.loading("AI is crafting the perfect description...");
+
+        try {
+            const res = await fetch("/api/generate-description", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: formData.name,
+                    category: formData.category,
+                    price: formData.price,
+                    specifications: formData.specifications
+                })
+            });
+
+            const data = await res.json();
+            
+            if (res.ok && data.description) {
+                setFormData({...formData, description: data.description});
+                toast.success("Description optimized!", { id: loadToast });
+            } else {
+                toast.error(data.error || "Generation failed", { id: loadToast });
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Connection error to AI service.", { id: loadToast });
+        } finally {
+            setIsGeneratingDescription(false);
+        }
+    };
 
     return (
         <div className="p-5 d:p-8 space-y-10 animate-in fade-in duration-500">
@@ -149,7 +189,37 @@ export default function ProductManager({ category }: { category?: string }) {
                         </div>
                     </div>
                     <div>
-                        <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Description</label>
+                        <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Related Images (Up to 4)</label>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {[0, 1, 2].map((index) => (
+                                <input 
+                                    key={index}
+                                    type="text" 
+                                    placeholder={`Additional Image URL ${index + 1}`}
+                                    className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold"
+                                    value={formData.images?.[index] || ''}
+                                    onChange={e => {
+                                        const newImages = [...(formData.images || [])];
+                                        newImages[index] = e.target.value;
+                                        setFormData({...formData, images: newImages});
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex justify-between items-center mb-2">
+                            <label className="text-xs font-black uppercase tracking-wider text-slate-500">Description</label>
+                            <button
+                                type="button"
+                                onClick={handleGenerateDescription}
+                                disabled={isGeneratingDescription}
+                                className="text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-100 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+                            >
+                                {isGeneratingDescription ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
+                                AI Generate
+                            </button>
+                        </div>
                         <textarea 
                             rows={3}
                             placeholder="Detailed product features and specifications..."
@@ -157,7 +227,70 @@ export default function ProductManager({ category }: { category?: string }) {
                             value={formData.description}
                             onChange={e => setFormData({...formData, description: e.target.value})}/>
                     </div>
-                    <div className="pt-4 flex justify-end gap-3">
+                    <div>
+                        <div className="flex justify-between items-center mb-2">
+                            <label className="text-xs font-black uppercase tracking-wider text-slate-500">Product Specifications</label>
+                            <button
+                                type="button"
+                                onClick={() => setFormData({...formData, specifications: [...(formData.specifications || []), {label: '', value: ''}]})}
+                                className="text-xs font-bold text-brand-orange hover:text-brand-orange-dark cursor-pointer flex items-center gap-1"
+                            >
+                                <Plus size={14} /> Add Spec Row
+                            </button>
+                        </div>
+                        <div className="space-y-3">
+                            {formData.specifications?.map((spec, idx) => (
+                                <div key={idx} className="flex items-start gap-3">
+                                    <input
+                                        type="text"
+                                        placeholder="Label (e.g. Package Contains)"
+                                        className="w-1/3 bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold"
+                                        value={spec.label}
+                                        onChange={e => {
+                                            const newSpecs = [...(formData.specifications || [])];
+                                            newSpecs[idx].label = e.target.value;
+                                            setFormData({...formData, specifications: newSpecs});
+                                        }}
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Value (e.g. 1 Drone, 1 Battery)"
+                                        className="flex-1 bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold"
+                                        value={spec.value}
+                                        onChange={e => {
+                                            const newSpecs = [...(formData.specifications || [])];
+                                            newSpecs[idx].value = e.target.value;
+                                            setFormData({...formData, specifications: newSpecs});
+                                        }}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-all cursor-pointer"
+                                        title="Remove row"
+                                        onClick={() => {
+                                            const newSpecs = formData.specifications?.filter((_, i) => i !== idx);
+                                            setFormData({...formData, specifications: newSpecs});
+                                        }}
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
+                            ))}
+                            {(!formData.specifications || formData.specifications.length === 0) && (
+                                <div className="text-center p-6 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50">
+                                    <p className="text-sm text-slate-400 font-semibold mb-3">No detail rows added yet</p>
+                                    <button
+                                        type="button"
+                                        onClick={() => setFormData({...formData, specifications: [{label: '', value: ''}]})}
+                                        className="text-xs font-bold text-brand-orange bg-brand-orange/10 px-4 py-2 rounded-lg hover:bg-brand-orange hover:text-white transition-all cursor-pointer"
+                                    >
+                                        Add Custom Specification
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div className="pt-4 flex justify-end gap-3 border-t border-slate-100">
                         <Button type="button" variant="ghost" onClick={resetForm}>
                             Cancel
                         </Button>

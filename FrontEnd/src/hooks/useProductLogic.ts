@@ -33,6 +33,7 @@ export const useProductLogic = (initialCategory?: string) => {
         subCategory: "",
         imageUrl: "",
         images: [],
+        specifications: [],
         stock: "",
         status: "active",
         offerPrice: ""
@@ -47,6 +48,7 @@ export const useProductLogic = (initialCategory?: string) => {
             subCategory: "", 
             imageUrl: "", 
             images: [], 
+            specifications: [],
             stock: "", 
             status: "active",
             offerPrice: ""
@@ -64,6 +66,7 @@ export const useProductLogic = (initialCategory?: string) => {
             subCategory: product.subCategory || "",
             imageUrl: product.imageUrl,
             images: product.images || [],
+            specifications: product.specifications || [],
             stock: product.stock,
             status: product.status,
             offerPrice: product.offerPrice || ""
@@ -94,6 +97,8 @@ export const useProductLogic = (initialCategory?: string) => {
 
             const productData = {
                 ...formData,
+                images: formData.images ? formData.images.filter(img => img && img.trim() !== '') : [],
+                specifications: formData.specifications ? formData.specifications.filter(s => s.label.trim() !== '' && s.value.trim() !== '') : [],
                 price: parsedPrice,
                 offerPrice: parsedOfferPrice,
                 offerPercentage: offerPercentage,

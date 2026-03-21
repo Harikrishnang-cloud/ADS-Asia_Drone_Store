@@ -13,6 +13,7 @@ export interface Product {
     updatedAt?: number;
     offerPrice?: number;
     offerPercentage?: number;
+    specifications?: { label: string; value: string }[];
 }
 
 export interface ProductFormData {
@@ -26,4 +27,5 @@ export interface ProductFormData {
     stock: number | string;
     status: 'active' | 'inactive';
     offerPrice?: number | string;
+    specifications?: { label: string; value: string }[];
 }

@@ -54,7 +54,7 @@ export default function Modal({
             <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300" onClick={onClose}></div>
             <div 
                 ref={modalRef}
-                className={`relative w-full ${maxWidthClasses[maxWidth]} bg-white rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 fade-in duration-300 shadow-slate-900/20 border border-white/20`}>
+                className={`relative w-full ${maxWidthClasses[maxWidth]} bg-white rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95 fade-in duration-300 shadow-slate-900/20 border border-white/20`}>
                 <div className="flex items-center justify-between p-6 border-b border-slate-100 bg-slate-50/50">
                     {title && <h3 className="text-xl font-black text-slate-900 tracking-tight">{title}</h3>}
                     <button 

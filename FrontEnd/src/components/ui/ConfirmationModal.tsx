@@ -52,7 +52,7 @@ export default function ConfirmationModal({
     return (
         <Modal isOpen={isOpen} onClose={onClose} maxWidth="md">
             <div className="flex flex-col items-center text-center py-2">
-                <div className={`p-4 ${style.iconBg} rounded-xl mb-6`}>
+                <div className={`p-4 ${style.iconBg} rounded-lg mb-6`}>
                     {style.icon}
                 </div>
                 
@@ -68,14 +68,14 @@ export default function ConfirmationModal({
                     <button 
                         onClick={onClose}
                         disabled={isLoading}
-                        className="flex-1 px-6 py-3.5 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition-all cursor-pointer disabled:opacity-50"
+                        className="flex-1 px-6 py-3.5 rounded-lg font-bold text-slate-600 hover:bg-slate-100 transition-all cursor-pointer disabled:opacity-50"
                     >
                         {cancelText}
                     </button>
                     <button 
                         onClick={onConfirm}
                         disabled={isLoading}
-                        className={`flex-1 px-6 py-3.5 rounded-xl font-bold text-white shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 ${style.button}`}
+                        className={`flex-1 px-6 py-3.5 rounded-lg font-bold text-white shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 ${style.button}`}
                     >
                         {isLoading && <Loader2 className="animate-spin" size={18} />}
                         {confirmText}
