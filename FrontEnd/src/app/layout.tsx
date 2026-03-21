@@ -25,7 +25,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.className} bg-slate-50 text-slate-800 relative overflow-x-hidden min-h-screen flex flex-col`}
+        className={`bg-slate-50 text-slate-800 relative overflow-x-hidden min-h-screen flex flex-col`}
+        style={{ fontFamily: `'RupeeSystem', ${poppins.style.fontFamily}` }}
       >
         <Toaster />
 

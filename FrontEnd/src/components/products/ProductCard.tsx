@@ -52,7 +52,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="group bg-white border border-slate-100 overflow-hidden hover:shadow-xl hover:shadow-brand-blue/10 transition-all duration-500 flex flex-col h-full relative">
             {/* Status Badge */}
             <div className="absolute top-4 left-4 z-10">
-                <span className={`px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest shadow-sm ${product.stock > 0 ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'
+                <span className={`px-3 py-1 rounded-sm text-[10px] font-black uppercase tracking-widest shadow-sm ${product.stock > 0 ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'
                     }`}>
                     {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
                 </span>
@@ -70,13 +70,13 @@ export default function ProductCard({ product }: ProductCardProps) {
 
                 {/* Overlay Actions */}
                 <div className="absolute inset-0 bg-brand-blue-dark/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 pointer-events-none">
-                    <button 
+                    <button
                         onClick={handleToggleWishlist}
                         className={`p-3 rounded-xl transition-all shadow-xl cursor-pointer pointer-events-auto z-20 relative ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white text-brand-blue-dark hover:bg-red-50 hover:text-red-500'}`}
                     >
                         <Heart size={20} className={isWishlisted ? "fill-white" : ""} />
                     </button>
-                    <button 
+                    <button
                         onClick={handleAddToCart}
                         className="p-3 bg-brand-orange text-white rounded-xl hover:bg-brand-blue-dark transition-all shadow-xl cursor-pointer pointer-events-auto z-20 relative"
                     >
@@ -87,24 +87,31 @@ export default function ProductCard({ product }: ProductCardProps) {
 
             {/* Product Info */}
             <div className="p-6 flex flex-col flex-1">
-                <div className="mb-2">
+                {/* <div className="mb-2">
                     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-orange/80">{product.category}</span>
+                </div> */}
+                <div className="flex items-start justify-between gap-3">
+                    <Link href={`/products/${product.id}`} className="block flex-1">
+                        <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-orange transition-colors duration-300 line-clamp-1 mb-1">{product.name}</h3>
+                    </Link>
+                    <div className="flex items-center gap-1 bg-slate-100 border border-slate-100 px-2 py-0.5 rounded-sm shadow-sm shrink-0">
+                        <span className="text-sm font-bold text-slate-700">4.8</span>
+                        <span className="text-[12px]">⭐</span>
+                    </div>
                 </div>
-                <Link href={`/products/${product.id}`} className="block">
-                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-orange transition-colors duration-300 line-clamp-1 mb-1">{product.name}</h3>
-                </Link>
-                <p className="text-slate-400 text-xs font-medium line-clamp-2 mb-4 flex-1">{product.description || "Premium drone solution for professional needs."}</p>
+
+                {/* <p className="text-slate-400 text-xs font-medium line-clamp-2 mb-4 flex-1">{product.description || "Premium drone solution for professional needs."}</p> */}
 
                 <div className="flex items-center justify-between pt-4 border-t border-slate-50">
                     <div className="flex flex-col">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Starting from</span>
                         {product.offerPrice ? (
-                            <div className="flex flex-col">
+                            <div className="flex flex-row items-center gap-3">
                                 <span className="text-xl font-black text-brand-orange">₹{Number(product.offerPrice).toLocaleString('en-IN')}</span>
+                                <span className="text-[16px] text-slate-400 font-medium line-through">₹{formattedPrice}</span>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[10px] text-slate-400 font-bold line-through">₹{formattedPrice}</span>
                                     {product.offerPercentage && (
-                                        <span className="text-[9px] font-black uppercase bg-emerald-100 text-emerald-700 px-1 py-0.5 rounded">
+                                        <span className="text-[11px] font-black uppercase bg-emerald-100 text-emerald-700 px-1 py-0.5 rounded-xs">
                                             {product.offerPercentage}% OFF
                                         </span>
                                     )}
@@ -114,9 +121,9 @@ export default function ProductCard({ product }: ProductCardProps) {
                             <span className="text-xl font-black text-brand-blue-dark">₹{formattedPrice}</span>
                         )}
                     </div>
-                    <Link href={`/products/${product.id}`} className="px-5 py-2.5 bg-slate-900 text-white text-xs font-black uppercase tracking-widest rounded cursor-pointer hover:bg-brand-orange transition-all shadow-lg active:scale-95">
+                    {/* <Link href={`/products/${product.id}`} className="px-5 py-2.5 bg-slate-900 text-white text-xs font-black uppercase tracking-widest rounded cursor-pointer hover:bg-brand-orange transition-all shadow-lg active:scale-95">
                         Details
-                    </Link>
+                    </Link> */}
                 </div>
             </div>
         </div>
