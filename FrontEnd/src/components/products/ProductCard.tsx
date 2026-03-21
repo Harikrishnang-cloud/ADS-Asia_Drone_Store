@@ -72,13 +72,13 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <div className="absolute inset-0 bg-brand-blue-dark/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 pointer-events-none">
                     <button
                         onClick={handleToggleWishlist}
-                        className={`p-3 rounded-xl transition-all shadow-xl cursor-pointer pointer-events-auto z-20 relative ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white text-brand-blue-dark hover:bg-red-50 hover:text-red-500'}`}
+                        className={`p-3 rounded-lg transition-all shadow-xl cursor-pointer pointer-events-auto z-20 relative ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white text-brand-blue-dark hover:bg-red-50 hover:text-red-500'}`}
                     >
                         <Heart size={20} className={isWishlisted ? "fill-white" : ""} />
                     </button>
                     <button
                         onClick={handleAddToCart}
-                        className="p-3 bg-brand-orange text-white rounded-xl hover:bg-brand-blue-dark transition-all shadow-xl cursor-pointer pointer-events-auto z-20 relative"
+                        className="p-3 bg-brand-orange text-white rounded-lg hover:bg-brand-blue-dark transition-all shadow-xl cursor-pointer pointer-events-auto z-20 relative"
                     >
                         <ShoppingCart size={20} />
                     </button>
@@ -100,9 +100,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                     </div>
                 </div>
 
-                {/* <p className="text-slate-400 text-xs font-medium line-clamp-2 mb-4 flex-1">{product.description || "Premium drone solution for professional needs."}</p> */}
-
-                <div className="flex items-center justify-between pt-4 border-t border-slate-50">
+                <div className="flex items-center justify-between pt-4 border-t border-slate-200">
                     <div className="flex flex-col">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Starting from</span>
                         {product.offerPrice ? (

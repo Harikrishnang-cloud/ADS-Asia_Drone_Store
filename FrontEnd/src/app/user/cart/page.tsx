@@ -7,6 +7,7 @@ import { Trash2, Minus, Plus, ShoppingBag, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Button from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
+import Pagination from "@/components/ui/Pagination";
 import toast from "react-hot-toast";
 
 export default function CartPage() {
@@ -14,9 +15,27 @@ export default function CartPage() {
     const [hasHydrated, setHasHydrated] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<string | null>(null);
 
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 6;
+
     useEffect(() => {
         setHasHydrated(true);
     }, []);
+
+    // Pagination calculations
+    const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+
+    useEffect(() => {
+        if (currentPage > totalPages && totalPages > 0) {
+            setCurrentPage(totalPages);
+        }
+    }, [items.length, currentPage, totalPages]);
+
+    const paginatedItems = items.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+    );
 
     if (!hasHydrated) {
         return (
@@ -57,7 +76,7 @@ export default function CartPage() {
                         <div className="flex flex-col lg:flex-row gap-8">
                             {/* Cart Items List */}
                             <div className="flex-1 space-y-4">
-                                {items.map((item) => (
+                                {paginatedItems.map((item) => (
                                     <div key={item.id} className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-slate-100 flex flex-col sm:flex-row items-start sm:items-center gap-6 group hover:border-brand-blue/20 transition-colors">
                                         <div className="w-24 h-36 md:w-28 md:h-36 rounded-lg bg-slate-50 overflow-hidden flex-shrink-0 relative">
                                             <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
@@ -68,7 +87,8 @@ export default function CartPage() {
                                                 <h3 className="text-lg font-bold text-slate-900 truncate mb-1">{item.name}</h3>
                                             </Link>
                                             <div className="text-brand-blue font-black text-xl mb-4">
-                                                ₹{Number(item.price).toLocaleString('en-IN')}
+                                                <span className="font-sans font-semibold mr-0.5" style={{fontFamily: 'system-ui, Arial, sans-serif'}}>₹</span>
+                                                {Number(item.price).toLocaleString('en-IN')}
                                             </div>
                                             
                                             <div className="flex items-center gap-6">
@@ -78,7 +98,7 @@ export default function CartPage() {
                                                         variant="secondary"
                                                         size="icon-sm"
                                                         onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                                                        className="rounded-lg bg-white text-slate-500 hover:text-brand-blue border-none shadow-sm"
+                                                        className="rounded-lg bg-white text-slate-500 hover:text-brand-blue border-none shadow-sm cursor-pointer"
                                                     >
                                                         <Minus size={14} strokeWidth={3} />
                                                     </Button>
@@ -87,7 +107,7 @@ export default function CartPage() {
                                                         variant="secondary"
                                                         size="icon-sm"
                                                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                                        className="rounded-lg bg-white text-slate-500 hover:text-brand-blue border-none shadow-sm"
+                                                        className="rounded-lg bg-white text-slate-500 hover:text-brand-blue border-none shadow-sm cursor-pointer"
                                                     >
                                                         <Plus size={14} strokeWidth={3} />
                                                     </Button>
@@ -99,6 +119,7 @@ export default function CartPage() {
                                                     size="icon"
                                                     onClick={() => setItemToDelete(item.id)}
                                                     title="Remove item"
+                                                    className="cursor-pointer"
                                                 >
                                                     <Trash2 size={20} />
                                                 </Button>
@@ -107,11 +128,30 @@ export default function CartPage() {
                                         
                                         <div className="hidden sm:block text-right self-start">
                                             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total</p>
-                                            <p className="text-sm text-slate-500 mt-2">₹{item.price} x {item.quantity} = ₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
-                                            <p className="text-xl font-black text-slate-900">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
+                                            <p className="text-sm text-slate-500 mt-2">
+                                                <span className="font-sans font-semibold mr-0.5" style={{fontFamily: 'system-ui, Arial, sans-serif'}}>₹</span>
+                                                {item.price} x {item.quantity} = 
+                                                <span className="font-sans font-semibold mx-0.5" style={{fontFamily: 'system-ui, Arial, sans-serif'}}>₹</span>
+                                                {(item.price * item.quantity).toLocaleString('en-IN')}
+                                            </p>
+                                            <p className="text-xl font-black text-slate-900">
+                                                <span className="font-sans font-semibold mr-0.5" style={{fontFamily: 'system-ui, Arial, sans-serif'}}>₹</span>
+                                                {(item.price * item.quantity).toLocaleString('en-IN')}
+                                            </p>
                                         </div>
                                     </div>
                                 ))}
+
+                                {totalPages > 1 && (
+                                    <Pagination 
+                                        currentPage={currentPage}
+                                        totalPages={totalPages}
+                                        onPageChange={(page) => {
+                                            setCurrentPage(page);
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}
+                                    />
+                                )}
                             </div>
 
                             {/* Order Summary */}

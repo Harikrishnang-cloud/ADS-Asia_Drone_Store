@@ -8,6 +8,7 @@ import { Heart, Trash2, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import Button from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
+import Pagination from "@/components/ui/Pagination";
 import toast from "react-hot-toast";
 
 export default function WishlistPage() {
@@ -16,9 +17,28 @@ export default function WishlistPage() {
     const [hasHydrated, setHasHydrated] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<string | null>(null);
 
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 12; // Standardised for 4 rows (12/16 items)
+
     useEffect(() => {
         setHasHydrated(true);
     }, []);
+
+    // Pagination calculations
+    const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+    
+    // Auto-adjust page if current page becomes empty after deletion
+    useEffect(() => {
+        if (currentPage > totalPages && totalPages > 0) {
+            setCurrentPage(totalPages);
+        }
+    }, [items.length, currentPage, totalPages]);
+
+    const paginatedItems = items.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE, 
+        currentPage * ITEMS_PER_PAGE
+    );
 
     if (!hasHydrated) {
         return (
@@ -49,10 +69,17 @@ export default function WishlistPage() {
         <ProtectedRoute allowedRole="user">
             <div className="min-h-screen pt-24 md:pt-32 pb-12 md:pb-20 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h1 className="text-2xl md:text-3xl font-black text-brand-blue-dark mb-8 flex items-center gap-3">
-                        <Heart className="text-red-500 fill-red-500" size={28} />
-                        My Wishlist
-                    </h1>
+                    <div className="flex items-center justify-between mb-8">
+                        <h1 className="text-2xl md:text-3xl font-black text-brand-blue-dark flex items-center gap-3">
+                            <Heart className="text-red-500 fill-red-500" size={28} />
+                            My Wishlist
+                        </h1>
+                        {items.length > 0 && (
+                            <span className="text-sm font-bold text-slate-500 bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-100">
+                                {items.length} Items Saved
+                            </span>
+                        )}
+                    </div>
 
                     {items.length === 0 ? (
                         <div className="bg-white rounded-xl p-12 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
@@ -66,48 +93,60 @@ export default function WishlistPage() {
                             </Link>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {items.map((item) => (
-                                <div key={item.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:shadow-brand-blue/10 transition-all border border-slate-100 group flex flex-col">
-                                    <div className="aspect-square bg-slate-50 relative overflow-hidden">
-                                        <Link href={`/products/${item.id}`} className="block w-full h-full">
-                                            <img 
-                                                src={item.image} 
-                                                alt={item.name} 
-                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                                            />
-                                        </Link>
-                                    </div>
-                                    <div className="p-5 flex flex-col flex-1">
-                                        <Link href={`/products/${item.id}`} className="block mb-2 flex-1">
-                                            <h3 className="text-base font-bold text-slate-900 group-hover:text-brand-orange transition-colors duration-300 line-clamp-2">
-                                                {item.name}
-                                            </h3>
-                                        </Link>
-                                        <div className="font-black text-brand-blue text-lg mb-4">
-                                            ₹{Number(item.price).toLocaleString('en-IN')}
+                        <div className="flex flex-col">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                {paginatedItems.map((item) => (
+                                    <div key={item.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:shadow-brand-blue/10 transition-all border border-slate-100 group flex flex-col">
+                                        <div className="aspect-square bg-slate-50 relative overflow-hidden">
+                                            <Link href={`/products/${item.id}`} className="block w-full h-full">
+                                                <img 
+                                                    src={item.image} 
+                                                    alt={item.name} 
+                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                                                />
+                                            </Link>
                                         </div>
-                                        <div className="flex gap-2 mt-auto">
-                                            <Button 
-                                                variant="ghost-danger"
-                                                size="icon"
-                                                onClick={() => setItemToDelete(item.id)}
-                                                className="bg-slate-50 border-none shadow-sm"
-                                                title="Remove from wishlist"
-                                            >
-                                                <Trash2 size={20} />
-                                            </Button>
-                                            <Button 
-                                                onClick={() => handleMoveToCart(item)}
-                                                className="flex-1 py-3 text-sm rounded-xl" 
-                                                icon={<ShoppingCart size={18} />}
-                                            >
-                                                Move to Cart
-                                            </Button>
+                                        <div className="p-5 flex flex-col flex-1">
+                                            <Link href={`/products/${item.id}`} className="block mb-2 flex-1">
+                                                <h3 className="text-base font-bold text-slate-900 group-hover:text-brand-orange transition-colors duration-300 line-clamp-2">
+                                                    {item.name}
+                                                </h3>
+                                            </Link>
+                                            <div className="font-black text-brand-blue text-lg mb-4">
+                                                <span className="font-sans font-semibold mr-0.5" style={{fontFamily: 'system-ui, Arial, sans-serif'}}>₹</span>
+                                                {Number(item.price).toLocaleString('en-IN')}
+                                            </div>
+                                            <div className="flex gap-2 mt-auto">
+                                                <Button 
+                                                    variant="ghost-danger"
+                                                    size="icon"
+                                                    onClick={() => setItemToDelete(item.id)}
+                                                    className="bg-slate-50 border-none shadow-sm cursor-pointer"
+                                                    title="Remove from wishlist"
+                                                >
+                                                    <Trash2 size={20} />
+                                                </Button>
+                                                <Button 
+                                                    onClick={() => handleMoveToCart(item)}
+                                                    className="flex-1 py-3 text-sm rounded-xl cursor-pointer" 
+                                                    icon={<ShoppingCart size={18} />}
+                                                >
+                                                    Move to Cart
+                                                </Button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
+
+                            <Pagination 
+                                currentPage={currentPage} 
+                                totalPages={totalPages} 
+                                onPageChange={(page) => {
+                                    setCurrentPage(page);
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }} 
+                            />
                         </div>
                     )}
                 </div>

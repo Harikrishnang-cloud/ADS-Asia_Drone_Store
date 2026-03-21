@@ -26,8 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`bg-slate-50 text-slate-800 relative overflow-x-hidden min-h-screen flex flex-col`}
-        style={{ fontFamily: `'RupeeSystem', ${poppins.style.fontFamily}` }}
-      >
+        style={{ fontFamily: `'RupeeSystem', ${poppins.style.fontFamily}` }}>
         <Toaster />
 
         <div className="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-brand-blue/5 blur-[500px] pointer-events-none -z-10"></div>
@@ -38,7 +37,6 @@ export default function RootLayout({
         <main className="flex-1">
           {children}
         </main>
-
         <Footer />
       </body>
     </html>
