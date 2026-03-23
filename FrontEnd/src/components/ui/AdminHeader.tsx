@@ -45,7 +45,7 @@ export default function AdminHeader({
                         <input 
                             type="text" 
                             placeholder={searchPlaceholder}
-                            className="w-full bg-white border border-slate-200 pl-12 pr-4 py-3 rounded-2xl focus:outline-none focus:border-brand-orange transition-all shadow-sm font-medium"
+                            className="w-full bg-white border border-slate-200 pl-12 pr-4 py-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all shadow-sm font-medium"
                             value={searchTerm}
                             onChange={(e) => onSearchChange(e.target.value)}
                         />

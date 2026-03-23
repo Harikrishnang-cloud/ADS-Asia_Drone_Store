@@ -59,7 +59,7 @@ export default function Modal({
                     {title && <h3 className="text-xl font-black text-slate-900 tracking-tight">{title}</h3>}
                     <button 
                         onClick={onClose}
-                        className="p-2 hover:bg-slate-200/50 rounded-xl transition-colors text-slate-400 hover:text-slate-900 cursor-pointer">
+                        className="p-2 hover:bg-slate-200/50 rounded-lg transition-colors text-slate-400 hover:text-slate-900 cursor-pointer">
                         <X size={20} />
                     </button>
                 </div>

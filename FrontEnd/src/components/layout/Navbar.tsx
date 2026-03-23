@@ -332,7 +332,7 @@ export function Navbar() {
                                             </button> */}
                                             <Link href="/user/orders" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
                                                 <History size={18} />
-                                                <span>Purchase history</span>
+                                                <span>My Orders</span>
                                             </Link>
                                         </div>
 

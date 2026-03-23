@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useFirestoreCollection } from "@/hooks/useFirestore";
 import { Product } from "@/types/product.types";
 import { useParams, useRouter } from "next/navigation";
-import { ChevronLeft, ShoppingCart, Share2, ShieldCheck, Truck, RefreshCw, Package, Heart, Star, CheckCircle2 } from "lucide-react";
+import { ChevronLeft, ShoppingCart, Share2, Package, Heart, Star, CheckCircle2, Minus, Plus } from "lucide-react";
 import Button from "@/components/ui/button";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
@@ -75,6 +75,7 @@ export default function ProductDetailPage() {
     const { addItem: addWishlist, removeItem: removeWishlist, isInWishlist } = useWishlistStore();
     
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [quantity, setQuantity] = useState<number>(1);
 
     const product = React.useMemo(() => {
         return products.find(p => p.id === id);
@@ -89,7 +90,7 @@ export default function ProductDetailPage() {
             name: product.name,
             price: Number(product.offerPrice || product.price),
             image: product.imageUrl,
-            quantity: 1
+            quantity: quantity
         });
         toast.success(`${product.name} added to cart!`);
     };
@@ -251,17 +252,31 @@ export default function ProductDetailPage() {
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-3 pt-6">
-                        <Button 
-                            className="flex-1 py-4 text-sm tracking-widest shadow-xl shadow-brand-blue/20" 
-                            icon={<ShoppingCart size={20} />}
-                            onClick={handleAddToCart}>
+                        <div className="flex items-center h-14 rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden w-32 shrink-0">
+                            <button 
+                                onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+                                className="w-12 h-full flex items-center justify-center text-slate-400 hover:bg-slate-50 hover:text-brand-orange transition-colors active:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={quantity <= 1}
+                            >
+                                <Minus size={18} />
+                            </button>
+                            <div className="flex-1 h-full flex items-center justify-center font-bold text-slate-700 text-lg border-x border-slate-100">
+                                {quantity}
+                            </div>
+                            <button 
+                                onClick={() => setQuantity(prev => Math.min(product.stock, prev + 1))}
+                                className="w-12 h-full flex items-center justify-center text-slate-400 hover:bg-slate-50 hover:text-brand-orange transition-colors active:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={quantity >= product.stock}
+                            >
+                                <Plus size={18} />
+                            </button>
+                        </div>
+                        <Button className="flex-1 py-4 text-sm tracking-widest shadow-xl shadow-brand-blue/20" icon={<ShoppingCart size={20} />} onClick={handleAddToCart}>
                             Add to Cart
                         </Button>
-                        <Button 
-                            className="flex-1 py-4 text-sm tracking-widest bg-brand-orange hover:bg-brand-orange-dark border-brand-orange shadow-xl shadow-brand-orange/20 text-white"
-                        >
+                        {/* <Button className="flex-1 py-4 text-sm tracking-widest bg-brand-orange hover:bg-brand-orange-dark border-brand-orange shadow-xl shadow-brand-orange/20 text-white">
                             Buy Now
-                        </Button>
+                        </Button> */}
                         <div className="flex gap-3">
                             <button 
                                 onClick={handleToggleWishlist}
@@ -278,25 +293,6 @@ export default function ProductDetailPage() {
                                 <Share2 size={24} />
                             </button>
                         </div>
-                    </div>
-
-                    {/* Features/Trust badges */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-10 border-t border-slate-100">
-                        {[
-                            { icon: <ShieldCheck size={20} />, label: "Full Warranty", subtext: "1 Year Coverage" },
-                            { icon: <Truck size={20} />, label: "Safe Express", subtext: "Free over ₹10k" },
-                            { icon: <RefreshCw size={20} />, label: "Easy Returns", subtext: "Within 14 Days" }
-                        ].map((item, i) => (
-                            <div key={i} className="flex flex-col gap-2 items-center sm:items-start text-center sm:text-left bg-slate-50 p-4 rounded-xl border border-slate-100">
-                                <div className="p-2.5 bg-brand-blue/10 text-brand-blue-dark rounded-lg w-fit">
-                                    {item.icon}
-                                </div>
-                                <div>
-                                    <span className="block text-[11px] font-black uppercase tracking-widest text-slate-900">{item.label}</span>
-                                    <span className="block text-[10px] font-bold text-slate-400 mt-1">{item.subtext}</span>
-                                </div>
-                            </div>
-                        ))}
                     </div>
                 </div>
             </div>

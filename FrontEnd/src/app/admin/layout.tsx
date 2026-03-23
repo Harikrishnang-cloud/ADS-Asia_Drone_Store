@@ -77,9 +77,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <div className="flex items-center gap-2">
                         <button 
                             onClick={handleLogout} 
-                            className="p-2.5 bg-red-50 text-red-600 rounded-xl border border-red-100 hover:bg-red-100 transition-colors"
+                            className="p-2.5 bg-red-50 text-red-600 rounded-lg border border-red-100 hover:bg-red-100 transition-colors"
                             title="Logout"
-                        >
+                        > 
                             <LogOut size={18} />
                         </button>
                     </div>

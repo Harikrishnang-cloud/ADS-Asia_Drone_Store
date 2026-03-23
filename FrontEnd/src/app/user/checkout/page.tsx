@@ -46,7 +46,7 @@ export default function CheckoutPage() {
         zip: "",
     });
 
-    const [paymentMethod, setPaymentMethod] = useState<"stripe" | "wallet" | "cod" | "online">("stripe");
+    const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "wallet" | "cod" | "online">("razorpay");
     
     // Dynamic checking of the address from context storage
     const [savedAddresses, setSavedAddresses] = useState<any[]>([]); 
@@ -83,10 +83,10 @@ export default function CheckoutPage() {
 
     useEffect(() => {
         if (!isCodAvailable && paymentMethod === "cod") {
-            setPaymentMethod("stripe");
+            setPaymentMethod("razorpay");
         }
         if (!isWalletAvailable && paymentMethod === "wallet") {
-            setPaymentMethod("stripe");
+            setPaymentMethod("razorpay");
         }
     }, [isCodAvailable, isWalletAvailable, paymentMethod]);
 
@@ -240,21 +240,21 @@ export default function CheckoutPage() {
                                     <div className="space-y-4">
                                         {/* Stripe Option */}
                                         <div 
-                                            onClick={() => setPaymentMethod("stripe")}
-                                            className={`p-4 border-2 rounded-xl flex items-start gap-4 cursor-pointer relative overflow-hidden transition-all shadow-sm ${paymentMethod === 'stripe' ? 'border-brand-blue bg-brand-blue/5' : 'border-slate-100 bg-white hover:border-brand-blue/30'}`}
+                                            onClick={() => setPaymentMethod("razorpay")}
+                                            className={`p-4 border-2 rounded-xl flex items-start gap-4 cursor-pointer relative overflow-hidden transition-all shadow-sm ${paymentMethod === 'razorpay' ? 'border-brand-blue bg-brand-blue/5' : 'border-slate-100 bg-white hover:border-brand-blue/30'}`}
                                         >
-                                            <div className="absolute top-0 right-0 w-16 h-16 bg-brand-blue/10 rounded-bl-full -z-10 opacity-0 transition-opacity" style={{ opacity: paymentMethod === 'stripe' ? 1 : 0 }}></div>
+                                            <div className="absolute top-0 right-0 w-16 h-16 bg-brand-blue/10 rounded-bl-full -z-10 opacity-0 transition-opacity" style={{ opacity: paymentMethod === 'razorpay' ? 1 : 0 }}></div>
                                             <div className="mt-1 flex-shrink-0">
-                                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${paymentMethod === 'stripe' ? 'border-brand-blue' : 'border-slate-300'}`}>
-                                                    {paymentMethod === 'stripe' && <div className="w-2.5 h-2.5 rounded-full bg-brand-blue"></div>}
+                                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${paymentMethod === 'razorpay' ? 'border-brand-blue' : 'border-slate-300'}`}>
+                                                    {paymentMethod === 'razorpay' && <div className="w-2.5 h-2.5 rounded-full bg-brand-blue"></div>}
                                                 </div>
                                             </div>
                                             <div>
-                                                <h3 className={`font-bold flex items-center gap-2 transition-colors ${paymentMethod === 'stripe' ? 'text-brand-blue-dark' : 'text-slate-700'}`}>
-                                                    <CreditCard size={18} className={paymentMethod === 'stripe' ? 'text-brand-blue' : 'text-slate-400'} />
-                                                    Credit / Debit Card via Stripe
-                                                </h3>
-                                                <p className="text-sm text-slate-500 mt-1 leading-relaxed">You will be redirected to the secure Stripe portal after placing your order to complete the payment.</p>
+                                                <h3 className={`font-bold flex items-center gap-2 transition-colors ${paymentMethod === 'razorpay' ? 'text-brand-blue-dark' : 'text-slate-700'}`}>
+                                                    <CreditCard size={18} className={paymentMethod === 'razorpay' ? 'text-brand-blue' : 'text-slate-400'} />
+                                                    Credit / Debit Card via Razorpay
+                                                </h3>                                                                                                                                                                       
+                                                <p className="text-sm text-slate-500 mt-1 leading-relaxed">You will be redirected to the secure Razorpay portal after placing your order to complete the payment.</p>
                                             </div>
                                         </div>
 
