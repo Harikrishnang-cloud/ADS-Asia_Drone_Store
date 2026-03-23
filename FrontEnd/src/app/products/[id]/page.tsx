@@ -175,14 +175,14 @@ export default function ProductDetailPage() {
                         <div className="grid grid-cols-4 gap-4">
                             <div 
                                 onClick={() => setSelectedImage(product.imageUrl)} 
-                                className={`aspect-square rounded-2xl border ${selectedImage === product.imageUrl || !selectedImage ? 'border-brand-orange' : 'border-slate-100'} overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer`}>
+                                className={`aspect-square rounded-lg border ${selectedImage === product.imageUrl || !selectedImage ? 'border-brand-orange' : 'border-slate-100'} overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer`}>
                                 <img src={product.imageUrl} alt={`${product.name} Main`} className="w-full h-full object-cover" />
                             </div>
                             {product.images.map((img, i) => (
                                 <div 
                                     key={i} 
                                     onClick={() => setSelectedImage(img)}
-                                    className={`aspect-square rounded-2xl border ${selectedImage === img ? 'border-brand-orange' : 'border-slate-100'} overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer`}>
+                                    className={`aspect-square rounded-lg border ${selectedImage === img ? 'border-brand-orange' : 'border-slate-100'} overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer`}>
                                     <img src={img} alt={`${product.name} ${i}`} className="w-full h-full object-cover" />
                                 </div>
                             ))}
@@ -255,7 +255,7 @@ export default function ProductDetailPage() {
                         <div className="flex items-center h-14 rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden w-32 shrink-0">
                             <button 
                                 onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-                                className="w-12 h-full flex items-center justify-center text-slate-400 hover:bg-slate-50 hover:text-brand-orange transition-colors active:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-12 h-full flex items-center justify-center text-slate-400 cursor-pointer hover:bg-slate-50 hover:text-brand-orange transition-colors active:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled={quantity <= 1}
                             >
                                 <Minus size={18} />
@@ -265,7 +265,7 @@ export default function ProductDetailPage() {
                             </div>
                             <button 
                                 onClick={() => setQuantity(prev => Math.min(product.stock, prev + 1))}
-                                className="w-12 h-full flex items-center justify-center text-slate-400 hover:bg-slate-50 hover:text-brand-orange transition-colors active:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-12 h-full flex items-center justify-center text-slate-400 cursor-pointer hover:bg-slate-50 hover:text-brand-orange transition-colors active:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled={quantity >= product.stock}
                             >
                                 <Plus size={18} />
@@ -319,7 +319,7 @@ export default function ProductDetailPage() {
                     <ProductGrid 
                         title="You May Also Like" 
                         category={product.category} 
-                        limit={4} 
+                        limit={5} 
                     />
                 </div>
             )}
