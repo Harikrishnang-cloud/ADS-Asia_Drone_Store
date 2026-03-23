@@ -297,7 +297,6 @@ export function Navbar() {
                                                 <UserPlus size={18} />
                                                 <span>Refer a friend</span>
                                             </Link>
-
                                         </div>
 
                                         {/* Group 2: Comms */}
