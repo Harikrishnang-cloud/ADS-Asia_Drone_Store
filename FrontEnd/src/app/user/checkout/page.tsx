@@ -250,7 +250,7 @@ export default function CheckoutPage() {
                                                 </div>
                                             </div>
                                             <div>
-                                                <h3 className={`font-bold flex items-center gap-2 transition-colors ${paymentMethod === 'razorpay' ? 'text-brand-blue-dark' : 'text-slate-700'}`}>
+                                                <h3 className={`font-bold flex items-center gap-2 flex-wrap transition-colors ${paymentMethod === 'razorpay' ? 'text-brand-blue-dark' : 'text-slate-700'}`}>
                                                     <CreditCard size={18} className={paymentMethod === 'razorpay' ? 'text-brand-blue' : 'text-slate-400'} />
                                                     Credit / Debit Card via Razorpay
                                                 </h3>                                                                                                                                                                       
@@ -276,12 +276,12 @@ export default function CheckoutPage() {
                                                 </div>
                                             </div>
                                             <div className="w-full">
-                                                <div className="flex items-center justify-between gap-4 w-full">
-                                                    <h3 className={`font-bold flex items-center gap-2 transition-colors ${!isWalletAvailable ? 'text-slate-500' : paymentMethod === 'wallet' ? 'text-brand-blue-dark' : 'text-slate-700'}`}>
+                                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 w-full">
+                                                    <h3 className={`font-bold flex items-center gap-2 flex-wrap transition-colors ${!isWalletAvailable ? 'text-slate-500' : paymentMethod === 'wallet' ? 'text-brand-blue-dark' : 'text-slate-700'}`}>
                                                         <Wallet size={18} className={!isWalletAvailable ? 'text-slate-400' : paymentMethod === 'wallet' ? 'text-brand-blue' : 'text-slate-400'} />
                                                         Use Wallet Balance
                                                     </h3>
-                                                    <span className="font-black text-sm text-brand-blue bg-brand-blue/5 px-2.5 py-1 rounded-lg border border-brand-blue/10">₹{walletBalance.toLocaleString('en-IN')}</span>
+                                                    <span className="font-black text-sm text-brand-blue bg-brand-blue/5 px-2.5 py-1 rounded-lg border border-brand-blue/10 w-fit">₹{walletBalance.toLocaleString('en-IN')}</span>
                                                 </div>
                                                 <p className="text-sm text-slate-500 mt-1 leading-relaxed">Pay instantly using your available wallet funds.</p>
                                                 {!isWalletAvailable && (
@@ -301,7 +301,7 @@ export default function CheckoutPage() {
                                                 </div>
                                             </div>
                                             <div>
-                                                <h3 className={`font-bold flex items-center gap-2 transition-colors ${paymentMethod === 'online' ? 'text-brand-blue-dark' : 'text-slate-700'}`}>
+                                                <h3 className={`font-bold flex items-center gap-2 flex-wrap transition-colors ${paymentMethod === 'online' ? 'text-brand-blue-dark' : 'text-slate-700'}`}>
                                                     <Smartphone size={18} className={paymentMethod === 'online' ? 'text-brand-blue' : 'text-slate-400'} />
                                                     UPI / GPay / PhonePe
                                                 </h3>
@@ -327,7 +327,7 @@ export default function CheckoutPage() {
                                                 </div>
                                             </div>
                                             <div>
-                                                <h3 className={`font-bold flex items-center gap-2 transition-colors ${!isCodAvailable ? 'text-slate-500' : paymentMethod === 'cod' ? 'text-brand-blue-dark' : 'text-slate-700'}`}>
+                                                <h3 className={`font-bold flex items-center gap-2 flex-wrap transition-colors ${!isCodAvailable ? 'text-slate-500' : paymentMethod === 'cod' ? 'text-brand-blue-dark' : 'text-slate-700'}`}>
                                                     <Banknote size={18} className={!isCodAvailable ? 'text-slate-400' : paymentMethod === 'cod' ? 'text-brand-blue' : 'text-slate-400'} />
                                                     Cash on Delivery (COD)
                                                 </h3>

@@ -12,7 +12,7 @@ export default function Sidebar() {
     return (
         <aside className="hidden md:flex flex-col w-72 bg-white border-r border-slate-200 h-screen sticky top-0 z-50 shadow-sm transition-all duration-300">
             <div className="p-6 border-b border-slate-100 flex items-center justify-center">
-                <Logo width={150} height={150} showText={true} textColor="text-brand-blue-dark" />
+                <Logo width={150} height={150} showText={true} textColor="text-brand-blue-dark" className="w-[120px] lg:w-[150px]" imageClassName="w-full h-auto" />
             </div>
             <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-1 custom-scrollbar">
                 {navItems.map((item) => {

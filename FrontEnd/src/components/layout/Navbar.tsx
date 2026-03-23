@@ -140,16 +140,17 @@ export function Navbar() {
     };
 
     return (
+        <>
         <nav
             className={`sticky top-0 z-50 transition-all duration-300 w-full ${isScrolled
-                    ? "bg-transparent backdrop-blur-md py-3"
-                    : "bg-white py-3 border-b border-slate-100"
+                ? "bg-transparent backdrop-blur-md py-3"
+                : "bg-white py-3 border-b border-slate-100"
                 }`}>
             <div className="mx-auto px-4 md:px-8 flex justify-between items-center relative">
 
                 {/* Left Side: Logo */}
                 <div className="flex-shrink-0 z-50">
-                    <Logo width={160} height={160} showText={true} textColor="text-brand-blue-dark" />
+                    <Logo width={160} height={160} showText={true} textColor="text-brand-blue-dark" className="w-[120px] md:w-[160px]" imageClassName="w-full h-auto" />
                 </div>
 
                 {/* Center: Navigation Menu (Desktop) */}
@@ -181,8 +182,8 @@ export function Navbar() {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className={`w-48 lg:w-64 px-4 py-2 pl-10 text-sm rounded-full border transition-all duration-300 focus:w-64 lg:focus:w-80 outline-none ${isScrolled
-                                    ? "bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:bg-white/20 focus:border-white/40"
-                                    : "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand-blue/30 focus:shadow-md"
+                                ? "bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:bg-white/20 focus:border-white/40"
+                                : "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand-blue/30 focus:shadow-md"
                                 }`}
                         />
                         <Search size={16} className={`absolute left-3.5 transition-colors ${isScrolled ? "text-white/60 group-focus-within:text-white" : "text-slate-400 group-focus-within:text-brand-blue"
@@ -239,7 +240,7 @@ export function Navbar() {
                     {hasHydrated && user ? (
                         <div className="flex items-center gap-4">
                             <span className={`text-sm font-medium hidden xl:block ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
-                                Welcome, <span className="text-brand-orange capitalize">{user.name.split(' ')[0]}</span>
+                                Welcome, <span className="text-brand-orange capitalize">{user?.name ? user.name.split(' ')[0] : 'User'}</span>
                             </span>
 
                             <div className="relative group cursor-pointer">
@@ -253,12 +254,12 @@ export function Navbar() {
 
                                     {/* User Header Section */}
                                     <div className="p-5 flex items-center gap-4 border-b border-slate-100 bg-slate-50/50">
-                                        <div className="w-12 h-12 rounded-full bg-brand-blue-dark text-white flex items-center justify-center font-bold text-lg shadow-inner">
-                                            {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                                        <div className="w-12 h-12 rounded-full bg-brand-blue-dark text-white flex items-center justify-center font-bold text-lg shadow-inner flex-shrink-0">
+                                            {user?.name ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'U'}
                                         </div>
                                         <div className="flex flex-col overflow-hidden">
-                                            <p className="font-bold text-slate-900 truncate leading-tight capitalize">{user.name}</p>
-                                            <p className="text-xs text-slate-500 truncate mt-1">{user.email}</p>
+                                            <p className="font-bold text-slate-900 truncate leading-tight capitalize">{user?.name || 'User'}</p>
+                                            <p className="text-xs text-slate-500 truncate mt-1">{user?.email}</p>
                                         </div>
                                     </div>
 
@@ -399,9 +400,10 @@ export function Navbar() {
                     </button>
                 </div>
             </div>
+        </nav>
 
-            {/* Mobile Navigation Menu */}
-            <div
+        {/* Mobile Navigation Menu (Moved outside nav to prevent fixed containing block bugs) */}
+        <div
                 className={`fixed inset-0 bg-white z-40 lg:hidden flex flex-col pt-28 px-6 overflow-y-auto transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
                     }`}>
 
@@ -464,11 +466,11 @@ export function Navbar() {
                             {/* Mobile Profile Header */}
                             <div className="flex items-center gap-4 bg-slate-50 p-5 rounded-2xl w-full border border-slate-100 shadow-sm">
                                 <div className="w-14 h-14 rounded-full bg-brand-blue-dark text-white flex items-center justify-center font-bold text-xl flex-shrink-0 shadow-md">
-                                    {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                                    {user?.name ? user.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() : 'U'}
                                 </div>
                                 <div className="text-left overflow-hidden">
-                                    <p className="text-brand-blue-dark text-lg font-bold capitalize truncate">{user.name}</p>
-                                    <p className="text-slate-500 text-xs truncate">{user.email}</p>
+                                    <p className="text-brand-blue-dark text-lg font-bold capitalize truncate">{user?.name || 'User'}</p>
+                                    <p className="text-slate-500 text-xs truncate">{user?.email}</p>
                                 </div>
                             </div>
 
@@ -554,7 +556,7 @@ export function Navbar() {
                 confirmText="Yes, Log Out"
                 type="warning"
             />
-        </nav>
+        </>
     );
 }
 

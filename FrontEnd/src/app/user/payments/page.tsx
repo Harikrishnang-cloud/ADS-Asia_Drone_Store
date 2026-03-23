@@ -14,7 +14,7 @@ export default function PaymentsPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Add New Card Button */}
-                    <div className="border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-brand-blue/50 hover:bg-brand-blue/5 transition-all group min-h-[200px]">
+                    <div className="border-2 border-dashed border-slate-200 rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-brand-blue/50 hover:bg-brand-blue/5 transition-all group min-h-[200px]">
                         <div className="w-14 h-14 bg-slate-100 group-hover:bg-brand-blue/10 rounded-full flex items-center justify-center mb-4 transition-colors">
                             <Plus size={24} className="text-slate-400 group-hover:text-brand-blue transition-colors" />
                         </div>
@@ -23,7 +23,7 @@ export default function PaymentsPage() {
                     </div>
 
                     {/* Info Card */}
-                    <div className="bg-gradient-to-br from-brand-blue-dark to-brand-blue rounded-2xl p-8 text-white flex flex-col justify-between min-h-[200px] shadow-xl shadow-brand-blue/20 relative overflow-hidden">
+                    <div className="bg-gradient-to-br from-brand-blue-dark to-brand-blue rounded-2xl p-6 sm:p-8 text-white flex flex-col justify-between min-h-[200px] shadow-xl shadow-brand-blue/20 relative overflow-hidden">
                         {/* Decorative background element */}
                         <div className="absolute top-0 right-0 -mr-8 -mt-8 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
                         <div className="absolute bottom-0 left-0 -ml-8 -mb-8 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
@@ -44,7 +44,7 @@ export default function PaymentsPage() {
                 </div>
 
                 {/* Additional lightweight section */}
-                <div className="mt-12 bg-white border border-slate-100 rounded-2xl p-8 shadow-sm">
+                <div className="mt-12 bg-white border border-slate-100 rounded-2xl p-5 sm:p-8 shadow-sm">
                     <div className="flex items-center gap-4 mb-6">
                         <div className="p-3 bg-slate-50 text-slate-600 rounded-xl">
                             <CreditCard size={24} />

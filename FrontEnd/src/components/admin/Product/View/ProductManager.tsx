@@ -56,7 +56,7 @@ export default function ProductManager({ category }: { category?: string }) {
     };
 
     return (
-        <div className="p-5 d:p-8 space-y-10 animate-in fade-in duration-500">
+        <div className="p-5 md:p-8 space-y-10 animate-in fade-in duration-500">
             <AdminHeader
                 title="Product Catalog" 
                 description={`Currently managing ${products.length} products`}
@@ -375,7 +375,7 @@ export default function ProductManager({ category }: { category?: string }) {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-5 text-right">
-                                                <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                                                <div className="flex items-center justify-end gap-2 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-all transform lg:translate-x-2 group-hover:translate-x-0">
                                                     <button 
                                                         onClick={() => handleEdit(product)}
                                                         className="p-2.5 bg-brand-orange/10 text-brand-orange rounded-xl hover:bg-brand-orange hover:text-white transition-all shadow-md"

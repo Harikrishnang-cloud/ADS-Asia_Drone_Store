@@ -60,7 +60,7 @@ export function Footer() {
 
                     {/* Brand Info */}
                     <div className="space-y-6">
-                        <Logo width={180} height={180} showText={true} textColor="text-white" />
+                        <Logo width={180} height={180} showText={true} textColor="text-white" className="w-[140px] md:w-[180px]" imageClassName="w-full h-auto" />
                         <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
                             Asia Drone Store (ADS) is your premium destination for high-end drones, spare parts, and professional aerial accessories across Asia.
                         </p>

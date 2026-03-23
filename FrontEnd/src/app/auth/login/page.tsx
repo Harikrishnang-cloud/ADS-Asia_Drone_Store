@@ -98,13 +98,13 @@ export default function LoginPage() {
     return (
         <div className="flex justify-center items-center min-h-screen bg-slate-50 relative overflow-hidden">
             {/* Abstract Background Elements */}
-            <div className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-brand-blue/10 blur-[120px] pointer-events-none"></div>
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] rounded-full bg-brand-orange/10 blur-[120px] pointer-events-none"></div>
+            <div className="absolute -top-10 -left-10 w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] rounded-full bg-brand-blue/10 blur-[80px] pointer-events-none"></div>
+            <div className="absolute -bottom-10 -right-10 w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] rounded-full bg-brand-orange/10 blur-[80px] pointer-events-none"></div>
 
             <form onSubmit={handleSubmit} className="relative z-10 border border-slate-200 bg-white/80 backdrop-blur-xl p-8 sm:p-10 rounded-2xl w-full max-w-md shadow-xl">
                 {/* Brand Logo Area */}
                 {/* <div className="flex flex-col items-center mb-8">
-                    <Logo width={160} height={160} />
+                    <Logo width={160} height={160} className="w-32 md:w-[160px]" imageClassName="w-full h-auto" />
                     <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-brand-orange -mt-2">Fly Your Passion</span>
                 </div> */}
 

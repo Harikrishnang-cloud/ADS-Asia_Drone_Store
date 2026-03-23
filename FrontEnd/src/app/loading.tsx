@@ -9,7 +9,7 @@ export default function Loading() {
       {/* Brand Animation */}
       <div className="relative flex flex-col items-center gap-6">
         <div className="animate-bounce duration-1000">
-          <Logo width={100} height={100} />
+          <Logo width={100} height={100} className="w-16 md:w-[100px]" imageClassName="w-full h-auto" />
         </div>
         
         {/* Modern Loading Indicator */}

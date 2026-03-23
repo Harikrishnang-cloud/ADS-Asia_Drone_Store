@@ -104,7 +104,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                     <div className="flex flex-col">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Starting from</span>
                         {product.offerPrice ? (
-                            <div className="flex flex-row items-center gap-3">
+                            <div className="flex flex-wrap items-center gap-3">
                                 <span className="text-xl font-black text-brand-orange">₹{Number(product.offerPrice).toLocaleString('en-IN')}</span>
                                 <span className="text-[16px] text-slate-400 font-medium line-through">₹{formattedPrice}</span>
                                 <div className="flex items-center gap-2">

@@ -49,7 +49,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (loading && pathname !== "/admin/login") {
         return (
             <div className="flex flex-col gap-6 justify-center items-center min-h-screen bg-slate-50 text-slate-800">
-                <Logo width={100} height={100} />
+                <Logo width={100} height={100} className="w-20 md:w-[100px]" imageClassName="w-full h-auto" />
                 <div className="flex flex-col items-center gap-2">
                     <div className="w-12 h-12 border-4 border-brand-orange border-t-transparent rounded-full animate-spin"></div>
                     <p className="text-sm font-bold text-slate-500 tracking-widest mt-4">AUTHENTICATING...</p>
@@ -72,7 +72,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 {/* Mobile Header */}
                 <header className="md:hidden flex justify-between items-center p-4 bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
                     <div className="flex items-center gap-2">
-                        <Logo width={120} height={40} showText={true} textColor="text-brand-blue-dark" />
+                        <Logo width={120} height={40} showText={true} textColor="text-brand-blue-dark" className="w-24 md:w-[120px]" imageClassName="w-full h-auto" />
                     </div>
                     <div className="flex items-center gap-2">
                         <button 
@@ -88,8 +88,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 {/* Main Content Area */}
                 <main className="flex-1 w-full relative p-4 md:p-8 lg:p-10 overflow-x-hidden transition-all duration-300">
                     {/* Ambient Background Blur Elements */}
-                    <div className="fixed top-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-brand-orange/5 blur-[150px] pointer-events-none z-[-1]"></div>
-                    <div className="fixed bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-brand-blue-dark/5 blur-[150px] pointer-events-none z-[-1]"></div>
+                    <div className="fixed -top-10 -right-10 w-[300px] sm:w-[400px] lg:w-[500px] h-[300px] sm:h-[400px] lg:h-[500px] rounded-full bg-brand-orange/5 blur-[80px] md:blur-[120px] pointer-events-none z-[-1]"></div>
+                    <div className="fixed -bottom-10 -left-10 w-[300px] sm:w-[400px] lg:w-[500px] h-[300px] sm:h-[400px] lg:h-[500px] rounded-full bg-brand-blue-dark/5 blur-[80px] md:blur-[120px] pointer-events-none z-[-1]"></div>
                     
                     <div className="max-w-7xl mx-auto">
                         {children}
