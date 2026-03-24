@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Plus, Trash2, Edit2, Save, X, Image as ImageIcon, ExternalLink, LayoutPanelLeft } from "lucide-react";
+import { Plus, Trash2, Edit2, Save, X, Image as ImageIcon, ExternalLink, LayoutPanelLeft, Play, Film, Monitor } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import AdminHeader from "@/components/ui/AdminHeader";
@@ -49,16 +49,66 @@ export default function BannerManager() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Image URL</label>
+                                <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Banner Type</label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <button 
+                                        type="button"
+                                        onClick={() => setFormData({...formData, type: 'image'})}
+                                        className={`flex items-center justify-center gap-3 p-4 rounded-2xl border-2 transition-all duration-300 ${
+                                            formData.type === 'image' 
+                                            ? 'border-brand-orange bg-brand-orange/5 text-brand-orange shadow-lg shadow-brand-orange/10' 
+                                            : 'border-slate-100 bg-slate-50 text-slate-400 hover:border-slate-200'
+                                        }`}>
+                                        <ImageIcon size={20} />
+                                        <span className="font-bold text-sm">Image</span>
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        onClick={() => setFormData({...formData, type: 'video'})}
+                                        className={`flex items-center justify-center gap-3 p-4 rounded-2xl border-2 transition-all duration-300 ${
+                                            formData.type === 'video' 
+                                            ? 'border-brand-orange bg-brand-orange/5 text-brand-orange shadow-lg shadow-brand-orange/10' 
+                                            : 'border-slate-100 bg-slate-50 text-slate-400 hover:border-slate-200'
+                                        }`}>
+                                        <Film size={20} />
+                                        <span className="font-bold text-sm">Video</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                                    {formData.type === 'video' ? 'Image URL (Optional Thumbnail)' : 'Image URL'}
+                                </label>
                                 <input 
                                     type="text" 
                                     placeholder="https://example.com/banner.jpg"
-                                    className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange focus:ring-4 focus:ring-brand-orange/5 transition-all"
+                                    className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange focus:ring-4 focus:ring-brand-orange/5 transition-all text-sm"
                                     value={formData.imageUrl}
                                     onChange={e => setFormData({...formData, imageUrl: e.target.value})}
-                                    required
+                                    required={formData.type === 'image'}
                                 />
+                                {formData.type === 'video' ? (
+                                    <p className="mt-1.5 text-[10px] text-slate-400 font-medium italic">An optional image that displays while the video loads.</p>
+                                ) : (
+                                    <p className="mt-1.5 text-[10px] text-slate-400 font-medium italic">High resolution wide format (21:9 or 16:9) recommended.</p>
+                                )}
                             </div>
+                            {formData.type === 'video' && (
+                                <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-2">
+                                        <Play size={14} className="text-brand-orange" />
+                                        Video Link (Direct URL)
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        placeholder="https://example.com/banner.mp4"
+                                        className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange focus:ring-4 focus:ring-brand-orange/5 transition-all text-sm"
+                                        value={formData.videoUrl}
+                                        onChange={e => setFormData({...formData, videoUrl: e.target.value})}
+                                        required={formData.type === 'video'}
+                                    />
+                                </div>
+                            )}
                         </div>
                         <div className="space-y-4">
                             <div>
@@ -105,8 +155,24 @@ export default function BannerManager() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {banners.length > 0 ? (banners.map(banner => (
                         <div key={banner.id} className="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300">
-                            <div className="relative aspect-[21/9] sm:aspect-video overflow-hidden bg-slate-50">
-                                {banner.imageUrl ? (
+                            <div className="relative aspect-[21/9] sm:aspect-video overflow-hidden bg-slate-900">
+                                {banner.type === 'video' && banner.videoUrl ? (
+                                    <div className="relative w-full h-full">
+                                        <video 
+                                            src={banner.videoUrl} 
+                                            className="w-full h-full object-cover opacity-60" 
+                                            muted 
+                                            playsInline 
+                                            onMouseOver={(e) => (e.target as HTMLVideoElement).play()}
+                                            onMouseOut={(e) => (e.target as HTMLVideoElement).pause()}
+                                        />
+                                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                            <div className="p-4 bg-white/20 backdrop-blur-md rounded-full text-white">
+                                                <Play size={32} fill="currentColor" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : banner.imageUrl ? (
                                     <img 
                                         src={banner.imageUrl} 
                                         alt={banner.title} 
@@ -139,6 +205,12 @@ export default function BannerManager() {
                                     }`}>
                                         {banner.status}
                                     </div>
+                                    {banner.type === 'video' && (
+                                        <div className="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-sm bg-brand-orange text-white flex items-center gap-1.5">
+                                            <Film size={10} strokeWidth={3} />
+                                            Video
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                             <div className="p-6">

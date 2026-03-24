@@ -9,6 +9,8 @@ interface Banner {
     id: string;
     title: string;
     imageUrl: string;
+    videoUrl?: string;
+    type?: "image" | "video";
     link: string;
     status: "active" | "inactive";
     createdAt?: number;
@@ -45,16 +47,19 @@ export default function BannerSlider() {
         fetchActiveBanners();
     }, []);
 
-    // Auto-slide every 5 seconds
+    // Auto-slide logic with dynamic timing for video
     useEffect(() => {
         if (banners.length <= 1) return;
 
+        const currentBanner = banners[current];
+        const duration = currentBanner?.type === "video" ? 15000 : 5000; // 15s for video, 5s for images
+
         const timer = setInterval(() => {
             setCurrent(prev => (prev === banners.length - 1 ? 0 : prev + 1));
-        }, 5000);
+        }, duration);
 
         return () => clearInterval(timer);
-    }, [banners]);
+    }, [banners, current]);
 
     if (loading) {
         return <div className="w-full h-[60vh] md:h-screen bg-slate-100 animate-pulse"></div>;
@@ -73,14 +78,26 @@ export default function BannerSlider() {
                 style={{ transform: `translateX(-${current * 100}%)` }}>
                 {banners.map((banner) => (
                     <div key={banner.id} className="min-w-full h-full relative">
-                        <picture>
-                            <img
-                                src={banner.imageUrl}
-                                alt={banner.title}
+                        {banner.type === "video" && banner.videoUrl ? (
+                            <video
+                                src={banner.videoUrl}
+                                poster={banner.imageUrl}
                                 className="w-full h-full object-cover select-none"
-                                loading="eager"
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
                             />
-                        </picture>
+                        ) : (
+                            <picture>
+                                <img
+                                    src={banner.imageUrl}
+                                    alt={banner.title}
+                                    className="w-full h-full object-cover select-none"
+                                    loading="eager"
+                                />
+                            </picture>
+                        )}
 
                         {/* Elegant Overlay Gradient */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>

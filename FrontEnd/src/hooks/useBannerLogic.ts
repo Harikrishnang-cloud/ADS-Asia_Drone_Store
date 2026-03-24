@@ -27,12 +27,14 @@ export const useBannerLogic = () => {
     const [formData, setFormData] = useState<BannerFormData>({
         title: "",
         imageUrl: "",
+        videoUrl: "",
+        type: "image",
         link: "",
         status: "active"
     });
 
     const resetForm = () => {
-        setFormData({ title: "", imageUrl: "", link: "", status: "active" });
+        setFormData({ title: "", imageUrl: "", videoUrl: "", type: "image", link: "", status: "active" });
         setEditingId(null);
         setIsAdding(false);
     };
@@ -41,6 +43,8 @@ export const useBannerLogic = () => {
         setFormData({
             title: banner.title,
             imageUrl: banner.imageUrl,
+            videoUrl: banner.videoUrl || "",
+            type: banner.type || "image",
             link: banner.link,
             status: banner.status
         });
@@ -54,11 +58,21 @@ export const useBannerLogic = () => {
         const loadingToast = toast.loading(editingId ? "Updating banner..." : "Creating banner...");
         
         try {
+            const dataToSave = {
+                ...formData,
+                updatedAt: Date.now()
+            };
+            
+            // Cleanup: ensure redundant data is removed based on type
+            if (dataToSave.type === 'image') {
+                delete dataToSave.videoUrl;
+            }
+
             if (editingId) {
-                await updateDoc(doc(db, "banners", editingId), {...formData, updatedAt: Date.now()});
+                await updateDoc(doc(db, "banners", editingId), dataToSave);
                 toast.success("Banner updated successfully", { id: loadingToast });
             } else {
-                await addDoc(collection(db, "banners"), {...formData, createdAt: Date.now()});
+                await addDoc(collection(db, "banners"), { ...dataToSave, createdAt: Date.now() });
                 toast.success("Banner created successfully", { id: loadingToast });
             }
             resetForm();
