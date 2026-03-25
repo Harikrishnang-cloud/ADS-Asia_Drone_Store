@@ -120,26 +120,33 @@ export default function CheckoutPage() {
 
     const validate = () => {
         const newErrors: any = {};
-        if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
-        if (!/^[A-Za-z]+$/.test(formData.firstName)) newErrors.firstName = "First name must contain only letters";
-        if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
-        if (!/^[A-Za-z]+$/.test(formData.lastName)) newErrors.lastName = "Last name must contain only letters";
+        const trimmedPhone = formData.phone.trim();
+
+        if (!formData.firstName.trim()) {
+            newErrors.firstName = "First name is required";
+        } else if (!/^[A-Za-z\s]+$/.test(formData.firstName.trim())) {
+            newErrors.firstName = "First name must contain only letters";
+        }
+
+        if (!formData.lastName.trim()) {
+            newErrors.lastName = "Last name is required";
+        } else if (!/^[A-Za-z\s]+$/.test(formData.lastName.trim())) {
+            newErrors.lastName = "Last name must contain only letters";
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!formData.email.trim()) {
             newErrors.email = "Email is required";
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+        } else if (!emailRegex.test(formData.email.trim())) {
             newErrors.email = "Enter a valid email address";
         }
-        if (!formData.phone.trim()) {
+
+        if (!trimmedPhone) {
             newErrors.phone = "Phone number is required";
-        } else if (!/^\d+$/.test(formData.phone)) {
-            newErrors.phone = "Phone must contain only numbers";
-        } else if (formData.phone.length !== 10) {
+        } else if (trimmedPhone.length !== 10) {
             newErrors.phone = "Phone number must be exactly 10 digits";
-        } else if (!/^[6-9]/.test(formData.phone)) {
-            newErrors.phone = "Phone number must start with 6, 7, 8, or 9";
-        }
-        else if (!/^[0-9]+$/.test(formData.phone)) {
-            newErrors.phone = "Phone must be only numbers";
+        } else if (!/^[6-9]\d{9}$/.test(trimmedPhone)) {
+            newErrors.phone = "Please enter a valid 10-digit Indian phone number";
         }
 
         if (savedAddresses.length > 0 && !selectedAddressId) {

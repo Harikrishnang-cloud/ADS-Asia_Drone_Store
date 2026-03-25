@@ -40,10 +40,10 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
         next();
     } catch (error: any) {
         console.error("Auth Middleware Error:", error.message);
-        res.status(401).json({ 
-            success: false, 
-            message: "Invalid or expired access token", 
-            error: error.message 
+        res.status(401).json({
+            success: false,
+            message: "Invalid or expired access token",
+            error: error.message
         });
         return;
     }

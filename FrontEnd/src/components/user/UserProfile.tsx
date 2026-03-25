@@ -115,20 +115,18 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
         if (formData.phone && !/^\d{10}$/.test(formData.phone)) {
             newErrors.phone = "Phone number must be exactly 10 digits";
         }
-        if (formData.pin && !/^\d{6}$/.test(formData.pin)) {
-            newErrors.pin = "PIN code must be exactly 6 digits";
-        }
+        // Removed Top-Level PIN validation here because it's replaced by the address list below
 
         // Validate individual addresses in the list
         formData.addresses.forEach((addr, index) => {
-            if (!addr.address.trim() || addr.address.trim().length < 5) {
-                newErrors[`address_${addr.id}`] = "Address is too short";
+            if (!addr.address || addr.address.trim().length < 5) {
+                newErrors[`address_${addr.id}`] = "Address is too short (min 5 chars)";
             }
-            if (!addr.city.trim()) {
+            if (!addr.city || !addr.city.trim()) {
                 newErrors[`city_${addr.id}`] = "City is required";
             }
             if (!addr.pin || !/^\d{6}$/.test(addr.pin.toString())) {
-                newErrors[`pin_${addr.id}`] = "PIN code must be 6 digits";
+                newErrors[`pin_${addr.id}`] = "6-digit PIN code required";
             }
         });
 

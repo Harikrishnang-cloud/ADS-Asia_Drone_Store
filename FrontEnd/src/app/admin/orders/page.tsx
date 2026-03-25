@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import { 
-    ShoppingCart, Search, Filter, Eye, 
-    MoreHorizontal, CheckCircle2, Truck, 
+import {
+    ShoppingCart, Search, Filter, Eye,
+    MoreHorizontal, CheckCircle2, Truck,
     Clock, XCircle, ChevronDown, Package,
     User, Mail, Phone, MapPin, Hash, ArrowUpRight
 } from "lucide-react";
@@ -77,13 +77,13 @@ export default function AdminOrdersPage() {
         try {
             const orderRef = doc(db, "orders", orderId);
             await updateDoc(orderRef, { status: newStatus });
-            
+
             // Update local state
             setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
             if (selectedOrder?.id === orderId) {
                 setSelectedOrder({ ...selectedOrder, status: newStatus });
             }
-            
+
             toast.success(`Order status updated to ${newStatus}`);
         } catch (error) {
             toast.error("Failed to update status");
@@ -94,7 +94,7 @@ export default function AdminOrdersPage() {
 
     const deleteOrder = async (orderId: string) => {
         if (!window.confirm("Are you sure you want to delete this order? This cannot be undone.")) return;
-        
+
         try {
             await deleteDoc(doc(db, "orders", orderId));
             setOrders(orders.filter(o => o.id !== orderId));
@@ -129,9 +129,9 @@ export default function AdminOrdersPage() {
 
     const filteredOrders = orders.filter(o => {
         const matchesStatus = filterStatus === "All" || o.status === filterStatus;
-        const matchesSearch = o.id.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                             o.contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                             o.contact.email.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesSearch = o.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            o.contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            o.contact.email.toLowerCase().includes(searchQuery.toLowerCase());
         return matchesStatus && matchesSearch;
     });
 
@@ -154,9 +154,9 @@ export default function AdminOrdersPage() {
                 <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-6 flex flex-col md:flex-row gap-4 items-center">
                     <div className="relative flex-1 w-full">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input 
-                            type="text" 
-                            placeholder="Search by Order ID, Name or Email..." 
+                        <input
+                            type="text"
+                            placeholder="Search by Order ID, Name or Email..."
                             className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue outline-none transition-all text-sm"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -178,7 +178,7 @@ export default function AdminOrdersPage() {
 
                 {/* Content Grid */}
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                    
+
                     {/* Orders List Table */}
                     <div className="xl:col-span-2 space-y-4">
                         {loading ? (
@@ -196,8 +196,8 @@ export default function AdminOrdersPage() {
                             </div>
                         ) : (
                             filteredOrders.map(order => (
-                                <div 
-                                    key={order.id} 
+                                <div
+                                    key={order.id}
                                     className={`bg-white rounded-xl border transition-all cursor-pointer p-4 group ${selectedOrder?.id === order.id ? 'border-brand-blue ring-1 ring-brand-blue/10 bg-brand-blue/[0.02]' : 'border-slate-100 hover:border-slate-300 shadow-sm'}`}
                                     onClick={() => setSelectedOrder(order)}
                                 >
@@ -309,7 +309,7 @@ export default function AdminOrdersPage() {
                                             <Button fullWidth variant="secondary" size="sm" icon={<Hash size={14} />}>
                                                 Print Invoice
                                             </Button>
-                                            <button 
+                                            <button
                                                 onClick={() => deleteOrder(selectedOrder.id)}
                                                 className="p-2.5 bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition-colors border border-red-100"
                                             >
