@@ -31,7 +31,7 @@ const adminRouter = new adminRoutes();
 app.use("/admin", adminRouter.getAdminRoutes());
 
 const paymentSvc = new PaymentService();
-const paymentCtrl = new PaymentController(paymentSvc);
+const paymentCtrl = new PaymentController(paymentSvc, userRepo);
 const paymentRouter = new paymentRoutes(paymentCtrl);
 app.use("/payment", paymentRouter.getPaymentRoutes());
 

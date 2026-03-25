@@ -1,4 +1,4 @@
-import db from "../../Config/config.firebase";
+import db, { admin } from "../../Config/config.firebase";
 import type { Iuser } from "../../Interface/user/user.models.interface";
 import type { IuserRepository } from "./IuserRepository";
 
@@ -46,5 +46,18 @@ export class userRepository implements IuserRepository {
     async isTokenBlacklisted(token: string): Promise<boolean> {
         const doc = await db.collection("blacklistedTokens").doc(token).get();
         return doc.exists;
+    }
+
+    async updateWalletBalance(userId: string, amount: number): Promise<void> {
+        await usersCollection.doc(userId).update({
+            walletBalance: admin.firestore.FieldValue.increment(amount)
+        });
+    }
+
+    async createTransaction(transactionData: any): Promise<void> {
+        await db.collection("transactions").add({
+            ...transactionData,
+            createdAt: new Date()
+        });
     }
 }

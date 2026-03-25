@@ -224,8 +224,23 @@ export default function CheckoutPage() {
                     });
                 }
 
-                await addDoc(collection(db, "orders"), finalOrderData);
+                const orderRef = await addDoc(collection(db, "orders"), finalOrderData);
                 
+                // Log transaction for Admin Payments view
+                await addDoc(collection(db, "transactions"), {
+                    userId: user.id,
+                    userName: `${formData.firstName} ${formData.lastName}`,
+                    userEmail: formData.email,
+                    amount: total,
+                    type: "order",
+                    paymentMethod: paymentMethod,
+                    status: "success",
+                    orderId: orderRef.id,
+                    razorpayOrderId: razorpayData?.orderId || null,
+                    razorpayPaymentId: razorpayData?.paymentId || null,
+                    createdAt: Timestamp.now()
+                });
+
                 // Show success
                 setIsProcessing(false);
                 setShowSuccessModal(true);

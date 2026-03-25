@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import api from "@/lib/axios";
 import { db, storage } from "@/lib/firebase";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import Script from "next/script";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { User, Mail, Phone, MapPin, Camera, Save, Trash2, Loader2, Edit3, ChevronLeft, Lock, RefreshCcw, Wallet, CreditCard, Plus, Check, Home, Briefcase, MapPinned } from "lucide-react";
 import { UserAddress } from "@/store/authStore";
@@ -311,31 +313,90 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
     const handleAddMoney = async (e: React.FormEvent) => {
         e.preventDefault();
         const amount = parseInt(addMoneyAmount);
-        if (isNaN(amount) || amount <= 0) {
-            toast.error("Please enter a valid amount");
+        if (isNaN(amount) || amount <= 10) {
+            toast.error("Minimum top-up amount is ₹10");
             return;
         }
 
         setIsAddingMoney(true);
+        console.log("Initiating Wallet Top-up for amount:", amount);
 
-        // Simulate secure online payment delay
-        setTimeout(async () => {
-            try {
-                const newBalance = (user.walletBalance || 0) + amount;
-                await updateDoc(doc(db, "users", user.id), { walletBalance: newBalance });
-                const updatedUser = { ...user, walletBalance: newBalance };
-                setUser(updatedUser);
-                localStorage.setItem("userData", JSON.stringify(updatedUser));
-                setAuth(updatedUser, localStorage.getItem("accessToken"));
+        try {
+            // 1. Create Razorpay order in Backend
+            const orderRes = await api.post("/payment/create-order", { amount });
+            const order = orderRes.data.order;
 
-                toast.success(`Successfully added ₹${amount.toLocaleString('en-IN')} to wallet!`);
-                setAddMoneyAmount("");
-            } catch (error) {
-                toast.error("Failed to add money");
-            } finally {
-                setIsAddingMoney(false);
+            if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) {
+                throw new Error("Razorpay Key ID missing.");
             }
-        }, 1500);
+
+            // 2. Open Razorpay Modal
+            const options = {
+                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                amount: order.amount,
+                currency: order.currency,
+                name: "Asia Drone Store",
+                description: "Wallet Top-up",
+                order_id: order.id,
+                handler: async function (response: any) {
+                    try {
+                        // 3. Verify Payment and update balance on backend
+                        const verifyRes = await api.post("/payment/verify-wallet-topup", {
+                            order_id: response.razorpay_order_id,
+                            payment_id: response.razorpay_payment_id,
+                            signature: response.razorpay_signature,
+                            amount: amount
+                        });
+
+                        if (verifyRes.data.success) {
+                            // Update local state by re-fetching or updating directly
+                            const newBalance = (user.walletBalance || 0) + amount;
+                            const updatedUser = { ...user, walletBalance: newBalance };
+                            setUser(updatedUser);
+                            localStorage.setItem("userData", JSON.stringify(updatedUser));
+                            setAuth(updatedUser, localStorage.getItem("accessToken"));
+                            
+                            toast.success(`₹${amount.toLocaleString('en-IN')} added to wallet!`);
+                            setAddMoneyAmount("");
+                        } else {
+                            toast.error(verifyRes.data.message || "Top-up failed.");
+                        }
+                    } catch (err) {
+                        console.error("Top-up verification failed:", err);
+                        toast.error("Transaction verification failed.");
+                    } finally {
+                        setIsAddingMoney(false);
+                    }
+                },
+                prefill: {
+                    name: user.name,
+                    email: user.email,
+                    contact: user.phone || ""
+                },
+                theme: { color: "#0066CC" },
+                modal: {
+                    ondismiss: function() {
+                        setIsAddingMoney(false);
+                    }
+                }
+            };
+
+            if (typeof (window as any).Razorpay === 'undefined') {
+                throw new Error("Razorpay SDK not loaded.");
+            }
+
+            const rzp = new (window as any).Razorpay(options);
+            rzp.on('payment.failed', function (response: any) {
+                toast.error("Payment failed. " + response.error.description);
+                setIsAddingMoney(false);
+            });
+            rzp.open();
+
+        } catch (error: any) {
+            console.error("Wallet Top-up failed:", error);
+            toast.error(error.message || "Failed to initiate payment.");
+            setIsAddingMoney(false);
+        }
     };
 
     if (loading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-brand-blue" size={40} /></div>;
@@ -343,6 +404,8 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
 
     return (
         <div className="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <Script id="razorpay-checkout-js" src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
+            
             {/* Main Profile Info Card */}
             <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 h-full">
                 <div className="flex justify-between items-center mb-8">

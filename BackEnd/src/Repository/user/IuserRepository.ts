@@ -6,4 +6,6 @@ export interface IuserRepository {
     register(user: Iuser): Promise<Iuser>;
     blacklistToken(token: string, expiresAt: Date): Promise<boolean>;
     isTokenBlacklisted(token: string): Promise<boolean>;
+    updateWalletBalance(userId: string, amount: number): Promise<void>;
+    createTransaction(transactionData: any): Promise<void>;
 }

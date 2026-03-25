@@ -1,6 +1,6 @@
 import express from "express";
 import { PaymentController } from "../../Controllers/payment/PaymentController.ts";
-import { userMiddleware } from "../../Middleware/authMiddleware.ts";
+import { authMiddleware } from "../../Middleware/authMiddleware.ts";
 
 export class paymentRoutes {
     private paymentController: PaymentController;
@@ -13,12 +13,16 @@ export class paymentRoutes {
     }
 
     private setRoutes() {
-        this.paymentRoutes.post("/create-order", userMiddleware, (req, res) => {
+        this.paymentRoutes.post("/create-order", authMiddleware, (req, res) => {
             this.paymentController.createOrder(req, res);
         });
         
-        this.paymentRoutes.post("/verify-payment", userMiddleware, (req, res) => {
+        this.paymentRoutes.post("/verify-payment", authMiddleware, (req, res) => {
             this.paymentController.verifyPayment(req, res);
+        });
+
+        this.paymentRoutes.post("/verify-wallet-topup", authMiddleware, (req, res) => {
+            this.paymentController.verifyWalletTopup(req, res);
         });
     }
 

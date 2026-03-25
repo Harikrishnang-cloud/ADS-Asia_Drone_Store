@@ -12,9 +12,19 @@ const api = axios.create({
 api.interceptors.request.use(
     (config) => {
         const isAdminRequest = config.url?.startsWith('/admin');
-        const tokenKey = isAdminRequest ? "adminAccessToken" : "accessToken";
+        let tokenKey = isAdminRequest ? "adminAccessToken" : "accessToken";
         
-        const token = localStorage.getItem(tokenKey);
+        let token = localStorage.getItem(tokenKey);
+
+        // Fallback: If not an admin request but user token missing, try admin token
+        if (!isAdminRequest && !token) {
+            const adminToken = localStorage.getItem("adminAccessToken");
+            if (adminToken) {
+                token = adminToken;
+                tokenKey = "adminAccessToken (Fallback)";
+            }
+        }
+        
         console.log(`Axios Request to ${config.url} - Token key used: ${tokenKey} - Token found: ${!!token}`);
         
         if (token) {
