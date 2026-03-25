@@ -3,13 +3,17 @@
 import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useCartStore } from "@/store/cartStore";
-import { Lock, CreditCard, CheckCircle, ShoppingBag, ArrowLeft, Wallet, Banknote, Smartphone, MapPin } from "lucide-react";
+import { Lock, CreditCard, CheckCircle, ShoppingBag, ArrowLeft, Wallet, Banknote, Smartphone, MapPin, Clock, Truck, PackageCheck } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/button";
 import toast from "react-hot-toast";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import { useAuthStore } from "@/store/authStore";
+import { db } from "@/lib/firebase";
+import { collection, addDoc, updateDoc, doc, Timestamp, increment } from "firebase/firestore";
+import Script from "next/script";
+import api from "@/lib/axios";
 
 export default function CheckoutPage() {
     const { items, getTotalPrice, clearCart } = useCartStore();
@@ -33,7 +37,7 @@ export default function CheckoutPage() {
     }, [hasHydrated, items.length, router, showSuccessModal]);
 
     const subtotal = getTotalPrice();
-    const shipping = subtotal < 10000 ? 0 : 200; 
+    const shipping = subtotal < 10000 ? 0 : 200;
     const actualShipping = subtotal < 10000 ? 0 : 200;
     const total = subtotal + actualShipping;
 
@@ -49,9 +53,9 @@ export default function CheckoutPage() {
     });
 
     const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "wallet" | "cod" | "online">("razorpay");
-    
+
     // Dynamic checking of the address from context storage
-    const [savedAddresses, setSavedAddresses] = useState<any[]>([]); 
+    const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
 
     useEffect(() => {
         if (user) {
@@ -62,7 +66,7 @@ export default function CheckoutPage() {
                 email: prev.email || user.email || "",
                 phone: prev.phone || user.phone || ""
             }));
-            
+
             if (user.addresses && user.addresses.length > 0) {
                 setSavedAddresses(user.addresses.map(addr => ({
                     id: addr.id,
@@ -73,7 +77,7 @@ export default function CheckoutPage() {
                     zip: addr.pin,
                     isPrimary: addr.isPrimary
                 })));
-                
+
                 // Set selected address to primary by default
                 const primary = user.addresses.find(a => a.isPrimary) || user.addresses[0];
                 setSelectedAddressId(primary.id);
@@ -95,7 +99,7 @@ export default function CheckoutPage() {
         }
     }, [user]);
 
-    const walletBalance = user?.walletBalance || 0; 
+    const walletBalance = user?.walletBalance || 0;
 
     const isCodAvailable = total < 1000;
     const isWalletAvailable = walletBalance > 0 && walletBalance >= total;
@@ -134,7 +138,7 @@ export default function CheckoutPage() {
         } else if (!/^[6-9]/.test(formData.phone)) {
             newErrors.phone = "Phone number must start with 6, 7, 8, or 9";
         }
-        else if(!/^[0-9]+$/.test(formData.phone)){
+        else if (!/^[0-9]+$/.test(formData.phone)) {
             newErrors.phone = "Phone must be only numbers";
         }
 
@@ -148,7 +152,7 @@ export default function CheckoutPage() {
 
     const handlePlaceOrder = (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!validate()) {
             toast.error("Please fix the errors in your shipping details.");
             return;
@@ -159,18 +163,158 @@ export default function CheckoutPage() {
             return;
         }
 
+        if (!user || !user.id) {
+            toast.error("User session not found. Please log in again.");
+            return;
+        }
+
         setIsProcessing(true);
-        // Simulate API call
-        setTimeout(() => {
-            setIsProcessing(false);
-            setShowSuccessModal(true);
-        }, 2000);
+        
+        const selectedAddress = savedAddresses.find(a => a.id === selectedAddressId);
+        
+        const orderData = {
+            userId: user.id,
+            items: items.map(item => ({
+                id: item.id,
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity,
+                image: item.image
+            })),
+            total: total,
+            subtotal: subtotal,
+            shipping: actualShipping,
+            paymentMethod: paymentMethod,
+            status: "Processing",
+            createdAt: Timestamp.now(),
+            shippingAddress: {
+                address: selectedAddress.address,
+                city: selectedAddress.city,
+                state: selectedAddress.state,
+                zip: selectedAddress.zip,
+                type: selectedAddress.type
+            },
+            contact: {
+                name: `${formData.firstName} ${formData.lastName}`,
+                email: formData.email,
+                phone: formData.phone
+            }
+        };
+
+        const createOrder = async (razorpayData?: any) => {
+            try {
+                const finalOrderData = {
+                    ...orderData,
+                    razorpay: razorpayData || null,
+                    status: (razorpayData || paymentMethod === "wallet" || paymentMethod === "cod") ? "Processing" : "Pending"
+                };
+
+                // If wallet, update user's balance
+                if (paymentMethod === "wallet") {
+                    const userRef = doc(db, "users", user.id!);
+                    await updateDoc(userRef, {
+                        walletBalance: increment(-total)
+                    });
+                }
+
+                await addDoc(collection(db, "orders"), finalOrderData);
+                
+                // Show success
+                setIsProcessing(false);
+                setShowSuccessModal(true);
+            } catch (error) {
+                console.error("Order failed:", error);
+                toast.error("Failed to place order. Please try again.");
+                setIsProcessing(false);
+            }
+        };
+
+        const initiateRazorpay = async () => {
+            console.log("Initiating Razorpay payment for amount:", total);
+            try {
+                // 1. Create order in Backend
+                const orderRes = await api.post("/payment/create-order", { amount: total });
+                console.log("Order created in backend:", orderRes.data);
+                const order = orderRes.data.order;
+
+                if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) {
+                    throw new Error("Razorpay Key ID missing in environment variables.");
+                }
+
+                // 2. Open Razorpay Modal
+                const options = {
+                    key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                    amount: order.amount,
+                    currency: order.currency,
+                    name: "Asia Drone Store",
+                    description: "Premium Drone Purchase",
+                    order_id: order.id,
+                    handler: async function (response: any) {
+                        try {
+                            // 3. Verify Payment
+                            const verifyRes = await api.post("/payment/verify-payment", {
+                                order_id: response.razorpay_order_id,
+                                payment_id: response.razorpay_payment_id,
+                                signature: response.razorpay_signature
+                            });
+
+                            if (verifyRes.data.success) {
+                                await createOrder({
+                                    orderId: response.razorpay_order_id,
+                                    paymentId: response.razorpay_payment_id
+                                });
+                            } else {
+                                toast.error("Payment verification failed. Please contact support.");
+                                setIsProcessing(false);
+                            }
+                        } catch (err) {
+                            console.error("Verification failed:", err);
+                            toast.error("Payment verification failed.");
+                            setIsProcessing(false);
+                        }
+                    },
+                    prefill: {
+                        name: `${formData.firstName} ${formData.lastName}`,
+                        email: formData.email,
+                        contact: formData.phone
+                    },
+                    theme: {
+                        color: "#0066CC"
+                    },
+                    modal: {
+                        ondismiss: function() {
+                            setIsProcessing(false);
+                        }
+                    }
+                };
+                
+                console.log("Opening Razorpay Modal with options:", options);
+                
+                if (typeof (window as any).Razorpay === 'undefined') {
+                    throw new Error("Razorpay SDK not loaded. Please check your internet connection and refresh.");
+                }
+
+                const rzp = new (window as any).Razorpay(options);
+                rzp.open();
+
+            } catch (error: any) {
+                console.error("Razorpay initiation failed:", error);
+                toast.error(error.response?.data?.message || "Failed to initiate payment. Server might be down.");
+                setIsProcessing(false);
+            }
+        };
+
+        if (paymentMethod === "razorpay" || paymentMethod === "online") {
+            initiateRazorpay();
+        } else {
+            createOrder();
+        }
     };
 
     const handleSuccessComplete = () => {
         clearCart();
         setShowSuccessModal(false);
-        router.push("/products"); 
+        router.push("/user/orders");
     };
 
     if (!hasHydrated || items.length === 0) {
@@ -188,6 +332,7 @@ export default function CheckoutPage() {
 
     return (
         <ProtectedRoute allowedRole="user">
+            <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
             <div className="min-h-screen pt-24 md:pt-32 pb-12 md:pb-20 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Header */}
@@ -215,57 +360,61 @@ export default function CheckoutPage() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="space-y-1">
                                             <label className="text-sm font-bold text-slate-700 ml-1">First Name*</label>
-                                            <input 
-                                                type="text" 
-                                                name="firstName" 
-                                                value={formData.firstName} 
-                                                onChange={handleInputChange} 
-                                                className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.firstName ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`} 
-                                                placeholder="Enter first name" 
+                                            <input
+                                                type="text"
+                                                name="firstName"
+                                                value={formData.firstName}
+                                                onChange={handleInputChange}
+                                                suppressHydrationWarning
+                                                className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.firstName ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`}
+                                                placeholder="Enter first name"
                                             />
                                             {errors.firstName && <p className="text-[10px] font-bold text-red-500 ml-2">{errors.firstName}</p>}
                                         </div>
                                         <div className="space-y-1">
                                             <label className="text-sm font-bold text-slate-700 ml-1">Last Name*</label>
-                                            <input 
-                                                type="text" 
-                                                name="lastName" 
-                                                value={formData.lastName} 
-                                                onChange={handleInputChange} 
-                                                className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.lastName ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`} 
-                                                placeholder="Enter last name" 
+                                            <input
+                                                type="text"
+                                                name="lastName"
+                                                value={formData.lastName}
+                                                onChange={handleInputChange}
+                                                suppressHydrationWarning
+                                                className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.lastName ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`}
+                                                placeholder="Enter last name"
                                             />
                                             {errors.lastName && <p className="text-[10px] font-bold text-red-500 ml-2">{errors.lastName}</p>}
                                         </div>
                                         <div className="space-y-1 md:col-span-2">
                                             <label className="text-sm font-bold text-slate-700 ml-1">Email Address*</label>
-                                            <input 
-                                                type="email" 
-                                                name="email" 
-                                                value={formData.email} 
-                                                onChange={handleInputChange} 
-                                                className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.email ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`} 
-                                                placeholder="Enter email address" 
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                value={formData.email}
+                                                onChange={handleInputChange}
+                                                suppressHydrationWarning
+                                                className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.email ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`}
+                                                placeholder="Enter email address"
                                             />
                                             {errors.email && <p className="text-[10px] font-bold text-red-500 ml-2">{errors.email}</p>}
                                         </div>
                                         <div className="space-y-1 md:col-span-2">
                                             <label className="text-sm font-bold text-slate-700 ml-1">Phone Number*</label>
                                             <div className="relative">
-                                                <input 
-                                                    type="tel" 
-                                                    name="phone" 
-                                                    value={formData.phone} 
-                                                    onChange={handleInputChange} 
-                                                    className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.phone ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`} 
-                                                    placeholder="Enter 10-digit phone number" 
+                                                <input
+                                                    type="tel"
+                                                    name="phone"
+                                                    value={formData.phone}
+                                                    onChange={handleInputChange}
+                                                    suppressHydrationWarning
+                                                    className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.phone ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`}
+                                                    placeholder="Enter 10-digit phone number"
                                                 />
                                             </div>
                                             {errors.phone && <p className="text-[10px] font-bold text-red-500 ml-2">{errors.phone}</p>}
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 {/* Shipping Address */}
                                 {savedAddresses.length > 0 ? (
                                     <div className="bg-white rounded-lg p-6 md:p-8 shadow-sm border border-slate-100">
@@ -281,8 +430,8 @@ export default function CheckoutPage() {
                                         </h2>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             {savedAddresses.map((addr) => (
-                                                <div 
-                                                    key={addr.id} 
+                                                <div
+                                                    key={addr.id}
                                                     onClick={() => setSelectedAddressId(addr.id)}
                                                     className={`p-4 border-2 rounded-lg relative cursor-pointer transition-all ${selectedAddressId === addr.id ? 'border-brand-blue bg-brand-blue/5' : 'border-slate-100 bg-white hover:border-slate-200'}`}
                                                 >
@@ -326,10 +475,10 @@ export default function CheckoutPage() {
                                         <span className="w-8 h-8 rounded-full bg-brand-blue/10 text-brand-blue flex items-center justify-center text-sm font-bold">3</span>
                                         Payment Methods
                                     </h2>
-                                    
+
                                     <div className="space-y-4">
                                         {/* Stripe Option */}
-                                        <div 
+                                        <div
                                             onClick={() => setPaymentMethod("razorpay")}
                                             className={`p-4 border-2 rounded-xl flex items-start gap-4 cursor-pointer relative overflow-hidden transition-all shadow-sm ${paymentMethod === 'razorpay' ? 'border-brand-blue bg-brand-blue/5' : 'border-slate-100 bg-white hover:border-brand-blue/30'}`}
                                         >
@@ -343,21 +492,20 @@ export default function CheckoutPage() {
                                                 <h3 className={`font-bold flex items-center gap-2 flex-wrap transition-colors ${paymentMethod === 'razorpay' ? 'text-brand-blue-dark' : 'text-slate-700'}`}>
                                                     <CreditCard size={18} className={paymentMethod === 'razorpay' ? 'text-brand-blue' : 'text-slate-400'} />
                                                     Credit / Debit Card via Razorpay
-                                                </h3>                                                                                                                                                                       
+                                                </h3>
                                                 <p className="text-sm text-slate-500 mt-1 leading-relaxed">You will be redirected to the secure Razorpay portal after placing your order to complete the payment.</p>
                                             </div>
                                         </div>
 
                                         {/* Wallet Option */}
-                                        <div 
+                                        <div
                                             onClick={() => isWalletAvailable && setPaymentMethod("wallet")}
-                                            className={`p-4 border-2 rounded-xl flex items-start gap-4 relative overflow-hidden transition-all shadow-sm ${
-                                                !isWalletAvailable 
-                                                    ? 'opacity-60 cursor-not-allowed border-slate-100 bg-slate-50' 
-                                                    : paymentMethod === 'wallet' 
-                                                        ? 'border-brand-blue bg-brand-blue/5 cursor-pointer' 
+                                            className={`p-4 border-2 rounded-xl flex items-start gap-4 relative overflow-hidden transition-all shadow-sm ${!isWalletAvailable
+                                                    ? 'opacity-60 cursor-not-allowed border-slate-100 bg-slate-50'
+                                                    : paymentMethod === 'wallet'
+                                                        ? 'border-brand-blue bg-brand-blue/5 cursor-pointer'
                                                         : 'border-slate-100 bg-white hover:border-brand-blue/30 cursor-pointer'
-                                            }`}
+                                                }`}
                                         >
                                             <div className="absolute top-0 right-0 w-16 h-16 bg-brand-blue/10 rounded-bl-full -z-10 opacity-0 transition-opacity" style={{ opacity: paymentMethod === 'wallet' ? 1 : 0 }}></div>
                                             <div className="mt-1 flex-shrink-0">
@@ -380,7 +528,7 @@ export default function CheckoutPage() {
                                             </div>
                                         </div>
                                         {/* Online Payment */}
-                                        <div 
+                                        <div
                                             onClick={() => setPaymentMethod("online")}
                                             className={`p-4 border-2 rounded-xl flex items-start gap-4 cursor-pointer relative overflow-hidden transition-all shadow-sm ${paymentMethod === 'online' ? 'border-brand-blue bg-brand-blue/5' : 'border-slate-100 bg-white hover:border-brand-blue/30'}`}
                                         >
@@ -398,17 +546,16 @@ export default function CheckoutPage() {
                                                 <p className="text-sm text-slate-500 mt-1 leading-relaxed">Pay instantly using any UPI app on your mobile device.</p>
                                             </div>
                                         </div>
-                                        
+
                                         {/* COD Option */}
-                                        <div 
+                                        <div
                                             onClick={() => isCodAvailable && setPaymentMethod("cod")}
-                                            className={`p-4 border-2 rounded-xl flex items-start gap-4 relative overflow-hidden transition-all shadow-sm ${
-                                                !isCodAvailable 
-                                                    ? 'opacity-60 cursor-not-allowed border-slate-100 bg-slate-50' 
-                                                    : paymentMethod === 'cod' 
-                                                        ? 'border-brand-blue bg-brand-blue/5 cursor-pointer' 
+                                            className={`p-4 border-2 rounded-xl flex items-start gap-4 relative overflow-hidden transition-all shadow-sm ${!isCodAvailable
+                                                    ? 'opacity-60 cursor-not-allowed border-slate-100 bg-slate-50'
+                                                    : paymentMethod === 'cod'
+                                                        ? 'border-brand-blue bg-brand-blue/5 cursor-pointer'
                                                         : 'border-slate-100 bg-white hover:border-brand-blue/30 cursor-pointer'
-                                            }`}
+                                                }`}
                                         >
                                             <div className="absolute top-0 right-0 w-16 h-16 bg-brand-blue/10 rounded-bl-full -z-10 opacity-0 transition-opacity" style={{ opacity: paymentMethod === 'cod' ? 1 : 0 }}></div>
                                             <div className="mt-1 flex-shrink-0">
@@ -442,7 +589,7 @@ export default function CheckoutPage() {
                                     <ShoppingBag size={20} className="text-brand-orange" />
                                     Order Summary
                                 </h2>
-                                    
+
                                 <div className="space-y-4 mb-6 max-h-[350px] overflow-y-auto custom-scrollbar pr-2">
                                     {items.map((item) => (
                                         <div key={item.id} className="flex gap-4">
@@ -459,7 +606,7 @@ export default function CheckoutPage() {
                                         </div>
                                     ))}
                                 </div>
-                                
+
                                 <div className="space-y-3 py-5 border-y border-slate-100 mb-6 border-dashed">
                                     <div className="flex items-center justify-between text-sm text-slate-600">
                                         <span className="font-medium">Subtotal</span>
@@ -470,19 +617,19 @@ export default function CheckoutPage() {
                                         <span className="font-bold text-emerald-500">{actualShipping === 0 ? "Free" : `₹${actualShipping.toLocaleString('en-IN')}`}</span>
                                     </div>
                                 </div>
-                                
+
                                 <div className="flex items-center justify-between mb-8">
                                     <span className="text-xl font-bold text-slate-900">Total</span>
                                     <span className="text-3xl font-black text-brand-blue-dark">₹{total.toLocaleString('en-IN')}</span>
                                 </div>
-                                
-                                <Button 
-                                    type="submit" 
+
+                                <Button
+                                    type="submit"
                                     form="checkout-form"
-                                    fullWidth 
-                                    loading={isProcessing} 
+                                    fullWidth
+                                    loading={isProcessing}
                                     size="lg"
-                                    icon={<CheckCircle size={20} />} 
+                                    icon={<CheckCircle size={20} />}
                                     className="text-base shadow-brand-blue/20"
                                 >
                                     Place Order Securely

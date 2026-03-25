@@ -13,17 +13,21 @@
     --breakpoint-3xl: 1920px;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     overflow-x: hidden;
     width: 100%;
     max-width: 100vw;
 }
 
-img, video {
+img,
+video {
     max-width: 100%;
 }
 
@@ -37,6 +41,7 @@ body {
     src: local('system-ui'), local('Arial'), local('sans-serif');
     unicode-range: U+20B9;
 }
+
 /* Custom scrollbar to match the dark theme */
 ::-webkit-scrollbar {
     width: 8px;

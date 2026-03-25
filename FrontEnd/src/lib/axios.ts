@@ -15,6 +15,8 @@ api.interceptors.request.use(
         const tokenKey = isAdminRequest ? "adminAccessToken" : "accessToken";
         
         const token = localStorage.getItem(tokenKey);
+        console.log(`Axios Request to ${config.url} - Token key used: ${tokenKey} - Token found: ${!!token}`);
+        
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }

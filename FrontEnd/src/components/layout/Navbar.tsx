@@ -139,271 +139,274 @@ export function Navbar() {
         router.push("/auth/login");
     };
 
+    const isHomePage = pathname === "/";
+
     return (
         <>
-        <nav
-            className={`sticky top-0 z-50 transition-all duration-300 w-full ${isScrolled
-                ? "bg-transparent backdrop-blur-md py-3"
-                : "bg-white py-3 border-b border-slate-100"
-                }`}>
-            <div className="mx-auto px-4 md:px-8 flex justify-between items-center relative">
+            <nav
+                className={`sticky top-0 z-50 transition-all duration-300 w-full ${isScrolled && isHomePage
+                    ? "bg-transparent backdrop-blur-md py-3"
+                    : "bg-white py-3 border-b border-slate-100 shadow-sm"
+                    }`}>
+                <div className="mx-auto px-4 md:px-8 flex justify-between items-center relative">
 
-                {/* Left Side: Logo */}
-                <div className="flex-shrink-0 z-50">
-                    <Logo width={160} height={160} showText={true} textColor="text-brand-blue-dark" className="w-[120px] md:w-[160px]" imageClassName="w-full h-auto" />
-                </div>
+                    {/* Left Side: Logo */}
+                    <div className="flex-shrink-0 z-50">
+                        <Logo width={160} height={160} className="w-[120px] md:w-[160px]" imageClassName="w-full h-auto" />
+                    </div>
 
-                {/* Center: Navigation Menu (Desktop) */}
-                <div className="hidden lg:flex items-center space-x-8 lg:space-x-10">
-                    {navLinks.map((link) => (
-                        <Link
-                            key={link.name}
-                            href={link.path}
-                            className={`relative text-[15px] font-medium transition-colors hover:text-brand-orange group py-2 ${pathname === link.path ? "text-brand-orange" : isScrolled ? "text-white" : "text-brand-blue-dark"
-                                }`}
-                        >
-                            {link.name}
-                            <span
-                                className={`absolute bottom-0 left-0 w-full h-[2px] bg-brand-orange transform origin-left transition-transform duration-300 ease-out ${pathname === link.path ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                    {/* Center: Navigation Menu (Desktop) */}
+                    <div className="hidden lg:flex items-center space-x-8 lg:space-x-10">
+                        {navLinks.map((link) => (
+                            <Link
+                                key={link.name}
+                                href={link.path}
+                                className={`relative text-[15px] font-medium transition-colors hover:text-brand-orange group py-2 ${pathname === link.path ? "text-brand-orange" : (isScrolled && isHomePage) ? "text-white" : "text-brand-blue-dark"
                                     }`}
-                            ></span>
-                        </Link>
-                    ))}
-                </div>
-
-                {/* Right Side: Profile / Actions */}
-                <div className="hidden md:flex items-center gap-6 z-50">
-
-                    {/* Search Bar - Desktop */}
-                    <div className="relative group hidden lg:flex items-center">
-                        <input
-                            type="text"
-                            placeholder="Search"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className={`w-48 lg:w-64 px-4 py-2 pl-10 text-sm rounded-full border transition-all duration-300 focus:w-64 lg:focus:w-80 outline-none ${isScrolled
-                                ? "bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:bg-white/20 focus:border-white/40"
-                                : "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand-blue/30 focus:shadow-md"
-                                }`}
-                        />
-                        <Search size={16} className={`absolute left-3.5 transition-colors ${isScrolled ? "text-white/60 group-focus-within:text-white" : "text-slate-400 group-focus-within:text-brand-blue"
-                            }`} />
+                            >
+                                {link.name}
+                                <span
+                                    className={`absolute bottom-0 left-0 w-full h-[2px] bg-brand-orange transform origin-left transition-transform duration-300 ease-out ${pathname === link.path ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                                        }`}
+                                ></span>
+                            </Link>
+                        ))}
                     </div>
 
-                    {/* Action Icons */}
-                    <div className="flex items-center gap-5 mr-2">
-                        {/* Wishlist Icon with Dropdown */}
-                        <div className="relative group cursor-pointer">
-                            <Link href={user ? "/user/wishlist" : "/auth/login"} className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
-                                <Heart size={20} strokeWidth={2} />
-                                {hasHydrated && wishlistItemCount > 0 && (
-                                    <span className="absolute top-1 -right-2 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
-                                        {wishlistItemCount > 99 ? '99+' : wishlistItemCount}
-                                    </span>
-                                )}
-                            </Link>
-                            {hasHydrated && <WishlistDropdown items={wishlistItems} />}
-                        </div>
+                    {/* Right Side: Profile / Actions */}
+                    <div className="hidden md:flex items-center gap-6 z-50">
 
-                        <div className="relative group cursor-pointer">
-                            <Link href={user ? "/user/cart" : "/auth/login"} className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
-                                <ShoppingCart size={20} strokeWidth={2} />
-                                {hasHydrated && cartItemCount > 0 && (
-                                    <span className="absolute top-1 -right-2 min-w-[18px] h-[18px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
-                                        {cartItemCount > 99 ? '99+' : cartItemCount}
-                                    </span>
-                                )}
-                            </Link>
-                            {hasHydrated && <CartDropdown items={cartItems} />}
-                        </div>
-
-                        {/* Notification Icon with Dropdown */}
-                        <div className="relative group cursor-pointer">
-                            <Link href={user ? "/user/notifications" : "/auth/login"} className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
-                                <Bell size={20} strokeWidth={2} />
-                                {notificationCount > 0 && (
-                                    <span className="absolute top-1 -right-2 min-w-[18px] h-[18px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
-                                        {notificationCount > 9 ? '9+' : notificationCount}
-                                    </span>
-                                )}
-                            </Link>
-                            <NotificationDropdown
-                                notifications={notifications}
-                                onMarkAllRead={() => {
-                                    localStorage.setItem("ads_notifications_last_read", Date.now().toString());
-                                    markAllAsRead();
-                                }}
+                        {/* Search Bar - Desktop */}
+                        <div className="relative group hidden lg:flex items-center">
+                            <input
+                                type="text"
+                                placeholder="Search"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                suppressHydrationWarning
+                                className={`w-48 lg:w-64 px-4 py-2 pl-10 text-sm rounded-full border transition-all duration-300 focus:w-64 lg:focus:w-80 outline-none ${isScrolled && isHomePage
+                                    ? "bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:bg-white/20 focus:border-white/40"
+                                    : "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand-blue/30 focus:shadow-md"
+                                    }`}
                             />
+                            <Search size={16} className={`absolute left-3.5 transition-colors ${isScrolled && isHomePage ? "text-white/60 group-focus-within:text-white" : "text-slate-400 group-focus-within:text-brand-blue"
+                                }`} />
                         </div>
-                    </div>
 
-                    {hasHydrated && user ? (
-                        <div className="flex items-center gap-4">
-                            <span className={`text-sm font-medium hidden xl:block ${isScrolled ? "text-white" : "text-brand-blue-dark"}`}>
-                                Welcome, <span className="text-brand-orange capitalize">{user?.name ? user.name.split(' ')[0] : 'User'}</span>
-                            </span>
+                        {/* Action Icons */}
+                        <div className="flex items-center gap-5 mr-2">
+                            {/* Wishlist Icon with Dropdown */}
+                            <div className="relative group cursor-pointer">
+                                <Link href={user ? "/user/wishlist" : "/auth/login"} className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${(isScrolled && isHomePage) ? "text-white" : "text-brand-blue-dark"}`}>
+                                    <Heart size={20} strokeWidth={2} />
+                                    {hasHydrated && wishlistItemCount > 0 && (
+                                        <span className="absolute top-1 -right-2 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
+                                            {wishlistItemCount > 99 ? '99+' : wishlistItemCount}
+                                        </span>
+                                    )}
+                                </Link>
+                                {hasHydrated && <WishlistDropdown items={wishlistItems} />}
+                            </div>
 
                             <div className="relative group cursor-pointer">
+                                <Link href={user ? "/user/cart" : "/auth/login"} className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${(isScrolled && isHomePage) ? "text-white" : "text-brand-blue-dark"}`}>
+                                    <ShoppingCart size={20} strokeWidth={2} />
+                                    {hasHydrated && cartItemCount > 0 && (
+                                        <span className="absolute top-1 -right-2 min-w-[18px] h-[18px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
+                                            {cartItemCount > 99 ? '99+' : cartItemCount}
+                                        </span>
+                                    )}
+                                </Link>
+                                {hasHydrated && <CartDropdown items={cartItems} />}
+                            </div>
 
-                                <div className="w-[42px] h-[42px] rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-brand-blue-dark transition-all duration-300 group-hover:border-brand-orange group-hover:text-brand-orange group-hover:shadow-[0_0_12px_rgba(241,90,34,0.15)]">
-                                    <User size={18} strokeWidth={2.5} />
-                                </div>
+                            {/* Notification Icon with Dropdown */}
+                            <div className="relative group cursor-pointer">
+                                <Link href={user ? "/user/notifications" : "/auth/login"} className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${(isScrolled && isHomePage) ? "text-white" : "text-brand-blue-dark"}`}>
+                                    <Bell size={20} strokeWidth={2} />
+                                    {notificationCount > 0 && (
+                                        <span className="absolute top-1 -right-2 min-w-[18px] h-[18px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
+                                            {notificationCount > 9 ? '9+' : notificationCount}
+                                        </span>
+                                    )}
+                                </Link>
+                                <NotificationDropdown
+                                    notifications={notifications}
+                                    onMarkAllRead={() => {
+                                        localStorage.setItem("ads_notifications_last_read", Date.now().toString());
+                                        markAllAsRead();
+                                    }}
+                                />
+                            </div>
+                        </div>
 
-                                {/* User Dropdown Menu - Redesigned Premium Style */}
-                                <div className="absolute top-[120%] right-0 w-72 bg-white rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right border border-slate-100 overflow-hidden translate-y-4 group-hover:translate-y-0 z-[100]">
+                        {hasHydrated && user ? (
+                            <div className="flex items-center gap-4">
+                                <span className={`text-sm font-medium hidden xl:block ${(isScrolled && isHomePage) ? "text-white" : "text-brand-blue-dark"}`}>
+                                    Welcome, <span className="text-brand-orange capitalize">{user?.name ? user.name.split(' ')[0] : 'User'}</span>
+                                </span>
 
-                                    {/* User Header Section */}
-                                    <div className="p-5 flex items-center gap-4 border-b border-slate-100 bg-slate-50/50">
-                                        <div className="w-12 h-12 rounded-full bg-brand-blue-dark text-white flex items-center justify-center font-bold text-lg shadow-inner flex-shrink-0">
-                                            {user?.name ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'U'}
-                                        </div>
-                                        <div className="flex flex-col overflow-hidden">
-                                            <p className="font-bold text-slate-900 truncate leading-tight capitalize">{user?.name || 'User'}</p>
-                                            <p className="text-xs text-slate-500 truncate mt-1">{user?.email}</p>
-                                        </div>
+                                <div className="relative group cursor-pointer">
+
+                                    <div className="w-[42px] h-[42px] rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-brand-blue-dark transition-all duration-300 group-hover:border-brand-orange group-hover:text-brand-orange group-hover:shadow-[0_0_12px_rgba(241,90,34,0.15)]">
+                                        <User size={18} strokeWidth={2.5} />
                                     </div>
 
-                                    {/* Dropdown Scrollable Content */}
-                                    <div className="max-h-[70vh] overflow-y-auto custom-scrollbar pt-2 pb-2">
+                                    {/* User Dropdown Menu - Redesigned Premium Style */}
+                                    <div className="absolute top-[120%] right-0 w-72 bg-white rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right border border-slate-100 overflow-hidden translate-y-4 group-hover:translate-y-0 z-[100]">
 
-                                        {/* Group 1: Learning & Shopping */}
-                                        <div className="py-1 border-b border-slate-100">
-                                            {/* <Link href="/my-learning" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <BookOpen size={18} />
-                                                <span>My learning</span>
-                                            </Link> */}
-                                            <Link href="/user/cart" className="flex items-center justify-between px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <div className="flex items-center gap-3">
-                                                    <ShoppingCart size={18} />
-                                                    <span>My cart</span>
-                                                </div>
-                                                {hasHydrated && cartItemCount > 0 && (
-                                                    <span className="w-5 h-5 bg-brand-orange text-white text-[10px] rounded-full flex items-center justify-center font-bold">
-                                                        {cartItemCount > 99 ? '99+' : cartItemCount}
-                                                    </span>
-                                                )}
-                                            </Link>
-                                            <Link href="/user/wishlist" className="flex items-center justify-between px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <div className="flex items-center gap-3">
-                                                    <Heart size={18} />
-                                                    <span>My Wishlist</span>
-                                                </div>
-                                                {hasHydrated && wishlistItemCount > 0 && (
-                                                    <span className="w-5 h-5 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold">
-                                                        {wishlistItemCount > 99 ? '99+' : wishlistItemCount}
-                                                    </span>
-                                                )}
-                                            </Link>
-                                            <Link href="/user/refer" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <UserPlus size={18} />
-                                                <span>Refer a friend</span>
-                                            </Link>
-                                        </div>
-
-                                        {/* Group 2: Comms */}
-                                        <div className="py-1 border-b border-slate-100">
-                                            <Link href="/user/notifications" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <Bell size={18} />
-                                                <span>Notifications</span>
-                                            </Link>
-                                            <Link href="/user/messages" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <MessageCircle size={18} />
-                                                <span>Messages</span>
-                                            </Link>
-                                        </div>
-
-                                        {/* Group 3: Settings & Transactions */}
-                                        <div className="py-1 border-b border-slate-100">
-                                            <Link href="/user/settings" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <Settings size={18} />
-                                                <span>Account settings</span>
-                                            </Link>
-                                            <Link href="/user/payments" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <CreditCard size={18} />
-                                                <span>Payment methods</span>
-                                            </Link>
-                                            {/* <Link href="/subscriptions" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <Layers size={18} />
-                                                <span>Subscriptions</span>
-                                            </Link> */}
-                                            {/* <button className="w-full flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <BadgeDollarSign size={18} />
-                                                <span>ADS credits</span>
-                                            </button> */}
-                                            <Link href="/user/orders" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <History size={18} />
-                                                <span>My Orders</span>
-                                            </Link>
-                                        </div>
-
-                                        {/* Group 4: Localization */}
-                                        <div className="py-1 border-b border-slate-100">
-                                            <div className="flex items-center justify-between px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer group/lang">
-                                                <div className="flex items-center gap-3">
-                                                    <Globe size={18} />
-                                                    <span>Language</span>
-                                                </div>
-                                                <div className="flex items-center gap-1.5 text-slate-400 group-hover/lang:text-brand-blue">
-                                                    <span>English</span>
-                                                    <Globe size={14} strokeWidth={3} />
-                                                </div>
+                                        {/* User Header Section */}
+                                        <div className="p-5 flex items-center gap-4 border-b border-slate-100 bg-slate-50/50">
+                                            <div className="w-12 h-12 rounded-full bg-brand-blue-dark text-white flex items-center justify-center font-bold text-lg shadow-inner flex-shrink-0">
+                                                {user?.name ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'U'}
+                                            </div>
+                                            <div className="flex flex-col overflow-hidden">
+                                                <p className="font-bold text-slate-900 truncate leading-tight capitalize">{user?.name || 'User'}</p>
+                                                <p className="text-xs text-slate-500 truncate mt-1">{user?.email}</p>
                                             </div>
                                         </div>
 
-                                        {/* Group 5: Profile Management */}
-                                        <div className="py-1 border-b border-slate-100">
-                                            <Link href="/user/profile" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <UserCircle size={18} />
-                                                <span>My profile</span>
-                                            </Link>
-                                            <Link href="/user/profile/edit" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <UserCircle size={18} />
-                                                <span>Edit profile</span>
-                                            </Link>
-                                        </div>
+                                        {/* Dropdown Scrollable Content */}
+                                        <div className="max-h-[70vh] overflow-y-auto custom-scrollbar pt-2 pb-2">
 
-                                        {/* Group 6: Footer Actions */}
-                                        <div className="pt-1">
-                                            <Link href="/help" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <HelpCircle size={18} />
-                                                <span>Help and Support</span>
-                                            </Link>
-                                            <button
-                                                onClick={handleLogout}
-                                                className="w-full text-left px-5 py-3 text-sm font-bold text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors mt-1"
-                                            >
-                                                <LogOut size={18} strokeWidth={2.5} />
-                                                Log out
-                                            </button>
+                                            {/* Group 1: Learning & Shopping */}
+                                            <div className="py-1 border-b border-slate-100">
+                                                {/* <Link href="/my-learning" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                <BookOpen size={18} />
+                                                <span>My learning</span>
+                                            </Link> */}
+                                                <Link href="/user/cart" className="flex items-center justify-between px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                    <div className="flex items-center gap-3">
+                                                        <ShoppingCart size={18} />
+                                                        <span>My cart</span>
+                                                    </div>
+                                                    {hasHydrated && cartItemCount > 0 && (
+                                                        <span className="w-5 h-5 bg-brand-orange text-white text-[10px] rounded-full flex items-center justify-center font-bold">
+                                                            {cartItemCount > 99 ? '99+' : cartItemCount}
+                                                        </span>
+                                                    )}
+                                                </Link>
+                                                <Link href="/user/wishlist" className="flex items-center justify-between px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                    <div className="flex items-center gap-3">
+                                                        <Heart size={18} />
+                                                        <span>My Wishlist</span>
+                                                    </div>
+                                                    {hasHydrated && wishlistItemCount > 0 && (
+                                                        <span className="w-5 h-5 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold">
+                                                            {wishlistItemCount > 99 ? '99+' : wishlistItemCount}
+                                                        </span>
+                                                    )}
+                                                </Link>
+                                                <Link href="/user/refer" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                    <UserPlus size={18} />
+                                                    <span>Refer a friend</span>
+                                                </Link>
+                                            </div>
+
+                                            {/* Group 2: Comms */}
+                                            <div className="py-1 border-b border-slate-100">
+                                                <Link href="/user/notifications" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                    <Bell size={18} />
+                                                    <span>Notifications</span>
+                                                </Link>
+                                                <Link href="/user/messages" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                    <MessageCircle size={18} />
+                                                    <span>Messages</span>
+                                                </Link>
+                                            </div>
+
+                                            {/* Group 3: Settings & Transactions */}
+                                            <div className="py-1 border-b border-slate-100">
+                                                <Link href="/user/settings" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                    <Settings size={18} />
+                                                    <span>Account settings</span>
+                                                </Link>
+                                                <Link href="/user/payments" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                    <CreditCard size={18} />
+                                                    <span>Payment methods</span>
+                                                </Link>
+                                                {/* <Link href="/subscriptions" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                <Layers size={18} />
+                                                <span>Subscriptions</span>
+                                            </Link> */}
+                                                {/* <button className="w-full flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                <BadgeDollarSign size={18} />
+                                                <span>ADS credits</span>
+                                            </button> */}
+                                                <Link href="/user/orders" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                    <History size={18} />
+                                                    <span>My Orders</span>
+                                                </Link>
+                                            </div>
+
+                                            {/* Group 4: Localization */}
+                                            <div className="py-1 border-b border-slate-100">
+                                                <div className="flex items-center justify-between px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer group/lang">
+                                                    <div className="flex items-center gap-3">
+                                                        <Globe size={18} />
+                                                        <span>Language</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5 text-slate-400 group-hover/lang:text-brand-blue">
+                                                        <span>English</span>
+                                                        <Globe size={14} strokeWidth={3} />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Group 5: Profile Management */}
+                                            <div className="py-1 border-b border-slate-100">
+                                                <Link href="/user/profile" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                    <UserCircle size={18} />
+                                                    <span>My profile</span>
+                                                </Link>
+                                                <Link href="/user/profile/edit" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                    <UserCircle size={18} />
+                                                    <span>Edit profile</span>
+                                                </Link>
+                                            </div>
+
+                                            {/* Group 6: Footer Actions */}
+                                            <div className="pt-1">
+                                                <Link href="/help" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                    <HelpCircle size={18} />
+                                                    <span>Help and Support</span>
+                                                </Link>
+                                                <button
+                                                    onClick={handleLogout}
+                                                    className="w-full text-left px-5 py-3 text-sm font-bold text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors mt-1"
+                                                >
+                                                    <LogOut size={18} strokeWidth={2.5} />
+                                                    Log out
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    ) : hasHydrated ? (
-                        <button onClick={() => router.push("/auth/login")}
-                            className="bg-brand-blue hover:bg-[#003B73] text-white px-6 py-2.5 rounded-full text-[15px] font-medium transition-all duration-300 shadow-lg shadow-brand-blue/20 flex items-center gap-2 hover:-translate-y-0.5">
-                            <User size={16} />
-                            Sign In
+                        ) : hasHydrated ? (
+                            <button onClick={() => router.push("/auth/login")}
+                                className="bg-brand-blue hover:bg-[#003B73] text-white px-6 py-2.5 rounded-full text-[15px] font-medium transition-all duration-300 shadow-lg shadow-brand-blue/20 flex items-center gap-2 hover:-translate-y-0.5">
+                                <User size={16} />
+                                Sign In
+                            </button>
+                        ) : null}
+                    </div>
+
+                    {/* Mobile Menu Toggle */}
+                    <div className="lg:hidden flex items-center z-50">
+                        <button
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="text-brand-blue-dark hover:text-brand-orange transition-colors focus:outline-none p-2"
+                            aria-label="Toggle Menu"
+                        >
+                            {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
                         </button>
-                    ) : null}
+                    </div>
                 </div>
+            </nav>
 
-                {/* Mobile Menu Toggle */}
-                <div className="lg:hidden flex items-center z-50">
-                    <button
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="text-brand-blue-dark hover:text-brand-orange transition-colors focus:outline-none p-2"
-                        aria-label="Toggle Menu"
-                    >
-                        {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-                    </button>
-                </div>
-            </div>
-        </nav>
-
-        {/* Mobile Navigation Menu (Moved outside nav to prevent fixed containing block bugs) */}
-        <div
+            {/* Mobile Navigation Menu (Moved outside nav to prevent fixed containing block bugs) */}
+            <div
                 className={`fixed inset-0 bg-white z-40 lg:hidden flex flex-col pt-28 px-6 overflow-y-auto transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
                     }`}>
 
@@ -414,6 +417,7 @@ export function Navbar() {
                         placeholder="Search"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
+                        suppressHydrationWarning
                         className="w-full px-4 py-3 pl-12 text-base rounded-2xl border border-slate-100 bg-slate-50 text-slate-900 placeholder:text-slate-400 outline-none focus:bg-white focus:border-brand-blue/30 focus:shadow-sm"
                     />
                     <Search size={20} className="absolute left-4 text-slate-400" />

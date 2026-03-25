@@ -55,24 +55,24 @@ export default function ConfirmationModal({
                 {/* <div className={`p-4 ${style.iconBg} rounded-lg mb-6`}>
                     {style.icon}
                 </div> */}
-                
+
                 <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">
                     {title}
                 </h3>
-                
+
                 <p className="text-slate-500 font-medium leading-relaxed mb-8 max-w-xs">
                     {message}
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-3 w-full">
-                    <button 
+                    <button
                         onClick={onClose}
                         disabled={isLoading}
                         className="flex-1 px-6 py-3.5 rounded-lg font-bold text-slate-600 hover:bg-slate-100 transition-all cursor-pointer disabled:opacity-50"
                     >
                         {cancelText}
                     </button>
-                    <button 
+                    <button
                         onClick={onConfirm}
                         disabled={isLoading}
                         className={`flex-1 px-6 py-3.5 rounded-lg font-bold text-white shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 ${style.button}`}>

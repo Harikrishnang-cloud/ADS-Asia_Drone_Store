@@ -74,8 +74,8 @@ export function CartDropdown({ items = [], onClose }: CartDropdownProps) {
             </div> */}
             <p className="text-slate-900 font-bold text-base mb-1">Your cart is empty</p>
             <p className="text-slate-500 text-sm">Add some items to get started!</p>
-            <Link 
-              href="/products" 
+            <Link
+              href="/products"
               className="mt-6 px-6 py-2 bg-brand-blue text-white rounded-full text-sm font-medium hover:bg-brand-blue-dark transition-all transform hover:scale-105"
             >
               Start Shopping
@@ -91,7 +91,7 @@ export function CartDropdown({ items = [], onClose }: CartDropdownProps) {
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-start">
                     <h4 className="text-sm font-bold text-slate-900 truncate mb-1">{item.name}</h4>
-                    <button 
+                    <button
                       onClick={(e) => {
                         e.stopPropagation();
                         removeItem(item.id);
@@ -104,16 +104,16 @@ export function CartDropdown({ items = [], onClose }: CartDropdownProps) {
                   </div>
                   <div className="flex items-center justify-between mt-1">
                     <div className="flex items-center gap-2">
-                       <button 
+                      <button
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
                         className="w-5 h-5 rounded-md border border-slate-200 flex items-center justify-center text-slate-500 hover:text-brand-orange hover:border-brand-orange transition-all active:scale-90"
                       >
                         <Minus size={10} />
                       </button>
                       <span className="text-xs font-bold text-slate-700 min-w-[20px] text-center">{item.quantity}</span>
-                      <button 
-                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                         className="w-5 h-5 rounded-md border border-slate-200 flex items-center justify-center text-slate-500 hover:text-brand-orange hover:border-brand-orange transition-all active:scale-90"
+                      <button
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        className="w-5 h-5 rounded-md border border-slate-200 flex items-center justify-center text-slate-500 hover:text-brand-orange hover:border-brand-orange transition-all active:scale-90"
                       >
                         <Plus size={10} />
                       </button>
@@ -136,8 +136,8 @@ export function CartDropdown({ items = [], onClose }: CartDropdownProps) {
               ₹{items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)}
             </span>
           </div>
-          <button 
-            onClick={handleCheckout} 
+          <button
+            onClick={handleCheckout}
             className="w-full py-3 bg-brand-orange text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-brand-orange/90 transition-all hover:shadow-lg hover:shadow-brand-orange/20 active:scale-[0.98] cursor-pointer"
           >
             Checkout

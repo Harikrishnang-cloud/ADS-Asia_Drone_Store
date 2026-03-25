@@ -41,7 +41,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
     });
 
     const [errors, setErrors] = useState<any>({});
-    
+
     const [addMoneyAmount, setAddMoneyAmount] = useState("");
     const [isAddingMoney, setIsAddingMoney] = useState(false);
 
@@ -56,7 +56,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
     useEffect(() => {
         const fetchData = async () => {
             const userId = authUser?.id;
-            
+
             if (!userId) {
                 // If not in store, check localStorage as fallback
                 const storedUserStr = localStorage.getItem("userData");
@@ -110,17 +110,28 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
         const newErrors: any = {};
         if (!formData.name.trim() || formData.name.trim().length < 3) {
             newErrors.name = "Name must be at least 3 characters long";
-            
+
         }
         if (formData.phone && !/^\d{10}$/.test(formData.phone)) {
             newErrors.phone = "Phone number must be exactly 10 digits";
         }
-        if (formData.address && formData.address.trim().length < 10) {
-            newErrors.address = "Address should be at least 10 characters long";
-        }
         if (formData.pin && !/^\d{6}$/.test(formData.pin)) {
             newErrors.pin = "PIN code must be exactly 6 digits";
         }
+
+        // Validate individual addresses in the list
+        formData.addresses.forEach((addr, index) => {
+            if (!addr.address.trim() || addr.address.trim().length < 5) {
+                newErrors[`address_${addr.id}`] = "Address is too short";
+            }
+            if (!addr.city.trim()) {
+                newErrors[`city_${addr.id}`] = "City is required";
+            }
+            if (!addr.pin || !/^\d{6}$/.test(addr.pin.toString())) {
+                newErrors[`pin_${addr.id}`] = "PIN code must be 6 digits";
+            }
+        });
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -140,9 +151,16 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
     };
 
     const handleAddressChange = (id: string, field: keyof UserAddress, value: any) => {
+        let finalValue = value;
+        // If it's the PIN field, try to store it as a number if the user has changed the type
+        if (field === 'pin' && typeof value === 'string') {
+            const parsed = parseInt(value);
+            if (!isNaN(parsed)) finalValue = parsed;
+        }
+
         const updated = formData.addresses.map((addr: UserAddress) => {
             if (addr.id === id) {
-                return { ...addr, [field]: value };
+                return { ...addr, [field]: finalValue };
             }
             return addr;
         });
@@ -170,7 +188,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!validate()) {
             toast.error("Please fix the errors before saving");
             return;
@@ -180,10 +198,10 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
         const primary = formData.addresses.find(a => a.isPrimary) || formData.addresses[0];
         const finalData = {
             ...formData,
-            address: primary?.address || formData.address,
-            city: primary?.city || formData.city,
-            state: primary?.state || formData.state,
-            pin: primary?.pin || formData.pin
+            address: primary?.address || "",
+            city: primary?.city || "",
+            state: primary?.state || "",
+            pin: primary?.pin || ""
         };
 
         setIsSaving(true);
@@ -215,11 +233,11 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
         const storageRef = ref(storage, `profiles/${user.id}`);
         const uploadTask = uploadBytesResumable(storageRef, file);
 
-        uploadTask.on('state_changed', null, 
+        uploadTask.on('state_changed', null,
             () => {
                 toast.error("Upload failed");
                 setIsUploading(false);
-            }, 
+            },
             async () => {
                 const url = await getDownloadURL(uploadTask.snapshot.ref);
                 await updateDoc(doc(db, "users", user.id), { profileImage: url });
@@ -255,7 +273,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
 
     const handleResetPassword = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         const newResetErrors: any = {};
         if (!resetData.newPassword) {
             newResetErrors.newPassword = "New password is required";
@@ -311,7 +329,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                 setUser(updatedUser);
                 localStorage.setItem("userData", JSON.stringify(updatedUser));
                 setAuth(updatedUser, localStorage.getItem("accessToken"));
-                
+
                 toast.success(`Successfully added ₹${amount.toLocaleString('en-IN')} to wallet!`);
                 setAddMoneyAmount("");
             } catch (error) {
@@ -332,23 +350,23 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-2xl font-bold">{isEdit ? "Edit Profile" : "My Profile"}</h1>
                     {!isEdit && (
-                        <Link 
-                            href="/user/profile/edit" 
+                        <Link
+                            href="/user/profile/edit"
                             className="flex items-center gap-2 px-4 py-2 bg-brand-blue text-white rounded-lg text-sm font-bold hover:bg-brand-blue-dark transition-all cursor-pointer"
                         >
                             <Edit3 size={16} /> Edit
                         </Link>
                     )}
                     {isEdit && (
-                        <Link 
-                            href="/user/profile" 
+                        <Link
+                            href="/user/profile"
                             className="flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-all font-medium text-sm"
                         >
                             <ChevronLeft size={16} /> Back
                         </Link>
                     )}
                 </div>
-                
+
                 <div className="flex flex-col items-center mb-10">
                     <div className="relative w-36 h-36 rounded-full bg-slate-100 border-4 border-white shadow-lg overflow-hidden flex items-center justify-center group">
                         {user.profileImage ? (
@@ -364,7 +382,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                     </div>
                     {isEdit && (
                         <>
-                            <button 
+                            <button
                                 onClick={() => fileInputRef.current?.click()}
                                 className="mt-4 text-sm font-medium text-brand-blue flex items-center gap-2 hover:underline cursor-pointer"
                             >
@@ -388,11 +406,11 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                         <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wide opacity-70">Full Name</label>
                         {isEdit ? (
                             <div className="space-y-1">
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     className={`w-full p-4 border rounded-xl outline-none transition-all ${errors.name ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5'}`}
                                     value={formData.name}
-                                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     placeholder="Enter your full name"
                                 />
                                 {errors.name && <p className="text-red-500 text-xs font-medium ml-1">{errors.name}</p>}
@@ -408,11 +426,11 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                             <div className="space-y-1">
                                 <div className="relative">
                                     <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                                    <input 
-                                        type="tel" 
+                                    <input
+                                        type="tel"
                                         className={`w-full p-4 pl-12 border rounded-xl outline-none transition-all ${errors.phone ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5'}`}
                                         value={formData.phone}
-                                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                         placeholder="e.g. 9876543210"
                                     />
                                 </div>
@@ -420,8 +438,8 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                             </div>
                         ) : (
                             <div className="flex items-center gap-2 p-4 bg-white border border-slate-100 rounded-xl font-bold text-slate-800">
-                                 <Phone size={16} className="text-slate-400" />
-                                 <span>{user.phone || "Not set"}</span>
+                                <Phone size={16} className="text-slate-400" />
+                                <span>{user.phone || "Not set"}</span>
                             </div>
                         )}
                     </div>
@@ -430,8 +448,8 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                         <div className="flex justify-between items-center mb-4">
                             <label className="text-sm font-semibold text-slate-700 uppercase tracking-wide opacity-70">Saved Addresses</label>
                             {isEdit && (
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     onClick={handleAddAddress}
                                     className="flex items-center gap-2 text-xs font-bold text-brand-blue hover:text-brand-orange transition-all"
                                 >
@@ -439,57 +457,59 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                                 </button>
                             )}
                         </div>
-                        
+
                         <div className="space-y-4">
                             {isEdit ? (
                                 formData.addresses.length > 0 ? (
                                     formData.addresses.map((addr: UserAddress, idx: number) => (
                                         <div key={addr.id} className="p-5 bg-slate-50 border border-slate-200 rounded relative space-y-4">
                                             <div className="flex justify-between items-center">
-                                               <div className="flex items-center gap-2">
-                                                    <span className="text-xs font-black uppercase text-slate-400">Address {idx+1}</span>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xs font-black uppercase text-slate-400">Address {idx + 1}</span>
                                                     {addr.isPrimary && <span className="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-widest">Primary</span>}
-                                               </div>
-                                               <button onClick={() => handleRemoveAddress(addr.id)} className="text-red-400 hover:text-red-500 transition-all p-1">
-                                                   <Trash2 size={16} />
-                                               </button>
+                                                </div>
+                                                <button onClick={() => handleRemoveAddress(addr.id)} className="text-red-400 hover:text-red-500 transition-all p-1">
+                                                    <Trash2 size={16} />
+                                                </button>
                                             </div>
-                                            
+
                                             <div className="grid grid-cols-2 gap-3">
                                                 <div className="col-span-2 space-y-1">
-                                                     <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase">Type</label>
-                                                     <select 
+                                                    <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase">Type</label>
+                                                    <select
                                                         className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue bg-white text-sm"
                                                         value={addr.type}
                                                         onChange={(e) => handleAddressChange(addr.id, "type", e.target.value)}
-                                                     >
-                                                         <option value="Home">Home</option>
-                                                         <option value="Work">Work</option>
-                                                         <option value="Office">Office</option>
-                                                         <option value="Other">Other</option>
-                                                     </select>
+                                                    >
+                                                        <option value="Home">Home</option>
+                                                        <option value="Work">Work</option>
+                                                        <option value="Office">Office</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
                                                 </div>
                                                 <div className="col-span-2 space-y-1">
                                                     <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase">Full Address</label>
-                                                    <textarea 
-                                                        className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue bg-white text-sm min-h-[80px]"
+                                                    <textarea
+                                                        className={`w-full p-3 border rounded-xl outline-none transition-all text-sm min-h-[80px] ${errors[`address_${addr.id}`] ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue bg-white'}`}
                                                         placeholder="Building, street, area..."
                                                         value={addr.address}
                                                         onChange={(e) => handleAddressChange(addr.id, "address", e.target.value)}
                                                     />
+                                                    {errors[`address_${addr.id}`] && <p className="text-red-500 text-[9px] font-bold ml-1">{errors[`address_${addr.id}`]}</p>}
                                                 </div>
                                                 <div className="space-y-1">
                                                     <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase">City</label>
-                                                    <input 
-                                                        className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue bg-white text-sm"
+                                                    <input
+                                                        className={`w-full p-3 border rounded-xl outline-none transition-all text-sm ${errors[`city_${addr.id}`] ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue bg-white'}`}
                                                         placeholder="City"
                                                         value={addr.city}
                                                         onChange={(e) => handleAddressChange(addr.id, "city", e.target.value)}
                                                     />
+                                                    {errors[`city_${addr.id}`] && <p className="text-red-500 text-[9px] font-bold ml-1">{errors[`city_${addr.id}`]}</p>}
                                                 </div>
                                                 <div className="space-y-1">
                                                     <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase">State</label>
-                                                    <input 
+                                                    <input
                                                         className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue bg-white text-sm"
                                                         placeholder="State"
                                                         value={addr.state}
@@ -498,21 +518,22 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                                                 </div>
                                                 <div className="space-y-1">
                                                     <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase">PIN Code</label>
-                                                    <input 
-                                                        className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue bg-white text-sm"
+                                                    <input
+                                                        className={`w-full p-3 border rounded-xl outline-none transition-all text-sm ${errors[`pin_${addr.id}`] ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue bg-white'}`}
                                                         placeholder="PIN"
                                                         value={addr.pin}
                                                         onChange={(e) => handleAddressChange(addr.id, "pin", e.target.value)}
                                                     />
+                                                    {errors[`pin_${addr.id}`] && <p className="text-red-500 text-[9px] font-bold ml-1">{errors[`pin_${addr.id}`]}</p>}
                                                 </div>
                                                 <div className="flex items-center gap-2 pt-2">
-                                                    <button 
+                                                    <button
                                                         type="button"
                                                         onClick={() => handleSetPrimary(addr.id)}
                                                         disabled={addr.isPrimary}
                                                         className={`flex items-center gap-2 text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all ${addr.isPrimary ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-white border border-slate-200 text-slate-500 hover:border-brand-blue hover:text-brand-blue'}`}
                                                     >
-                                                       {addr.isPrimary ? <><Check size={12} /> Primary</> : "Set as Primary"}
+                                                        {addr.isPrimary ? <><Check size={12} /> Primary</> : "Set as Primary"}
                                                     </button>
                                                 </div>
                                             </div>
@@ -543,7 +564,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                                                 </div>
                                             </div>
                                             <p className="text-sm text-slate-600 font-medium leading-relaxed mt-3">
-                                                {addr.address}<br/>
+                                                {addr.address}<br />
                                                 <span className="text-slate-500">
                                                     {addr.city}, {addr.state} - <span className="font-bold text-slate-700">{addr.pin}</span>
                                                 </span>
@@ -562,16 +583,16 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
 
                     {isEdit && (
                         <div className="pt-6 flex flex-col gap-4">
-                            <button 
+                            <button
                                 onClick={handleUpdate}
                                 disabled={isSaving}
                                 className="w-full bg-brand-blue text-white py-4 rounded-xl font-bold hover:bg-brand-blue-dark transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-brand-blue/20"
                             >
                                 {isSaving ? <Loader2 className="animate-spin" size={20} /> : <><Save size={20} /> Save Information</>}
                             </button>
-                            
+
                             <div className="pt-4 border-t border-slate-100">
-                                <button 
+                                <button
                                     type="button"
                                     onClick={handleDelete}
                                     className="w-full text-red-500 py-2 rounded-lg text-xs font-black uppercase tracking-widest hover:bg-red-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
@@ -607,8 +628,8 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                             <label className="block text-sm font-semibold text-slate-700 mb-2">Add Money to Wallet (Online Payment)</label>
                             <div className="relative">
                                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg">₹</span>
-                                <input 
-                                    type="number" 
+                                <input
+                                    type="number"
                                     className="w-full p-4 pl-10 border border-slate-200 rounded-lg outline-none focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5 transition-all text-lg font-bold"
                                     placeholder="Enter amount"
                                     value={addMoneyAmount}
@@ -638,26 +659,26 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                         </div>
                         <h2 className="text-xl font-bold text-slate-800">Security & Password</h2>
                     </div>
-                    
+
                     <div className="space-y-6">
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wide opacity-70">New Password</label>
-                            <PasswordInput 
+                            <PasswordInput
                                 className={`w-full p-4 border rounded-xl outline-none transition-all ${resetErrors.newPassword ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5'}`}
                                 placeholder="Enter new password"
                                 value={resetData.newPassword}
-                                onChange={(e) => setResetData({...resetData, newPassword: e.target.value})}
+                                onChange={(e) => setResetData({ ...resetData, newPassword: e.target.value })}
                             />
                             {resetErrors.newPassword && <p className="text-red-500 text-xs font-medium mt-1 ml-1">{resetErrors.newPassword}</p>}
                         </div>
 
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wide opacity-70">Confirm New Password</label>
-                            <PasswordInput 
+                            <PasswordInput
                                 className={`w-full p-4 border rounded-xl outline-none transition-all ${resetErrors.confirmPassword ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5'}`}
                                 placeholder="Confirm new password"
                                 value={resetData.confirmPassword}
-                                onChange={(e) => setResetData({...resetData, confirmPassword: e.target.value})}
+                                onChange={(e) => setResetData({ ...resetData, confirmPassword: e.target.value })}
                             />
                             {resetErrors.confirmPassword && <p className="text-red-500 text-xs font-medium mt-1 ml-1">{resetErrors.confirmPassword}</p>}
                         </div>
@@ -673,13 +694,13 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                 </div>
             )}
 
-            <ConfirmationModal 
+            <ConfirmationModal
                 isOpen={isDeleteModalOpen}
-                onClose={() => setIsDeleteModalOpen(false)} 
-                onConfirm={confirmDelete} 
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={confirmDelete}
                 title="Delete Account"
                 message="Are you sure you want to delete your account? This action is permanent and cannot be undone. All your data will be removed."
-                confirmText="Yes, Delete Account" 
+                confirmText="Yes, Delete Account"
                 type="danger"
                 isLoading={isDeleting}
             />

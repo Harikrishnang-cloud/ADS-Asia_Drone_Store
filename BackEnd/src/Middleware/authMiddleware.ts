@@ -21,6 +21,7 @@ const getJwt = (): jwtToken => {
 export const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
     try {
         const authHeader = req.headers.authorization;
+        console.log("Auth Middleware Header Found:", !!authHeader);
 
         if (!authHeader || !authHeader.startsWith("Bearer")) {
             res.status(401).json({ success: false, message: "Access token is required" });
@@ -37,8 +38,13 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
         const decoded = jwt.verifyAccessToken(token);
         req.user = decoded;
         next();
-    } catch (error) {
-        res.status(401).json({ success: false, message: "Invalid or expired access token" });
+    } catch (error: any) {
+        console.error("Auth Middleware Error:", error.message);
+        res.status(401).json({ 
+            success: false, 
+            message: "Invalid or expired access token", 
+            error: error.message 
+        });
         return;
     }
 };

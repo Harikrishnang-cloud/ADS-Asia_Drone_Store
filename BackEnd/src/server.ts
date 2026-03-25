@@ -8,6 +8,9 @@ import { userRepository } from "./Repository/user/userRepository.ts";
 import { userService } from "./Service/user/userService.ts";
 import { authRoutes } from "./Routes/auth.routes.ts";
 import { adminRoutes } from "./Routes/admin/adminRoutes.ts";
+import { paymentRoutes } from "./Routes/payment/paymentRoutes.ts";
+import { PaymentController } from "./Controllers/payment/PaymentController.ts";
+import { PaymentService } from "./Service/payment/PaymentService.ts";
 
 const app = express();
 
@@ -26,6 +29,11 @@ app.use("/auth", authRouter.getAuthRoutes());
 
 const adminRouter = new adminRoutes();
 app.use("/admin", adminRouter.getAdminRoutes());
+
+const paymentSvc = new PaymentService();
+const paymentCtrl = new PaymentController(paymentSvc);
+const paymentRouter = new paymentRoutes(paymentCtrl);
+app.use("/payment", paymentRouter.getPaymentRoutes());
 
 
 const PORT = process.env.PORT || 7878;
