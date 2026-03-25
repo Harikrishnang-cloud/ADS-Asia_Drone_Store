@@ -2,6 +2,16 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { authService } from '../services/auth.service';
 
+export interface UserAddress {
+    id: string;
+    type: string; // "Home", "Work", "Office", etc.
+    address: string;
+    city: string;
+    state: string;
+    pin: string;
+    isPrimary: boolean;
+}
+
 interface UserProfile {
     id?: string;
     name: string;
@@ -12,6 +22,7 @@ interface UserProfile {
     city?: string;
     state?: string;
     pin?: string;
+    addresses?: UserAddress[];
     walletBalance?: number;
 }
 

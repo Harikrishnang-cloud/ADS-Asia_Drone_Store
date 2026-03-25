@@ -18,6 +18,7 @@ export default function CheckoutPage() {
     const [hasHydrated, setHasHydrated] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
 
     useEffect(() => {
         setHasHydrated(true);
@@ -61,15 +62,32 @@ export default function CheckoutPage() {
                 phone: prev.phone || user.phone || ""
             }));
             
-            if (user.address) {
-                setSavedAddresses([{
-                    id: 1,
+            if (user.addresses && user.addresses.length > 0) {
+                setSavedAddresses(user.addresses.map(addr => ({
+                    id: addr.id,
+                    type: addr.type,
+                    address: addr.address,
+                    city: addr.city,
+                    state: addr.state,
+                    zip: addr.pin,
+                    isPrimary: addr.isPrimary
+                })));
+                
+                // Set selected address to primary by default
+                const primary = user.addresses.find(a => a.isPrimary) || user.addresses[0];
+                setSelectedAddressId(primary.id);
+            } else if (user.address) {
+                const legacyAddr = {
+                    id: 'primary',
                     type: "Primary Address",
                     address: user.address,
                     city: user.city || "Not Set",
                     state: user.state || "Not Set",
-                    zip: user.pin || "Not Set"
-                }]);
+                    zip: user.pin || "Not Set",
+                    isPrimary: true
+                };
+                setSavedAddresses([legacyAddr]);
+                setSelectedAddressId(legacyAddr.id);
             } else {
                 setSavedAddresses([]);
             }
@@ -197,17 +215,25 @@ export default function CheckoutPage() {
                                                 Manage
                                             </Link>
                                         </h2>
-                                        <div className="space-y-4">
-                                            {savedAddresses.map((addr, index) => (
-                                                <div key={index} className="p-4 border-2 border-brand-blue bg-brand-blue/5 rounded-lg relative cursor-pointer">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {savedAddresses.map((addr) => (
+                                                <div 
+                                                    key={addr.id} 
+                                                    onClick={() => setSelectedAddressId(addr.id)}
+                                                    className={`p-4 border-2 rounded-lg relative cursor-pointer transition-all ${selectedAddressId === addr.id ? 'border-brand-blue bg-brand-blue/5' : 'border-slate-100 bg-white hover:border-slate-200'}`}
+                                                >
                                                     <div className="absolute top-4 right-4 text-brand-blue">
-                                                        <CheckCircle size={20} className="fill-brand-blue text-white" />
+                                                        {selectedAddressId === addr.id ? (
+                                                            <CheckCircle size={20} className="fill-brand-blue text-white" />
+                                                        ) : (
+                                                            <div className="w-5 h-5 rounded-full border-2 border-slate-200" />
+                                                        )}
                                                     </div>
                                                     <div className="flex items-center gap-2 mb-2">
-                                                        <MapPin size={16} className="text-brand-blue" />
-                                                        <span className="font-bold text-slate-900">{addr.type}</span>
+                                                        <MapPin size={16} className={selectedAddressId === addr.id ? "text-brand-blue" : "text-slate-400"} />
+                                                        <span className={`font-bold ${selectedAddressId === addr.id ? "text-slate-900" : "text-slate-600"}`}>{addr.type}</span>
                                                     </div>
-                                                    <p className="text-sm text-slate-600 leading-relaxed pr-8">
+                                                    <p className="text-sm text-slate-500 leading-relaxed pr-8">
                                                         {addr.address}<br />
                                                         {addr.city}, {addr.state} {addr.zip}
                                                     </p>

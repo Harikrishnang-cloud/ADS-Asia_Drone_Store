@@ -4,7 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { db, storage } from "@/lib/firebase";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { User, Mail, Phone, MapPin, Camera, Save, Trash2, Loader2, Edit3, ChevronLeft, Lock, RefreshCcw, Wallet, CreditCard } from "lucide-react";
+import { User, Mail, Phone, MapPin, Camera, Save, Trash2, Loader2, Edit3, ChevronLeft, Lock, RefreshCcw, Wallet, CreditCard, Plus, Check, Home, Briefcase, MapPinned } from "lucide-react";
+import { UserAddress } from "@/store/authStore";
 import { PasswordInput } from "@/components/PasswordInput";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -35,7 +36,8 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
         address: "",
         city: "",
         state: "",
-        pin: ""
+        pin: "",
+        addresses: [] as UserAddress[]
     });
 
     const [errors, setErrors] = useState<any>({});
@@ -91,7 +93,8 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                         address: data.address || "",
                         city: data.city || "",
                         state: data.state || "",
-                        pin: data.pin || ""
+                        pin: data.pin || "",
+                        addresses: data.addresses || []
                     });
                 }
             } catch (error) {
@@ -122,6 +125,49 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
         return Object.keys(newErrors).length === 0;
     };
 
+    const handleAddAddress = () => {
+        const newAddr: UserAddress = {
+            id: Date.now().toString(),
+            type: "Home",
+            address: "",
+            city: "",
+            state: "",
+            pin: "",
+            isPrimary: formData.addresses.length === 0
+        };
+        setFormData({ ...formData, addresses: [...formData.addresses, newAddr] });
+        toast.success("New address form added!");
+    };
+
+    const handleAddressChange = (id: string, field: keyof UserAddress, value: any) => {
+        const updated = formData.addresses.map((addr: UserAddress) => {
+            if (addr.id === id) {
+                return { ...addr, [field]: value };
+            }
+            return addr;
+        });
+        setFormData({ ...formData, addresses: updated });
+    };
+
+    const handleRemoveAddress = (id: string) => {
+        const updated = formData.addresses.filter((addr: UserAddress) => addr.id !== id);
+        // If we removed the primary, make the first one primary
+        if (updated.length > 0 && !updated.find((a: UserAddress) => a.isPrimary)) {
+            updated[0].isPrimary = true;
+        }
+        setFormData({ ...formData, addresses: updated });
+        toast.success("Address removed!");
+    };
+
+    const handleSetPrimary = (id: string) => {
+        const updated = formData.addresses.map((addr: UserAddress) => ({
+            ...addr,
+            isPrimary: addr.id === id
+        }));
+        setFormData({ ...formData, addresses: updated });
+        toast.success("Primary address updated!");
+    };
+
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
         
@@ -130,10 +176,20 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
             return;
         }
 
+        // Before saving, ensure the primary address is synced to the top-level fields
+        const primary = formData.addresses.find(a => a.isPrimary) || formData.addresses[0];
+        const finalData = {
+            ...formData,
+            address: primary?.address || formData.address,
+            city: primary?.city || formData.city,
+            state: primary?.state || formData.state,
+            pin: primary?.pin || formData.pin
+        };
+
         setIsSaving(true);
         try {
-            await updateDoc(doc(db, "users", user.id), { ...formData });
-            const updatedUser = { ...user, ...formData };
+            await updateDoc(doc(db, "users", user.id), finalData);
+            const updatedUser = { ...user, ...finalData };
             localStorage.setItem("userData", JSON.stringify(updatedUser));
             setAuth(updatedUser, localStorage.getItem("accessToken"));
             toast.success("Profile updated!");
@@ -371,49 +427,137 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wide opacity-70">Delivery Address with Pincode</label>
-                        {isEdit ? (
-                            <div className="space-y-4">
-                                <div className="space-y-1">
-                                    <div className="relative">
-                                        <MapPin className="absolute left-4 top-4 text-slate-400" size={18} />
-                                        <textarea 
-                                            className={`w-full p-4 pl-12 border rounded-xl outline-none transition-all min-h-[120px] resize-none ${errors.address ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5'}`}
-                                            value={formData.address}
-                                            onChange={(e) => setFormData({...formData, address: e.target.value})}
-                                            placeholder="Enter your full delivery address"
-                                        />
+                        <div className="flex justify-between items-center mb-4">
+                            <label className="text-sm font-semibold text-slate-700 uppercase tracking-wide opacity-70">Saved Addresses</label>
+                            {isEdit && (
+                                <button 
+                                    type="button" 
+                                    onClick={handleAddAddress}
+                                    className="flex items-center gap-2 text-xs font-bold text-brand-blue hover:text-brand-orange transition-all"
+                                >
+                                    <Plus size={14} /> Add Address
+                                </button>
+                            )}
+                        </div>
+                        
+                        <div className="space-y-4">
+                            {isEdit ? (
+                                formData.addresses.length > 0 ? (
+                                    formData.addresses.map((addr: UserAddress, idx: number) => (
+                                        <div key={addr.id} className="p-5 bg-slate-50 border border-slate-200 rounded-2xl relative space-y-4">
+                                            <div className="flex justify-between items-center">
+                                               <div className="flex items-center gap-2">
+                                                    <span className="text-xs font-black uppercase text-slate-400">Address #{idx+1}</span>
+                                                    {addr.isPrimary && <span className="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-widest">Primary</span>}
+                                               </div>
+                                               <button onClick={() => handleRemoveAddress(addr.id)} className="text-red-400 hover:text-red-500 transition-all p-1">
+                                                   <Trash2 size={16} />
+                                               </button>
+                                            </div>
+                                            
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <div className="col-span-2 space-y-1">
+                                                     <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase">Type</label>
+                                                     <select 
+                                                        className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue bg-white text-sm"
+                                                        value={addr.type}
+                                                        onChange={(e) => handleAddressChange(addr.id, "type", e.target.value)}
+                                                     >
+                                                         <option value="Home">Home</option>
+                                                         <option value="Work">Work</option>
+                                                         <option value="Office">Office</option>
+                                                         <option value="Other">Other</option>
+                                                     </select>
+                                                </div>
+                                                <div className="col-span-2 space-y-1">
+                                                    <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase">Full Address</label>
+                                                    <textarea 
+                                                        className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue bg-white text-sm min-h-[80px]"
+                                                        placeholder="Building, street, area..."
+                                                        value={addr.address}
+                                                        onChange={(e) => handleAddressChange(addr.id, "address", e.target.value)}
+                                                    />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase">City</label>
+                                                    <input 
+                                                        className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue bg-white text-sm"
+                                                        placeholder="City"
+                                                        value={addr.city}
+                                                        onChange={(e) => handleAddressChange(addr.id, "city", e.target.value)}
+                                                    />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase">State</label>
+                                                    <input 
+                                                        className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue bg-white text-sm"
+                                                        placeholder="State"
+                                                        value={addr.state}
+                                                        onChange={(e) => handleAddressChange(addr.id, "state", e.target.value)}
+                                                    />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase">PIN Code</label>
+                                                    <input 
+                                                        className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue bg-white text-sm"
+                                                        placeholder="PIN"
+                                                        value={addr.pin}
+                                                        onChange={(e) => handleAddressChange(addr.id, "pin", e.target.value)}
+                                                    />
+                                                </div>
+                                                <div className="flex items-center gap-2 pt-2">
+                                                    <button 
+                                                        type="button"
+                                                        onClick={() => handleSetPrimary(addr.id)}
+                                                        disabled={addr.isPrimary}
+                                                        className={`flex items-center gap-2 text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all ${addr.isPrimary ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-white border border-slate-200 text-slate-500 hover:border-brand-blue hover:text-brand-blue'}`}
+                                                    >
+                                                       {addr.isPrimary ? <><Check size={12} /> Primary</> : "Set as Primary"}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="p-8 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center text-center">
+                                        <MapPinned size={32} className="text-slate-300 mb-2" />
+                                        <p className="text-sm text-slate-500 font-medium">No addresses added yet.</p>
+                                        <button onClick={handleAddAddress} className="mt-4 text-xs font-bold text-brand-blue hover:underline">Add your first address</button>
                                     </div>
-                                    {errors.address && <p className="text-red-500 text-xs font-medium ml-1">{errors.address}</p>}
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div className="space-y-1">
-                                        <input type="text" className="w-full p-4 border rounded-xl outline-none transition-all border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5" placeholder="City" value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} />
+                                )
+                            ) : (
+                                user.addresses && user.addresses.length > 0 ? (
+                                    user.addresses.map((addr: UserAddress) => (
+                                        <div key={addr.id} className={`p-5 rounded-2xl border transition-all ${addr.isPrimary ? 'border-brand-blue bg-brand-blue/5 shadow-[0_4px_12px_rgba(0,102,204,0.05)]' : 'border-slate-100 bg-white hover:border-slate-200'}`}>
+                                            <div className="flex justify-between items-start mb-2">
+                                                <div className="flex items-center gap-2">
+                                                    <div className={`p-2 rounded-lg ${addr.isPrimary ? 'bg-brand-blue text-white' : 'bg-slate-100 text-slate-500'}`}>
+                                                        {addr.type === 'Home' ? <Home size={16} /> : addr.type === 'Work' || addr.type === 'Office' ? <Briefcase size={16} /> : <MapPin size={16} />}
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-bold text-slate-900 flex items-center gap-2">
+                                                            {addr.type}
+                                                            {addr.isPrimary && <span className="text-[9px] bg-brand-orange text-white px-1.5 py-0.5 rounded-full uppercase tracking-tighter">Primary</span>}
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p className="text-sm text-slate-600 font-medium leading-relaxed mt-3">
+                                                {addr.address}<br/>
+                                                <span className="text-slate-500">
+                                                    {addr.city}, {addr.state} - <span className="font-bold text-slate-700">{addr.pin}</span>
+                                                </span>
+                                            </p>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="p-5 bg-white border border-slate-100 rounded-2xl flex items-center gap-3 text-slate-500">
+                                        <MapPin size={18} className="opacity-50" />
+                                        <span className="text-sm font-medium">No address information provided.</span>
                                     </div>
-                                    <div className="space-y-1">
-                                        <input type="text" className="w-full p-4 border rounded-xl outline-none transition-all border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5" placeholder="State/UT" value={formData.state} onChange={(e) => setFormData({...formData, state: e.target.value})} />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <input type="text" className={`w-full p-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-brand-blue/5 ${errors.pin ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue'}`} placeholder="PIN Code" value={formData.pin} onChange={(e) => setFormData({...formData, pin: e.target.value})} />
-                                        {errors.pin && <p className="text-red-500 text-xs font-medium ml-1">{errors.pin}</p>}
-                                    </div>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="flex items-start gap-2 p-4 bg-white border border-slate-100 rounded-xl font-bold text-slate-800 leading-relaxed">
-                                 <MapPin size={16} className="text-slate-400 mt-1" />
-                                 <span>
-                                     {user.address ? (
-                                         <>
-                                            {user.address} <br/>
-                                            <span className="text-sm font-medium text-slate-500 block mt-1">
-                                                {user.city && `${user.city}, `}{user.state && `${user.state}`} {user.pin && `- ${user.pin}`}
-                                            </span>
-                                         </>
-                                     ) : "Not set"}
-                                 </span>
-                            </div>
-                        )}
+                                )
+                            )}
+                        </div>
                     </div>
 
                     {isEdit && (

@@ -2,7 +2,11 @@
 
 import React from "react";
 import Link from "next/link";
-import { ShoppingCart, X, ArrowRight, ShoppingBag } from "lucide-react";
+import { ShoppingCart, X, ArrowRight, ShoppingBag, Trash2, Plus, Minus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/authStore";
+import toast from "react-hot-toast";
+import { useCartStore } from "@/store/cartStore";
 
 interface CartItem {
   id: string;
@@ -18,7 +22,35 @@ interface CartDropdownProps {
 }
 
 export function CartDropdown({ items = [], onClose }: CartDropdownProps) {
+  const router = useRouter();
+  const { user } = useAuthStore();
+  const { removeItem, updateQuantity } = useCartStore();
   const isEmpty = items.length === 0;
+
+  const handleCheckout = () => {
+    onClose?.(); // Close the dropdown if controlled via state
+
+    if (!user) {
+      toast.error("Please login to checkout");
+      router.push("/auth/login");
+      return;
+    }
+
+    // Check if user has basic address information
+    const missingFields = [];
+    if (!user.address) missingFields.push("address");
+    if (!user.city) missingFields.push("city");
+    if (!user.state) missingFields.push("state");
+    if (!user.pin) missingFields.push("PIN code");
+
+    if (missingFields.length > 0) {
+      toast.error(`Please add your ${missingFields.join(", ")} in your profile`);
+      router.push("/user/profile/edit");
+      return;
+    }
+
+    router.push("/user/checkout");
+  };
 
   return (
     <div className="absolute top-[120%] right-0 w-80 md:w-96 bg-white rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right border border-slate-100 overflow-hidden translate-y-4 group-hover:translate-y-0 z-[100]">
@@ -57,9 +89,35 @@ export function CartDropdown({ items = [], onClose }: CartDropdownProps) {
                   <img src={item.image} alt={item.name} className="w-full h-full object-cover transition-transform duration-300 group-hover/item:scale-110" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-bold text-slate-900 truncate mb-1">{item.name}</h4>
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs text-slate-500">Qty: {item.quantity}</p>
+                  <div className="flex justify-between items-start">
+                    <h4 className="text-sm font-bold text-slate-900 truncate mb-1">{item.name}</h4>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeItem(item.id);
+                        toast.success("Removed from cart");
+                      }}
+                      className="text-slate-400 hover:text-red-500 transition-colors p-1"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between mt-1">
+                    <div className="flex items-center gap-2">
+                       <button 
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        className="w-5 h-5 rounded-md border border-slate-200 flex items-center justify-center text-slate-500 hover:text-brand-orange hover:border-brand-orange transition-all active:scale-90"
+                      >
+                        <Minus size={10} />
+                      </button>
+                      <span className="text-xs font-bold text-slate-700 min-w-[20px] text-center">{item.quantity}</span>
+                      <button 
+                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                         className="w-5 h-5 rounded-md border border-slate-200 flex items-center justify-center text-slate-500 hover:text-brand-orange hover:border-brand-orange transition-all active:scale-90"
+                      >
+                        <Plus size={10} />
+                      </button>
+                    </div>
                     <p className="text-sm font-bold text-brand-blue">₹{(item.price * item.quantity).toFixed(2)}</p>
                   </div>
                 </div>
@@ -78,7 +136,10 @@ export function CartDropdown({ items = [], onClose }: CartDropdownProps) {
               ₹{items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)}
             </span>
           </div>
-          <button className="w-full py-3 bg-brand-orange text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-brand-orange/90 transition-all hover:shadow-lg hover:shadow-brand-orange/20 active:scale-[0.98]">
+          <button 
+            onClick={handleCheckout} 
+            className="w-full py-3 bg-brand-orange text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-brand-orange/90 transition-all hover:shadow-lg hover:shadow-brand-orange/20 active:scale-[0.98] cursor-pointer"
+          >
             Checkout
             <ArrowRight size={18} />
           </button>
