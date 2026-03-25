@@ -444,10 +444,10 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                             {isEdit ? (
                                 formData.addresses.length > 0 ? (
                                     formData.addresses.map((addr: UserAddress, idx: number) => (
-                                        <div key={addr.id} className="p-5 bg-slate-50 border border-slate-200 rounded-2xl relative space-y-4">
+                                        <div key={addr.id} className="p-5 bg-slate-50 border border-slate-200 rounded relative space-y-4">
                                             <div className="flex justify-between items-center">
                                                <div className="flex items-center gap-2">
-                                                    <span className="text-xs font-black uppercase text-slate-400">Address #{idx+1}</span>
+                                                    <span className="text-xs font-black uppercase text-slate-400">Address {idx+1}</span>
                                                     {addr.isPrimary && <span className="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-widest">Primary</span>}
                                                </div>
                                                <button onClick={() => handleRemoveAddress(addr.id)} className="text-red-400 hover:text-red-500 transition-all p-1">

@@ -19,6 +19,7 @@ export default function CheckoutPage() {
     const [isProcessing, setIsProcessing] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+    const [errors, setErrors] = useState<any>({});
 
     useEffect(() => {
         setHasHydrated(true);
@@ -113,20 +114,48 @@ export default function CheckoutPage() {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    const validate = () => {
+        const newErrors: any = {};
+        if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
+        if (!/^[A-Za-z]+$/.test(formData.firstName)) newErrors.firstName = "First name must contain only letters";
+        if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+        if (!/^[A-Za-z]+$/.test(formData.lastName)) newErrors.lastName = "Last name must contain only letters";
+        if (!formData.email.trim()) {
+            newErrors.email = "Email is required";
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            newErrors.email = "Enter a valid email address";
+        }
+        if (!formData.phone.trim()) {
+            newErrors.phone = "Phone number is required";
+        } else if (!/^\d+$/.test(formData.phone)) {
+            newErrors.phone = "Phone must contain only numbers";
+        } else if (formData.phone.length !== 10) {
+            newErrors.phone = "Phone number must be exactly 10 digits";
+        } else if (!/^[6-9]/.test(formData.phone)) {
+            newErrors.phone = "Phone number must start with 6, 7, 8, or 9";
+        }
+        else if(!/^[0-9]+$/.test(formData.phone)){
+            newErrors.phone = "Phone must be only numbers";
+        }
+
+        if (savedAddresses.length > 0 && !selectedAddressId) {
+            newErrors.address = "Please select a shipping address";
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handlePlaceOrder = (e: React.FormEvent) => {
         e.preventDefault();
         
-        if (savedAddresses.length === 0) {
-            toast.error("Please add a shipping address to your profile first.");
+        if (!validate()) {
+            toast.error("Please fix the errors in your shipping details.");
             return;
         }
 
-        // Basic validation
-        const requiredFields = ['firstName', 'email', 'phone'] as const;
-        const missingFields = requiredFields.filter(f => !formData[f]);
-        
-        if (missingFields.length > 0) {
-            toast.error("Please fill in all required shipping details.");
+        if (savedAddresses.length === 0) {
+            toast.error("You need a saved address in your profile to checkout.");
             return;
         }
 
@@ -184,21 +213,55 @@ export default function CheckoutPage() {
                                         Contact Information
                                     </h2>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-slate-700">First Name</label>
-                                            <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all text-slate-900" required placeholder="Your name" />
+                                        <div className="space-y-1">
+                                            <label className="text-sm font-bold text-slate-700 ml-1">First Name*</label>
+                                            <input 
+                                                type="text" 
+                                                name="firstName" 
+                                                value={formData.firstName} 
+                                                onChange={handleInputChange} 
+                                                className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.firstName ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`} 
+                                                placeholder="Enter first name" 
+                                            />
+                                            {errors.firstName && <p className="text-[10px] font-bold text-red-500 ml-2">{errors.firstName}</p>}
                                         </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-slate-700">Last Name</label>
-                                            <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all text-slate-900" required placeholder="Your last name" />
+                                        <div className="space-y-1">
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Last Name*</label>
+                                            <input 
+                                                type="text" 
+                                                name="lastName" 
+                                                value={formData.lastName} 
+                                                onChange={handleInputChange} 
+                                                className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.lastName ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`} 
+                                                placeholder="Enter last name" 
+                                            />
+                                            {errors.lastName && <p className="text-[10px] font-bold text-red-500 ml-2">{errors.lastName}</p>}
                                         </div>
-                                        <div className="space-y-2 md:col-span-2">
-                                            <label className="text-sm font-bold text-slate-700">Email Address</label>
-                                            <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all text-slate-900" required placeholder="Your email address" />
+                                        <div className="space-y-1 md:col-span-2">
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Email Address*</label>
+                                            <input 
+                                                type="email" 
+                                                name="email" 
+                                                value={formData.email} 
+                                                onChange={handleInputChange} 
+                                                className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.email ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`} 
+                                                placeholder="Enter email address" 
+                                            />
+                                            {errors.email && <p className="text-[10px] font-bold text-red-500 ml-2">{errors.email}</p>}
                                         </div>
-                                        <div className="space-y-2 md:col-span-2">
-                                            <label className="text-sm font-bold text-slate-700">Phone Number</label>
-                                            <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all text-slate-900" required placeholder="Your phone number" />
+                                        <div className="space-y-1 md:col-span-2">
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Phone Number*</label>
+                                            <div className="relative">
+                                                <input 
+                                                    type="tel" 
+                                                    name="phone" 
+                                                    value={formData.phone} 
+                                                    onChange={handleInputChange} 
+                                                    className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.phone ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`} 
+                                                    placeholder="Enter 10-digit phone number" 
+                                                />
+                                            </div>
+                                            {errors.phone && <p className="text-[10px] font-bold text-red-500 ml-2">{errors.phone}</p>}
                                         </div>
                                     </div>
                                 </div>
@@ -211,6 +274,7 @@ export default function CheckoutPage() {
                                                 <span className="w-8 h-8 rounded-lg bg-brand-blue/10 text-brand-blue flex items-center justify-center text-sm font-bold">2</span>
                                                 Shipping Address
                                             </div>
+                                            {errors.address && <p className="text-[10px] font-black uppercase text-red-500 bg-red-50 px-3 py-1 rounded-full border border-red-100">{errors.address}</p>}
                                             <Link href="/user/profile" className="text-sm font-bold text-brand-blue hover:text-brand-orange transition-colors">
                                                 Manage
                                             </Link>
