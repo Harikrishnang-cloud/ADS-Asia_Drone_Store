@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
-    User, LogOut, Menu, X, Heart, ShoppingCart, Bell,
+    User, LogOut, Menu, X, Heart, ShoppingCart, Bell, Wallet,
     BookOpen, UserPlus, Presentation, MessageCircle,
     Settings, CreditCard, Layers, BadgeDollarSign,
     History, Globe, UserCircle, HelpCircle, UserPlus2, Search
@@ -12,7 +12,7 @@ import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 import toast from "react-hot-toast";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
-import { collection, query, orderBy, limit, getDocs, where, Timestamp } from "firebase/firestore";
+import { collection, query, orderBy, limit, getDocs, getDoc, doc, where, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { WishlistDropdown } from "./dropdowns/WishlistDropdown";
 import { CartDropdown } from "./dropdowns/CartDropdown";
@@ -27,6 +27,7 @@ export interface UserProfile {
     name: string;
     email: string;
     role: string;
+    walletBalance?: number;
 }
 
 const navLinks = [
@@ -58,6 +59,27 @@ export function Navbar() {
     useEffect(() => {
         setHasHydrated(true);
     }, []);
+
+    // Sync user data and wallet balance from Firestore
+    useEffect(() => {
+        if (!hasHydrated || !user?.id) return;
+
+        const fetchLatestUser = async () => {
+            try {
+                const userDoc = await getDoc(doc(db, "users", user.id!));
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    const updatedUser = { ...user, ...userData, id: userDoc.id };
+                    setAuth(updatedUser, localStorage.getItem("accessToken"));
+                    localStorage.setItem("userData", JSON.stringify(updatedUser));
+                }
+            } catch (error) {
+                console.error("Failed to fetch latest user data in Navbar:", error);
+            }
+        };
+
+        fetchLatestUser();
+    }, [hasHydrated, user?.id]);
 
 
     useEffect(() => {
@@ -283,13 +305,26 @@ export function Navbar() {
                                     <div className="absolute top-[120%] right-0 w-72 bg-white rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right border border-slate-100 overflow-hidden translate-y-4 group-hover:translate-y-0 z-[100]">
 
                                         {/* User Header Section */}
-                                        <div className="p-5 flex items-center gap-4 border-b border-slate-100 bg-slate-50/50">
-                                            <div className="w-12 h-12 rounded-full bg-brand-blue-dark text-white flex items-center justify-center font-bold text-lg shadow-inner flex-shrink-0">
-                                                {user?.name ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'U'}
+                                        <div className="p-5 flex flex-col gap-4 border-b border-slate-100 bg-slate-50/50">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 rounded-full bg-brand-blue-dark text-white flex items-center justify-center font-bold text-lg shadow-inner flex-shrink-0">
+                                                    {user?.name ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'U'}
+                                                </div>
+                                                <div className="flex flex-col overflow-hidden">
+                                                    <p className="font-bold text-slate-900 truncate leading-tight capitalize">{user?.name || 'User'}</p>
+                                                    <p className="text-xs text-slate-500 truncate mt-1">{user?.email}</p>
+                                                </div>
                                             </div>
-                                            <div className="flex flex-col overflow-hidden">
-                                                <p className="font-bold text-slate-900 truncate leading-tight capitalize">{user?.name || 'User'}</p>
-                                                <p className="text-xs text-slate-500 truncate mt-1">{user?.email}</p>
+
+                                            {/* Wallet Summary in Dropdown */}
+                                            <div className="flex items-center justify-between bg-white px-4 py-3 rounded-xl border border-slate-200 shadow-sm">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-8 h-8 rounded-lg bg-brand-blue/10 text-brand-blue flex items-center justify-center">
+                                                        <Wallet size={16} />
+                                                    </div>
+                                                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest leading-none">Balance</span>
+                                                </div>
+                                                <span className="text-sm font-black text-brand-blue-dark">₹{(user?.walletBalance || 0).toLocaleString('en-IN')}</span>
                                             </div>
                                         </div>
 

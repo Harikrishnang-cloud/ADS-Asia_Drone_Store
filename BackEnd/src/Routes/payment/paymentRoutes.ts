@@ -24,6 +24,10 @@ export class paymentRoutes {
         this.paymentRoutes.post("/verify-wallet-topup", authMiddleware, (req, res) => {
             this.paymentController.verifyWalletTopup(req, res);
         });
+
+        this.paymentRoutes.post("/process-wallet-payment", authMiddleware, (req, res) => {
+            this.paymentController.processWalletPayment(req, res);
+        });
     }
 
     public getPaymentRoutes() {

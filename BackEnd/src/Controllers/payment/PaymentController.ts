@@ -91,4 +91,45 @@ export class PaymentController {
             res.status(500).json({ success: false, message: "Verification failed", error: error.message });
         }
     }
+
+    async processWalletPayment(req: Request, res: Response) {
+        try {
+            const { amount, orderId } = req.body;
+            const userId = (req as any).user?.id;
+
+            if (!amount || !userId) {
+                res.status(400).json({ success: false, message: "Amount and User ID are required" });
+                return;
+            }
+
+            // 1. Fetch user to check current balance
+            const user = await this.userRepository.findUserById(userId);
+            const currentBalance = user?.walletBalance || 0;
+
+            if (currentBalance < amount) {
+                res.status(400).json({ success: false, message: "Insufficient wallet balance" });
+                return;
+            }
+
+            // 2. Deduct balance
+            await this.userRepository.updateWalletBalance(userId, -amount);
+
+            // 3. Log transaction
+            await this.userRepository.createTransaction({
+                userId,
+                userName: user?.name || "Unknown",
+                userEmail: user?.email || "N/A",
+                amount: amount,
+                type: 'order',
+                paymentMethod: 'wallet',
+                status: 'success',
+                orderId: orderId || null
+            });
+
+            res.status(200).json({ success: true, message: "Wallet payment successful" });
+        } catch (error: any) {
+            console.error("Wallet Payment Error:", error);
+            res.status(500).json({ success: false, message: "Wallet payment failed", error: error.message });
+        }
+    }
 }

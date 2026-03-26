@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { collection, query, orderBy, getDocs, limit } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { CreditCard, Search, Calendar, User, ArrowUpRight, ArrowDownLeft, Filter, RefreshCw, Loader2 } from "lucide-react";
+import { CreditCard, Search, Calendar, User, ArrowUpRight, ArrowDownLeft, Filter, RefreshCw, Loader2, ChevronDown } from "lucide-react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AdminHeader from "@/components/ui/AdminHeader";
 
@@ -79,31 +79,45 @@ export default function AdminPaymentsPage() {
 
 
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div className="relative group">
-                        <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-                        <select 
-                            className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-blue transition-all font-bold text-slate-700 shadow-sm appearance-none cursor-pointer"
-                            value={filterType}
-                            onChange={(e) => setFilterType(e.target.value)}
-                        >
-                            <option value="all">All Types</option>
-                            <option value="topup">Wallet Top-up</option>
-                            <option value="order">Order Payment</option>
-                            <option value="refund">Refunds</option>
-                        </select>
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+    
+    {/* Filter */}
+    <div className="relative group">
+        <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer" size={20} />
+        <select 
+            className="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-xl 
+                       outline-none focus:border-brand-blue transition-all 
+                       font-semibold text-slate-700 shadow-sm appearance-none cursor-pointer h-full"
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+        >
+            <option value="all">All Types</option>
+            <option value="topup">Wallet Top-up</option>
+            <option value="order">Order Payment</option>
+            <option value="refund">Refunds</option>
+        </select>
+    </div>
 
-                    <div className="bg-brand-blue/90 rounded-xl p-4 flex items-center justify-between text-white shadow-lg overflow-hidden relative group">
-                        <div className="relative z-10 font-black text-xl italic tracking-widest uppercase opacity-70 px-2">
-                            Safe Gateway
-                        </div>
-                        <div className="relative z-10 flex flex-col items-end px-2">
-                            <span className="text-[12px] font-bold uppercase tracking-tighter opacity-80">Processed</span>
-                            <span className="text-2xl font-black">{filteredTransactions.length} Records</span>
-                        </div>
-                    </div>
-                </div>
+    {/* Safe Gateway Card */}
+    <div className="bg-brand-blue/90 rounded-xl flex items-center justify-between 
+                    text-white shadow-lg px-5 py-4 h-full">
+        
+        <div className="font-bold text-lg tracking-wide uppercase opacity-80">
+            Safe Gateway
+        </div>
+
+        <div className="flex flex-col items-end">
+            <span className="text-xs font-semibold uppercase opacity-70">
+                Processed
+            </span>
+            <span className="text-xl font-bold">
+                {filteredTransactions.length} Records
+            </span>
+        </div>
+    </div>
+
+</div>
 
                 {/* Main Table Container */}
                 <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm shadow-slate-200/50">

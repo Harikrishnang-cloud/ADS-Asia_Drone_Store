@@ -6,7 +6,7 @@ import {
     ShoppingBag, Package, Truck, CheckCircle2, 
     XCircle, Clock, ChevronRight, MapPin, 
     CreditCard, Calendar, Hash, ArrowLeft,
-    ChevronDown, ChevronUp, ExternalLink, Mail
+    ChevronDown, ChevronUp, ExternalLink, Mail, Download
 } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
@@ -15,6 +15,7 @@ import { useAuthStore } from "@/store/authStore";
 import Button from "@/components/ui/button";
 import toast from "react-hot-toast";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
+import { generateInvoice } from "@/lib/invoiceGenerator";
 
 interface OrderItem {
     id: string;
@@ -432,7 +433,13 @@ export default function OrdersPage() {
 
                                                         <div className="space-y-3 pt-2">
                                                             <div className="rounded-lg cursor-pointer">
-                                                                <Button fullWidth variant="secondary" size="sm" icon={<Calendar size={14} />}>
+                                                                <Button 
+                                                                    fullWidth 
+                                                                    variant="secondary" 
+                                                                    size="sm" 
+                                                                    icon={<Download size={14} />}
+                                                                    onClick={() => generateInvoice(order)}
+                                                                >
                                                                     Download Invoice
                                                                 </Button>
                                                             </div>

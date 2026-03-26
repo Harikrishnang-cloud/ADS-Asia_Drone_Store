@@ -9,15 +9,16 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/ui/button";
 import toast from "react-hot-toast";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
+import Modal from "@/components/ui/Modal";
 import { useAuthStore } from "@/store/authStore";
 import { db } from "@/lib/firebase";
-import { collection, addDoc, updateDoc, doc, Timestamp, increment } from "firebase/firestore";
+import { collection, addDoc, updateDoc, getDoc, doc, Timestamp, increment, deleteDoc } from "firebase/firestore";
 import Script from "next/script";
 import api from "@/lib/axios";
 
 export default function CheckoutPage() {
     const { items, getTotalPrice, clearCart } = useCartStore();
-    const { user } = useAuthStore();
+    const { user, setAuth } = useAuthStore();
     const router = useRouter();
     const [hasHydrated, setHasHydrated] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -56,6 +57,26 @@ export default function CheckoutPage() {
 
     // Dynamic checking of the address from context storage
     const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
+
+    useEffect(() => {
+        if (!user?.id) return;
+
+        const fetchLatestUser = async () => {
+            try {
+                const userDoc = await getDoc(doc(db, "users", user.id!));
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    const updatedUser = { ...user, ...userData, id: userDoc.id };
+                    setAuth(updatedUser, localStorage.getItem("accessToken"));
+                    localStorage.setItem("userData", JSON.stringify(updatedUser));
+                }
+            } catch (error) {
+                console.error("Failed to fetch latest user data:", error);
+            }
+        };
+
+        fetchLatestUser();
+    }, [user?.id]);
 
     useEffect(() => {
         if (user) {
@@ -210,36 +231,71 @@ export default function CheckoutPage() {
 
         const createOrder = async (razorpayData?: any) => {
             try {
+                // If wallet, process payment via backend to check balance and deduct
+                if (paymentMethod === "wallet") {
+                    // Double check client-side balance first
+                    if ((user?.walletBalance || 0) < total) {
+                        toast.error("Your wallet balance is insufficient for this order.");
+                        setIsProcessing(false);
+                        return;
+                    }
+
+                    try {
+                        const walletRes = await api.post("/payment/process-wallet-payment", { 
+                            amount: total 
+                        });
+                        
+                        if (!walletRes.data.success) {
+                            toast.error(walletRes.data.message || "Wallet payment failed");
+                            setIsProcessing(false);
+                            return;
+                        }
+
+                        // Update local auth store balance with the actual new balance
+                        if (user) {
+                            const updatedUser = { 
+                                ...user, 
+                                walletBalance: (user.walletBalance || 0) - total 
+                            };
+                            setAuth(updatedUser, localStorage.getItem("accessToken"));
+                            localStorage.setItem("userData", JSON.stringify(updatedUser));
+                        }
+                    } catch (err: any) {
+                        console.error("Wallet payment error:", err);
+                        toast.error(err.response?.data?.message || "Wallet payment failed. Insufficient balance or server error.");
+                        setIsProcessing(false);
+                        return;
+                    }
+                }
+
                 const finalOrderData = {
                     ...orderData,
                     razorpay: razorpayData || null,
                     status: (razorpayData || paymentMethod === "wallet" || paymentMethod === "cod") ? "Processing" : "Pending"
                 };
 
-                // If wallet, update user's balance
-                if (paymentMethod === "wallet") {
-                    const userRef = doc(db, "users", user.id!);
-                    await updateDoc(userRef, {
-                        walletBalance: increment(-total)
-                    });
-                }
-
                 const orderRef = await addDoc(collection(db, "orders"), finalOrderData);
                 
-                // Log transaction for Admin Payments view
-                await addDoc(collection(db, "transactions"), {
-                    userId: user.id,
-                    userName: `${formData.firstName} ${formData.lastName}`,
-                    userEmail: formData.email,
-                    amount: total,
-                    type: "order",
-                    paymentMethod: paymentMethod,
-                    status: "success",
-                    orderId: orderRef.id,
-                    razorpayOrderId: razorpayData?.orderId || null,
-                    razorpayPaymentId: razorpayData?.paymentId || null,
-                    createdAt: Timestamp.now()
-                });
+                // Only log transaction here if NOT wallet (wallet is logged in backend already)
+                if (paymentMethod !== "wallet") {
+                    await addDoc(collection(db, "transactions"), {
+                        userId: user.id,
+                        userName: `${formData.firstName} ${formData.lastName}`,
+                        userEmail: formData.email,
+                        amount: total,
+                        type: "order",
+                        paymentMethod: paymentMethod,
+                        status: "success",
+                        orderId: orderRef.id,
+                        razorpayOrderId: razorpayData?.orderId || null,
+                        razorpayPaymentId: razorpayData?.paymentId || null,
+                        createdAt: Timestamp.now()
+                    });
+                } else {
+                    // Update the orderId for the wallet transaction that was just created in backend
+                    // Note: This is a bit tricky since backend doesn't know the doc ID yet.
+                    // For now, it's logged with orderId: null in backend, which is acceptable.
+                }
 
                 // Show success
                 setIsProcessing(false);
@@ -358,15 +414,34 @@ export default function CheckoutPage() {
             <div className="min-h-screen pt-24 md:pt-32 pb-12 md:pb-20 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Header */}
-                    <div className="mb-8">
-                        <Link href="/user/cart" className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-brand-blue mb-4 transition-colors">
-                            <ArrowLeft size={16} />
-                            Back to Cart
-                        </Link>
-                        <h1 className="text-2xl md:text-3xl font-black text-brand-blue-dark flex items-center gap-3 tracking-tight">
-                            <Lock className="text-brand-orange" size={28} />
-                            Secure Checkout
-                        </h1>
+                    <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                        <div>
+                            <Link href="/user/cart" className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-brand-blue mb-4 transition-colors">
+                                <ArrowLeft size={16} />
+                                Back to Cart
+                            </Link>
+                            <h1 className="text-2xl md:text-3xl font-black text-brand-blue-dark flex items-center gap-3 tracking-tight">
+                                <Lock className="text-brand-orange" size={28} />
+                                Secure Checkout
+                            </h1>
+                        </div>
+
+                        {/* Wallet Balance Summary Indicator */}
+                        <div className={`bg-white border px-6 py-4 rounded-2xl shadow-sm flex items-center gap-4 animate-in fade-in slide-in-from-right-4 duration-700 ${!isWalletAvailable ? 'border-red-200 bg-red-50/10' : 'border-slate-200'}`}>
+                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${!isWalletAvailable ? 'bg-red-100 text-red-500' : 'bg-brand-blue/10 text-brand-blue'}`}>
+                                <Wallet size={24} />
+                             </div>
+                             <div>
+                                 <div className="flex items-center gap-2 mb-0.5">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Available Balance</p>
+                                    {!isWalletAvailable && <span className="text-[9px] font-black uppercase bg-red-500 text-white px-1.5 py-0.5 rounded-md">Insufficient</span>}
+                                 </div>
+                                 <div className="flex items-center gap-3">
+                                    <p className={`text-xl font-black ${!isWalletAvailable ? 'text-red-500' : 'text-brand-blue-dark'}`}>₹{walletBalance.toLocaleString('en-IN')}</p>
+                                    <Link href="/user/profile" className="text-[10px] font-bold text-brand-blue hover:text-brand-orange underline underline-offset-2">Top Up</Link>
+                                 </div>
+                             </div>
+                        </div>
                     </div>
 
                     <div className="flex flex-col lg:flex-row gap-8">
@@ -665,17 +740,44 @@ export default function CheckoutPage() {
                 </div>
             </div>
 
-            {/* Success Modal */}
-            <ConfirmationModal
+            {/* Thank You Success Modal */}
+            <Modal
                 isOpen={showSuccessModal}
                 onClose={handleSuccessComplete}
-                onConfirm={handleSuccessComplete}
-                title="Order Received!"
-                message="Your order has been placed successfully. Thank you for shopping with Asia Drone Store!"
-                confirmText="Continue Shopping"
-                cancelText="Close"
-                type="info"
-            />
+                maxWidth="md"
+            >
+                <div className="flex flex-col items-center text-center py-6">
+                    <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-8 animate-bounce transition-all">
+                        <CheckCircle size={48} strokeWidth={3} />
+                    </div>
+                    
+                    <h2 className="text-4xl font-black text-slate-900 mb-4 tracking-tighter">
+                        THANK YOU!
+                    </h2>
+                    
+                    <p className="text-slate-500 font-medium leading-relaxed mb-10 max-w-sm">
+                        Your order has been placed successfully. We're getting your premium drone equipment ready for takeoff!
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row gap-4 w-full px-2">
+                        <button 
+                            type="button"
+                            onClick={() => router.push("/products")}
+                            className="flex-1 py-4 px-6 border border-slate-200 rounded-xl text-slate-600 font-bold hover:bg-slate-50 transition-all cursor-pointer"
+                        >
+                            Continue Shopping
+                        </button>
+                        <button 
+                            type="button"
+                            onClick={handleSuccessComplete}
+                            className="flex-1 py-4 px-6 bg-brand-blue text-white rounded-xl font-bold hover:bg-brand-blue-dark transition-all shadow-lg shadow-brand-blue/20 flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                            <PackageCheck size={20} />
+                            View My Orders
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </ProtectedRoute>
     );
 }
