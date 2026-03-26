@@ -30,12 +30,12 @@ export interface UserProfile {
 }
 
 const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "Products", path: "/products" },
-    { name: "Gallery", path: "/gallery" },
-    { name: "About", path: "/about" },
-    { name: "Contact", path: "/contact" },
-    { name: "Support", path: "/help" },
+    { name: "HOME", path: "/" },
+    { name: "PRODUCTS", path: "/products" },
+    { name: "GALLERY", path: "/gallery" },
+    { name: "ABOUT", path: "/about" },
+    { name: "CONTACT", path: "/contact" },
+    { name: "SUPPORT", path: "/help" },
 ];
 
 export function Navbar() {
@@ -511,6 +511,14 @@ export function Navbar() {
                                 >
                                     <Settings size={20} />
                                     <span className="text-[11px] font-bold uppercase tracking-tight">Settings</span>
+                                </Link>
+                                <Link
+                                    href="/user/messages"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="flex flex-col items-center justify-center gap-2 p-4 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-brand-blue transition-colors shadow-sm"
+                                >
+                                    <MessageCircle size={20} />
+                                    <span className="text-[11px] font-bold uppercase tracking-tight">Messages</span>
                                 </Link>
                             </div>
 

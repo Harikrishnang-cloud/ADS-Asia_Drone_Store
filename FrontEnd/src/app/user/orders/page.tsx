@@ -6,7 +6,7 @@ import {
     ShoppingBag, Package, Truck, CheckCircle2, 
     XCircle, Clock, ChevronRight, MapPin, 
     CreditCard, Calendar, Hash, ArrowLeft,
-    ChevronDown, ChevronUp, ExternalLink
+    ChevronDown, ChevronUp, ExternalLink, Mail
 } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
@@ -45,6 +45,9 @@ interface Order {
         email: string;
         phone: string;
     };
+    trackingId?: string;
+    trackingLink?: string;
+    adminMessage?: string;
 }
 
 export default function OrdersPage() {
@@ -105,6 +108,8 @@ export default function OrdersPage() {
                 return { bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-100', icon: Clock };
             case 'shipped':
                 return { bg: 'bg-indigo-50', text: 'text-indigo-600', border: 'border-indigo-100', icon: Truck };
+            case 'out for delivery':
+                return { bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-orange-100', icon: Truck };
             case 'cancelled':
                 return { bg: 'bg-red-50', text: 'text-red-600', border: 'border-red-100', icon: XCircle };
             default:
@@ -311,26 +316,68 @@ export default function OrdersPage() {
                                                             ) : (
                                                                 <div className="flex items-center relative">
                                                                     <div className="flex-1 flex flex-col items-center text-center gap-2 relative z-10">
-                                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${['processing', 'shipped', 'delivered'].includes(order.status.toLowerCase()) ? 'bg-brand-blue text-white shadow-[0_0_10px_rgba(0,75,147,0.3)]' : 'bg-slate-100 text-slate-400'}`}>1</div>
+                                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${['processing', 'shipped', 'out for delivery', 'delivered'].includes(order.status.toLowerCase()) ? 'bg-brand-blue text-white shadow-[0_0_10px_rgba(0,75,147,0.3)]' : 'bg-slate-100 text-slate-400'}`}>1</div>
                                                                         <span className="text-[10px] font-black uppercase">Confirmed</span>
                                                                     </div>
                                                                     <div className={`w-full h-1 -mx-2 mb-4 bg-slate-100 overflow-hidden`}>
-                                                                        <div className={`h-full bg-brand-blue transition-all duration-1000 ${['shipped', 'delivered'].includes(order.status.toLowerCase()) ? 'w-full' : 'w-0'}`}></div>
+                                                                        <div className={`h-full bg-brand-blue transition-all duration-1000 ${['shipped', 'out for delivery', 'delivered'].includes(order.status.toLowerCase()) ? 'w-full' : 'w-0'}`}></div>
                                                                     </div>
                                                                     <div className="flex-1 flex flex-col items-center text-center gap-2 relative z-10">
-                                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${['shipped', 'delivered'].includes(order.status.toLowerCase()) ? 'bg-brand-blue text-white shadow-[0_0_10px_rgba(0,75,147,0.3)]' : 'bg-slate-100 text-slate-400'}`}>2</div>
+                                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${['shipped', 'out for delivery', 'delivered'].includes(order.status.toLowerCase()) ? 'bg-brand-blue text-white shadow-[0_0_10px_rgba(0,75,147,0.3)]' : 'bg-slate-100 text-slate-400'}`}>2</div>
                                                                         <span className="text-[10px] font-black uppercase">Shipped</span>
+                                                                    </div>
+                                                                    <div className={`w-full h-1 -mx-2 mb-4 bg-slate-100 overflow-hidden`}>
+                                                                        <div className={`h-full bg-brand-blue transition-all duration-1000 ${['out for delivery', 'delivered'].includes(order.status.toLowerCase()) ? 'w-full' : 'w-0'}`}></div>
+                                                                    </div>
+
+                                                                    <div className="flex-1 flex flex-col items-center text-center gap-2 relative z-10">
+                                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${['out for delivery', 'delivered'].includes(order.status.toLowerCase()) ? 'bg-brand-blue text-white shadow-[0_0_10px_rgba(0,75,147,0.3)]' : 'bg-slate-100 text-slate-400'}`}>3</div>
+                                                                        <span className="text-[10px] font-black uppercase">Out for Delivery</span>
                                                                     </div>
                                                                     <div className={`w-full h-1 -mx-2 mb-4 bg-slate-100 overflow-hidden`}>
                                                                         <div className={`h-full bg-brand-blue transition-all duration-1000 ${['delivered'].includes(order.status.toLowerCase()) ? 'w-full' : 'w-0'}`}></div>
                                                                     </div>
+                                                                    
                                                                     <div className="flex-1 flex flex-col items-center text-center gap-2 relative z-10">
-                                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${order.status.toLowerCase() === 'delivered' ? 'bg-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'bg-slate-100 text-slate-400'}`}>3</div>
+                                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${order.status.toLowerCase() === 'delivered' ? 'bg-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'bg-slate-100 text-slate-400'}`}>4</div>
                                                                         <span className="text-[10px] font-black uppercase">Delivered</span>
                                                                     </div>
                                                                 </div>
                                                             )}
                                                         </div>
+
+                                                        {/* Admin Message & Tracking details */}
+                                                        {(order.adminMessage || order.trackingId) && (
+                                                            <div className="bg-brand-blue/5 border border-brand-blue/10 p-5 rounded-2xl mt-6 space-y-4">
+                                                                {order.adminMessage && (
+                                                                    <div className="space-y-1">
+                                                                        <p className="text-[10px] font-black uppercase tracking-widest text-brand-blue/60 flex items-center gap-2">
+                                                                            <Mail size={12} /> Message from Support
+                                                                        </p>
+                                                                        <p className="text-sm font-bold text-slate-700 italic">"{order.adminMessage}"</p>
+                                                                    </div>
+                                                                )}
+                                                                
+                                                                {order.trackingId && (
+                                                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-3 border-t border-brand-blue/10">
+                                                                        <div className="space-y-1">
+                                                                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Tracking Number</p>
+                                                                            <p className="text-sm font-black text-slate-900 tracking-tight">{order.trackingId}</p>
+                                                                        </div>
+                                                                        {order.trackingLink && (
+                                                                            <a 
+                                                                                href={order.trackingLink} 
+                                                                                target="_blank" 
+                                                                                rel="noopener noreferrer"
+                                                                                className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-brand-blue/20 rounded-xl text-xs font-black uppercase text-brand-blue hover:bg-brand-blue hover:text-white transition-all shadow-sm"
+                                                                            >
+                                                                                <Truck size={14} /> Track Package
+                                                                            </a>
+                                                                        )}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        )}
                                                     </div>
 
                                                     {/* Summary Column */}

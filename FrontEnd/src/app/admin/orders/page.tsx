@@ -40,6 +40,9 @@ interface Order {
         email: string;
         phone: string;
     };
+    trackingId?: string;
+    trackingLink?: string;
+    adminMessage?: string;
 }
 
 export default function AdminOrdersPage() {
@@ -49,10 +52,21 @@ export default function AdminOrdersPage() {
     const [filterStatus, setFilterStatus] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
     const [isUpdating, setIsUpdating] = useState(false);
+    const [trackingId, setTrackingId] = useState("");
+    const [trackingLink, setTrackingLink] = useState("");
+    const [adminMessage, setAdminMessage] = useState("");
 
     useEffect(() => {
         fetchOrders();
     }, []);
+
+    useEffect(() => {
+        if (selectedOrder) {
+            setTrackingId(selectedOrder.trackingId || "");
+            setTrackingLink(selectedOrder.trackingLink || "");
+            setAdminMessage(selectedOrder.adminMessage || "");
+        }
+    }, [selectedOrder]);
 
     const fetchOrders = async () => {
         setLoading(true);
@@ -92,6 +106,30 @@ export default function AdminOrdersPage() {
         }
     };
 
+    const updateTrackingInfo = async () => {
+        if (!selectedOrder) return;
+        setIsUpdating(true);
+        try {
+            const orderRef = doc(db, "orders", selectedOrder.id);
+            const updateData = {
+                trackingId: trackingId.trim(),
+                trackingLink: trackingLink.trim(),
+                adminMessage: adminMessage.trim()
+            };
+            await updateDoc(orderRef, updateData);
+
+            // Update local state
+            setOrders(orders.map(o => o.id === selectedOrder.id ? { ...o, ...updateData } : o));
+            setSelectedOrder({ ...selectedOrder, ...updateData });
+
+            toast.success("Shipping information updated");
+        } catch (error) {
+            toast.error("Failed to update shipping info");
+        } finally {
+            setIsUpdating(false);
+        }
+    };
+
     const deleteOrder = async (orderId: string) => {
         if (!window.confirm("Are you sure you want to delete this order? This cannot be undone.")) return;
 
@@ -122,6 +160,7 @@ export default function AdminOrdersPage() {
             case 'delivered': return 'bg-emerald-50 text-emerald-600 border-emerald-100';
             case 'processing': return 'bg-blue-50 text-blue-600 border-blue-100';
             case 'shipped': return 'bg-indigo-50 text-indigo-600 border-indigo-100';
+            case 'out for delivery': return 'bg-orange-50 text-orange-600 border-orange-100';
             case 'cancelled': return 'bg-red-50 text-red-600 border-red-100';
             default: return 'bg-slate-50 text-slate-600 border-slate-100';
         }
@@ -164,7 +203,7 @@ export default function AdminOrdersPage() {
                     </div>
                     <div className="flex items-center gap-2 w-full md:w-auto">
                         <Filter className="text-slate-400 mr-2" size={18} />
-                        {["All", "Processing", "Shipped", "Delivered", "Cancelled"].map(status => (
+                        {["All", "Processing", "Shipped", "Out for Delivery", "Delivered", "Cancelled"].map(status => (
                             <button
                                 key={status}
                                 onClick={() => setFilterStatus(status)}
@@ -244,7 +283,7 @@ export default function AdminOrdersPage() {
                                             Update Fulfillment Status
                                         </label>
                                         <div className="flex flex-wrap gap-2">
-                                            {["Processing", "Shipped", "Delivered", "Cancelled"].map(s => (
+                                            {["Processing", "Shipped", "Out for Delivery", "Delivered", "Cancelled"].map(s => (
                                                 <button
                                                     key={s}
                                                     disabled={isUpdating}
@@ -254,6 +293,45 @@ export default function AdminOrdersPage() {
                                                     {s}
                                                 </button>
                                             ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Tracking Info */}
+                                    <div className="space-y-4 pt-4 border-t border-slate-100">
+                                        <label className="text-[10px] font-black uppercase text-slate-400 flex items-center gap-2">
+                                            Shipping & Messages
+                                        </label>
+                                        <div className="space-y-3">
+                                            <input
+                                                type="text"
+                                                placeholder="Tracking ID (e.g. DHL123456)"
+                                                className="w-full px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue outline-none transition-all text-sm"
+                                                value={trackingId}
+                                                onChange={(e) => setTrackingId(e.target.value)}
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="Tracking Link (URL)"
+                                                className="w-full px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue outline-none transition-all text-sm"
+                                                value={trackingLink}
+                                                onChange={(e) => setTrackingLink(e.target.value)}
+                                            />
+                                            <textarea
+                                                placeholder="Message to user..."
+                                                rows={2}
+                                                className="w-full px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue outline-none transition-all text-sm resize-none"
+                                                value={adminMessage}
+                                                onChange={(e) => setAdminMessage(e.target.value)}
+                                            />
+                                            <Button 
+                                                fullWidth 
+                                                variant="orange" 
+                                                size="sm" 
+                                                onClick={updateTrackingInfo}
+                                                disabled={isUpdating}
+                                            >
+                                                {isUpdating ? "Updating..." : "Send to User"}
+                                            </Button>
                                         </div>
                                     </div>
 
