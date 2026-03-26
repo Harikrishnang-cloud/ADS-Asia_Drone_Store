@@ -3,24 +3,29 @@ import { Plus, Trash2, Bell, Tag, AlertCircle, Loader2 } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import useNotification from "../Controller/useNotification";
+import AdminHeader from "@/components/ui/AdminHeader";
+import Button from "@/components/ui/button";
+import { X } from "lucide-react";
 
 
 export default function NotificationManager() {
     const { notifications,formdataUpdate, setFormData, setNotificationToDelete, toggleIsAdding, loading, isAdding, isSaving, notificationToDelete, isDeleting, formData, fetchNotifications, handleSubmit, confirmDelete } = useNotification();
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h2 className="text-xl font-bold text-slate-800">User Notifications</h2>
-                    <p className="text-slate-500 text-sm">Broadcast updates to all users</p>
-                </div>
-                <button onClick={toggleIsAdding}
-                    className="bg-brand-orange text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-600 transition-colors flex items-center gap-2 cursor-pointer">
-                    <Plus size={18} />
-                    New Notification
-                </button>
-            </div>
+        <div className="space-y-8 animate-in fade-in duration-500 pb-20">
+            <AdminHeader 
+                title="User Notifications" 
+                description="Broadcast important updates and offers to all platform users"
+                icon={<Bell size={20} />}
+                actionButton={
+                    <Button 
+                        onClick={() => toggleIsAdding()}
+                        variant="orange"
+                        icon={isAdding ? <X size={18} /> : <Plus size={18} />}>
+                        {isAdding ? "Cancel" : "New Notification"}
+                    </Button>
+                }
+            />
 
             <Modal isOpen={isAdding} onClose={toggleIsAdding} title="Create Notification" maxWidth="lg">
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -64,17 +69,17 @@ export default function NotificationManager() {
                 </form>
             </Modal>
 
-            <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
                 <table className="w-full text-left">
-                    <thead className="bg-slate-50 border-b border-slate-200">
+                    <thead className="bg-slate-50/50 border-b border-slate-100">
                         <tr>
-                            <th className="px-6 py-3 text-sm font-semibold text-slate-600">Type</th>
-                            <th className="px-6 py-3 text-sm font-semibold text-slate-600">Notification</th>
-                            <th className="px-6 py-3 text-sm font-semibold text-slate-600">Sent</th>
-                            <th className="px-6 py-3 text-sm font-semibold text-slate-600 text-right">Actions</th>
+                            <th className="px-6 py-5 text-[11px] font-black uppercase tracking-widest text-slate-500">Type</th>
+                            <th className="px-6 py-5 text-[11px] font-black uppercase tracking-widest text-slate-500">Notification Content</th>
+                            <th className="px-6 py-5 text-[11px] font-black uppercase tracking-widest text-slate-500">Sent Date</th>
+                            <th className="px-6 py-5 text-[11px] font-black uppercase tracking-widest text-slate-500 text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-200">
+                    <tbody className="divide-y divide-slate-50">
                         {loading ? (
                             Array(3).fill(0).map((_, i) => (
                                 <tr key={i} className="animate-pulse">

@@ -56,7 +56,7 @@ export default function ProductManager({ category }: { category?: string }) {
     };
 
     return (
-        <div className="p-5 md:p-8 space-y-10 animate-in fade-in duration-500">
+        <div className="space-y-10 animate-in fade-in duration-500 pb-20">
             <AdminHeader
                 title="Product Catalog" 
                 description={`Currently managing ${products.length} products`}
@@ -304,7 +304,7 @@ export default function ProductManager({ category }: { category?: string }) {
             {loading ? (
                 <TableSkeleton rows={5} cols={5} />
             ) : (
-                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
@@ -323,7 +323,7 @@ export default function ProductManager({ category }: { category?: string }) {
                                         <tr key={product.id} className="hover:bg-slate-50/50 transition-colors group">
                                             <td className="px-6 py-5">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 flex-shrink-0">
+                                                    <div className="w-14 h-14 rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 flex-shrink-0">
                                                         {product.imageUrl ? (
                                                             <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
                                                         ) : (

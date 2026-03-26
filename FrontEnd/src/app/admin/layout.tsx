@@ -91,7 +91,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <div className="fixed -top-10 -right-10 w-[300px] sm:w-[400px] lg:w-[500px] h-[300px] sm:h-[400px] lg:h-[500px] rounded-full bg-brand-orange/5 blur-[80px] md:blur-[120px] pointer-events-none z-[-1]"></div>
                     <div className="fixed -bottom-10 -left-10 w-[300px] sm:w-[400px] lg:w-[500px] h-[300px] sm:h-[400px] lg:h-[500px] rounded-full bg-brand-blue-dark/5 blur-[80px] md:blur-[120px] pointer-events-none z-[-1]"></div>
                     
-                    <div className="max-w-7xl mx-auto">
+                    <div className="max-w-8xl mx-auto">
                         {children}
                     </div>
                 </main>

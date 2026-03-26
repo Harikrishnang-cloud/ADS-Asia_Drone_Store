@@ -6,7 +6,7 @@ import NotificationManager from "@/components/admin/Notification/View/Notificati
 export default function AdminNotificationsPage() {
     return (
         <ProtectedRoute allowedRole="admin">
-            <div className="py-6 px-4">
+            <div className="animate-in fade-in duration-500">
                 <NotificationManager />
             </div>
         </ProtectedRoute>

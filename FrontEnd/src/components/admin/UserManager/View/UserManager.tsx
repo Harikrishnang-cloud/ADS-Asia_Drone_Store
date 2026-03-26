@@ -26,7 +26,7 @@ export default function UserManager() {
     } = useUserManager();
 
     return (
-        <div className="p-4 md:p-8 space-y-8 animate-in fade-in duration-500">
+        <div className="space-y-8 animate-in fade-in duration-500 pb-20">
             <AdminHeader 
                 title="Users Management" 
                 description="Manage and monitor application users" 
@@ -61,7 +61,7 @@ export default function UserManager() {
                                         <tr key={user.id} className="hover:bg-slate-50/50 transition-colors group">
                                             <td className="px-6 py-5">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-11 h-11 rounded-2xl bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200">
+                                                    <div className="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200">
                                                         {user.profileImage ? (
                                                             <img src={user.profileImage} alt={user.name} className="w-full h-full object-cover" />
                                                         ) : (

@@ -52,6 +52,7 @@ export function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [unreadMessageCount, setUnreadMessageCount] = useState(0);
     const [hasHydrated, setHasHydrated] = useState(false);
 
     useEffect(() => {
@@ -82,6 +83,31 @@ export function Navbar() {
                 console.error("Auth sync error", e);
             }
         }
+
+        // Check for new messages since last viewing the messages page
+        const checkMessages = async () => {
+            if (!user?.id) return;
+            try {
+                const lastViewed = typeof window !== "undefined" ? localStorage.getItem("ads_messages_last_viewed") : null;
+                const lastViewedTime = lastViewed ? parseInt(lastViewed) : 0;
+
+                const q = query(
+                    collection(db, "orders"),
+                    where("userId", "==", user.id)
+                );
+                const querySnapshot = await getDocs(q);
+                
+                const count = querySnapshot.docs.filter(doc => {
+                    const data = doc.data();
+                    const messageTime = data.messageUpdatedAt || 0;
+                    return data.adminMessage && messageTime > lastViewedTime;
+                }).length;
+
+                setUnreadMessageCount(count);
+            } catch (error) {
+                console.error("Error checking messages:", error);
+            }
+        };
 
         // Check for new notifications since last visit
         const checkNotifications = async () => {
@@ -121,6 +147,7 @@ export function Navbar() {
             }
         };
         checkNotifications();
+        checkMessages();
     }, [pathname, setNotifications, user, setAuth]);
 
     // Skip rendering navbar on authentication or admin pages
@@ -309,9 +336,16 @@ export function Navbar() {
                                                     <Bell size={18} />
                                                     <span>Notifications</span>
                                                 </Link>
-                                                <Link href="/user/messages" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                    <MessageCircle size={18} />
-                                                    <span>Messages</span>
+                                                <Link href="/user/messages" className="flex items-center justify-between px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                    <div className="flex items-center gap-3">
+                                                        <MessageCircle size={18} />
+                                                        <span>Messages</span>
+                                                    </div>
+                                                    {hasHydrated && unreadMessageCount > 0 && (
+                                                        <span className="w-5 h-5 bg-brand-orange text-white text-[10px] rounded-full flex items-center justify-center font-bold">
+                                                            {unreadMessageCount > 9 ? '9+' : unreadMessageCount}
+                                                        </span>
+                                                    )}
                                                 </Link>
                                             </div>
 
@@ -515,10 +549,15 @@ export function Navbar() {
                                 <Link
                                     href="/user/messages"
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className="flex flex-col items-center justify-center gap-2 p-4 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-brand-blue transition-colors shadow-sm"
+                                    className="relative flex flex-col items-center justify-center gap-2 p-4 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-brand-blue transition-colors shadow-sm"
                                 >
                                     <MessageCircle size={20} />
                                     <span className="text-[11px] font-bold uppercase tracking-tight">Messages</span>
+                                    {hasHydrated && unreadMessageCount > 0 && (
+                                        <span className="absolute top-2 right-2 w-5 h-5 bg-brand-orange text-white text-[10px] rounded-full flex items-center justify-center font-bold border-2 border-white">
+                                            {unreadMessageCount > 9 ? '9+' : unreadMessageCount}
+                                        </span>
+                                    )}
                                 </Link>
                             </div>
 

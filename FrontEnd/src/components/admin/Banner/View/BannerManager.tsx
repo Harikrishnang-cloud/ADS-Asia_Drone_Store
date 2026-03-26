@@ -14,7 +14,7 @@ export default function BannerManager() {
     const {banners,loading,isAdding,setIsAdding,editingId,isSaving,isDeleting,bannerToDelete,setBannerToDelete,formData,setFormData,handleEdit,handleSubmit,confirmDelete,resetForm} = useBannerManager();
 
     return (
-        <div className="p-4 md:p-8 space-y-10">
+        <div className="space-y-10 animate-in fade-in duration-500 pb-20">
             <AdminHeader 
                 title="Banner Management"
                 description={`You have ${banners.length} banners currently in rotation`}
@@ -148,13 +148,13 @@ export default function BannerManager() {
             {loading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {Array(3).fill(0).map((_, i) => (
-                        <div key={i} className="bg-slate-100 animate-pulse h-64 rounded-2xl"></div>
+                        <div key={i} className="bg-slate-100 animate-pulse h-64 rounded-xl"></div>
                     ))}
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {banners.length > 0 ? (banners.map(banner => (
-                        <div key={banner.id} className="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300">
+                        <div key={banner.id} className="group bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300">
                             <div className="relative aspect-[21/9] sm:aspect-video overflow-hidden bg-slate-900">
                                 {banner.type === 'video' && banner.videoUrl ? (
                                     <div className="relative w-full h-full">
@@ -224,7 +224,7 @@ export default function BannerManager() {
                             </div>
                         </div>
                     ))) : (
-                        <div className="col-span-full py-20 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-center">
+                        <div className="col-span-full py-20 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-center">
                             <ImageIcon size={48} className="text-slate-300 mb-4" />
                             <h3 className="text-lg font-bold text-slate-900">No Banners Found</h3>
                             <p className="text-slate-500 max-w-xs">Start adding banners to display promotions on your home page.</p>

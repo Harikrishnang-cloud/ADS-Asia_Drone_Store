@@ -43,6 +43,7 @@ interface Order {
     trackingId?: string;
     trackingLink?: string;
     adminMessage?: string;
+    messageUpdatedAt?: number;
 }
 
 export default function AdminOrdersPage() {
@@ -114,7 +115,8 @@ export default function AdminOrdersPage() {
             const updateData = {
                 trackingId: trackingId.trim(),
                 trackingLink: trackingLink.trim(),
-                adminMessage: adminMessage.trim()
+                adminMessage: adminMessage.trim(),
+                messageUpdatedAt: Date.now()
             };
             await updateDoc(orderRef, updateData);
 
@@ -180,12 +182,12 @@ export default function AdminOrdersPage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
                     <div className="space-y-1">
                         <div className="flex items-center gap-3 mb-1">
-                            <div className="p-2 bg-brand-orange/10 rounded-lg">
-                                <ShoppingCart className="text-brand-orange w-5 h-5" />
+                            <div className="p-2 bg-brand-blue/10 rounded-lg">
+                                <ShoppingCart className="text-brand-blue w-6 h-6" />
                             </div>
-                            <h2 className="text-3xl font-black text-slate-900 tracking-tight">Order Management</h2>
+                            <h2 className="text-3xl font-black text-slate-900 tracking-tight uppercase">Order Management</h2>
                         </div>
-                        <p className="text-slate-500 font-medium">Manage customer fulfillment and update delivery status.</p>
+                        <p className="text-slate-500 font-medium ml-11">Manage customer fulfillment and update delivery status.</p>
                     </div>
                 </div>
 
@@ -216,33 +218,33 @@ export default function AdminOrdersPage() {
                 </div>
 
                 {/* Content Grid */}
-                <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                     {/* Orders List Table */}
-                    <div className="xl:col-span-2 space-y-4">
+                    <div className="lg:col-span-1 space-y-2">
                         {loading ? (
-                            <div className="bg-white rounded-xl p-20 flex flex-col items-center justify-center border border-slate-100">
+                            <div className="bg-white rounded-lg p-20 flex flex-col items-center justify-center border border-slate-100 shadow-sm">
                                 <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-blue mb-4"></div>
                                 <p className="font-bold text-slate-400 italic">Syncing with orders collection...</p>
                             </div>
                         ) : filteredOrders.length === 0 ? (
-                            <div className="bg-white rounded-xl p-20 flex flex-col items-center justify-center border border-slate-100 text-center">
+                            <div className="bg-white rounded-lg p-20 flex flex-col items-center justify-center border border-slate-100 text-center shadow-sm">
                                 <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
                                     <Package className="text-slate-200" size={32} />
                                 </div>
-                                <h3 className="text-xl font-bold text-slate-900">No Orders Found</h3>
-                                <p className="text-slate-500 max-w-xs mt-2">Try adjusting your filters or search terms.</p>
+                                <h3 className="text-xl font-bold text-slate-900 uppercase">No Orders Found</h3>
+                                <p className="text-slate-500 max-w-xs mt-2 font-medium">Try adjusting your filters or search terms.</p>
                             </div>
                         ) : (
                             filteredOrders.map(order => (
                                 <div
                                     key={order.id}
-                                    className={`bg-white rounded-xl border transition-all cursor-pointer p-4 group ${selectedOrder?.id === order.id ? 'border-brand-blue ring-1 ring-brand-blue/10 bg-brand-blue/[0.02]' : 'border-slate-100 hover:border-slate-300 shadow-sm'}`}
+                                    className={`bg-white rounded-lg border transition-all cursor-pointer p-4 group ${selectedOrder?.id === order.id ? 'border-brand-blue ring-1 ring-brand-blue/10 bg-brand-blue/[0.02]' : 'border-slate-100 hover:border-slate-300 shadow-sm'}`}
                                     onClick={() => setSelectedOrder(order)}
                                 >
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center">
+                                            <div className="w-12 h-12 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center">
                                                 <User className="text-slate-400" size={20} />
                                             </div>
                                             <div>
@@ -266,12 +268,12 @@ export default function AdminOrdersPage() {
                     </div>
 
                     {/* Order Details Panel */}
-                    <div className="space-y-6">
+                    <div className="lg:col-span-2 space-y-6">
                         {selectedOrder ? (
-                            <div className="bg-white rounded-xl border border-slate-200 shadow-xl overflow-hidden animate-in slide-in-from-right-4 duration-500 h-fit sticky top-6">
+                            <div className="bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden animate-in slide-in-from-right-4 duration-500 h-fit sticky top-6">
                                 <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                                     <h3 className="font-black text-slate-900 uppercase tracking-widest text-xs">Order Detail View</h3>
-                                    <button onClick={() => setSelectedOrder(null)} className="text-slate-400 hover:text-slate-900">
+                                    <button onClick={() => setSelectedOrder(null)} className="text-slate-400 hover:text-slate-900 transition-colors">
                                         <XCircle size={20} />
                                     </button>
                                 </div>
@@ -324,9 +326,8 @@ export default function AdminOrdersPage() {
                                                 onChange={(e) => setAdminMessage(e.target.value)}
                                             />
                                             <Button 
-                                                fullWidth 
-                                                variant="orange" 
-                                                size="sm" 
+                                                variant="orange"
+                                                size="sm"
                                                 onClick={updateTrackingInfo}
                                                 disabled={isUpdating}
                                             >
@@ -384,12 +385,12 @@ export default function AdminOrdersPage() {
                                             </div>
                                         </div>
                                         <div className="flex gap-3">
-                                            <Button fullWidth variant="secondary" size="sm" icon={<Hash size={14} />}>
+                                            <Button variant="secondary" size="sm" icon={<Hash size={14} />}>
                                                 Print Invoice
                                             </Button>
                                             <button
                                                 onClick={() => deleteOrder(selectedOrder.id)}
-                                                className="p-2.5 bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition-colors border border-red-100"
+                                                className="p-2.5 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition-colors border border-red-100"
                                             >
                                                 <XCircle size={20} />
                                             </button>

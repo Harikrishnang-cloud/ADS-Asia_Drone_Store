@@ -50,6 +50,11 @@ export default function MessagesPage() {
                 });
                 
                 setMessages(orderWithMessages);
+                
+                // Set last viewed timestamp for unread badge logic
+                if (typeof window !== "undefined") {
+                    localStorage.setItem("ads_messages_last_viewed", Date.now().toString());
+                }
             } catch (error) {
                 console.error("Error fetching messages:", error);
             } finally {
