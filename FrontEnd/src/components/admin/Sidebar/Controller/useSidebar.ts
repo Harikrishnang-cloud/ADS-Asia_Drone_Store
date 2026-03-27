@@ -12,7 +12,7 @@ const navItems: NavItem[] = [
         label: "Products", 
         icon: Package, 
         subItems: [
-            { label: "All Products", href: "/admin/products", icon: Package },
+            { label: "Products", href: "/admin/products", icon: Package },
             { label: "Spare Parts", href: "/admin/products/spare-parts", icon: Wrench },
             { label: "Accessories", href: "/admin/products/accessories", icon: Bolt },
         ] 

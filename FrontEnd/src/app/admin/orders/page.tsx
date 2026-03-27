@@ -6,12 +6,14 @@ import {
     ShoppingCart, Search, Filter, Eye,
     MoreHorizontal, CheckCircle2, Truck,
     Clock, XCircle, ChevronDown, Package,
-    User, Mail, Phone, MapPin, Hash, ArrowUpRight
+    User, Mail, Phone, MapPin, Hash, ArrowUpRight, Download
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, getDocs, doc, updateDoc, Timestamp, deleteDoc } from "firebase/firestore";
 import toast from "react-hot-toast";
 import Button from "@/components/ui/button";
+import ConfirmationModal from "@/components/ui/ConfirmationModal";
+import { generateInvoice } from "@/lib/invoiceGenerator";
 
 interface OrderItem {
     id: string;
@@ -56,6 +58,8 @@ export default function AdminOrdersPage() {
     const [trackingId, setTrackingId] = useState("");
     const [trackingLink, setTrackingLink] = useState("");
     const [adminMessage, setAdminMessage] = useState("");
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [orderToDelete, setOrderToDelete] = useState<string | null>(null);
 
     useEffect(() => {
         fetchOrders();
@@ -132,16 +136,25 @@ export default function AdminOrdersPage() {
         }
     };
 
-    const deleteOrder = async (orderId: string) => {
-        if (!window.confirm("Are you sure you want to delete this order? This cannot be undone.")) return;
+    const handleDeleteClick = (orderId: string) => {
+        setOrderToDelete(orderId);
+        setIsDeleteModalOpen(true);
+    };
 
+    const confirmDelete = async () => {
+        if (!orderToDelete) return;
+        setIsUpdating(true);
         try {
-            await deleteDoc(doc(db, "orders", orderId));
-            setOrders(orders.filter(o => o.id !== orderId));
+            await deleteDoc(doc(db, "orders", orderToDelete));
+            setOrders(orders.filter(o => o.id !== orderToDelete));
             setSelectedOrder(null);
             toast.success("Order deleted successfully");
         } catch (error) {
             toast.error("Delete failed");
+        } finally {
+            setIsUpdating(false);
+            setIsDeleteModalOpen(false);
+            setOrderToDelete(null);
         }
     };
 
@@ -272,7 +285,7 @@ export default function AdminOrdersPage() {
                         {selectedOrder ? (
                             <div className="bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden animate-in slide-in-from-right-4 duration-500 h-fit sticky top-6">
                                 <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                                    <h3 className="font-black text-slate-900 uppercase tracking-widest text-xs">Order Detail View</h3>
+                                    <h3 className="font-black text-slate-900 uppercase tracking-widest text-sm">Order Detail View</h3>
                                     <button onClick={() => setSelectedOrder(null)} className="text-slate-400 hover:text-slate-900 transition-colors">
                                         <XCircle size={20} />
                                     </button>
@@ -281,7 +294,7 @@ export default function AdminOrdersPage() {
                                 <div className="p-6 space-y-8">
                                     {/* Action Header */}
                                     <div className="space-y-4">
-                                        <label className="text-[10px] font-black uppercase text-slate-400 flex items-center gap-2">
+                                        <label className="text-[14px] font-black uppercase text-slate-400 flex items-center gap-2">
                                             Update Fulfillment Status
                                         </label>
                                         <div className="flex flex-wrap gap-2">
@@ -290,7 +303,7 @@ export default function AdminOrdersPage() {
                                                     key={s}
                                                     disabled={isUpdating}
                                                     onClick={() => updateOrderStatus(selectedOrder.id, s)}
-                                                    className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase transition-all border ${selectedOrder.status === s ? getStatusStyles(s) + ' shadow-sm' : 'bg-white border-slate-200 text-slate-400 hover:border-slate-800 hover:text-slate-800'}`}
+                                                    className={`px-3 py-2 rounded-lg cursor-pointer text-[10px] font-black uppercase transition-all border ${selectedOrder.status === s ? getStatusStyles(s) + ' shadow-sm' : 'bg-white border-slate-200 text-slate-400 hover:border-slate-800 hover:text-slate-800'}`}
                                                 >
                                                     {s}
                                                 </button>
@@ -300,28 +313,28 @@ export default function AdminOrdersPage() {
 
                                     {/* Tracking Info */}
                                     <div className="space-y-4 pt-4 border-t border-slate-100">
-                                        <label className="text-[10px] font-black uppercase text-slate-400 flex items-center gap-2">
+                                        <label className="text-[14px] font-black uppercase text-slate-400 flex items-center gap-2">
                                             Shipping & Messages
                                         </label>
                                         <div className="space-y-3">
                                             <input
                                                 type="text"
                                                 placeholder="Tracking ID (e.g. DHL123456)"
-                                                className="w-full px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue outline-none transition-all text-sm"
+                                                className="w-full px-4 py-2 rounded-lg bg-slate-50 border border-slate-200 focus:border-brand-blue outline-none transition-all text-sm"
                                                 value={trackingId}
                                                 onChange={(e) => setTrackingId(e.target.value)}
                                             />
                                             <input
                                                 type="text"
                                                 placeholder="Tracking Link (URL)"
-                                                className="w-full px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue outline-none transition-all text-sm"
+                                                className="w-full px-4 py-2 rounded-lg bg-slate-50 border border-slate-200 focus:border-brand-blue outline-none transition-all text-sm"
                                                 value={trackingLink}
                                                 onChange={(e) => setTrackingLink(e.target.value)}
                                             />
                                             <textarea
                                                 placeholder="Message to user..."
                                                 rows={2}
-                                                className="w-full px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue outline-none transition-all text-sm resize-none"
+                                                className="w-full px-4 py-2 rounded-lg bg-slate-50 border border-slate-200 focus:border-brand-blue outline-none transition-all text-sm resize-none"
                                                 value={adminMessage}
                                                 onChange={(e) => setAdminMessage(e.target.value)}
                                             />
@@ -356,7 +369,7 @@ export default function AdminOrdersPage() {
 
                                     {/* Items List */}
                                     <div className="space-y-4">
-                                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center justify-between">
+                                        <h4 className="text-[14px] font-black text-slate-400 uppercase tracking-widest flex items-center justify-between">
                                             Items Summary <span>{selectedOrder.items.length} Units</span>
                                         </h4>
                                         <div className="max-h-[300px] overflow-y-auto pr-2 custom-scrollbar space-y-3">
@@ -376,20 +389,25 @@ export default function AdminOrdersPage() {
                                     <div className="pt-6 border-t border-slate-100">
                                         <div className="flex items-center justify-between mb-6">
                                             <div>
-                                                <p className="text-[10px] font-black text-slate-400 uppercase">Payment Method</p>
+                                                <p className="text-[14px] font-black text-slate-400 uppercase">Payment Method</p>
                                                 <p className="text-xs font-bold text-slate-900 uppercase">{selectedOrder.paymentMethod}</p>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-[10px] font-black text-slate-400 uppercase">Grand Total</p>
+                                                <p className="text-[14px] font-black text-slate-400 uppercase">Grand Total</p>
                                                 <p className="text-2xl font-black text-brand-blue tracking-tighter">₹{selectedOrder.total.toLocaleString('en-IN')}</p>
                                             </div>
                                         </div>
                                         <div className="flex gap-3">
-                                            <Button variant="secondary" size="sm" icon={<Hash size={14} />}>
-                                                Print Invoice
+                                            <Button 
+                                                variant="secondary" 
+                                                size="sm" 
+                                                icon={<Download size={14} />}
+                                                onClick={() => generateInvoice(selectedOrder)}
+                                            >
+                                                Download Invoice
                                             </Button>
                                             <button
-                                                onClick={() => deleteOrder(selectedOrder.id)}
+                                                onClick={() => handleDeleteClick(selectedOrder.id)}
                                                 className="p-2.5 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition-colors border border-red-100"
                                             >
                                                 <XCircle size={20} />
@@ -408,6 +426,17 @@ export default function AdminOrdersPage() {
                     </div>
 
                 </div>
+                
+                <ConfirmationModal
+                    isOpen={isDeleteModalOpen}
+                    onClose={() => setIsDeleteModalOpen(false)}
+                    onConfirm={confirmDelete}
+                    title="Delete Order"
+                    message="Are you sure you want to delete this order? This action cannot be undone."
+                    confirmText="Delete Order"
+                    type="danger"
+                    isLoading={isUpdating}
+                />
             </div>
         </ProtectedRoute>
     );

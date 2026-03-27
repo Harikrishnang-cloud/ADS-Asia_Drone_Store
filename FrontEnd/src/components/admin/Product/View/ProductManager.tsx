@@ -128,7 +128,7 @@ export default function ProductManager({ category }: { category?: string }) {
                                     value={formData.category}
                                     onChange={e => setFormData({...formData, category: e.target.value})}
                                 >
-                                    <option value="All Products">All Products</option>
+                                    <option value="All Products">Products</option>
                                     <option value="Spare Parts">Spare Parts</option>
                                     <option value="Accessories">Accessories</option>
                                     {/* <option value="Drones">Drones</option>
@@ -416,9 +416,9 @@ export default function ProductManager({ category }: { category?: string }) {
                 isOpen={!!productToDelete}
                 onClose={() => setProductToDelete(null)}
                 onConfirm={confirmDelete}
-                title="De-Catalogue Product"
+                title="Delete this Product"
                 message="Are you sure you want to remove this product from your catalogue? This action is permanent and will remove the item from the customer facing store."
-                confirmText="Yes, De-Catalogue"
+                confirmText="Yes, Delete"
                 type="danger"
                 isLoading={isDeleting}
             />

@@ -29,7 +29,7 @@ export default function BannerManager() {
             />
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-                <StatsCard label="Total Banners" value={banners.length} icon={<LayoutPanelLeft size={20} />} />
+                <StatsCard label="Total Banners" value={banners.length} />
                 <StatsCard label="Active" value={banners.filter(b => b.status === 'active').length} className="border-emerald-100" />
                 <StatsCard label="Inactive" value={banners.filter(b => b.status === 'inactive').length} />
             </div>
