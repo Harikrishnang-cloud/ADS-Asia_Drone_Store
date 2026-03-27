@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import {
-    ShoppingCart, Search, Filter, Eye,
+     Search, Filter, Eye,
     MoreHorizontal, CheckCircle2, Truck,
     Clock, XCircle, ChevronDown, Package,
     User, Mail, Phone, MapPin, Hash, ArrowUpRight, Download
@@ -195,12 +195,9 @@ export default function AdminOrdersPage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
                     <div className="space-y-1">
                         <div className="flex items-center gap-3 mb-1">
-                            <div className="p-2 bg-brand-blue/10 rounded-lg">
-                                <ShoppingCart className="text-brand-blue w-6 h-6" />
-                            </div>
                             <h2 className="text-3xl font-black text-slate-900 tracking-tight uppercase">Order Management</h2>
                         </div>
-                        <p className="text-slate-500 font-medium ml-11">Manage customer fulfillment and update delivery status.</p>
+                        <p className="text-slate-500 font-medium">Manage customer fulfillment and update delivery status.</p>
                     </div>
                 </div>
 

@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 const navItems: NavItem[] = [
     { label: "Dashboard", icon: LayoutDashboard, href: "/admin/dashboard" },
     { label: "Banners", icon: Image, href: "/admin/banners" },
-    { label: "Categories", icon: Layers, href: "/admin/categories" },
+    { label: "Categories (Maintenance)", icon: Layers, href: "/admin/categories" },
     { 
         label: "Products", 
         icon: Package, 
@@ -21,7 +21,7 @@ const navItems: NavItem[] = [
     { label: "Users", icon: Users, href: "/admin/users" },
     { label: "Payments", icon: CreditCard, href: "/admin/payments" },
     { label: "User-Notifications", icon: Bell, href: "/admin/userNotifications" },
-    { label: "Settings", icon: Settings, href: "/admin/settings" },
+    { label: "Settings (Maintenance)", icon: Settings, href: "/admin/settings" },
 ];
 
 export function useSidebar(): SidebarViewProps {

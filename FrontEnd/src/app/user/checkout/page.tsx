@@ -197,9 +197,9 @@ export default function CheckoutPage() {
         }
 
         setIsProcessing(true);
-        
+
         const selectedAddress = savedAddresses.find(a => a.id === selectedAddressId);
-        
+
         const orderData = {
             userId: user.id,
             items: items.map(item => ({
@@ -241,10 +241,10 @@ export default function CheckoutPage() {
                     }
 
                     try {
-                        const walletRes = await api.post("/payment/process-wallet-payment", { 
-                            amount: total 
+                        const walletRes = await api.post("/payment/process-wallet-payment", {
+                            amount: total
                         });
-                        
+
                         if (!walletRes.data.success) {
                             toast.error(walletRes.data.message || "Wallet payment failed");
                             setIsProcessing(false);
@@ -253,9 +253,9 @@ export default function CheckoutPage() {
 
                         // Update local auth store balance with the actual new balance
                         if (user) {
-                            const updatedUser = { 
-                                ...user, 
-                                walletBalance: (user.walletBalance || 0) - total 
+                            const updatedUser = {
+                                ...user,
+                                walletBalance: (user.walletBalance || 0) - total
                             };
                             setAuth(updatedUser, localStorage.getItem("accessToken"));
                             localStorage.setItem("userData", JSON.stringify(updatedUser));
@@ -275,7 +275,7 @@ export default function CheckoutPage() {
                 };
 
                 const orderRef = await addDoc(collection(db, "orders"), finalOrderData);
-                
+
                 // Only log transaction here if NOT wallet (wallet is logged in backend already)
                 if (paymentMethod !== "wallet") {
                     await addDoc(collection(db, "transactions"), {
@@ -360,14 +360,14 @@ export default function CheckoutPage() {
                         color: "#0066CC"
                     },
                     modal: {
-                        ondismiss: function() {
+                        ondismiss: function () {
                             setIsProcessing(false);
                         }
                     }
                 };
-                
+
                 console.log("Opening Razorpay Modal with options:", options);
-                
+
                 if (typeof (window as any).Razorpay === 'undefined') {
                     throw new Error("Razorpay SDK not loaded. Please check your internet connection and refresh.");
                 }
@@ -428,19 +428,19 @@ export default function CheckoutPage() {
 
                         {/* Wallet Balance Summary Indicator */}
                         <div className={`bg-white border px-6 py-4 rounded-2xl shadow-sm flex items-center gap-4 animate-in fade-in slide-in-from-right-4 duration-700 ${!isWalletAvailable ? 'border-red-200 bg-red-50/10' : 'border-slate-200'}`}>
-                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${!isWalletAvailable ? 'bg-red-100 text-red-500' : 'bg-brand-blue/10 text-brand-blue'}`}>
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${!isWalletAvailable ? 'bg-red-100 text-red-500' : 'bg-brand-blue/10 text-brand-blue'}`}>
                                 <Wallet size={24} />
-                             </div>
-                             <div>
-                                 <div className="flex items-center gap-2 mb-0.5">
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-2 mb-0.5">
                                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Available Balance</p>
                                     {!isWalletAvailable && <span className="text-[9px] font-black uppercase bg-red-500 text-white px-1.5 py-0.5 rounded-md">Insufficient</span>}
-                                 </div>
-                                 <div className="flex items-center gap-3">
+                                </div>
+                                <div className="flex items-center gap-3">
                                     <p className={`text-xl font-black ${!isWalletAvailable ? 'text-red-500' : 'text-brand-blue-dark'}`}>₹{walletBalance.toLocaleString('en-IN')}</p>
                                     <Link href="/user/profile" className="text-[10px] font-bold text-brand-blue hover:text-brand-orange underline underline-offset-2">Top Up</Link>
-                                 </div>
-                             </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -598,10 +598,10 @@ export default function CheckoutPage() {
                                         <div
                                             onClick={() => isWalletAvailable && setPaymentMethod("wallet")}
                                             className={`p-4 border-2 rounded-xl flex items-start gap-4 relative overflow-hidden transition-all shadow-sm ${!isWalletAvailable
-                                                    ? 'opacity-60 cursor-not-allowed border-slate-100 bg-slate-50'
-                                                    : paymentMethod === 'wallet'
-                                                        ? 'border-brand-blue bg-brand-blue/5 cursor-pointer'
-                                                        : 'border-slate-100 bg-white hover:border-brand-blue/30 cursor-pointer'
+                                                ? 'opacity-60 cursor-not-allowed border-slate-100 bg-slate-50'
+                                                : paymentMethod === 'wallet'
+                                                    ? 'border-brand-blue bg-brand-blue/5 cursor-pointer'
+                                                    : 'border-slate-100 bg-white hover:border-brand-blue/30 cursor-pointer'
                                                 }`}
                                         >
                                             <div className="absolute top-0 right-0 w-16 h-16 bg-brand-blue/10 rounded-bl-full -z-10 opacity-0 transition-opacity" style={{ opacity: paymentMethod === 'wallet' ? 1 : 0 }}></div>
@@ -648,10 +648,10 @@ export default function CheckoutPage() {
                                         <div
                                             onClick={() => isCodAvailable && setPaymentMethod("cod")}
                                             className={`p-4 border-2 rounded-xl flex items-start gap-4 relative overflow-hidden transition-all shadow-sm ${!isCodAvailable
-                                                    ? 'opacity-60 cursor-not-allowed border-slate-100 bg-slate-50'
-                                                    : paymentMethod === 'cod'
-                                                        ? 'border-brand-blue bg-brand-blue/5 cursor-pointer'
-                                                        : 'border-slate-100 bg-white hover:border-brand-blue/30 cursor-pointer'
+                                                ? 'opacity-60 cursor-not-allowed border-slate-100 bg-slate-50'
+                                                : paymentMethod === 'cod'
+                                                    ? 'border-brand-blue bg-brand-blue/5 cursor-pointer'
+                                                    : 'border-slate-100 bg-white hover:border-brand-blue/30 cursor-pointer'
                                                 }`}
                                         >
                                             <div className="absolute top-0 right-0 w-16 h-16 bg-brand-blue/10 rounded-bl-full -z-10 opacity-0 transition-opacity" style={{ opacity: paymentMethod === 'cod' ? 1 : 0 }}></div>
@@ -750,24 +750,24 @@ export default function CheckoutPage() {
                     <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-8 animate-bounce transition-all">
                         <CheckCircle size={48} strokeWidth={3} />
                     </div>
-                    
+
                     <h2 className="text-4xl font-black text-slate-900 mb-4 tracking-tighter">
                         THANK YOU!
                     </h2>
-                    
+
                     <p className="text-slate-500 font-medium leading-relaxed mb-10 max-w-sm">
                         Your order has been placed successfully. We're getting your premium drone equipment ready for takeoff!
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 w-full px-2">
-                        <button 
+                        <button
                             type="button"
                             onClick={() => router.push("/products")}
                             className="flex-1 py-4 px-6 border border-slate-200 rounded-xl text-slate-600 font-bold hover:bg-slate-50 transition-all cursor-pointer"
                         >
                             Continue Shopping
                         </button>
-                        <button 
+                        <button
                             type="button"
                             onClick={handleSuccessComplete}
                             className="flex-1 py-4 px-6 bg-brand-blue text-white rounded-xl font-bold hover:bg-brand-blue-dark transition-all shadow-lg shadow-brand-blue/20 flex items-center justify-center gap-2 cursor-pointer"

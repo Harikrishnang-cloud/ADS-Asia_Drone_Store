@@ -62,7 +62,6 @@ export default function AdminPaymentsPage() {
                 <AdminHeader 
                     title="Payment History"
                     description="Monitor wallet top-ups and financial records"
-                    icon={<CreditCard size={20} />}
                     searchTerm={searchTerm}
                     onSearchChange={setSearchTerm}
                     searchPlaceholder="Search by name, email or ID..."
@@ -79,7 +78,7 @@ export default function AdminPaymentsPage() {
 
 
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
     
     {/* Filter */}
     <div className="relative group">
@@ -97,6 +96,21 @@ export default function AdminPaymentsPage() {
             <option value="order">Order Payment</option>
             <option value="refund">Refunds</option>
         </select>
+    </div>
+    {/* Total Revenue */}
+    <div className="bg-green-900/90 rounded-xl flex items-center justify-between 
+                    text-white shadow-lg px-5 py-4">
+        <div className="font-bold text-lg tracking-wide uppercase opacity-80">
+            Total Revenue
+        </div>
+        <div className="flex flex-col items-end">
+            <span className="text-xs font-semibold uppercase opacity-70">
+                Processed
+            </span>
+            <span className="text-xl font-bold">
+                {filteredTransactions.reduce((acc, t) => acc + t.amount, 0).toFixed(2)}
+            </span>
+        </div>
     </div>
 
     {/* Safe Gateway Card */}
@@ -124,7 +138,7 @@ export default function AdminPaymentsPage() {
                     <div className="overflow-x-auto overflow-y-hidden custom-scrollbar">
                         <table className="w-full border-collapse">
                             <thead>
-                                <tr className="bg-slate-50/80 border-b border-slate-100 italic font-black text-xs uppercase tracking-tighter text-slate-400">
+                                <tr className="bg-slate-50/80 border-b border-slate-100 font-black text-sm uppercase tracking-tighter text-slate-400">
                                     <th className="px-6 py-5 text-left font-black tracking-widest uppercase">Transaction Info</th>
                                     <th className="px-6 py-5 text-left font-black tracking-widest uppercase">Member Details</th>
                                     <th className="px-6 py-5 text-left font-black tracking-widest uppercase">Type</th>
@@ -175,7 +189,7 @@ export default function AdminPaymentsPage() {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-6">
-                                                <span className={`text-lg font-black italic tracking-tight font-mono ${t.type === 'topup' ? 'text-emerald-600' : 'text-slate-900'}`}>
+                                                <span className={`text-lg font-black tracking-tight font-mono ${t.type === 'topup' ? 'text-emerald-600' : 'text-slate-900'}`}>
                                                     {t.type === 'order' || t.type === 'topup' ? '+' : '-'}₹{(t.amount || 0).toLocaleString('en-IN')}
                                                 </span>
                                             </td>

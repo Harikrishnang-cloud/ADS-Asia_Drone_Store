@@ -40,8 +40,8 @@ export default function SettingsPage() {
                                 description: "View and manage devices connected to your account.",
                             }
                         ].map((setting, index) => (
-                            <div 
-                                key={index} 
+                            <div
+                                key={index}
                                 className="flex items-center justify-between p-4 hover:bg-slate-50 rounded-xl transition-all cursor-pointer group border border-transparent hover:border-slate-100"
                             >
                                 <div className="flex items-center gap-5">
@@ -64,7 +64,7 @@ export default function SettingsPage() {
                         <div className="text-sm font-semibold text-slate-400 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
                             Version 1.0.0
                         </div>
-                        <button onClick={() => {logout(); router.push("/auth/login")}} className="px-6 py-3 bg-red-50 text-red-600 rounded-xl text-sm font-black uppercase tracking-widest hover:bg-red-100 hover:text-red-700 transition-colors border border-red-100 shadow-sm">
+                        <button onClick={() => { logout(); router.push("/auth/login") }} className="px-6 py-3 bg-red-50 text-red-600 rounded-xl text-sm font-black uppercase tracking-widest hover:bg-red-100 hover:text-red-700 transition-colors border border-red-100 shadow-sm">
                             Deactivate Account
                         </button>
                     </div>

@@ -1,5 +1,5 @@
 "use client";
-import { Plus, Trash2, Bell, Tag, AlertCircle, Loader2 } from "lucide-react";
+import { Plus, Trash2, Tag, Bell, AlertCircle, Loader2 } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import useNotification from "../Controller/useNotification";
@@ -16,7 +16,6 @@ export default function NotificationManager() {
             <AdminHeader 
                 title="User Notifications" 
                 description="Broadcast important updates and offers to all platform users"
-                icon={<Bell size={20} />}
                 actionButton={
                     <Button 
                         onClick={() => toggleIsAdding()}
