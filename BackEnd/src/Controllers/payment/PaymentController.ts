@@ -80,6 +80,7 @@ export class PaymentController {
                     razorpayOrderId: order_id,
                     razorpayPaymentId: payment_id,
                     status: 'success'
+                
                 });
 
                 res.status(200).json({ success: true, message: "Wallet top-up successful" });

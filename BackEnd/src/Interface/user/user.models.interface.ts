@@ -6,4 +6,5 @@ export interface Iuser {
     role:'admin'|'user';
     createdAt?:Date;
     updatedAt?:Date;
+    walletBalance?:number;
 }

@@ -25,7 +25,15 @@ api.interceptors.request.use(
             }
         }
         
-        console.log(`Axios Request to ${config.url} - Token key used: ${tokenKey} - Token found: ${!!token}`);
+        // Detailed debug logging
+        console.group(`Axios Request: ${config.method?.toUpperCase()} ${config.url}`);
+        console.log(`Context: ${isAdminRequest ? 'Admin' : 'User'}`);
+        console.log(`Token Key: ${tokenKey}`);
+        console.log(`Token Present: ${!!token}`);
+        if (token) {
+            console.log(`Token Value (Start): ${token.substring(0, 10)}...`);
+        }
+        console.groupEnd();
         
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;

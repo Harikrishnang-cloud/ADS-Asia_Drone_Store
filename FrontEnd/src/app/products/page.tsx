@@ -80,12 +80,12 @@ export default function ProductsPage() {
     }, [filteredProducts, currentPage]);
 
     return (
-        <main className="max-w-screen-2xl mx-auto px-4 sm:px-8 pt-24 md:pt-32 pb-12 md:pb-24 relative z-10 w-full flex-1 min-h-screen">
+        <main className="max-w-screen-3xl mx-auto px-4 sm:px-8 pt-24 md:pt-10 relative z-10 w-full">
             {/* Page Header */}
             <div className="flex flex-col mb-10 relative">
                 <span className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-orange mb-3">Asia Drone Store Inventory</span>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-brand-blue-dark tracking-tighter mb-4">
-                    Professional <br/> Drone Solutions
+                    Professional <br /> Drone Solutions
                 </h1>
                 <p className="text-slate-500 font-medium max-w-xl text-lg">
                     Browse our elite selection of UAVs, high-performance parts, and specialized accessories engineered for unique flight conditions.
@@ -109,16 +109,15 @@ export default function ProductsPage() {
                                     <button
                                         key={category}
                                         onClick={() => setSelectedCategory(category)}
-                                        className={`text-left px-3 py-2 rounded-md text-sm font-semibold transition-all duration-300 cursor-pointer ${
-                                            selectedCategory === category 
-                                                ? 'bg-brand-orange/10 text-brand-orange' 
+                                        className={`text-left px-3 py-2 rounded-md text-sm font-semibold transition-all duration-300 cursor-pointer ${selectedCategory === category
+                                                ? 'bg-brand-orange/10 text-brand-orange'
                                                 : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                                        }`}
+                                            }`}
                                     >
                                         {category}
                                         <span className="float-right text-xs opacity-50 mt-0.5">
-                                            {category === "All" 
-                                                ? products.length 
+                                            {category === "All"
+                                                ? products.length
                                                 : products.filter(p => p.category === category).length}
                                         </span>
                                     </button>
@@ -160,11 +159,11 @@ export default function ProductsPage() {
                                 {Math.min(currentPage * ITEMS_PER_PAGE, filteredProducts.length)}
                             </span> of <span className="text-slate-900 font-black">{filteredProducts.length}</span> Products
                         </p>
-                        
+
                         <div className="flex items-center gap-3 relative group w-full sm:w-auto">
                             <label className="text-xs font-bold text-slate-400 uppercase tracking-widest shrink-0">Sort By:</label>
                             <div className="relative w-full sm:w-48">
-                                <select 
+                                <select
                                     className="w-full appearance-none bg-slate-50 border border-slate-200 text-sm font-bold text-slate-700 py-2.5 pl-4 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-orange/20 cursor-pointer"
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value)}
@@ -197,15 +196,15 @@ export default function ProductsPage() {
                                     </div>
                                 ))}
                             </div>
-                            
+
                             {/* Pagination Controls */}
-                            <Pagination 
-                                currentPage={currentPage} 
-                                totalPages={totalPages} 
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
                                 onPageChange={(page) => {
                                     setCurrentPage(page);
                                     window.scrollTo({ top: 0, behavior: 'smooth' });
-                                }} 
+                                }}
                             />
                         </>
                     ) : (
@@ -213,7 +212,7 @@ export default function ProductsPage() {
                             <Filter size={48} className="text-slate-300 mb-4" />
                             <h3 className="text-xl font-black text-slate-900 mb-2">No products found</h3>
                             <p className="text-slate-500 font-medium text-center max-w-sm">Try adjusting your filters or price range to find what you're looking for.</p>
-                            <button 
+                            <button
                                 onClick={() => { setSelectedCategory("All"); setPriceRange(50000); }}
                                 className="mt-6 px-6 py-2 bg-slate-100 text-slate-700 font-bold rounded-lg hover:bg-slate-200 transition-colors cursor-pointer"
                             >

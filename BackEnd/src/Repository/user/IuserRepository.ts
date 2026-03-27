@@ -8,4 +8,5 @@ export interface IuserRepository {
     isTokenBlacklisted(token: string): Promise<boolean>;
     updateWalletBalance(userId: string, amount: number): Promise<void>;
     createTransaction(transactionData: any): Promise<void>;
+    
 }

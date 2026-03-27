@@ -23,6 +23,7 @@ export default function CheckoutPage() {
     const [hasHydrated, setHasHydrated] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [isOrderComplete, setIsOrderComplete] = useState(false);
     const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
     const [errors, setErrors] = useState<any>({});
 
@@ -32,10 +33,12 @@ export default function CheckoutPage() {
 
     // Redirect to cart if empty and hydrated
     useEffect(() => {
-        if (hasHydrated && items.length === 0 && !showSuccessModal) {
+        // Only redirect to cart if the cart is empty AND we aren't showing the success modal
+        // AND we haven't successfully completed an order
+        if (hasHydrated && items.length === 0 && !showSuccessModal && !isOrderComplete) {
             router.push("/user/cart");
         }
-    }, [hasHydrated, items.length, router, showSuccessModal]);
+    }, [hasHydrated, items.length, router, showSuccessModal, isOrderComplete]);
 
     const subtotal = getTotalPrice();
     const shipping = subtotal < 10000 ? 0 : 200;
@@ -298,6 +301,7 @@ export default function CheckoutPage() {
                 }
 
                 // Show success
+                setIsOrderComplete(true);
                 setIsProcessing(false);
                 setShowSuccessModal(true);
             } catch (error) {

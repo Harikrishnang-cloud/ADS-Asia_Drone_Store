@@ -33,8 +33,7 @@ export default function RootLayout({
         <div className="fixed bottom-0 -right-10 w-[200px] sm:w-[300px] md:w-[400px] h-[200px] sm:h-[300px] md:h-[400px] rounded-full bg-brand-orange/5 blur-[80px] md:blur-[120px] pointer-events-none -z-10"></div>
 
         <Navbar />
-
-        <main className="flex-1">
+        <main>
           {children}
         </main>
         <Footer />

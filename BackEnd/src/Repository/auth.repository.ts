@@ -9,9 +9,7 @@ export class authRepository {
         if (snapshot.empty) {
             return null;
         }
-
         let userData: any = null;
-
         snapshot.forEach((doc) => {
             userData = { _id: doc.id, ...doc.data() };
         });
@@ -41,19 +39,12 @@ export class authRepository {
             docRef = usersCollection.doc();
             userData._id = docRef.id;
         }
-        await docRef.set({
-            ...userData,
-            createdAt: new Date()
-        });
+        await docRef.set({ ...userData, createdAt: new Date() });
         return userData;
     }
 
     async blacklistToken(token: string, expiresAt: Date) {
-        await db.collection("blacklistedTokens").doc(token).set({
-            token,
-            expiresAt,
-            createdAt: new Date()
-        });
+        await db.collection("blacklistedTokens").doc(token).set({ token, expiresAt, createdAt: new Date() });
         return true;
     }
 
