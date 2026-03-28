@@ -24,17 +24,7 @@ api.interceptors.request.use(
                 tokenKey = "adminAccessToken (Fallback)";
             }
         }
-        
-        // Detailed debug logging
-        console.group(`Axios Request: ${config.method?.toUpperCase()} ${config.url}`);
-        console.log(`Context: ${isAdminRequest ? 'Admin' : 'User'}`);
-        console.log(`Token Key: ${tokenKey}`);
-        console.log(`Token Present: ${!!token}`);
-        if (token) {
-            console.log(`Token Value (Start): ${token.substring(0, 10)}...`);
-        }
-        console.groupEnd();
-        
+       
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }

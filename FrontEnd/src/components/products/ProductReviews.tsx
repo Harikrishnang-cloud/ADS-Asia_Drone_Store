@@ -132,7 +132,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                 {/* Review Stats */}
-                <div className="lg:col-span-1 border border-slate-100 rounded-3xl p-8 bg-white h-fit shadow-lg shadow-slate-200/50">
+                <div className="lg:col-span-1 border border-slate-100 rounded-lg p-8 bg-white h-fit shadow-lg shadow-slate-200/50">
                     <div className="flex flex-col items-center justify-center text-center space-y-4">
                         <div className="text-6xl font-black text-slate-800">{averageRating}</div>
                         <div className="flex items-center gap-1">
@@ -159,7 +159,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
                                 <Button onClick={() => window.location.href = '/auth/login'} variant="secondary" fullWidth>Log In to Review</Button>
                             </div>
                         ) : hasUserReviewed && !editingReviewId ? (
-                            <div className="bg-emerald-50 p-6 rounded-2xl text-center border border-emerald-100">
+                            <div className="bg-emerald-50 p-6 rounded-lg text-center border border-emerald-100">
                                 <p className="text-emerald-700 font-bold text-sm">You have already reviewed this product.</p>
                             </div>
                         ) : (
@@ -176,7 +176,11 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
                                             >
                                                 <Star
                                                     size={32}
-                                                    className={star <= rating ? "fill-brand-orange text-brand-orange drop-shadow-sm" : "fill-slate-100 text-slate-200"}
+                                                    className={
+                                                        star <= rating
+                                                            ? "fill-yellow-400 text-yellow-400 drop-shadow-sm"
+                                                            : "fill-slate-100 text-slate-200"
+                                                    }
                                                 />
                                             </button>
                                         ))}
@@ -186,7 +190,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
                                     <label className="block text-sm font-bold text-slate-700 mb-2">Your Comment (Optional)</label>
                                     <textarea
                                         rows={4}
-                                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue resize-none transition-all"
+                                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue resize-none transition-all"
                                         placeholder="Share your experience with this drone..."
                                         value={comment}
                                         onChange={(e) => setComment(e.target.value)}
@@ -222,7 +226,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
                             <Loader2 size={40} className="text-slate-300 animate-spin" />
                         </div>
                     ) : reviews.length === 0 ? (
-                        <div className="bg-slate-50 border border-slate-100 rounded-3xl p-12 text-center h-full flex flex-col items-center justify-center">
+                        <div className="bg-slate-50 border border-slate-100 rounded-xl p-12 text-center h-full flex flex-col items-center justify-center">
                             <MessageSquare size={64} className="text-slate-200 mb-6" />
                             <h4 className="text-xl font-bold text-slate-700 mb-2">No reviews yet</h4>
                             <p className="text-slate-500">Be the first to review this product!</p>

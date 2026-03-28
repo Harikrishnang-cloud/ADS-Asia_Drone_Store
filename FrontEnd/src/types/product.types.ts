@@ -14,6 +14,8 @@ export interface Product {
     offerPrice?: number;
     offerPercentage?: number;
     specifications?: { label: string; value: string }[];
+    rating?: number;
+    reviews?: number;
 }
 
 export interface ProductFormData {
@@ -28,4 +30,6 @@ export interface ProductFormData {
     status: 'active' | 'inactive';
     offerPrice?: number | string;
     specifications?: { label: string; value: string }[];
+    rating?: number;
+    reviews?: number;
 }

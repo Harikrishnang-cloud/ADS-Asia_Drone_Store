@@ -91,7 +91,9 @@ export default function ProductDetailPage() {
             name: product.name,
             price: Number(product.offerPrice || product.price),
             image: product.imageUrl,
-            quantity: quantity
+            quantity: quantity,
+            rating: product.rating,
+            reviews: product.reviews,
         });
         toast.success(`${product.name} added to cart!`);
     };
@@ -199,14 +201,14 @@ export default function ProductDetailPage() {
                         
                         <div className="flex items-center gap-4 mt-2">
                             <div className="flex items-center gap-1 shadow-sm border border-slate-100 bg-white px-3 py-1.5 rounded-full">
-                                <span className="text-sm font-black text-slate-700">4.8</span>
+                                <span className="text-sm font-black text-slate-700">{(product.rating || 0).toFixed(1)}</span>
                                 <div className="flex items-center gap-0.5 ml-1">
                                     {[1, 2, 3, 4, 5].map((_, i) => (
-                                        <Star key={i} size={14} className={i < 4 ? "fill-brand-orange text-brand-orange" : "fill-slate-100 text-slate-200"} />
+                                        <Star key={i} size={14} className={i < Math.round(product.rating || 0) ? "fill-brand-orange text-brand-orange" : "fill-slate-100 text-slate-200"} />
                                     ))}
                                 </div>
                             </div>
-                            <span className="text-sm font-bold text-slate-400 underline decoration-slate-200 underline-offset-4 cursor-pointer hover:text-brand-orange">124 Reviews</span>
+                            <span className="text-sm font-bold text-slate-400 underline decoration-slate-200 underline-offset-4 cursor-pointer hover:text-brand-orange">{product.reviews || 0} Reviews</span>
                         </div>
 
                         <div className="flex items-center gap-4 mt-8">
