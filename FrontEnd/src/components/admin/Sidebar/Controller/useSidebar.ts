@@ -1,5 +1,5 @@
 import { NavItem, SidebarViewProps } from "../Model/sidebar";
-import { LayoutDashboard, Image, Layers, Package, Wrench, Bolt, ShoppingCart, Users, CreditCard, Bell, Settings } from "lucide-react";
+import { LayoutDashboard, Image, Layers, Package, Wrench, Bolt, ShoppingCart, Users, CreditCard, Bell, Settings, Star } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -22,6 +22,7 @@ const navItems: NavItem[] = [
     { label: "Payments", icon: CreditCard, href: "/admin/payments" },
     { label: "User-Notifications", icon: Bell, href: "/admin/userNotifications" },
     { label: "Settings (Maintenance)", icon: Settings, href: "/admin/settings" },
+    { label: "Reviews", icon: Star, href: "/admin/reviews" },
 ];
 
 export function useSidebar(): SidebarViewProps {

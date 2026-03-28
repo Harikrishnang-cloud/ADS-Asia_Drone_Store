@@ -11,6 +11,7 @@ import { adminRoutes } from "./Routes/admin/adminRoutes.ts";
 import { paymentRoutes } from "./Routes/payment/paymentRoutes.ts";
 import { PaymentController } from "./Controllers/payment/PaymentController.ts";
 import { PaymentService } from "./Service/payment/PaymentService.ts";
+import { reviewRoutes } from "./Routes/review/reviewRoutes.ts";
 
 const app = express();
 
@@ -34,6 +35,9 @@ const paymentSvc = new PaymentService();
 const paymentCtrl = new PaymentController(paymentSvc, userRepo);
 const paymentRouter = new paymentRoutes(paymentCtrl);
 app.use("/payment", paymentRouter.getPaymentRoutes());
+
+const reviewRouter = new reviewRoutes();
+app.use("/reviews", reviewRouter.getReviewRoutes());
 
 
 const PORT = process.env.PORT || 7878;

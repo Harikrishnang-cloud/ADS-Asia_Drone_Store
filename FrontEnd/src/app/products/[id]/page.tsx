@@ -9,6 +9,7 @@ import Button from "@/components/ui/button";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import ProductGrid from "@/components/products/ProductGrid";
+import ProductReviews from "@/components/products/ProductReviews";
 import toast from "react-hot-toast";
 
 function ImageMagnifier({ src }: { src: string }) {
@@ -311,6 +312,11 @@ export default function ProductDetailPage() {
                         ))}
                     </div>
                 </div>
+            )}
+
+            {/* Reviews Section */}
+            {product && (
+                <ProductReviews productId={product.id} />
             )}
 
             {/* Related Products Section */}

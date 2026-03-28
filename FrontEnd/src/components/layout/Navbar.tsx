@@ -33,7 +33,6 @@ export interface UserProfile {
 const navLinks = [
     { name: "HOME", path: "/" },
     { name: "PRODUCTS", path: "/products" },
-    { name: "GALLERY", path: "/gallery" },
     { name: "ABOUT", path: "/about" },
     { name: "CONTACT", path: "/contact" },
     { name: "SUPPORT", path: "/help" },

@@ -11,7 +11,7 @@ const api = axios.create({
 // Request interceptor for attaching tokens
 api.interceptors.request.use(
     (config) => {
-        const isAdminRequest = config.url?.startsWith('/admin');
+        const isAdminRequest = config.url?.startsWith('/admin') || config.url?.includes('/admin/');
         let tokenKey = isAdminRequest ? "adminAccessToken" : "accessToken";
         
         let token = localStorage.getItem(tokenKey);
