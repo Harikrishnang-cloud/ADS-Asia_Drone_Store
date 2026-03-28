@@ -104,15 +104,12 @@ export default function AdminDashboardPage() {
                 <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <div>
                         <div className="flex items-center gap-3 mb-2">
-                             <div className="p-2 bg-brand-blue/10 rounded-lg">
-                                 <LayoutDashboard className="text-brand-blue w-6 h-6" />
-                             </div>
                              <h2 className="text-3xl font-black text-slate-900 tracking-tight uppercase">System Overview</h2>
                          </div>
-                         <p className="text-slate-500 font-medium ml-11">Manage and track your performance.</p>
+                         <p className="text-slate-500 font-medium">Manage and track your performance.</p>
                     </div>
                     
-                    <div className="flex items-center gap-3 bg-white p-2 rounded-xl border border-slate-200 shadow-sm">
+                    <div className="flex items-center gap-3 bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
                         <div className="px-4 py-2 text-sm font-bold text-slate-600 border-r border-slate-100">
                             {dateTime.toLocaleDateString()} | {dateTime.toLocaleTimeString()}
                         </div>

@@ -140,7 +140,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
                                 <Star
                                     key={i}
                                     size={24}
-                                    className={i <= Number(averageRating) ? "fill-brand-orange text-brand-orange" : "fill-slate-100 text-slate-200"}
+                                    className={i <= Number(averageRating) ? "fill-yellow-400 text-yellow-400" : "fill-slate-100 text-slate-200"}
                                 />
                             ))}
                         </div>
@@ -226,14 +226,14 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
                             <Loader2 size={40} className="text-slate-300 animate-spin" />
                         </div>
                     ) : reviews.length === 0 ? (
-                        <div className="bg-slate-50 border border-slate-100 rounded-xl p-12 text-center h-full flex flex-col items-center justify-center">
+                        <div className="bg-slate-50 border border-slate-100 rounded-lg p-12 text-center h-full flex flex-col items-center justify-center">
                             <MessageSquare size={64} className="text-slate-200 mb-6" />
                             <h4 className="text-xl font-bold text-slate-700 mb-2">No reviews yet</h4>
                             <p className="text-slate-500">Be the first to review this product!</p>
                         </div>
                     ) : (
                         reviews.map((review) => (
-                            <div key={review.id} className="bg-white border border-slate-100 p-6 md:p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                            <div key={review.id} className="bg-white border border-slate-100 p-6 md:p-8 rounded-lg shadow-sm hover:shadow-md transition-shadow">
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-400">
@@ -250,7 +250,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
                                                 <Star
                                                     key={i}
                                                     size={16}
-                                                    className={i <= review.rating ? "fill-brand-orange text-brand-orange" : "fill-slate-100 text-slate-200"}
+                                                    className={i <= review.rating ? "fill-yellow-400 text-yellow-400" : "fill-slate-100 text-slate-200"}
                                                 />
                                             ))}
                                         </div>
@@ -258,13 +258,13 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
                                             <div className="flex gap-2">
                                                 <button
                                                     onClick={() => handleEditClick(review)}
-                                                    className="text-[10px] font-bold uppercase tracking-widest text-brand-blue hover:text-brand-orange transition-colors flex items-center gap-1"
+                                                    className="text-[10px] font-bold uppercase tracking-widest text-brand-blue hover:text-brand-orange transition-colors cursor-pointer flex items-center gap-1"
                                                 >
                                                     <Edit2 size={12} /> Edit
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(review.id)}
-                                                    className="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-red-500 transition-colors flex items-center gap-1"
+                                                    className="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-red-500 transition-colors cursor-pointer flex items-center gap-1"
                                                 >
                                                     <Trash2 size={12} /> Delete
                                                 </button>

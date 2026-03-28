@@ -43,7 +43,6 @@ export default function AdminReviewsPage() {
 
     const handleDelete = async (reviewId: string) => {
         if (!confirm("Are you sure you want to delete this review?")) return;
-        
         try {
             const { data } = await api.delete(`/reviews/admin/${reviewId}`);
             if (data.success) {
@@ -66,15 +65,14 @@ export default function AdminReviewsPage() {
 
     return (
         <ProtectedRoute allowedRole="admin">
-            <div className="p-4 sm:p-6 lg:p-8">
+            <div className="mb-10">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-800">Manage Reviews</h1>
-                        <p className="text-sm text-slate-500 mt-1">Monitor and moderate customer reviews</p>
+                        <h1 className="text-3xl font-black text-slate-900 tracking-tight uppercase">Manage Reviews</h1>
+                        <p className="text-slate-500 font-medium">Monitor and moderate customer reviews</p>
                     </div>
                 </div>
-
-                <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
                     <div className="p-4 sm:p-6 border-b border-slate-200 flex flex-col sm:flex-row gap-4 justify-between items-center">
                         <div className="relative w-full sm:w-96">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -83,11 +81,10 @@ export default function AdminReviewsPage() {
                                 placeholder="Search by product, user, or keyword..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue"
-                            />
+                                className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue"/>
                         </div>
                         <div className="flex gap-4 w-full sm:w-auto">
-                            <div className="bg-brand-orange/10 px-4 py-2 rounded-lg text-brand-orange text-sm font-bold whitespace-nowrap">
+                            <div className="bg-brand-orange/10 px-4 py-2 rounded-md text-brand-orange text-sm font-bold whitespace-nowrap">
                                 Total Reviews: {reviews.length}
                             </div>
                         </div>
@@ -135,11 +132,7 @@ export default function AdminReviewsPage() {
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-0.5">
                                                     {[1, 2, 3, 4, 5].map((i) => (
-                                                        <Star 
-                                                            key={i} 
-                                                            size={14} 
-                                                            className={i <= review.rating ? "fill-brand-orange text-brand-orange" : "fill-slate-200 text-slate-200"} 
-                                                        />
+                                                        <Star key={i} size={14} className={i <= review.rating ? "fill-brand-orange text-brand-orange" : "fill-slate-200 text-slate-200"} />
                                                     ))}
                                                 </div>
                                             </td>

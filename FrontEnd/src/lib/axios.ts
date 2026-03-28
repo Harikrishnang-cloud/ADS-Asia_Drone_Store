@@ -41,6 +41,12 @@ api.interceptors.response.use(
         
         if (error.response?.status === 401) {
             console.error("Unauthorized access, redirecting...");
+            if (typeof window !== "undefined" && !window.location.pathname.includes('/auth/login')) {
+                toast.error("Session expired. Please log in again.");
+                localStorage.removeItem("accessToken");
+                localStorage.removeItem("adminAccessToken");
+                window.location.href = "/auth/login";
+            }
         } else if (error.response?.status === 403) {
             toast.error("You do not have permission to perform this action");
         } else if (error.response?.status === 429) {

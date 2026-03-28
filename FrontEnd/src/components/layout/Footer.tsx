@@ -137,7 +137,12 @@ export function Footer() {
                                     suppressHydrationWarning
                                     className="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 pl-4 pr-12 text-sm focus:outline-none focus:border-brand-orange transition-all"
                                 />
-                                <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-brand-orange p-2 rounded-lg hover:bg-white hover:text-brand-orange transition-all duration-300">
+                                <button 
+                                    type="button" 
+                                    aria-label="Subscribe to newsletter"
+                                    suppressHydrationWarning
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-brand-orange p-2 rounded-lg hover:bg-white hover:text-brand-orange transition-all duration-300"
+                                >
                                     <Send size={16} />
                                 </button>
                             </div>

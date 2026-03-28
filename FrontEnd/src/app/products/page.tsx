@@ -18,6 +18,7 @@ export default function ProductsPage() {
     const [selectedCategory, setSelectedCategory] = useState<string>("All");
     const [priceRange, setPriceRange] = useState<number>(50000); // Default max 50k
     const [sortBy, setSortBy] = useState<string>("newest");
+    const [minRating, setMinRating] = useState<number>(0);
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -53,12 +54,18 @@ export default function ProductsPage() {
         result.sort((a, b) => {
             const priceA = Number(a.offerPrice || a.price);
             const priceB = Number(b.offerPrice || b.price);
+            const ratingA = Number(a.rating || 0);
+            const ratingB = Number(b.rating || 0);
 
             switch (sortBy) {
                 case "price_asc":
                     return priceA - priceB;
                 case "price_desc":
                     return priceB - priceA;
+                case "rating_desc":
+                    return ratingB - ratingA;
+                case "rating_asc":
+                    return ratingA - ratingB;
                 case "name_asc":
                     return a.name.localeCompare(b.name);
                 case "name_desc":
@@ -166,12 +173,13 @@ export default function ProductsPage() {
                                 <select
                                     className="w-full appearance-none bg-slate-50 border border-slate-200 text-sm font-bold text-slate-700 py-2.5 pl-4 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-orange/20 cursor-pointer"
                                     value={sortBy}
-                                    onChange={(e) => setSortBy(e.target.value)}
-                                >
+                                    onChange={(e) => setSortBy(e.target.value)}>
                                     <option value="newest">What's New</option>
                                     <option value="popularity">Popularity</option>
                                     <option value="price_asc">Price: Low to High</option>
                                     <option value="price_desc">Price: High to Low</option>
+                                    <option value="rating_desc">Rating: High to Low</option>
+                                    <option value="rating_asc">Rating: Low to High</option>
                                     <option value="name_asc">Name: A-Z</option>
                                     <option value="name_desc">Name: Z-A</option>
                                 </select>

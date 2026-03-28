@@ -21,8 +21,9 @@ const navItems: NavItem[] = [
     { label: "Users", icon: Users, href: "/admin/users" },
     { label: "Payments", icon: CreditCard, href: "/admin/payments" },
     { label: "User-Notifications", icon: Bell, href: "/admin/userNotifications" },
-    { label: "Settings (Maintenance)", icon: Settings, href: "/admin/settings" },
     { label: "Reviews", icon: Star, href: "/admin/reviews" },
+    { label: "Settings (Maintenance)", icon: Settings, href: "/admin/settings" },
+    
 ];
 
 export function useSidebar(): SidebarViewProps {
