@@ -15,7 +15,9 @@ export interface Product {
     offerPercentage?: number;
     specifications?: { label: string; value: string }[];
     rating?: number;
+    averageRating?: number;
     reviews?: number;
+    totalReviews?: number;
 }
 
 export interface ProductFormData {
@@ -31,5 +33,7 @@ export interface ProductFormData {
     offerPrice?: number | string;
     specifications?: { label: string; value: string }[];
     rating?: number;
+    averageRating?: number;
     reviews?: number;
+    totalReviews?: number;
 }

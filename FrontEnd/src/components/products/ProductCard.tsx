@@ -27,7 +27,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             price: Number(product.offerPrice || product.price),
             image: product.imageUrl,
             quantity: 1,
-            rating: product.rating,
+            rating: product.averageRating || product.rating,
         });
         toast.success(`${product.name} added to cart!`);
     };
@@ -97,7 +97,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                     </Link>
                     <div>
                         <div className="flex items-center gap-1 bg-slate-100 border border-slate-100 px-2 py-0.5 rounded-sm shadow-sm shrink-0">
-                            <span className="text-sm font-bold text-slate-700">{(product.rating || 0).toFixed(1)}</span>
+                            <span className="text-sm font-bold text-slate-700">{(product.averageRating || product.rating || 0).toFixed(1)}</span>
                             <span className="text-[12px]">⭐</span>
                         </div>
                     </div>
