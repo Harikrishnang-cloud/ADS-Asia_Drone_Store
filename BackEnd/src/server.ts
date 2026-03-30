@@ -39,6 +39,10 @@ app.use("/payment", paymentRouter.getPaymentRoutes());
 const reviewRouter = new reviewRoutes();
 app.use("/reviews", reviewRouter.getReviewRoutes());
 
+import { supportRoutes } from "./Routes/support/supportRoutes.ts";
+const supportRouter = new supportRoutes();
+app.use("/support", supportRouter.getSupportRoutes());
+
 
 const PORT = process.env.PORT || 7878;
 app.listen(PORT, () => {

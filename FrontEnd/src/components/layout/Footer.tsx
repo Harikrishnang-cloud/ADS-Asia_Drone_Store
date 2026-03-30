@@ -14,9 +14,31 @@ import {
     Send
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import api from "@/lib/axios";
 
 export function Footer() {
     const pathname = usePathname();
+    const [email, setEmail] = useState("");
+    const [isSubscribing, setIsSubscribing] = useState(false);
+
+    const handleSubscribe = async () => {
+        if (!email) {
+            toast.error("Please enter your email address");
+            return;
+        }
+        setIsSubscribing(true);
+        try {
+            const { data } = await api.post("/support/newsletter", { email });
+            toast.success(data.message || "Subscribed successfully!");
+            setEmail("");
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Failed to subscribe");
+        } finally {
+            setIsSubscribing(false);
+        }
+    };
 
     // Skip rendering footer on authentication or admin pages
     if (pathname?.startsWith("/auth") || pathname?.startsWith("/admin")) {
@@ -130,20 +152,25 @@ export function Footer() {
                                 <span className="w-8 h-[2px] bg-brand-orange"></span>
                             </h4>
                             <p className="text-slate-400 text-sm mb-4">Subscribe to get latest updates and offers.</p>
-                            <div className="relative group">
+                            <div className="relative group flex items-center">
                                 <input
                                     type="email"
                                     placeholder="your@email.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleSubscribe()}
                                     suppressHydrationWarning
                                     className="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 pl-4 pr-12 text-sm focus:outline-none focus:border-brand-orange transition-all"
                                 />
                                 <button 
                                     type="button" 
+                                    onClick={handleSubscribe}
+                                    disabled={isSubscribing}
                                     aria-label="Subscribe to newsletter"
                                     suppressHydrationWarning
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-brand-orange p-2 rounded-lg hover:bg-white hover:text-brand-orange transition-all duration-300"
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-brand-orange p-2 rounded-lg hover:bg-white hover:text-brand-orange transition-all duration-300 disabled:opacity-50"
                                 >
-                                    <Send size={16} />
+                                    <Send size={16} className={isSubscribing ? "opacity-50 cursor-wait" : ""} />
                                 </button>
                             </div>
                         </div>

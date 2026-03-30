@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
+import api from "@/lib/axios";
 
 export default function ContactPage() {
     const [formData, setFormData] = useState({
@@ -24,11 +25,17 @@ export default function ContactPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
-        setTimeout(() => {
-            toast.success("Message sent successfully. Our team will contact you shortly.");
-            setFormData({ name: "", email: "", subject: "", message: "" });
+        try {
+            const { data } = await api.post("/support/contact", formData);
+            if (data.success) {
+                toast.success("Message sent successfully. Our team will contact you shortly.");
+                setFormData({ name: "", email: "", subject: "", message: "" });
+            }
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Failed to send message. Please try again.");
+        } finally {
             setIsSubmitting(false);
-        }, 1500);
+        }
     };
 
     // Advanced SVG Grid Background Pattern
