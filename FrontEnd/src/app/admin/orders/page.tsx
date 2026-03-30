@@ -173,6 +173,7 @@ export default function AdminOrdersPage() {
     const getStatusStyles = (status: string) => {
         switch (status.toLowerCase()) {
             case 'delivered': return 'bg-emerald-50 text-emerald-600 border-emerald-100';
+            case 'pending payment': return 'bg-amber-50 text-amber-600 border-amber-100';
             case 'processing': return 'bg-blue-50 text-blue-600 border-blue-100';
             case 'shipped': return 'bg-indigo-50 text-indigo-600 border-indigo-100';
             case 'out for delivery': return 'bg-orange-50 text-orange-600 border-orange-100';
@@ -215,7 +216,7 @@ export default function AdminOrdersPage() {
                     </div>
                     <div className="flex items-center gap-2 w-full md:w-auto">
                         <Filter className="text-slate-400 mr-2" size={18} />
-                        {["All", "Processing", "Shipped", "Out for Delivery", "Delivered", "Cancelled"].map(status => (
+                        {["All", "Pending Payment", "Processing", "Shipped", "Out for Delivery", "Delivered", "Cancelled"].map(status => (
                             <button
                                 key={status}
                                 onClick={() => setFilterStatus(status)}
@@ -295,7 +296,7 @@ export default function AdminOrdersPage() {
                                             Update Fulfillment Status
                                         </label>
                                         <div className="flex flex-wrap gap-2">
-                                            {["Processing", "Shipped", "Out for Delivery", "Delivered", "Cancelled"].map(s => (
+                                            {["Pending Payment", "Processing", "Shipped", "Out for Delivery", "Delivered", "Cancelled"].map(s => (
                                                 <button
                                                     key={s}
                                                     disabled={isUpdating}

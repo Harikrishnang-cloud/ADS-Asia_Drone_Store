@@ -16,6 +16,8 @@ import Button from "@/components/ui/button";
 import toast from "react-hot-toast";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import { generateInvoice } from "@/lib/invoiceGenerator";
+import api from "@/lib/axios";
+import Script from "next/script";
 
 interface OrderItem {
     id: string;
@@ -105,6 +107,8 @@ export default function OrdersPage() {
         switch (status.toLowerCase()) {
             case 'delivered':
                 return { bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-100', icon: CheckCircle2 };
+            case 'pending payment':
+                return { bg: 'bg-amber-50', text: 'text-amber-600', border: 'border-amber-100', icon: Clock };
             case 'processing':
                 return { bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-100', icon: Clock };
             case 'shipped':
@@ -175,8 +179,65 @@ export default function OrdersPage() {
         }).format(date);
     };
 
+    const handleRetryPayment = async (order: Order) => {
+        try {
+            const orderRes = await api.post("/payment/create-order", { amount: order.total });
+            const rzpOrder = orderRes.data.order;
+
+            const options = {
+                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                amount: rzpOrder.amount,
+                currency: rzpOrder.currency,
+                name: "Asia Drone Store",
+                description: "Complete Payment",
+                order_id: rzpOrder.id,
+                handler: async function (response: any) {
+                    try {
+                        const verifyRes = await api.post("/payment/verify-payment", {
+                            order_id: response.razorpay_order_id,
+                            payment_id: response.razorpay_payment_id,
+                            signature: response.razorpay_signature
+                        });
+
+                        if (verifyRes.data.success) {
+                            const orderRef = doc(db, "orders", order.id);
+                            await updateDoc(orderRef, {
+                                status: "Processing",
+                                razorpay: {
+                                    orderId: response.razorpay_order_id,
+                                    paymentId: response.razorpay_payment_id
+                                }
+                            });
+
+                            toast.success("Payment successful! Order is now processing.");
+                            setOrders(orders.map(o => o.id === order.id ? { ...o, status: "Processing" } : o));
+                        } else {
+                            toast.error("Payment verification failed. Please contact support.");
+                        }
+                    } catch (err) {
+                        console.error("Verification error:", err);
+                        toast.error("An error occurred during verification.");
+                    }
+                },
+                prefill: {
+                    name: order.contact.name,
+                    email: order.contact.email,
+                    contact: order.contact.phone
+                },
+                theme: { color: "#0066CC" }
+            };
+
+            const rzp = new (window as any).Razorpay(options);
+            rzp.open();
+        } catch (error) {
+            console.error("Retry payment failed:", error);
+            toast.error("Could not initiate payment. Please try again later.");
+        }
+    };
+
     return (
         <ProtectedRoute allowedRole="user">
+            <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
             <div className="min-h-screen bg-slate-50 pt-24 md:pt-32 pb-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Page Header */}
@@ -408,7 +469,9 @@ export default function OrdersPage() {
                                                                 </div>
                                                                 <div className="flex items-center justify-between">
                                                                     <span className="text-xs font-bold text-slate-400 uppercase tracking-tighter">Status</span>
-                                                                    <span className="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full">Paid</span>
+                                                                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${order.status.toLowerCase() === 'pending payment' ? 'text-amber-500 bg-amber-50' : 'text-emerald-500 bg-emerald-50'}`}>
+                                                                        {order.status.toLowerCase() === 'pending payment' ? 'Pending' : 'Paid'}
+                                                                    </span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -449,6 +512,14 @@ export default function OrdersPage() {
                                                                     className="w-full py-2.5 rounded-lg text-xs font-black uppercase tracking-widest text-red-500 hover:bg-red-50 border border-red-100 transition-all flex items-center justify-center gap-2"
                                                                 >
                                                                     <XCircle size={14} /> Cancel Order
+                                                                </button>
+                                                            )}
+                                                            {order.status.toLowerCase() === 'pending payment' && (
+                                                                <button 
+                                                                    onClick={() => handleRetryPayment(order)}
+                                                                    className="w-full py-2.5 rounded-lg text-xs font-black uppercase tracking-widest text-white bg-brand-orange hover:bg-orange-600 transition-all flex items-center justify-center gap-2 shadow-sm"
+                                                                >
+                                                                    <CreditCard size={14} /> Complete Payment
                                                                 </button>
                                                             )}
                                                         </div>

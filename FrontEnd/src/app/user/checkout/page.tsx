@@ -274,7 +274,7 @@ export default function CheckoutPage() {
                 const finalOrderData = {
                     ...orderData,
                     razorpay: razorpayData || null,
-                    status: (razorpayData || paymentMethod === "wallet" || paymentMethod === "cod") ? "Processing" : "Pending"
+                    status: (razorpayData || paymentMethod === "wallet" || paymentMethod === "cod") ? "Processing" : "Pending Payment"
                 };
 
                 const orderRef = await addDoc(collection(db, "orders"), finalOrderData);
@@ -288,7 +288,7 @@ export default function CheckoutPage() {
                         amount: total,
                         type: "order",
                         paymentMethod: paymentMethod,
-                        status: "success",
+                        status: (!razorpayData && (paymentMethod === "razorpay" || paymentMethod === "online")) ? "failed" : "success",
                         orderId: orderRef.id,
                         razorpayOrderId: razorpayData?.orderId || null,
                         razorpayPaymentId: razorpayData?.paymentId || null,
@@ -300,10 +300,17 @@ export default function CheckoutPage() {
                     // For now, it's logged with orderId: null in backend, which is acceptable.
                 }
 
-                // Show success
-                setIsOrderComplete(true);
-                setIsProcessing(false);
-                setShowSuccessModal(true);
+                if ((paymentMethod === "razorpay" || paymentMethod === "online") && !razorpayData) {
+                    clearCart();
+                    setIsOrderComplete(true);
+                    setIsProcessing(false);
+                    router.push("/user/orders");
+                } else {
+                    // Show success
+                    setIsOrderComplete(true);
+                    setIsProcessing(false);
+                    setShowSuccessModal(true);
+                }
             } catch (error) {
                 console.error("Order failed:", error);
                 toast.error("Failed to place order. Please try again.");
@@ -346,13 +353,13 @@ export default function CheckoutPage() {
                                     paymentId: response.razorpay_payment_id
                                 });
                             } else {
-                                toast.error("Payment verification failed. Please contact support.");
-                                setIsProcessing(false);
+                                toast.error("Payment verification failed. Order saved as Pending Payment.");
+                                await createOrder(null);
                             }
                         } catch (err) {
                             console.error("Verification failed:", err);
-                            toast.error("Payment verification failed.");
-                            setIsProcessing(false);
+                            toast.error("Payment verification failed. Order saved as Pending Payment.");
+                            await createOrder(null);
                         }
                     },
                     prefill: {
@@ -364,8 +371,9 @@ export default function CheckoutPage() {
                         color: "#0066CC"
                     },
                     modal: {
-                        ondismiss: function () {
-                            setIsProcessing(false);
+                        ondismiss: async function () {
+                            toast.error("Payment was cancelled. You can retry from your Orders.");
+                            await createOrder(null);
                         }
                     }
                 };
