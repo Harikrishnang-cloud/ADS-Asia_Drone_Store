@@ -116,7 +116,7 @@ export default function MessagesPage() {
                             <p className="text-slate-500 font-bold animate-pulse">Loading your messages...</p>
                         </div>
                     ) : filteredMessages.length === 0 ? (
-                        <div className="bg-white rounded-3xl p-16 border border-slate-100 shadow-sm flex flex-col items-center text-center">
+                        <div className="bg-white rounded-lg p-16 border border-slate-100 shadow-sm flex flex-col items-center text-center">
                             <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
                                 <Mail className="text-slate-200 w-10 h-10" />
                             </div>
@@ -127,7 +127,7 @@ export default function MessagesPage() {
                                     : "You don't have any support messages yet. Official updates about your orders will appear here."}
                             </p>
                             <Link href="/user/orders">
-                                <button className="px-6 py-3 bg-brand-blue text-white rounded-xl font-bold hover:bg-brand-blue/90 transition-all flex items-center gap-2">
+                                <button className="px-6 py-3 bg-brand-blue text-white rounded-lg font-bold hover:bg-brand-blue/90 transition-all flex items-center gap-2">
                                     <ShoppingBag size={18} /> View My Orders
                                 </button>
                             </Link>
@@ -135,7 +135,7 @@ export default function MessagesPage() {
                     ) : (
                         <div className="space-y-6">
                             {filteredMessages.map((msg) => (
-                                <div key={msg.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all overflow-hidden group">
+                                <div key={msg.id} className="bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all overflow-hidden group">
                                     <div className="p-6 md:p-8 flex flex-col md:flex-row gap-6">
                                         
                                         {/* Avatar & Icon */}
