@@ -63,6 +63,7 @@ export default function UserManager() {
                                                 <div className="flex items-center gap-4">
                                                     <div className="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200">
                                                         {user.profileImage ? (
+                                                            // eslint-disable-next-line @next/next/no-img-element
                                                             <img src={user.profileImage} alt={user.name} className="w-full h-full object-cover" />
                                                         ) : (
                                                             <UserIcon size={20} className="text-slate-400" />
@@ -126,7 +127,7 @@ export default function UserManager() {
                                                     <Search size={32} className="text-slate-200" />
                                                 </div>
                                                 <h3 className="text-lg font-bold text-slate-900">No Users Found</h3>
-                                                <p className="text-slate-400 max-w-xs text-sm mt-1">We couldn't find any users matching your current criteria.</p>
+                                                <p className="text-slate-400 max-w-xs text-sm mt-1">We couldn&apos;t find any users matching your current criteria.</p>
                                             </div>
                                         </td>
                                     </tr>

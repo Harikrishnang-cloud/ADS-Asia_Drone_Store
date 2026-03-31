@@ -33,8 +33,9 @@ export function Footer() {
             const { data } = await api.post("/support/newsletter", { email });
             toast.success(data.message || "Subscribed successfully!");
             setEmail("");
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Failed to subscribe");
+        } catch (error: unknown) {
+            const err = error as { response?: { data?: { message?: string } } };
+            toast.error(err.response?.data?.message || "Failed to subscribe");
         } finally {
             setIsSubscribing(false);
         }
@@ -82,7 +83,7 @@ export function Footer() {
 
                     {/* Brand Info */}
                     <div className="space-y-6">
-                        <Logo width={180} height={180} showText={true} textColor="text-white" className="w-[140px] md:w-[180px]" imageClassName="w-full h-auto" />
+                        <Logo width={180} height={180} className="w-[140px] md:w-[180px]" imageClassName="w-full h-auto" />
                         <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
                             Asia Drone Store (ADS) is your premium destination for high-end drones, spare parts, and professional aerial accessories across Asia.
                         </p>
@@ -178,15 +179,15 @@ export function Footer() {
                         <div className="space-y-4">
                             <div className="flex items-start gap-4 text-sm text-slate-400 hover:text-white transition-colors cursor-pointer group">
                                 <MapPin size={18} className="text-brand-orange flex-shrink-0 group-hover:scale-110 transition-transform" />
-                                <span>//////</span>
+                                <span>{"//////"}</span>
                             </div>
                             <div className="flex items-center gap-4 text-sm text-slate-400 hover:text-white transition-colors cursor-pointer group">
                                 <Phone size={18} className="text-brand-orange flex-shrink-0 group-hover:scale-110 transition-transform" />
-                                <span>+91 //////</span>
+                                <span>{"+91 //////"}</span>
                             </div>
                             <div className="flex items-center gap-4 text-sm text-slate-400 hover:text-white transition-colors cursor-pointer group">
                                 <Mail size={18} className="text-brand-orange flex-shrink-0 group-hover:scale-110 transition-transform" />
-                                <span>//////</span>
+                                <span>{"//////"}</span>
                             </div>
                         </div>
                     </div>

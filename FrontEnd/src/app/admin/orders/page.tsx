@@ -3,10 +3,9 @@
 import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import {
-     Search, Filter, Eye,
-    MoreHorizontal, CheckCircle2, Truck,
-    Clock, XCircle, ChevronDown, Package,
-    User, Mail, Phone, MapPin, Hash, ArrowUpRight, Download
+    Search, Filter, Eye,
+    XCircle, Package,
+    User, Mail, Phone, MapPin, Download
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, getDocs, doc, updateDoc, Timestamp, deleteDoc } from "firebase/firestore";
@@ -30,7 +29,7 @@ interface Order {
     total: number;
     status: string;
     paymentMethod: string;
-    createdAt: any;
+    createdAt: Timestamp | string | number | Date | null;
     shippingAddress: {
         address: string;
         city: string;
@@ -104,7 +103,7 @@ export default function AdminOrdersPage() {
             }
 
             toast.success(`Order status updated to ${newStatus}`);
-        } catch (error) {
+        } catch {
             toast.error("Failed to update status");
         } finally {
             setIsUpdating(false);
@@ -129,7 +128,7 @@ export default function AdminOrdersPage() {
             setSelectedOrder({ ...selectedOrder, ...updateData });
 
             toast.success("Shipping information updated");
-        } catch (error) {
+        } catch {
             toast.error("Failed to update shipping info");
         } finally {
             setIsUpdating(false);
@@ -149,7 +148,7 @@ export default function AdminOrdersPage() {
             setOrders(orders.filter(o => o.id !== orderToDelete));
             setSelectedOrder(null);
             toast.success("Order deleted successfully");
-        } catch (error) {
+        } catch {
             toast.error("Delete failed");
         } finally {
             setIsUpdating(false);
@@ -158,7 +157,7 @@ export default function AdminOrdersPage() {
         }
     };
 
-    const formatDate = (timestamp: any) => {
+    const formatDate = (timestamp: Timestamp | string | number | Date | null) => {
         if (!timestamp) return 'No Date';
         const date = timestamp instanceof Timestamp ? timestamp.toDate() : new Date(timestamp);
         return new Intl.DateTimeFormat('en-IN', {
@@ -373,6 +372,7 @@ export default function AdminOrdersPage() {
                                         <div className="max-h-[300px] overflow-y-auto pr-2 custom-scrollbar space-y-3">
                                             {selectedOrder.items.map((item, idx) => (
                                                 <div key={idx} className="flex gap-4 p-3 bg-white border border-slate-100 rounded-xl">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                                     <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover" />
                                                     <div className="flex-1 min-w-0 flex flex-col justify-center">
                                                         <p className="text-xs font-bold text-slate-900 truncate">{item.name}</p>

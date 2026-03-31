@@ -43,10 +43,16 @@ export function useSidebar(): SidebarViewProps {
 
     useEffect(() => {
         const currentActiveMenu = navItems.find(item => 
-            item.subItems && isChildActive(item.subItems)
+            item.subItems && item.subItems.some(sub => pathname === sub.href)
         );
-        if (currentActiveMenu && !openMenus.includes(currentActiveMenu.label)) {
-            setOpenMenus(prev => [...prev, currentActiveMenu.label]);
+        if (currentActiveMenu) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setOpenMenus(prev => {
+                if (!prev.includes(currentActiveMenu.label)) {
+                    return [...prev, currentActiveMenu.label];
+                }
+                return prev;
+            });
         }
     }, [pathname]);
 

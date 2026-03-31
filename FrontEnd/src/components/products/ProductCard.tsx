@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ShoppingCart, Heart } from "lucide-react";
+import Image from "next/image";
 import { Product } from "@/types/product.types";
 import Link from "next/link";
 import { useCartStore } from "@/store/cartStore";
@@ -62,10 +63,11 @@ export default function ProductCard({ product }: ProductCardProps) {
             {/* Product Image */}
             <div className="relative aspect-square overflow-hidden bg-slate-50">
                 <Link href={`/products/${product.id}`} className="block w-full h-full">
-                    <img
+                    <Image
                         src={product.imageUrl}
                         alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-700"
                     />
                 </Link>
 

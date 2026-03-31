@@ -9,7 +9,7 @@ interface OrderItem {
 
 interface OrderData {
     id: string;
-    createdAt: any;
+    createdAt: { seconds?: number } | string | number | Date | null;
     total: number;
     subtotal?: number;
     shipping?: number;
@@ -71,9 +71,16 @@ export const generateInvoice = (order: OrderData) => {
         doc.text(`Invoice No: #${order.id.slice(-8).toUpperCase()}`, pageWidth - 80, 62);
 
         // Handle Firestore Timestamp vs Date string
-        const orderDate = order.createdAt?.seconds
-            ? new Date(order.createdAt.seconds * 1000)
-            : new Date(order.createdAt);
+        let orderDate = new Date();
+        if (order.createdAt) {
+            if (typeof order.createdAt === 'object' && 'seconds' in order.createdAt && order.createdAt.seconds) {
+                orderDate = new Date(order.createdAt.seconds * 1000);
+            } else if (order.createdAt instanceof Date) {
+                orderDate = order.createdAt;
+            } else {
+                orderDate = new Date(order.createdAt as string | number);
+            }
+        }
 
         doc.text(`Date: ${orderDate.toLocaleDateString()}`, pageWidth - 80, 67);
         doc.text(`Payment: ${(order.paymentMethod || "N/A").toUpperCase()}`, pageWidth - 80, 72);
@@ -116,7 +123,7 @@ export const generateInvoice = (order: OrderData) => {
         });
 
         // 4. Totals
-        const finalY = (doc as any).lastAutoTable.finalY + 10;
+        const finalY = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 10;
         
         doc.setFontSize(10);
         doc.setFont("helvetica", "normal");

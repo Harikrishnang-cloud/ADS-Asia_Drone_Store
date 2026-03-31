@@ -3,16 +3,15 @@
 import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useCartStore } from "@/store/cartStore";
-import { Lock, CreditCard, CheckCircle, ShoppingBag, ArrowLeft, Wallet, Banknote, Smartphone, MapPin, Clock, Truck, PackageCheck } from "lucide-react";
+import { Lock, CreditCard, CheckCircle, ShoppingBag, ArrowLeft, Wallet, Banknote, Smartphone, MapPin, PackageCheck } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/button";
 import toast from "react-hot-toast";
-import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import Modal from "@/components/ui/Modal";
 import { useAuthStore } from "@/store/authStore";
 import { db } from "@/lib/firebase";
-import { collection, addDoc, updateDoc, getDoc, doc, Timestamp, increment, deleteDoc } from "firebase/firestore";
+import { collection, addDoc, getDoc, doc, Timestamp } from "firebase/firestore";
 import Script from "next/script";
 import api from "@/lib/axios";
 
@@ -25,7 +24,7 @@ export default function CheckoutPage() {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [isOrderComplete, setIsOrderComplete] = useState(false);
     const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
-    const [errors, setErrors] = useState<any>({});
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
     useEffect(() => {
         setHasHydrated(true);
@@ -41,7 +40,6 @@ export default function CheckoutPage() {
     }, [hasHydrated, items.length, router, showSuccessModal, isOrderComplete]);
 
     const subtotal = getTotalPrice();
-    const shipping = subtotal < 10000 ? 0 : 200;
     const actualShipping = subtotal < 10000 ? 0 : 200;
     const total = subtotal + actualShipping;
 
@@ -59,7 +57,7 @@ export default function CheckoutPage() {
     const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "wallet" | "cod" | "online">("razorpay");
 
     // Dynamic checking of the address from context storage
-    const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
+    const [savedAddresses, setSavedAddresses] = useState<{ id: string; type: string; address: string; city: string; state: string; zip: string; isPrimary: boolean }[]>([]);
 
     useEffect(() => {
         if (!user?.id) return;
@@ -79,6 +77,7 @@ export default function CheckoutPage() {
         };
 
         fetchLatestUser();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user?.id]);
 
     useEffect(() => {
@@ -143,7 +142,7 @@ export default function CheckoutPage() {
     };
 
     const validate = () => {
-        const newErrors: any = {};
+        const newErrors: Record<string, string> = {};
         const trimmedPhone = formData.phone.trim();
 
         if (!formData.firstName.trim()) {
@@ -219,11 +218,11 @@ export default function CheckoutPage() {
             status: "Processing",
             createdAt: Timestamp.now(),
             shippingAddress: {
-                address: selectedAddress.address,
-                city: selectedAddress.city,
-                state: selectedAddress.state,
-                zip: selectedAddress.zip,
-                type: selectedAddress.type
+                address: selectedAddress?.address || "N/A",
+                city: selectedAddress?.city || "N/A",
+                state: selectedAddress?.state || "N/A",
+                zip: selectedAddress?.zip || "N/A",
+                type: selectedAddress?.type || "N/A"
             },
             contact: {
                 name: `${formData.firstName} ${formData.lastName}`,
@@ -232,7 +231,7 @@ export default function CheckoutPage() {
             }
         };
 
-        const createOrder = async (razorpayData?: any) => {
+        const createOrder = async (razorpayData?: { orderId: string; paymentId: string } | null) => {
             try {
                 // If wallet, process payment via backend to check balance and deduct
                 if (paymentMethod === "wallet") {
@@ -263,7 +262,8 @@ export default function CheckoutPage() {
                             setAuth(updatedUser, localStorage.getItem("accessToken"));
                             localStorage.setItem("userData", JSON.stringify(updatedUser));
                         }
-                    } catch (err: any) {
+                    } catch (error: unknown) {
+                        const err = error as { response?: { data?: { message?: string } } };
                         console.error("Wallet payment error:", err);
                         toast.error(err.response?.data?.message || "Wallet payment failed. Insufficient balance or server error.");
                         setIsProcessing(false);
@@ -338,7 +338,7 @@ export default function CheckoutPage() {
                     name: "Asia Drone Store",
                     description: "Premium Drone Purchase",
                     order_id: order.id,
-                    handler: async function (response: any) {
+                    handler: async function (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) {
                         try {
                             // 3. Verify Payment
                             const verifyRes = await api.post("/payment/verify-payment", {
@@ -380,16 +380,19 @@ export default function CheckoutPage() {
 
                 console.log("Opening Razorpay Modal with options:", options);
 
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 if (typeof (window as any).Razorpay === 'undefined') {
                     throw new Error("Razorpay SDK not loaded. Please check your internet connection and refresh.");
                 }
 
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const rzp = new (window as any).Razorpay(options);
                 rzp.open();
 
-            } catch (error: any) {
-                console.error("Razorpay initiation failed:", error);
-                toast.error(error.response?.data?.message || "Failed to initiate payment. Server might be down.");
+            } catch (error: unknown) {
+                const err = error as { response?: { data?: { message?: string } } };
+                console.error("Razorpay initiation failed:", err);
+                toast.error(err.response?.data?.message || "Failed to initiate payment. Server might be down.");
                 setIsProcessing(false);
             }
         };
@@ -569,7 +572,7 @@ export default function CheckoutPage() {
                                             <MapPin className="text-brand-blue" size={24} />
                                         </div>
                                         <h2 className="text-xl font-black text-slate-900 mb-2">No Address Found</h2>
-                                        <p className="text-slate-500 mb-6 max-w-[280px]">You need a delivery address to complete your checkout. Let's add one to your profile.</p>
+                                        <p className="text-slate-500 mb-6 max-w-[280px]">You need a delivery address to complete your checkout. Let&apos;s add one to your profile.</p>
                                         <Link href="/user/profile">
                                             <Button type="button" variant="primary" icon={<MapPin size={18} />}>
                                                 Add New Address
@@ -703,6 +706,7 @@ export default function CheckoutPage() {
                                     {items.map((item) => (
                                         <div key={item.id} className="flex gap-4">
                                             <div className="w-16 h-16 rounded-xl bg-slate-50 border border-slate-100 overflow-hidden flex-shrink-0 relative">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                                 <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                                 <div className="absolute bottom-0 right-0 bg-brand-blue text-white text-[10px] font-bold px-1.5 py-0.5 rounded-tl-lg">
                                                     x{item.quantity}
@@ -768,7 +772,7 @@ export default function CheckoutPage() {
                     </h2>
 
                     <p className="text-slate-500 font-medium leading-relaxed mb-10 max-w-sm">
-                        Your order has been placed successfully. We're getting your premium drone equipment ready for takeoff!
+                        Your order has been placed successfully. We&apos;re getting your premium drone equipment ready for takeoff!
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 w-full px-2">

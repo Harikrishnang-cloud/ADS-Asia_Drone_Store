@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 
 import { authService } from "@/services/auth.service";
@@ -53,7 +52,8 @@ export default function VerifyOtpPage() {
             } else {
                 setError(data.message || "Invalid Authorization Sequence");
             }
-        } catch (err: any) {
+        } catch (error: unknown) {
+            const err = error as { response?: { data?: { message?: string } }; message?: string };
             const errorMsg = err.response?.data?.message || err.message || "Network Error. Sequence rejected.";
             setError(errorMsg);
         } finally {
@@ -77,7 +77,8 @@ export default function VerifyOtpPage() {
             } else {
                 setError(data.message || "Failed to transmit new sequence");
             }
-        } catch (err: any) {
+        } catch (error: unknown) {
+            const err = error as { response?: { data?: { message?: string } }; message?: string };
             const errorMsg = err.response?.data?.message || err.message || "Network Error.";
             setError(errorMsg);
         } finally {

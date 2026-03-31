@@ -1,7 +1,7 @@
 "use client";
 
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import { Settings, Bell, Shield, Smartphone, Globe, ChevronRight } from "lucide-react";
+import { Bell, Shield, Smartphone, Globe, ChevronRight } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
 

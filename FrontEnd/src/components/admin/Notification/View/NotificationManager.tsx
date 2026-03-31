@@ -9,7 +9,7 @@ import { X } from "lucide-react";
 
 
 export default function NotificationManager() {
-    const { notifications,formdataUpdate, setFormData, setNotificationToDelete, toggleIsAdding, loading, isAdding, isSaving, notificationToDelete, isDeleting, formData, fetchNotifications, handleSubmit, confirmDelete } = useNotification();
+    const { notifications,formdataUpdate, setFormData, setNotificationToDelete, toggleIsAdding, loading, isAdding, isSaving, notificationToDelete, isDeleting, formData, handleSubmit, confirmDelete } = useNotification();
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500 pb-20">
@@ -52,7 +52,7 @@ export default function NotificationManager() {
                         <select
                             className="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-brand-orange focus:outline-none"
                             value={formData.type}
-                            onChange={e => setFormData({ ...formData, type: e.target.value as any })}>
+                            onChange={e => setFormData({ ...formData, type: e.target.value as "info" | "offer" | "alert" })}>
                             <option value="info">Information</option>
                             <option value="offer">Special Offer</option>
                             <option value="alert">Alert/Warning</option>

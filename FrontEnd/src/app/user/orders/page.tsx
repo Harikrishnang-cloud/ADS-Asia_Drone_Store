@@ -5,12 +5,12 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { 
     ShoppingBag, Package, Truck, CheckCircle2, 
     XCircle, Clock, ChevronRight, MapPin, 
-    CreditCard, Calendar, Hash, ArrowLeft,
+    CreditCard, Hash,
     ChevronDown, ChevronUp, ExternalLink, Mail, Download
 } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
-import { collection, query, where, orderBy, getDocs, Timestamp, doc, updateDoc, increment } from "firebase/firestore";
+import { collection, query, where, getDocs, Timestamp, doc, updateDoc, increment } from "firebase/firestore";
 import { useAuthStore } from "@/store/authStore";
 import Button from "@/components/ui/button";
 import toast from "react-hot-toast";
@@ -35,7 +35,7 @@ interface Order {
     shipping: number;
     status: string;
     paymentMethod: string;
-    createdAt: any;
+    createdAt: Timestamp | string | number | Date | null;
     shippingAddress: {
         address: string;
         city: string;
@@ -87,8 +87,8 @@ export default function OrdersPage() {
                 
                 // Sort in memory instead
                 orderData.sort((a, b) => {
-                    const dateA = a.createdAt instanceof Timestamp ? a.createdAt.toMillis() : new Date(a.createdAt).getTime();
-                    const dateB = b.createdAt instanceof Timestamp ? b.createdAt.toMillis() : new Date(b.createdAt).getTime();
+                    const dateA = a.createdAt instanceof Timestamp ? a.createdAt.toMillis() : (a.createdAt ? new Date(a.createdAt).getTime() : 0);
+                    const dateB = b.createdAt instanceof Timestamp ? b.createdAt.toMillis() : (b.createdAt ? new Date(b.createdAt).getTime() : 0);
                     return dateB - dateA;
                 });
                 
@@ -166,7 +166,7 @@ export default function OrdersPage() {
         }
     };
 
-    const formatDate = (timestamp: any) => {
+    const formatDate = (timestamp: Timestamp | string | number | Date | null) => {
         if (!timestamp) return 'Date not available';
         const date = timestamp instanceof Timestamp ? timestamp.toDate() : new Date(timestamp);
         return new Intl.DateTimeFormat('en-IN', {
@@ -191,7 +191,7 @@ export default function OrdersPage() {
                 name: "Asia Drone Store",
                 description: "Complete Payment",
                 order_id: rzpOrder.id,
-                handler: async function (response: any) {
+                handler: async function (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) {
                     try {
                         const verifyRes = await api.post("/payment/verify-payment", {
                             order_id: response.razorpay_order_id,
@@ -227,6 +227,7 @@ export default function OrdersPage() {
                 theme: { color: "#0066CC" }
             };
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const rzp = new (window as any).Razorpay(options);
             rzp.open();
         } catch (error) {
@@ -267,7 +268,7 @@ export default function OrdersPage() {
                                 <ShoppingBag className="text-slate-200 w-10 h-10" />
                             </div>
                             <h2 className="text-2xl font-bold text-slate-900 mb-2">No Orders Yet</h2>
-                            <p className="text-slate-500 max-w-sm mb-8">It looks like you haven't placed any orders yet. Explore our featured drones and accessories!</p>
+                            <p className="text-slate-500 max-w-sm mb-8">It looks like you haven&apos;t placed any orders yet. Explore our featured drones and accessories!</p>
                             <Link href="/products">
                                 <Button variant="orange" size="lg">Start Shopping</Button>
                             </Link>
@@ -310,6 +311,7 @@ export default function OrdersPage() {
                                             <div className="flex items-center gap-4 w-full md:w-auto self-end md:self-center">
                                                 <div className="flex -space-x-3 overflow-hidden">
                                                     {order.items.slice(0, 3).map((item, i) => (
+                                                        /* eslint-disable-next-line @next/next/no-img-element */
                                                         <img 
                                                             key={i} 
                                                             src={item.image} 
@@ -343,6 +345,7 @@ export default function OrdersPage() {
                                                             {order.items.map((item, idx) => (
                                                                 <div key={idx} className="flex gap-5 bg-white p-4 rounded-lg border border-slate-100 shadow-sm group hover:shadow-md transition-shadow">
                                                                     <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100">
+                                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
                                                                         <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                                                     </div>
                                                                     <div className="flex-1 min-w-0 py-1">
@@ -416,7 +419,7 @@ export default function OrdersPage() {
                                                                         <p className="text-[10px] font-black uppercase tracking-widest text-brand-blue/60 flex items-center gap-2">
                                                                             <Mail size={12} /> Message from Support
                                                                         </p>
-                                                                        <p className="text-sm font-bold text-slate-700 italic">"{order.adminMessage}"</p>
+                                                                        <p className="text-sm font-bold text-slate-700 italic">&quot;{order.adminMessage}&quot;</p>
                                                                     </div>
                                                                 )}
                                                                 

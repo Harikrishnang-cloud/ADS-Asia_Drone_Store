@@ -6,7 +6,6 @@ import Link from "next/link";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
 import { PasswordInput } from "@/components/PasswordInput";
-import { Logo } from "@/components/ui/Logo";
 import toast from "react-hot-toast";
 import { useAuthStore } from "@/store/authStore";
 
@@ -61,8 +60,9 @@ export default function RegisterPage() {
                 setError(errorMsg);
                 toast.error(errorMsg);
             }
-        } catch (err: any) {
-            const errorMsg = err.response?.data?.message || err.message || "Network Error. Please try again.";
+        } catch (err: unknown) {
+            const errorObj = err as { response?: { data?: { message?: string } }, message?: string };
+            const errorMsg = errorObj.response?.data?.message || errorObj.message || "Network Error. Please try again.";
             setError(errorMsg);
             toast.error(errorMsg);
         } finally {
@@ -92,8 +92,9 @@ export default function RegisterPage() {
                 setError(errorMsg);
                 toast.error(errorMsg);
             }
-        } catch (err: any) {
-            const errorMsg = err.response?.data?.message || err.message || "Google registration failed";
+        } catch (err: unknown) {
+            const errorObj = err as { response?: { data?: { message?: string } }, message?: string };
+            const errorMsg = errorObj.response?.data?.message || errorObj.message || "Google registration failed";
             setError(errorMsg);
             toast.error(errorMsg);
         } finally {

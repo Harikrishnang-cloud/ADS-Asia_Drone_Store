@@ -12,8 +12,9 @@ export default function ReferPage() {
     const [referralLink, setReferralLink] = useState("");
 
     useEffect(() => {
-        const uniqueCode = user?.id ? user.id.slice(0, 8).toUpperCase() : user?.name.slice(0, 4).toUpperCase() + "X9";
+        const uniqueCode = user?.id ? user.id.slice(0, 8).toUpperCase() : (user?.name?.slice(0, 4).toUpperCase() || "USER") + "X9";
         const link = `${window.location.origin}/signup?ref=${uniqueCode}`;
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setReferralLink(link);
     }, [user]);
 
@@ -34,7 +35,7 @@ export default function ReferPage() {
                     text: `Hey! Use my referral code to join Asia Drone Store and get an exclusive discount.`,
                     url: referralLink,
                 });
-            } catch (error) {
+            } catch {
                 console.log("Sharing cancelled");
             }
         } else {

@@ -2,12 +2,12 @@ import api from "../lib/axios";
 
 export const authService = {
     // User Authentication
-    login: async (credentials: any) => {
+    login: async (credentials: Record<string, unknown>) => {
         const response = await api.post("/user/login", credentials);
         return response.data;
     },
     
-    register: async (userData: any) => {
+    register: async (userData: Record<string, unknown>) => {
         const response = await api.post("/user/register", userData);
         return response.data;
     },
@@ -28,7 +28,7 @@ export const authService = {
     },
 
     // Admin Authentication
-    adminLogin: async (credentials: any) => {
+    adminLogin: async (credentials: Record<string, unknown>) => {
         const response = await api.post("/admin/login", credentials);
         return response.data;
     },
@@ -44,7 +44,7 @@ export const authService = {
         return response.data;
     },
     
-    resetPassword: async (data: any) => {
+    resetPassword: async (data: Record<string, unknown>) => {
         const response = await api.post("/auth/reset-password", data);
         return response.data;
     },

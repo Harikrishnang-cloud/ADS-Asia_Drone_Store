@@ -31,8 +31,9 @@ export default function ContactPage() {
                 toast.success("Message sent successfully. Our team will contact you shortly.");
                 setFormData({ name: "", email: "", subject: "", message: "" });
             }
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Failed to send message. Please try again.");
+        } catch (error: unknown) {
+            const err = error as { response?: { data?: { message?: string } } };
+            toast.error(err.response?.data?.message || "Failed to send message. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
@@ -53,7 +54,7 @@ export default function ContactPage() {
                 {/* Advanced Header */}
                 <div className="text-center max-w-4xl mx-auto mb-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
                     <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter mb-6 leading-tight">
-                        Let's engineer the <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-orange">future of flight.</span>
+                        Let&apos;s engineer the <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-orange">future of flight.</span>
                     </h1>
                     <p className="text-slate-500 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
                         Whether you need advanced technical support, enterprise fleet solutions, or simply want to inquire about our proprietary drones, our specialists are on standby.

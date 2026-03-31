@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import { Settings, Save, Mail, Phone, Truck, Percent, ShieldAlert, Loader2 } from "lucide-react";
+import { Save, Mail, Phone, Truck, Percent, ShieldAlert, Loader2 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import toast from "react-hot-toast";
@@ -30,28 +30,29 @@ export default function AdminSettingsPage() {
     const [saving, setSaving] = useState(false);
 
     useEffect(() => {
-        fetchSettings();
-    }, []);
-
-    const fetchSettings = async () => {
-        setLoading(true);
-        try {
-            const docRef = doc(db, "settings", "global");
-            const docSnap = await getDoc(docRef);
-            
-            if (docSnap.exists()) {
-                setSettings(docSnap.data() as SystemSettings);
-            } else {
-                // Initialize default settings if they don't exist
-                await setDoc(docRef, settings);
+        const fetchSettings = async () => {
+            setLoading(true);
+            try {
+                const docRef = doc(db, "settings", "global");
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    setSettings(docSnap.data() as SystemSettings);
+                } else {
+                    // Initialize default settings if they don't exist
+                    await setDoc(docRef, settings);
+                }
+            } catch (error) {
+                console.error("Error fetching settings:", error);
+                toast.error("Failed to load settings");
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            console.error("Error fetching settings:", error);
-            toast.error("Failed to load settings");
-        } finally {
-            setLoading(false);
-        }
-    };
+        };
+
+        fetchSettings();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();

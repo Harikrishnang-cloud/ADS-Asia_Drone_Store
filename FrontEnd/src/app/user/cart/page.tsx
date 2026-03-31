@@ -20,6 +20,7 @@ export default function CartPage() {
     const ITEMS_PER_PAGE = 6;
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setHasHydrated(true);
     }, []);
 
@@ -28,6 +29,7 @@ export default function CartPage() {
 
     useEffect(() => {
         if (currentPage > totalPages && totalPages > 0) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setCurrentPage(totalPages);
         }
     }, [items.length, currentPage, totalPages]);
@@ -67,7 +69,7 @@ export default function CartPage() {
                                 <ShoppingBag size={40} className="text-slate-300" />
                             </div>
                             <h2 className="text-xl font-bold text-slate-900 mb-2">Your cart is empty</h2>
-                            <p className="text-slate-500 mb-8 max-w-sm">Looks like you haven't added any premium drone products to your cart yet.</p>
+                            <p className="text-slate-500 mb-8 max-w-sm">Looks like you haven&apos;t added any premium drone products to your cart yet.</p>
                             <Link href="/products">
                                 <Button>Start Shopping</Button>
                             </Link>
@@ -79,6 +81,7 @@ export default function CartPage() {
                                 {paginatedItems.map((item) => (
                                     <div key={item.id} className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-slate-100 flex flex-col sm:flex-row items-start sm:items-center gap-6 group hover:border-brand-blue/20 transition-colors">
                                         <div className="w-24 h-36 md:w-28 md:h-36 rounded-lg bg-slate-50 overflow-hidden flex-shrink-0 relative">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
                                             <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                         </div>
                                         

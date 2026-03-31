@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import toast from "react-hot-toast";
@@ -77,9 +77,10 @@ export const useBannerLogic = () => {
             }
             resetForm();
             fetchBanners();
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error saving banner:", error);
-            toast.error(error.message || "Failed to save banner", { id: loadingToast });
+            const err = error as { message?: string };
+            toast.error(err.message || "Failed to save banner", { id: loadingToast });
         } finally {
             setIsSaving(false);
         }
@@ -95,9 +96,10 @@ export const useBannerLogic = () => {
             toast.success("Banner deleted successfully", { id: loadingToast });
             setBannerToDelete(null);
             fetchBanners();
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error deleting banner:", error);
-            toast.error(error.message || "Failed to delete banner", { id: loadingToast });
+            const err = error as { message?: string };
+            toast.error(err.message || "Failed to delete banner", { id: loadingToast });
         } finally {
             setIsDeleting(false);
         }

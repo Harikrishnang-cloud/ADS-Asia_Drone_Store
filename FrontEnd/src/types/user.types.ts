@@ -10,7 +10,7 @@ export interface User {
     walletBalance?: number;
     authProvider: string;
     status: "active" | "blocked";
-    createdAt: any;
+    createdAt: { seconds?: number } | string | number | Date | null;
     profileImage?: string;
 }
 

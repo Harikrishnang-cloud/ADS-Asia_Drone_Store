@@ -8,8 +8,7 @@ import {
     Zap, 
     Globe, 
     Award,
-    ChevronRight,
-    Play
+    ChevronRight
 } from "lucide-react";
 import Link from "next/link";
 import Button from "@/components/ui/button";
@@ -31,7 +30,7 @@ export default function AboutPage() {
                             Elevating Your Aerial Experience.
                         </h1>
                         <p className="text-lg md:text-xl text-slate-500 font-medium leading-relaxed max-w-2xl">
-                            Welcome to Asia Drone Store. We don't just sell drones; we provide the wings for your imagination, creativity, and professional aspirations. As the leading premium drone retailer, we are committed to pushing the boundaries of what's possible in the sky.
+                            Welcome to Asia Drone Store. We don&apos;t just sell drones; we provide the wings for your imagination, creativity, and professional aspirations. As the leading premium drone retailer, we are committed to pushing the boundaries of what&apos;s possible in the sky.
                         </p>
                         <div className="pt-4 flex flex-wrap gap-4">
                             <Link href="/products">
@@ -71,7 +70,7 @@ export default function AboutPage() {
                             {
                                 icon: Zap,
                                 title: "Cutting-Edge Selection",
-                                desc: "We curate our inventory. If a drone doesn't meet our strict standards for durability, camera quality, and flight stability, we don't stock it."
+                                desc: "We curate our inventory. If a drone doesn&apos;t meet our strict standards for durability, camera quality, and flight stability, we don&apos;t stock it."
                             },
                             {
                                 icon: Headphones,

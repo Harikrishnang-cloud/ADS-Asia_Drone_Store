@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PasswordInput } from "@/components/PasswordInput";
-import { ShieldAlert } from "lucide-react";
-import { Logo } from "@/components/ui/Logo";
 import toast from "react-hot-toast";
 
 import { authService } from "@/services/auth.service";
@@ -50,8 +48,9 @@ export default function AdminLoginPage() {
                 setError(errorMsg);
                 toast.error(errorMsg);
             }
-        } catch (err: any) {
-            const errorMsg = err.response?.data?.message || err.message || "Network Error. Please try again.";
+        } catch (err: unknown) {
+            const errorObj = err as { response?: { data?: { message?: string } }; message?: string };
+            const errorMsg = errorObj.response?.data?.message || errorObj.message || "Network Error. Please try again.";
             setError(errorMsg);
             toast.error(errorMsg);
         } finally {

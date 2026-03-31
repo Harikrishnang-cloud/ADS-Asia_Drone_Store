@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import { Search, Mailbox, ShieldAlert } from "lucide-react";
+import { Search, ShieldAlert } from "lucide-react";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
 
@@ -25,7 +25,7 @@ export default function AdminNewsletterPage() {
             if (data.success) {
                 setSubscribers(data.subscriptions);
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Failed to fetch newsletters:", error);
             toast.error("Failed to fetch newsletters");
         } finally {

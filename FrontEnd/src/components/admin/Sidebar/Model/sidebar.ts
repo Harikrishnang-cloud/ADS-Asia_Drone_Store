@@ -12,5 +12,5 @@ export interface SidebarViewProps {
     toggleMenu: (label: string) => void
     handleLogout: () => void
     isActive: (href: string) => boolean
-    isChildActive: (subItems: any[]) => boolean
+    isChildActive: (subItems: { href: string }[]) => boolean
 }

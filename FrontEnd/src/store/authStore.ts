@@ -12,17 +12,18 @@ export interface UserAddress {
     isPrimary: boolean;
 }
 
-interface UserProfile {
+export interface UserProfile {
     id?: string;
-    name: string;
-    email: string;
-    role: string;
+    name?: string;
+    email?: string;
+    role?: string;
     phone?: string;
     address?: string;
     city?: string;
     state?: string;
     pin?: string;
     addresses?: UserAddress[];
+    profileImage?: string;
     walletBalance?: number;
 }
 

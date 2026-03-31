@@ -18,7 +18,6 @@ export default function ProductsPage() {
     const [selectedCategory, setSelectedCategory] = useState<string>("All");
     const [priceRange, setPriceRange] = useState<number>(50000); // Default max 50k
     const [sortBy, setSortBy] = useState<string>("newest");
-    const [minRating, setMinRating] = useState<number>(0);
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -26,6 +25,7 @@ export default function ProductsPage() {
 
     // Reset pagination when any filter or sort changes
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCurrentPage(1);
     }, [selectedCategory, priceRange, sortBy]);
 
@@ -174,7 +174,7 @@ export default function ProductsPage() {
                                     className="w-full appearance-none bg-slate-50 border border-slate-200 text-sm font-bold text-slate-700 py-2.5 pl-4 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-orange/20 cursor-pointer"
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value)}>
-                                    <option value="newest">What's New</option>
+                                    <option value="newest">What&apos;s New</option>
                                     <option value="popularity">Popularity</option>
                                     <option value="price_asc">Price: Low to High</option>
                                     <option value="price_desc">Price: High to Low</option>
@@ -219,7 +219,7 @@ export default function ProductsPage() {
                         <div className="flex flex-col items-center justify-center py-20 opacity-60 bg-white border border-slate-100 rounded-3xl">
                             <Filter size={48} className="text-slate-300 mb-4" />
                             <h3 className="text-xl font-black text-slate-900 mb-2">No products found</h3>
-                            <p className="text-slate-500 font-medium text-center max-w-sm">Try adjusting your filters or price range to find what you're looking for.</p>
+                            <p className="text-slate-500 font-medium text-center max-w-sm">Try adjusting your filters or price range to find what you&apos;re looking for.</p>
                             <button
                                 onClick={() => { setSelectedCategory("All"); setPriceRange(50000); }}
                                 className="mt-6 px-6 py-2 bg-slate-100 text-slate-700 font-bold rounded-lg hover:bg-slate-200 transition-colors cursor-pointer"

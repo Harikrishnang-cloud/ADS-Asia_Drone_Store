@@ -30,21 +30,20 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
     const [comment, setComment] = useState("");
     const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
 
-    const fetchReviews = async () => {
-        try {
-            setLoading(true);
-            const { data } = await api.get(`/reviews/product/${productId}`);
-            if (data.success) {
-                setReviews(data.reviews);
-            }
-        } catch (error) {
-            console.error("Failed to fetch reviews:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
+        const fetchReviews = async () => {
+            try {
+                setLoading(true);
+                const { data } = await api.get(`/reviews/product/${productId}`);
+                if (data.success) {
+                    setReviews(data.reviews);
+                }
+            } catch (error) {
+                console.error("Failed to fetch reviews:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
         fetchReviews();
     }, [productId]);
 
@@ -71,7 +70,8 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
                     setEditingReviewId(null);
                     setComment("");
                     setRating(5);
-                    fetchReviews();
+                    // Re-trigger useEffect by changing productId slightly or use a refresh trigger
+                    window.location.reload(); 
                 }
             } else {
                 const { data } = await api.post("/reviews", {
@@ -83,11 +83,12 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
                     toast.success("Review added successfully");
                     setComment("");
                     setRating(5);
-                    fetchReviews();
+                    window.location.reload();
                 }
             }
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Failed to submit review");
+        } catch (error: unknown) {
+            const err = error as { response?: { data?: { message?: string } } };
+            toast.error(err.response?.data?.message || "Failed to submit review");
         } finally {
             setSubmitting(false);
         }
@@ -100,10 +101,11 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
             const { data } = await api.delete(`/reviews/${reviewId}`);
             if (data.success) {
                 toast.success("Review deleted");
-                fetchReviews();
+                window.location.reload();
             }
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Failed to delete review");
+        } catch (error: unknown) {
+            const err = error as { response?: { data?: { message?: string } } };
+            toast.error(err.response?.data?.message || "Failed to delete review");
         }
     };
 

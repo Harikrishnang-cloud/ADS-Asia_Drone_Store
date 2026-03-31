@@ -1,9 +1,9 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
-interface SalesData {
+export interface SalesData {
     id: string;
-    createdAt: any;
+    createdAt: { seconds?: number } | string | number | Date | null;
     total: number;
     paymentMethod: string;
     contact: {
@@ -56,9 +56,11 @@ export const generateSalesReport = (orders: SalesData[], filterName: string) => 
         const tableData = orders.map((order, index) => [
             index + 1,
             order.id.slice(-8).toUpperCase(),
-            order.createdAt?.seconds 
-                ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() 
-                : new Date(order.createdAt).toLocaleDateString(),
+            order.createdAt 
+                ? (typeof order.createdAt === 'object' && 'seconds' in order.createdAt && order.createdAt.seconds
+                    ? new Date(order.createdAt.seconds * 1000).toLocaleDateString()
+                    : new Date(order.createdAt as string | number | Date).toLocaleDateString())
+                : "N/A",
             order.contact?.name || "N/A",
             order.paymentMethod.toUpperCase(),
             `Rs. ${order.total.toLocaleString('en-IN')}`
@@ -86,7 +88,6 @@ export const generateSalesReport = (orders: SalesData[], filterName: string) => 
         });
 
         // 4. Footer
-        const finalY = (doc as any).lastAutoTable.finalY + 10;
         doc.setFontSize(8);
         doc.setTextColor(150, 150, 150);
         doc.text("Page 1 of 1", pageWidth / 2, 285, { align: "center" });

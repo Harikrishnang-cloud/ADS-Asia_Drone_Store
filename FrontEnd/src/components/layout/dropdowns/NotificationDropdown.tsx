@@ -2,7 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { Bell, Check, Clock, Info, AlertTriangle, CheckCircle2, ArrowRight } from "lucide-react";
+import { Bell, Clock, Info, AlertTriangle, CheckCircle2, ArrowRight } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export interface Notification {
   id: string;
@@ -26,8 +27,15 @@ export function NotificationDropdown({
 }: NotificationDropdownProps) {
   const isEmpty = notifications.length === 0;
 
+  const [now, setNow] = useState<number>(0);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setNow(Date.now());
+    const timer = setInterval(() => setNow(Date.now()), 60000);
+    return () => clearInterval(timer);
+  }, []);
+
   const formatTime = (timestamp: number) => {
-    const now = Date.now();
     const diff = now - timestamp;
     
     if (diff < 60000) return 'Just now';
@@ -70,7 +78,7 @@ export function NotificationDropdown({
               <Bell size={24} className="text-slate-300" />
             </div>
             <p className="text-slate-900 font-bold text-sm mb-1">No new notifications</p>
-            <p className="text-slate-500 text-xs">We'll notify you when something important happens.</p>
+            <p className="text-slate-500 text-xs">We&apos;ll notify you when something important happens.</p>
           </div>
         ) : (
           <div className="divide-y divide-slate-50">

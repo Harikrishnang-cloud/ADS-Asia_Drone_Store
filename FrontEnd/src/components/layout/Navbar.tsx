@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
     User, LogOut, Menu, X, Heart, ShoppingCart, Bell, Wallet,
-    BookOpen, UserPlus, Presentation, MessageCircle,
-    Settings, CreditCard, Layers, BadgeDollarSign,
-    History, Globe, UserCircle, HelpCircle, UserPlus2, Search
+    UserPlus, MessageCircle,
+    Settings, CreditCard,
+    History, Globe, UserCircle, HelpCircle, Search
 } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
@@ -21,14 +21,6 @@ import { useAuthStore } from "@/store/authStore";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { useNotificationStore } from "@/store/notificationStore";
-
-export interface UserProfile {
-    id?: string;
-    name: string;
-    email: string;
-    role: string;
-    walletBalance?: number;
-}
 
 const navLinks = [
     { name: "HOME", path: "/" },
@@ -56,7 +48,10 @@ export function Navbar() {
     const [hasHydrated, setHasHydrated] = useState(false);
 
     useEffect(() => {
-        setHasHydrated(true);
+        const timer = setTimeout(() => {
+            setHasHydrated(true);
+        }, 0);
+        return () => clearTimeout(timer);
     }, []);
 
     // Sync user data and wallet balance from Firestore
@@ -72,12 +67,13 @@ export function Navbar() {
                     setAuth(updatedUser, localStorage.getItem("accessToken"));
                     localStorage.setItem("userData", JSON.stringify(updatedUser));
                 }
-            } catch (error) {
+            } catch (error: unknown) {
                 console.error("Failed to fetch latest user data in Navbar:", error);
             }
         };
 
         fetchLatestUser();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [hasHydrated, user?.id]);
 
 
@@ -125,7 +121,7 @@ export function Navbar() {
                 }).length;
 
                 setUnreadMessageCount(count);
-            } catch (error) {
+            } catch (error: unknown) {
                 console.error("Error checking messages:", error);
             }
         };
@@ -163,7 +159,7 @@ export function Navbar() {
                 }) as Notification[];
 
                 setNotifications(fetchedNotifications);
-            } catch (error) {
+            } catch (error: unknown) {
                 console.error("Error checking notifications:", error);
             }
         };
@@ -538,7 +534,7 @@ export function Navbar() {
                             {/* Mobile Profile Header */}
                             <div className="flex items-center gap-4 bg-slate-50 p-5 rounded-2xl w-full border border-slate-100 shadow-sm">
                                 <div className="w-14 h-14 rounded-full bg-brand-blue-dark text-white flex items-center justify-center font-bold text-xl flex-shrink-0 shadow-md">
-                                    {user?.name ? user.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() : 'U'}
+                                    {user?.name ? user.name.split(' ').map((n) => n[0]).join('').substring(0, 2).toUpperCase() : 'U'}
                                 </div>
                                 <div className="text-left overflow-hidden">
                                     <p className="text-brand-blue-dark text-lg font-bold capitalize truncate">{user?.name || 'User'}</p>

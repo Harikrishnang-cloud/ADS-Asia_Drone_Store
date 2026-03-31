@@ -37,8 +37,6 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        const message = error.response?.data?.message || error.message || "An unexpected error occurred";
-        
         if (error.response?.status === 401) {
             console.error("Unauthorized access, redirecting...");
             if (typeof window !== "undefined" && !window.location.pathname.includes('/auth/login')) {

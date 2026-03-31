@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
-import { Bell, Tag, Info, AlertCircle, Calendar, ChevronRight } from "lucide-react";
+import { Tag, Info, AlertCircle, ChevronRight } from "lucide-react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Link from "next/link";
 
@@ -70,7 +70,7 @@ export default function NotificationsPage() {
                         {["all", "offer", "info", "alert"].map((f) => (
                             <button
                                 key={f}
-                                onClick={() => setFilter(f as any)}
+                                onClick={() => setFilter(f as "all" | "offer" | "info" | "alert")}
                                 className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer capitalize ${
                                     filter === f 
                                     ? "bg-brand-blue-dark text-white border-brand-blue-dark" 

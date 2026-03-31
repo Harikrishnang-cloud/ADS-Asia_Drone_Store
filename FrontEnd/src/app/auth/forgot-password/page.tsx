@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ShieldAlert } from "lucide-react";
-import { Logo } from "@/components/ui/Logo";
 
 import { authService } from "@/services/auth.service";
 
@@ -34,8 +32,9 @@ export default function ForgotPasswordPage() {
             } else {
                 setError(data.message || "Failed to send OTP");
             }
-        } catch (err: any) {
-            const errorMsg = err.response?.data?.message || err.message || "Network Error. Please try again.";
+        } catch (err: unknown) {
+            const errorObj = err as { response?: { data?: { message?: string } }; message?: string };
+            const errorMsg = errorObj.response?.data?.message || errorObj.message || "Network Error. Please try again.";
             setError(errorMsg);
         } finally {
             setLoading(false);

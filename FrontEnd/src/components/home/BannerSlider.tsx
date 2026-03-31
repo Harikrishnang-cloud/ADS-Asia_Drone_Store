@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
-import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Banner {

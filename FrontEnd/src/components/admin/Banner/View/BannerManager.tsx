@@ -1,12 +1,11 @@
 "use client";
 
 import React from "react";
-import { Plus, Trash2, Edit2, Save, X, Image as ImageIcon, ExternalLink, LayoutPanelLeft, Play, Film, Monitor } from "lucide-react";
+import { Plus, Trash2, Edit2, Save, X, Image as ImageIcon, ExternalLink, Play, Film } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import AdminHeader from "@/components/ui/AdminHeader";
 import StatsCard from "@/components/ui/StatsCard";
-import TableSkeleton from "@/components/ui/TableSkeleton";
 import Button from "@/components/ui/button";
 import { useBannerManager } from "../Controller/useBanner";
 
@@ -173,11 +172,14 @@ export default function BannerManager() {
                                         </div>
                                     </div>
                                 ) : banner.imageUrl ? (
-                                    <img 
-                                        src={banner.imageUrl} 
-                                        alt={banner.title} 
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                        onError={(e) => {(e.target as HTMLImageElement).src = 'https://placehold.co/1200x400?text=Invalid+Image+URL';}}/>
+                                    <>
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img 
+                                            src={banner.imageUrl} 
+                                            alt={banner.title} 
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                            onError={(e) => {(e.target as HTMLImageElement).src = 'https://placehold.co/1200x400?text=Invalid+Image+URL';}}/>
+                                    </>
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-slate-300">
                                         <ImageIcon size={48} />

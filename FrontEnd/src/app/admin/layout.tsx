@@ -4,19 +4,17 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Logo } from "@/components/ui/Logo";
 import Sidebar from "@/components/admin/Sidebar/View/Sidebar";
-import { LogOut, Menu, ShieldCheck } from "lucide-react";
+import { LogOut } from "lucide-react";
 import toast from "react-hot-toast";
 
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const pathname = usePathname();
-    const [loading, setLoading] = useState(true);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [loading, setLoading] = useState(pathname !== "/admin/login");
 
     useEffect(() => {
         if (pathname === "/admin/login") {
-            setLoading(false);
             return;
         }
 
@@ -29,6 +27,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         try {
             const user = JSON.parse(userStr);
             if (user && user.role === "admin") {
+                // eslint-disable-next-line react-hooks/set-state-in-effect
                 setLoading(false);
             } else {
                 router.push("/admin/login");
@@ -72,7 +71,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 {/* Mobile Header */}
                 <header className="md:hidden flex justify-between items-center p-4 bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
                     <div className="flex items-center gap-2">
-                        <Logo width={120} height={40} showText={true} textColor="text-brand-blue-dark" className="w-24 md:w-[120px]" imageClassName="w-full h-auto" />
+                        <Logo width={120} height={40} className="w-24 md:w-[120px]" imageClassName="w-full h-auto" />
                     </div>
                     <div className="flex items-center gap-2">
                         <button 

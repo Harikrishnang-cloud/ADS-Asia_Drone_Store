@@ -11,9 +11,11 @@ export function useUserManager(): UserManagerProps {
         return "Email Authentication";
     }
 
-    const formatDate = (timestamp: any) => {
+    const formatDate = (timestamp: { seconds?: number } | string | number | Date | null) => {
         if (!timestamp) return "N/A";
-        const date = timestamp.seconds ? new Date(timestamp.seconds * 1000) : new Date(timestamp);
+        const date = (typeof timestamp === 'object' && 'seconds' in timestamp && timestamp.seconds)
+            ? new Date(timestamp.seconds * 1000) 
+            : new Date(timestamp as string | number | Date);
         return date.toLocaleDateString('en-IN', { 
             day: 'numeric', 
             month: 'short', 
@@ -21,9 +23,11 @@ export function useUserManager(): UserManagerProps {
         });
     }
 
-    const formatTime = (timestamp: any) => {
+    const formatTime = (timestamp: { seconds?: number } | string | number | Date | null) => {
         if (!timestamp) return "N/A";
-        const date = timestamp.seconds ? new Date(timestamp.seconds * 1000) : new Date(timestamp);
+        const date = (typeof timestamp === 'object' && 'seconds' in timestamp && timestamp.seconds)
+            ? new Date(timestamp.seconds * 1000) 
+            : new Date(timestamp as string | number | Date);
         return date.toLocaleTimeString('en-IN', { 
             hour: '2-digit', 
             minute: '2-digit' 

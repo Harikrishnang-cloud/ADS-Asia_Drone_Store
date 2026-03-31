@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { 
-    MessageCircle, Package, Calendar, 
+    MessageCircle, Calendar, 
     ArrowRight, ShoppingBag, Mail,
-    ExternalLink, Search, Filter
+    Search
 } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
@@ -16,8 +16,8 @@ interface Order {
     id: string;
     adminMessage?: string;
     status: string;
-    createdAt: any;
-    items: any[];
+    createdAt: Timestamp | string | number | Date | null;
+    items: { image: string; name: string }[];
 }
 
 export default function MessagesPage() {
@@ -44,8 +44,8 @@ export default function MessagesPage() {
                 
                 // Sort by date descending
                 orderWithMessages.sort((a, b) => {
-                    const dateA = a.createdAt instanceof Timestamp ? a.createdAt.toMillis() : new Date(a.createdAt).getTime();
-                    const dateB = b.createdAt instanceof Timestamp ? b.createdAt.toMillis() : new Date(b.createdAt).getTime();
+                    const dateA = a.createdAt instanceof Timestamp ? a.createdAt.toMillis() : new Date(a.createdAt || 0).getTime();
+                    const dateB = b.createdAt instanceof Timestamp ? b.createdAt.toMillis() : new Date(b.createdAt || 0).getTime();
                     return dateB - dateA;
                 });
                 
@@ -65,7 +65,7 @@ export default function MessagesPage() {
         fetchMessages();
     }, [user]);
 
-    const formatDate = (timestamp: any) => {
+    const formatDate = (timestamp: Timestamp | string | number | Date | null) => {
         if (!timestamp) return 'No Date';
         const date = timestamp instanceof Timestamp ? timestamp.toDate() : new Date(timestamp);
         return new Intl.DateTimeFormat('en-IN', {
@@ -168,7 +168,7 @@ export default function MessagesPage() {
 
                                             <div className="bg-slate-50/50 p-6 rounded-2xl border border-slate-50">
                                                 <p className="text-lg font-bold text-slate-800 leading-relaxed italic">
-                                                    "{msg.adminMessage}"
+                                                    &quot;{msg.adminMessage}&quot;
                                                 </p>
                                             </div>
 
@@ -177,6 +177,7 @@ export default function MessagesPage() {
                                                     <div className="flex -space-x-2">
                                                         {msg.items?.slice(0, 3).map((item, i) => (
                                                             <div key={i} className="w-8 h-8 rounded-lg ring-2 ring-white overflow-hidden bg-slate-100">
+                                                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                                                 <img src={item.image} alt="" className="w-full h-full object-cover" />
                                                             </div>
                                                         ))}

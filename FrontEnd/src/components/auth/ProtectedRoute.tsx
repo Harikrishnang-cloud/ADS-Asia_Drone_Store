@@ -57,7 +57,7 @@ export default function ProtectedRoute({ children, allowedRole }: ProtectedRoute
                     return;
                 }
                 setIsAuthorized(true);
-            } catch (err) {
+            } catch {
                 localStorage.removeItem(tokenKey);
                 localStorage.removeItem(userKey);
                 router.push(isAdminPath ? "/admin/login" : "/auth/login");

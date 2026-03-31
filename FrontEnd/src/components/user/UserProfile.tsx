@@ -7,7 +7,8 @@ import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import Script from "next/script";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { User, Mail, Phone, MapPin, Camera, Save, Trash2, Loader2, Edit3, ChevronLeft, Lock, RefreshCcw, Wallet, CreditCard, Plus, Check, Home, Briefcase, MapPinned } from "lucide-react";
-import { UserAddress } from "@/store/authStore";
+import { UserAddress, UserProfile as UserProfileType } from "@/store/authStore";
+import Image from "next/image";
 import { PasswordInput } from "@/components/PasswordInput";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -22,7 +23,7 @@ interface UserProfileProps {
 
 export default function UserProfile({ isEdit = false }: UserProfileProps) {
     const { user: authUser, setAuth } = useAuthStore();
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<UserProfileType | null>(null);
     const [loading, setLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
@@ -42,7 +43,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
         addresses: [] as UserAddress[]
     });
 
-    const [errors, setErrors] = useState<any>({});
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
     const [addMoneyAmount, setAddMoneyAmount] = useState("");
     const [isAddingMoney, setIsAddingMoney] = useState(false);
@@ -52,7 +53,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
         newPassword: "",
         confirmPassword: ""
     });
-    const [resetErrors, setResetErrors] = useState<any>({});
+    const [resetErrors, setResetErrors] = useState<Record<string, string>>({});
     const [isResetting, setIsResetting] = useState(false);
 
     useEffect(() => {
@@ -99,17 +100,18 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                         addresses: data.addresses || []
                     });
                 }
-            } catch (error) {
+            } catch (err: unknown) {
+                console.error("Failed to load profile:", err);
                 toast.error("Failed to load profile");
             } finally {
                 setLoading(false);
             }
         };
         fetchData();
-    }, [router]);
+    }, [router, authUser?.id, setAuth]);
 
     const validate = () => {
-        const newErrors: any = {};
+        const newErrors: Record<string, string> = {};
         if (!formData.name.trim() || formData.name.trim().length < 3) {
             newErrors.name = "Name must be at least 3 characters long";
 
@@ -120,7 +122,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
         // Removed Top-Level PIN validation here because it's replaced by the address list below
 
         // Validate individual addresses in the list
-        formData.addresses.forEach((addr, index) => {
+        formData.addresses.forEach((addr) => {
             if (!addr.address || addr.address.trim().length < 5) {
                 newErrors[`address_${addr.id}`] = "Address is too short (min 5 chars)";
             }
@@ -150,7 +152,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
         toast.success("New address form added!");
     };
 
-    const handleAddressChange = (id: string, field: keyof UserAddress, value: any) => {
+    const handleAddressChange = (id: string, field: keyof UserAddress, value: string | boolean | number) => {
         let finalValue = value;
         // If it's the PIN field, try to store it as a number if the user has changed the type
         if (field === 'pin' && typeof value === 'string') {
@@ -206,13 +208,15 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
 
         setIsSaving(true);
         try {
+            if (!user?.id) throw new Error("User ID missing");
             await updateDoc(doc(db, "users", user.id), finalData);
             const updatedUser = { ...user, ...finalData };
             localStorage.setItem("userData", JSON.stringify(updatedUser));
             setAuth(updatedUser, localStorage.getItem("accessToken"));
             toast.success("Profile updated!");
             router.push("/user/profile");
-        } catch (error) {
+        } catch (err: unknown) {
+            console.error("Update failed:", err);
             toast.error("Update failed");
         } finally {
             setIsSaving(false);
@@ -240,7 +244,8 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
             },
             async () => {
                 const url = await getDownloadURL(uploadTask.snapshot.ref);
-                await updateDoc(doc(db, "users", user.id), { profileImage: url });
+                if (!user?.id) throw new Error("User ID missing");
+                await updateDoc(doc(db, "users", user.id!), { profileImage: url });
                 const updatedUser = { ...user, profileImage: url };
                 setUser(updatedUser);
                 localStorage.setItem("userData", JSON.stringify(updatedUser));
@@ -258,12 +263,14 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
     const confirmDelete = async () => {
         setIsDeleting(true);
         try {
-            await deleteDoc(doc(db, "users", user.id));
+            if (!user?.id) throw new Error("User ID missing");
+            await deleteDoc(doc(db, "users", user.id!));
             localStorage.clear();
             window.dispatchEvent(new Event('storage'));
             router.push("/");
             toast.success("Account deleted");
-        } catch (error) {
+        } catch (err: unknown) {
+            console.error("Delete failed:", err);
             toast.error("Delete failed");
         } finally {
             setIsDeleting(false);
@@ -273,8 +280,9 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
 
     const handleResetPassword = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!user?.email) return;
 
-        const newResetErrors: any = {};
+        const newResetErrors: Record<string, string> = {};
         if (!resetData.newPassword) {
             newResetErrors.newPassword = "New password is required";
         } else if (resetData.newPassword.length < 6) {
@@ -302,8 +310,9 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
             } else {
                 toast.error(data.message || "Reset failed");
             }
-        } catch (err: any) {
-            const errorMsg = err.response?.data?.message || err.message || "An error occurred during password reset";
+        } catch (err: unknown) {
+            const errorObj = err as { response?: { data?: { message?: string } }, message?: string };
+            const errorMsg = errorObj.response?.data?.message || errorObj.message || "An error occurred during password reset";
             toast.error(errorMsg);
         } finally {
             setIsResetting(false);
@@ -338,7 +347,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                 name: "Asia Drone Store",
                 description: "Wallet Top-up",
                 order_id: order.id,
-                handler: async function (response: any) {
+                handler: async function (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) {
                     try {
                         // 3. Verify Payment and update balance on backend
                         const verifyRes = await api.post("/payment/verify-wallet-topup", {
@@ -348,7 +357,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                             amount: amount
                         });
 
-                        if (verifyRes.data.success) {
+                        if (verifyRes.data.success && user) {
                             // Update local state by re-fetching or updating directly
                             const newBalance = (user.walletBalance || 0) + amount;
                             const updatedUser = { ...user, walletBalance: newBalance };
@@ -369,9 +378,9 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                     }
                 },
                 prefill: {
-                    name: user.name,
-                    email: user.email,
-                    contact: user.phone || ""
+                    name: user?.name || "",
+                    email: user?.email || "",
+                    contact: user?.phone || ""
                 },
                 theme: { color: "#0066CC" },
                 modal: {
@@ -380,21 +389,25 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                     }
                 }
             };
+            if (!user) throw new Error("User not found");
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             if (typeof (window as any).Razorpay === 'undefined') {
                 throw new Error("Razorpay SDK not loaded.");
             }
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const rzp = new (window as any).Razorpay(options);
-            rzp.on('payment.failed', function (response: any) {
+            rzp.on('payment.failed', function (response: { error: { description: string } }) {
                 toast.error("Payment failed. " + response.error.description);
                 setIsAddingMoney(false);
             });
             rzp.open();
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Wallet Top-up failed:", error);
-            toast.error(error.message || "Failed to initiate payment.");
+            const err = error as { message?: string };
+            toast.error(err.message || "Failed to initiate payment.");
             setIsAddingMoney(false);
         }
     };
@@ -431,7 +444,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                 <div className="flex flex-col items-center mb-10">
                     <div className="relative w-36 h-36 rounded-full bg-slate-100 border-4 border-white shadow-lg overflow-hidden flex items-center justify-center group">
                         {user.profileImage ? (
-                            <img src={user.profileImage} alt="Profile" className="w-full h-full object-cover" />
+                            <Image src={user.profileImage} alt="Profile" className="w-full h-full object-cover" fill />
                         ) : (
                             <User size={80} className="text-slate-300" />
                         )}

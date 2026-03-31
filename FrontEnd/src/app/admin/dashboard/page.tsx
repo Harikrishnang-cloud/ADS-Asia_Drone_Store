@@ -1,12 +1,12 @@
 "use client";
 
-import { LayoutDashboard, Download, ArrowRight } from "lucide-react";
+import {Download, ArrowRight } from "lucide-react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useState, useEffect } from "react";
 import { collection, query, where, getDocs, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import toast from "react-hot-toast";
-import { generateSalesReport } from "@/lib/reportGenerator";
+import { generateSalesReport, SalesData } from "@/lib/reportGenerator";
 
 type ReportFilter = 'today' | 'weekly' | 'monthly' | 'custom';
 type StatusFilter = 'all' | 'completed' | 'uncompleted';
@@ -70,7 +70,7 @@ export default function AdminDashboardPage() {
             let orders = querySnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
-            })) as any[];
+            })) as SalesData[];
 
             // 3. Apply Status Filter
             if (statusFilter === 'completed') {

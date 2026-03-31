@@ -118,9 +118,10 @@ export const useProductLogic = (initialCategory?: string) => {
             }
             resetForm();
             fetchProducts();
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error saving product:", error);
-            toast.error(error.message || "Failed to save product", { id: loadingToast });
+            const err = error as { message?: string };
+            toast.error(err.message || "Failed to save product", { id: loadingToast });
         } finally {
             setIsSaving(false);
         }
@@ -136,9 +137,10 @@ export const useProductLogic = (initialCategory?: string) => {
             toast.success("Product deleted successfully", { id: loadingToast });
             setProductToDelete(null);
             fetchProducts();
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error deleting product:", error);
-            toast.error(error.message || "Failed to delete product", { id: loadingToast });
+            const err = error as { message?: string };
+            toast.error(err.message || "Failed to delete product", { id: loadingToast });
         } finally {
             setIsDeleting(false);
         }

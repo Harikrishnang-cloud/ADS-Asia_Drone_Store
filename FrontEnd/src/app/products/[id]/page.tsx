@@ -21,6 +21,7 @@ function ImageMagnifier({ src }: { src: string }) {
 
     return (
         <div className="relative w-full h-full cursor-none">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
                 src={src}
                 className="w-full h-full object-cover"
@@ -124,7 +125,7 @@ export default function ProductDetailPage() {
                     text: `Check out ${product.name} at Asia Drone Store!`,
                     url: window.location.href,
                 });
-            } catch (error) {
+            } catch {
                 console.log("Sharing cancelled or failed");
             }
         } else {
@@ -155,7 +156,7 @@ export default function ProductDetailPage() {
             <div className="min-h-screen flex flex-col items-center justify-center p-4">
                 <Package size={64} className="text-slate-200 mb-6" />
                 <h1 className="text-2xl font-bold text-slate-800 mb-2">Product Not Found</h1>
-                <p className="text-slate-500 mb-8">The product you're looking for doesn't exist or has been removed.</p>
+                <p className="text-slate-500 mb-8">The product you&apos;re looking for doesn&apos;t exist or has been removed.</p>
                 <Button onClick={() => router.push('/products')}>Back to Catalog</Button>
             </div>
         );
@@ -179,6 +180,7 @@ export default function ProductDetailPage() {
                             <div 
                                 onClick={() => setSelectedImage(product.imageUrl)} 
                                 className={`aspect-square rounded-lg border ${selectedImage === product.imageUrl || !selectedImage ? 'border-brand-orange' : 'border-slate-100'} overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer`}>
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img src={product.imageUrl} alt={`${product.name} Main`} className="w-full h-full object-cover" />
                             </div>
                             {product.images.map((img, i) => (
@@ -186,6 +188,7 @@ export default function ProductDetailPage() {
                                     key={i} 
                                     onClick={() => setSelectedImage(img)}
                                     className={`aspect-square rounded-lg border ${selectedImage === img ? 'border-brand-orange' : 'border-slate-100'} overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer`}>
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img src={img} alt={`${product.name} ${i}`} className="w-full h-full object-cover" />
                                 </div>
                             ))}

@@ -15,6 +15,6 @@ export interface UserManagerProps {
         blocked: number;
     };
     getAuthLabel: (provider: string) => string;
-    formatDate: (timestamp: any) => string;
-    formatTime: (timestamp: any) => string;
+    formatDate: (timestamp: { seconds?: number } | string | number | Date | null) => string;
+    formatTime: (timestamp: { seconds?: number } | string | number | Date | null) => string;
 }

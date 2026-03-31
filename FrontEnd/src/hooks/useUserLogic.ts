@@ -49,9 +49,10 @@ export const useUserLogic = () => {
             
             setUsers(users.map(u => u.id === user.id ? { ...u, status: newStatus } : u));
             toast.success(`User ${newStatus === "blocked" ? "blocked" : "unblocked"} successfully`, { id: loadingToast });
-        } catch (error: any) {
-            console.error("Error updating user status:", error);
-            toast.error(error.message || "Failed to update user status", { id: loadingToast });
+        } catch (error: unknown) {
+            const err = error as { message?: string };
+            console.error("Error updating user status:", err);
+            toast.error(err.message || "Failed to update user status", { id: loadingToast });
         } finally {
             setUpdatingId(null);
         }

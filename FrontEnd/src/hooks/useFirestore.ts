@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { db } from "@/lib/firebase";
-import { collection, query, orderBy, getDocs, QueryConstraint } from "firebase/firestore";
+import { collection, query, getDocs, QueryConstraint } from "firebase/firestore";
 import toast from "react-hot-toast";
 
 interface UseFirestoreCollectionProps {
@@ -29,32 +29,34 @@ export function useFirestoreCollection<T>({
         try {
             const q = query(collection(db, collectionName), ...memoizedConstraints);
             const querySnapshot = await getDocs(q);
-            const docs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+            const docs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as T & { id: string }));
             if (orderByField) {
-                docs.sort((a, b) => {
-                    const getVal = (v: any) => {
+                docs.sort((a: Record<string, unknown>, b: Record<string, unknown>) => {
+                    const getVal = (v: unknown) => {
                         if (v === undefined || v === null) return -Infinity;
-                        if (typeof v === 'object' && 'seconds' in v) {
-                            return v.seconds * 1000 + (v.nanoseconds / 1000000 || 0);
+                        if (typeof v === 'object' && v !== null && 'seconds' in v) {
+                            const timeObj = v as { seconds: number; nanoseconds?: number };
+                            return timeObj.seconds * 1000 + (timeObj.nanoseconds || 0) / 1000000;
                         }
                         if (v instanceof Date) return v.getTime();
-                        return v;
+                        return v as number | string;
                     };
 
                     const valA = getVal(a[orderByField]);
                     const valB = getVal(b[orderByField]);
 
                     if (orderDirection === "desc") {
-                        return valB > valA ? 1 : -1;
+                        return (valB as number | string) > (valA as number | string) ? 1 : -1;
                     }
-                    return valA > valB ? 1 : -1;
+                    return (valA as number | string) > (valB as number | string) ? 1 : -1;
                 });
             }
 
             setData(docs as T[]);
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(`Error fetching ${collectionName}:`, err);
-            const msg = err.message || `Failed to load ${collectionName}`;
+            const errorObj = err as { message?: string };
+            const msg = errorObj.message || `Failed to load ${collectionName}`;
             setError(msg);
             toast.error(msg);
         } finally {

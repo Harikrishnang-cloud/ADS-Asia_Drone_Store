@@ -13,7 +13,7 @@ export async function POST(req: Request) {
         }
 
         const formattedSpecs = specifications && specifications.length > 0 
-            ? specifications.map((s: any) => `- ${s.label}: ${s.value}`).join('\n') 
+            ? specifications.map((s: { label: string; value: string }) => `- ${s.label}: ${s.value}`).join('\n') 
             : "No specific details logged";
 
         const prompt = `
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
         const cleanDescription = textResponse.replace(/^```(\w+)?\n/, "").replace(/\n```$/, "").trim();
 
         return NextResponse.json({ description: cleanDescription });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("AI Description Generation Error:", error);
         return NextResponse.json({ error: "Failed to generate description" }, { status: 500 });
     }

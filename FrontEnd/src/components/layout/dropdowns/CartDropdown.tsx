@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { ShoppingCart, X, ArrowRight, ShoppingBag, Trash2, Plus, Minus } from "lucide-react";
+import { ShoppingCart, ArrowRight, Trash2, Plus, Minus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import toast from "react-hot-toast";
@@ -86,6 +86,7 @@ export function CartDropdown({ items = [], onClose }: CartDropdownProps) {
             {items.map((item) => (
               <div key={item.id} className="flex gap-4 group/item">
                 <div className="w-16 h-16 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={item.image} alt={item.name} className="w-full h-full object-cover transition-transform duration-300 group-hover/item:scale-110" />
                 </div>
                 <div className="flex-1 min-w-0">

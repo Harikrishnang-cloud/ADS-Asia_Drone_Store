@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { collection, query, orderBy, getDocs, limit } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { CreditCard, Search, Calendar, User, ArrowUpRight, ArrowDownLeft, Filter, RefreshCw, Loader2, ChevronDown } from "lucide-react";
+import { Calendar, ArrowUpRight, ArrowDownLeft, Filter, RefreshCw, Loader2, ChevronDown } from "lucide-react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AdminHeader from "@/components/ui/AdminHeader";
 
@@ -18,7 +18,7 @@ interface Transaction {
     status: string;
     razorpayOrderId?: string;
     razorpayPaymentId?: string;
-    createdAt: any;
+    createdAt: { toDate?: () => Date } | null; // Simplfied for the way it's used here; could be Timestamp | Date | etc.
 }
 
 export default function AdminPaymentsPage() {

@@ -1,4 +1,4 @@
-import react, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { db } from "@/lib/firebase";
 import {collection, addDoc, getDocs, deleteDoc, doc, query, orderBy} from "firebase/firestore";
 import toast from "react-hot-toast";
@@ -18,11 +18,7 @@ function useNotification(){
         type: "info" as "offer" | "info" | "alert"
     });
 
-    useEffect(() => {
-        fetchNotifications();
-    }, []);
-
-    const fetchNotifications = async () => {
+    const fetchNotifications = useCallback(async () => {
         setLoading(true);
         try {
             const q = query(collection(db, "notifications"), orderBy("createdAt", "desc"));
@@ -32,13 +28,16 @@ function useNotification(){
                 ...doc.data()
             } as Notification));
             setNotifications(data);
-        } catch (error) {
-            console.error("Error fetching notifications:", error);
+        } catch {
             toast.error("Failed to load notifications");
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchNotifications();
+    }, [fetchNotifications]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -57,9 +56,9 @@ function useNotification(){
             });
             toast.success("Notification sent!", { id: loadingToast });
             setIsAdding(false);
-            setFormData({ title: "", message: "", type: "info" });
+            resetForm();
             fetchNotifications();
-        } catch (error) {
+        } catch {
             toast.error("Failed to send", { id: loadingToast });
         } finally {
             setIsSaving(false);
@@ -74,11 +73,14 @@ function useNotification(){
             toast.success("Deleted");
             setNotificationToDelete(null);
             fetchNotifications();
-        } catch (error) {
+        } catch {
             toast.error("Delete failed");
         } finally {
             setIsDeleting(false);
         }
+    }
+    const resetForm = () => {
+        setFormData({ title: "", message: "", type: "info" as "offer" | "info" | "alert" });
     }
     const toggleIsAdding = () => {
         setIsAdding(!isAdding);

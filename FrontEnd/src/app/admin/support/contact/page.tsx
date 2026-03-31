@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import { Search, Mail, ShieldAlert } from "lucide-react";
+import { Search, ShieldAlert } from "lucide-react";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
 
@@ -28,7 +28,7 @@ export default function AdminContactPage() {
             if (data.success) {
                 setMessages(data.contacts);
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Failed to fetch contact messages:", error);
             toast.error("Failed to fetch messages");
         } finally {

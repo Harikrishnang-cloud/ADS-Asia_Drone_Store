@@ -22,6 +22,7 @@ export default function WishlistPage() {
     const ITEMS_PER_PAGE = 12; // Standardised for 4 rows (12/16 items)
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setHasHydrated(true);
     }, []);
 
@@ -31,6 +32,7 @@ export default function WishlistPage() {
     // Auto-adjust page if current page becomes empty after deletion
     useEffect(() => {
         if (currentPage > totalPages && totalPages > 0) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setCurrentPage(totalPages);
         }
     }, [items.length, currentPage, totalPages]);
@@ -53,7 +55,7 @@ export default function WishlistPage() {
         );
     }
 
-    const handleMoveToCart = (item: any) => {
+    const handleMoveToCart = (item: { id: string; name: string; price: number; image: string }) => {
         addItem({
             id: item.id,
             name: item.name,
@@ -99,6 +101,7 @@ export default function WishlistPage() {
                                     <div key={item.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:shadow-brand-blue/10 transition-all border border-slate-100 group flex flex-col">
                                         <div className="aspect-square bg-slate-50 relative overflow-hidden">
                                             <Link href={`/products/${item.id}`} className="block w-full h-full">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                                 <img 
                                                     src={item.image} 
                                                     alt={item.name} 

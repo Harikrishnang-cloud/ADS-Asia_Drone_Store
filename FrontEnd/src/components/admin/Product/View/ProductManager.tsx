@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Plus, Trash2, Edit2, Save, X, Package, Search, LayoutPanelLeft, AlertTriangle, CheckCircle2, DollarSign, Archive, Sparkles, Loader2 } from "lucide-react";
+import { Plus, Trash2, Edit2, Save, X, Package, AlertTriangle, CheckCircle2, Archive, Sparkles, Loader2 } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import AdminHeader from "@/components/ui/AdminHeader";
@@ -325,6 +325,7 @@ export default function ProductManager({ category }: { category?: string }) {
                                                 <div className="flex items-center gap-4">
                                                     <div className="w-14 h-14 rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 flex-shrink-0">
                                                         {product.imageUrl ? (
+                                                            // eslint-disable-next-line @next/next/no-img-element
                                                             <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
                                                         ) : (
                                                             <Package size={24} className="text-slate-300" />
@@ -400,7 +401,7 @@ export default function ProductManager({ category }: { category?: string }) {
                                                     <Archive size={40} className="text-slate-200" />
                                                 </div>
                                                 <h3 className="text-xl font-bold text-slate-900">No Products Catalogued</h3>
-                                                <p className="text-slate-500 max-w-xs mt-1 text-sm">We couldn't find any products in your inventory. Add your first product to get started.</p>
+                                                <p className="text-slate-500 max-w-xs mt-1 text-sm">We couldn&apos;t find any products in your inventory. Add your first product to get started.</p>
                                                 <button onClick={() => setIsAdding(true)} className="mt-6 text-brand-orange font-black uppercase text-xs tracking-widest hover:underline">+ New Entry</button>
                                             </div>
                                         </td>

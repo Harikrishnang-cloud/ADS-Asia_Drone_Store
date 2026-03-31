@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { UserProfile } from "@/components/layout/Navbar";
 import { useAuthStore } from "@/store/authStore";
 
 export default function HomeClient() {

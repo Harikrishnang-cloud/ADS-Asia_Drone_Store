@@ -29,8 +29,9 @@ export default function AdminReviewsPage() {
             if (data.success) {
                 setReviews(data.reviews);
             }
-        } catch (error: any) {
-            console.error("Failed to fetch reviews:", error);
+        } catch (error: unknown) {
+            const err = error as { message?: string };
+            console.error("Failed to fetch reviews:", err);
             toast.error("Failed to fetch reviews");
         } finally {
             setLoading(false);
@@ -49,8 +50,9 @@ export default function AdminReviewsPage() {
                 toast.success("Review deleted successfully");
                 fetchReviews();
             }
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Failed to delete review");
+        } catch (error: unknown) {
+            const err = error as { response?: { data?: { message?: string } } };
+            toast.error(err.response?.data?.message || "Failed to delete review");
         }
     };
 
