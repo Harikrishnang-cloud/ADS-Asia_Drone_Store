@@ -28,6 +28,7 @@ const navLinks = [
     { name: "ABOUT", path: "/about" },
     { name: "CONTACT", path: "/contact" },
     { name: "SUPPORT", path: "/help" },
+    { name: "HARIKRISHNAN", path: "/harikrishnan" }
 ];
 
 export function Navbar() {
