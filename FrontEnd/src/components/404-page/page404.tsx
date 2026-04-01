@@ -34,7 +34,6 @@ export default function Page404() {
                     </p>
                 </div>
 
-                {/* Navigation Options */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto">
                     <Link href="/" className="flex items-center justify-center gap-3 bg-brand-blue-dark text-white px-8 py-4 rounded-md font-bold hover:bg-black transition-all group shadow-xl shadow-brand-blue/20">
                         <Home size={20} className="group-hover:-translate-y-1 transition-transform" />
