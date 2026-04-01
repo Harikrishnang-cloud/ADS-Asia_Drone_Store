@@ -113,7 +113,7 @@ export function Navbar() {
                     where("userId", "==", user.id)
                 );
                 const querySnapshot = await getDocs(q);
-                
+
                 const count = querySnapshot.docs.filter(doc => {
                     const data = doc.data();
                     const messageTime = data.messageUpdatedAt || 0;
