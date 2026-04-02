@@ -10,8 +10,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { collection, query, where, getDocs, Timestamp, doc, updateDoc, increment } from "firebase/firestore";
-import { auth, db } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { db } from "@/lib/firebase";
+import { useAuth } from "@/context/AuthContext";
 import { useAuthStore } from "@/store/authStore";
 import Button from "@/components/ui/button";
 import toast from "react-hot-toast";
@@ -62,6 +62,8 @@ export default function OrdersPage() {
     const [isCancelling, setIsCancelling] = useState(false);
     const [cancelOrderId, setCancelOrderId] = useState<string | null>(null);
 
+    const { isInitialized } = useAuth();
+
     useEffect(() => {
         const fetchOrders = async () => {
             if (!user?.id) return;
@@ -97,16 +99,10 @@ export default function OrdersPage() {
             }
         };
 
-        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-            if (firebaseUser) {
-                fetchOrders();
-            } else {
-                setLoading(false);
-            }
-        });
-
-        return () => unsubscribe();
-    }, [user]);
+        if (isInitialized) {
+            fetchOrders();
+        }
+    }, [user, isInitialized]);
 
     const getStatusStyles = (status: string) => {
         switch (status.toLowerCase()) {

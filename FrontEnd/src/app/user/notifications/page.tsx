@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { auth, db } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { db } from "@/lib/firebase";
+import { useAuth } from "@/context/AuthContext";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { Tag, Info, AlertCircle, ChevronRight } from "lucide-react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
@@ -21,6 +21,8 @@ export default function NotificationsPage() {
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<"all" | "offer" | "info" | "alert">("all");
 
+    const { isInitialized } = useAuth();
+
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
@@ -38,22 +40,18 @@ export default function NotificationsPage() {
             }
         };
 
-        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-            if (firebaseUser) {
-                fetchNotifications();
-            } else {
-                setLoading(false);
-            }
-        });
+        if (isInitialized) {
+            fetchNotifications();
+        } else if (!isInitialized) {
+            // Optional: You can keep loading true or handle otherwise
+        }
         
         // Reset notification count on storage
         if (typeof window !== "undefined") {
             localStorage.setItem("ads_notifications_last_read", Date.now().toString());
             window.dispatchEvent(new Event('storage'));
         }
-
-        return () => unsubscribe();
-    }, []);
+    }, [isInitialized]);
 
     const filteredNotifications = notifications.filter(n => 
         filter === "all" ? true : n.type === filter

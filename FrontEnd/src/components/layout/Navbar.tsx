@@ -13,8 +13,8 @@ import { Logo } from "@/components/ui/Logo";
 import toast from "react-hot-toast";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import { collection, query, orderBy, limit, getDocs, getDoc, doc, where, Timestamp } from "firebase/firestore";
-import { auth, db } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { db } from "@/lib/firebase";
+import { useAuth } from "@/context/AuthContext";
 import { WishlistDropdown } from "./dropdowns/WishlistDropdown";
 import { CartDropdown } from "./dropdowns/CartDropdown";
 import { NotificationDropdown, Notification } from "./dropdowns/NotificationDropdown";
@@ -56,8 +56,10 @@ export function Navbar() {
     }, []);
 
     // Sync user data and wallet balance from Firestore
+    const { isInitialized } = useAuth();
+
     useEffect(() => {
-        if (!hasHydrated || !user?.id) return;
+        if (!hasHydrated || !user?.id || !isInitialized) return;
 
         const fetchLatestUser = async () => {
             try {
@@ -73,15 +75,9 @@ export function Navbar() {
             }
         };
 
-        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-            if (firebaseUser) {
-                fetchLatestUser();
-            }
-        });
-
-        return () => unsubscribe();
+        fetchLatestUser();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [hasHydrated, user?.id]);
+    }, [hasHydrated, user?.id, isInitialized]);
 
 
     useEffect(() => {
@@ -170,15 +166,11 @@ export function Navbar() {
             }
         };
         
-        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-            if (firebaseUser) {
-                checkNotifications();
-                checkMessages();
-            }
-        });
-
-        return () => unsubscribe();
-    }, [pathname, setNotifications, user, setAuth]);
+        if (isInitialized) {
+            checkNotifications();
+            checkMessages();
+        }
+    }, [pathname, setNotifications, user, setAuth, isInitialized]);
 
     // Skip rendering navbar on authentication or admin pages
     if (pathname?.startsWith("/auth") || pathname?.startsWith("/admin")) {
