@@ -13,7 +13,8 @@ import { Logo } from "@/components/ui/Logo";
 import toast from "react-hot-toast";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import { collection, query, orderBy, limit, getDocs, getDoc, doc, where, Timestamp } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import { WishlistDropdown } from "./dropdowns/WishlistDropdown";
 import { CartDropdown } from "./dropdowns/CartDropdown";
 import { NotificationDropdown, Notification } from "./dropdowns/NotificationDropdown";
@@ -28,7 +29,6 @@ const navLinks = [
     { name: "ABOUT", path: "/about" },
     { name: "CONTACT", path: "/contact" },
     { name: "SUPPORT", path: "/help" },
-    { name: "HARIKRISHNAN", path: "/harikrishnan" }
 ];
 
 export function Navbar() {
@@ -73,7 +73,13 @@ export function Navbar() {
             }
         };
 
-        fetchLatestUser();
+        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+            if (firebaseUser) {
+                fetchLatestUser();
+            }
+        });
+
+        return () => unsubscribe();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [hasHydrated, user?.id]);
 
@@ -127,7 +133,6 @@ export function Navbar() {
             }
         };
 
-        // Check for new notifications since last visit
         const checkNotifications = async () => {
             try {
                 const lastRead = typeof window !== "undefined" ? localStorage.getItem("ads_notifications_last_read") : null;
@@ -164,8 +169,15 @@ export function Navbar() {
                 console.error("Error checking notifications:", error);
             }
         };
-        checkNotifications();
-        checkMessages();
+        
+        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+            if (firebaseUser) {
+                checkNotifications();
+                checkMessages();
+            }
+        });
+
+        return () => unsubscribe();
     }, [pathname, setNotifications, user, setAuth]);
 
     // Skip rendering navbar on authentication or admin pages

@@ -8,7 +8,8 @@ import {
     Search
 } from "lucide-react";
 import Link from "next/link";
-import { db } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, Timestamp } from "firebase/firestore";
 import { useAuthStore } from "@/store/authStore";
 
@@ -62,7 +63,15 @@ export default function MessagesPage() {
             }
         };
 
-        fetchMessages();
+        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+            if (firebaseUser) {
+                fetchMessages();
+            } else {
+                setLoading(false);
+            }
+        });
+
+        return () => unsubscribe();
     }, [user]);
 
     const formatDate = (timestamp: Timestamp | string | number | Date | null) => {

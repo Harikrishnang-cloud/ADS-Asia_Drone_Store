@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { db } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { Tag, Info, AlertCircle, ChevronRight } from "lucide-react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
@@ -37,13 +38,21 @@ export default function NotificationsPage() {
             }
         };
 
-        fetchNotifications();
+        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+            if (firebaseUser) {
+                fetchNotifications();
+            } else {
+                setLoading(false);
+            }
+        });
         
         // Reset notification count on storage
         if (typeof window !== "undefined") {
             localStorage.setItem("ads_notifications_last_read", Date.now().toString());
             window.dispatchEvent(new Event('storage'));
         }
+
+        return () => unsubscribe();
     }, []);
 
     const filteredNotifications = notifications.filter(n => 

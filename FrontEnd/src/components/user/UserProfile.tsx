@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import api from "@/lib/axios";
-import { db, storage } from "@/lib/firebase";
+import { auth, db, storage } from "@/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import Script from "next/script";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -79,7 +80,6 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
             }
 
             if (!userId) {
-                // ... logic to handle redirect or check localStorage ...
                 setLoading(false);
                 return;
             }
@@ -107,7 +107,16 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                 setLoading(false);
             }
         };
-        fetchData();
+
+        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+            if (firebaseUser) {
+                fetchData();
+            } else {
+                setLoading(false);
+            }
+        });
+
+        return () => unsubscribe();
     }, [router, authUser?.id, setAuth]);
 
     const validate = () => {

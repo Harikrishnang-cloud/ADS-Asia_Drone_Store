@@ -10,7 +10,8 @@ import Button from "@/components/ui/button";
 import toast from "react-hot-toast";
 import Modal from "@/components/ui/Modal";
 import { useAuthStore } from "@/store/authStore";
-import { db } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import { collection, addDoc, getDoc, doc, Timestamp } from "firebase/firestore";
 import Script from "next/script";
 import api from "@/lib/axios";
@@ -76,7 +77,13 @@ export default function CheckoutPage() {
             }
         };
 
-        fetchLatestUser();
+        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+            if (firebaseUser) {
+                fetchLatestUser();
+            }
+        });
+
+        return () => unsubscribe();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user?.id]);
 
