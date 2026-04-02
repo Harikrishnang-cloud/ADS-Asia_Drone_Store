@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, signInWithCustomToken } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
 import { PasswordInput } from "@/components/PasswordInput";
 import toast from "react-hot-toast";
@@ -43,6 +43,11 @@ export default function LoginPage() {
             const data = await authService.login({ email, password });
 
             if (data.success) {
+                // Sync with Firebase Auth for Firestore rules
+                if (data.firebaseToken) {
+                    await signInWithCustomToken(auth, data.firebaseToken);
+                }
+
                 localStorage.setItem("accessToken", data.accessToken);
                 localStorage.setItem("refreshToken", data.refreshToken);
                 localStorage.setItem("userData", JSON.stringify(data.result));

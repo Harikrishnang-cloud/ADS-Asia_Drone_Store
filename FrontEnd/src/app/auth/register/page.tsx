@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, signInWithCustomToken } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
 import { PasswordInput } from "@/components/PasswordInput";
 import toast from "react-hot-toast";
@@ -53,6 +53,11 @@ export default function RegisterPage() {
             });
 
             if (data.success) {
+                // Sync with Firebase Auth for Firestore rules (optional since we redirect to login, but good for session persistence)
+                if (data.firebaseToken) {
+                    await signInWithCustomToken(auth, data.firebaseToken);
+                }
+                
                 toast.success("Account created successfully! Please log in.");
                 router.push("/auth/login");
             } else {

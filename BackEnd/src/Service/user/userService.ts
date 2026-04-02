@@ -4,6 +4,7 @@ import type { IuserRepository } from "../../Repository/user/IuserRepository.ts";
 import { bcryptPassword } from "../../utils/bcrypt.ts";
 import { jwtToken } from "../../utils/jwt.ts";
 import type { JwtPayload } from "../../utils/jwt.ts";
+import { admin } from "../../Config/config.firebase.ts";
 
 export class userService implements IuserService {
     private userRepository: IuserRepository;
@@ -16,17 +17,22 @@ export class userService implements IuserService {
         this.jwt = new jwtToken();
     }
 
-    async register(user: Iuser): Promise<Iuser> {
+    async register(user: Iuser): Promise<Iuser & { firebaseToken?: string }> {
         const userExists = await this.userRepository.findByEmail(user.email);
         if (userExists) {
             throw new Error("User already exists");
         }
         const hashedPassword = await this.bcryptPassword.hashPassword(user.password);
         const userData = { ...user, password: hashedPassword };
-        return await this.userRepository.register(userData);
+        const savedUser = await this.userRepository.register(userData);
+        
+        // Generate Firebase Custom Token for the new user
+        const firebaseToken = await admin.auth().createCustomToken(savedUser._id!.toString());
+        
+        return { ...savedUser, firebaseToken };
     }
 
-    async login(email: string, password: string): Promise<Iuser | null> {
+    async login(email: string, password: string): Promise<Iuser & { firebaseToken?: string } | null> {
         const userExists = await this.userRepository.findByEmail(email);
         if (!userExists) {
             throw new Error("User not found");
@@ -35,7 +41,11 @@ export class userService implements IuserService {
         if (!isPasswordValid) {
             throw new Error("Invalid password");
         }
-        return userExists;
+        
+        // Generate Firebase Custom Token to sync with Firestore Rules
+        const firebaseToken = await admin.auth().createCustomToken(userExists._id!.toString());
+        
+        return { ...userExists, firebaseToken };
     }
 
     generateTokens(user: Iuser): { accessToken: string; refreshToken: string } {
@@ -49,7 +59,7 @@ export class userService implements IuserService {
         return { accessToken, refreshToken };
     }
 
-    async refreshToken(refreshTokenStr: string): Promise<{ accessToken: string }> {
+    async refreshToken(refreshTokenStr: string): Promise<{ accessToken: string; firebaseToken?: string }> {
         // Check if token is blacklisted
         const isBlacklisted = await this.userRepository.isTokenBlacklisted(refreshTokenStr);
         if (isBlacklisted) {
@@ -63,7 +73,11 @@ export class userService implements IuserService {
             role: decoded.role
         };
         const accessToken = this.jwt.generateAccessToken(payload);
-        return { accessToken };
+        
+        // Also refresh Firebase token to ensure user stays logged into Firestore
+        const firebaseToken = await admin.auth().createCustomToken(decoded.id.toString());
+        
+        return { accessToken, firebaseToken };
     }
 
     async logout(refreshTokenStr: string): Promise<void> {
