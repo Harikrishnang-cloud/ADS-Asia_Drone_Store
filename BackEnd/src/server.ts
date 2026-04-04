@@ -20,6 +20,7 @@ const FRONTEND_URLS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "https://asiadronestore.online",
+    "https://www.asiadronestore.online",
 ];
 
 app.use(cors({
