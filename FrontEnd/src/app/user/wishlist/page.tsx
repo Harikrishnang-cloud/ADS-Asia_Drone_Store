@@ -44,14 +44,12 @@ export default function WishlistPage() {
 
     if (!hasHydrated) {
         return (
-            <ProtectedRoute allowedRole="user">
-                <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-                    <div className="relative">
-                        <div className="animate-spin rounded-full h-16 w-16 border-4 border-slate-200 border-t-brand-orange"></div>
-                        <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-slate-400">ADS</div>
-                    </div>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="relative">
+                    <div className="animate-spin rounded-full h-16 w-16 border-4 border-slate-200 border-t-brand-orange"></div>
+                    <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-slate-400">ADS</div>
                 </div>
-            </ProtectedRoute>
+            </div>
         );
     }
 
@@ -68,7 +66,7 @@ export default function WishlistPage() {
     };
 
     return (
-        <ProtectedRoute allowedRole="user">
+        <>
             <div className="min-h-screen pt-24 md:pt-32 pb-12 md:pb-20 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between mb-8">
@@ -171,6 +169,6 @@ export default function WishlistPage() {
                 cancelText="Keep Item"
                 type="danger"
             />
-        </ProtectedRoute>
+        </>
     );
 }

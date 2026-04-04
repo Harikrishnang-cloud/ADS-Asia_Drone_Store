@@ -8,6 +8,7 @@ import { auth, googleProvider } from "@/lib/firebase";
 import { PasswordInput } from "@/components/PasswordInput";
 import toast from "react-hot-toast";
 import { useAuthStore } from "@/store/authStore";
+import { ArrowRight } from "lucide-react";
 
 import { authService } from "@/services/auth.service";
 
@@ -180,6 +181,16 @@ export default function LoginPage() {
                         </svg>
                         Continue with Google
                     </button>
+
+                    <div className="mt-8 text-center">
+                        <Link 
+                            href="/products" 
+                            className="text-slate-500 hover:text-brand-blue font-semibold text-sm transition-colors flex items-center justify-center gap-2 group"
+                        >
+                            <span>Browse all products as guest</span>
+                            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                    </div>
                 </div>
 
                 <div className="mt-8 text-center text-sm text-slate-500 font-medium">
