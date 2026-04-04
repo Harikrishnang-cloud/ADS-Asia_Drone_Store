@@ -52,7 +52,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
     return (
         <div className="group bg-white border border-slate-100 overflow-hidden hover:shadow-xl hover:shadow-brand-blue/10 transition-all duration-500 flex flex-col h-full relative">
-            {/* Status Badge */}
+           
             <div className="absolute top-4 left-4 z-10">
                 <span className={`px-3 py-1 rounded-sm text-[10px] font-black uppercase tracking-widest shadow-sm ${product.stock > 0 ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'
                     }`}>
@@ -60,7 +60,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 </span>
             </div>
 
-            {/* Product Image */}
+           
             <div className="relative aspect-square overflow-hidden bg-slate-50">
                 <Link href={`/products/${product.id}`} className="block w-full h-full">
                     <Image
