@@ -21,14 +21,19 @@ const getJwt = (): jwtToken => {
 export const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
     try {
         const authHeader = req.headers.authorization;
-        console.log("Auth Middleware Header Found:", !!authHeader);
+        const isAdminPath = req.baseUrl.startsWith('/admin') || req.path.startsWith('/admin');
+        const tokenKey = isAdminPath ? "adminAccessToken" : "accessToken";
+        
+        let token = "";
 
-        if (!authHeader || !authHeader.startsWith("Bearer")) {
-            res.status(401).json({ success: false, message: "Access token is required" });
-            return;
+        if (authHeader && authHeader.startsWith("Bearer")) {
+            token = authHeader.split(" ")[1] || "";
+        } else if (req.cookies && req.cookies[tokenKey]) {
+            token = req.cookies[tokenKey];
         }
 
-        const token = authHeader.split(" ")[1];
+        console.log(`Auth Flow [${tokenKey}] - Header:`, !!authHeader, "Cookie:", !!(req.cookies && req.cookies[tokenKey]));
+
         if (!token) {
             res.status(401).json({ success: false, message: "Access token is required" });
             return;

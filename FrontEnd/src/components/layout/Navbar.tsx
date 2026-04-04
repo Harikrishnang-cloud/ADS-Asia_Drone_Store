@@ -246,7 +246,7 @@ export function Navbar() {
                         <div className="flex items-center gap-5 mr-2">
                             {/* Wishlist Icon with Dropdown */}
                             <div className="relative group cursor-pointer">
-                                <Link href={user ? "/user/wishlist" : "/auth/login"} className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${(isScrolled && isHomePage) ? "text-white" : "text-brand-blue-dark"}`}>
+                                <Link href="/user/wishlist" className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${(isScrolled && isHomePage) ? "text-white" : "text-brand-blue-dark"}`}>
                                     <Heart size={20} strokeWidth={2} />
                                     {hasHydrated && wishlistItemCount > 0 && (
                                         <span className="absolute top-1 -right-2 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
@@ -258,7 +258,7 @@ export function Navbar() {
                             </div>
 
                             <div className="relative group cursor-pointer">
-                                <Link href={user ? "/user/cart" : "/auth/login"} className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${(isScrolled && isHomePage) ? "text-white" : "text-brand-blue-dark"}`}>
+                                <Link href="/user/cart" className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${(isScrolled && isHomePage) ? "text-white" : "text-brand-blue-dark"}`}>
                                     <ShoppingCart size={20} strokeWidth={2} />
                                     {hasHydrated && cartItemCount > 0 && (
                                         <span className="absolute top-1 -right-2 min-w-[18px] h-[18px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">

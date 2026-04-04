@@ -15,6 +15,7 @@ export class adminRoutes {
     private initializeRoutes() {
         // Admin login does not require token
         this.router.post("/login", this.adminControllers.login);
+        this.router.post("/logout", this.adminControllers.logout);
 
         // Protected routes
         this.router.get("/dashboard", adminMiddleware, this.adminControllers.getDashboard);
