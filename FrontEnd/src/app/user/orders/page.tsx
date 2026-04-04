@@ -9,8 +9,9 @@ import {
     ChevronDown, ChevronUp, ExternalLink, Mail, Download
 } from "lucide-react";
 import Link from "next/link";
-import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs, Timestamp, doc, updateDoc, increment } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { useAuth } from "@/context/AuthContext";
 import { useAuthStore } from "@/store/authStore";
 import Button from "@/components/ui/button";
 import toast from "react-hot-toast";
@@ -61,24 +62,22 @@ export default function OrdersPage() {
     const [isCancelling, setIsCancelling] = useState(false);
     const [cancelOrderId, setCancelOrderId] = useState<string | null>(null);
 
+    const { isInitialized } = useAuth();
+
     useEffect(() => {
         const fetchOrders = async () => {
             if (!user?.id) return;
 
             try {
-                console.log("Fetching orders for user ID:", user.id);
-                // Simplified query to avoid composite index requirements
                 const q = query(
                     collection(db, "orders"),
                     where("userId", "==", user.id)
                 );
                 
                 const querySnapshot = await getDocs(q);
-                console.log("Found orders count:", querySnapshot.size);
                 
                 const orderData = querySnapshot.docs.map(doc => {
                     const data = doc.data();
-                    console.log("Order data:", doc.id, data);
                     return {
                         id: doc.id,
                         ...data
@@ -100,8 +99,10 @@ export default function OrdersPage() {
             }
         };
 
-        fetchOrders();
-    }, [user]);
+        if (isInitialized) {
+            fetchOrders();
+        }
+    }, [user, isInitialized]);
 
     const getStatusStyles = (status: string) => {
         switch (status.toLowerCase()) {

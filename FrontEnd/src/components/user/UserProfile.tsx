@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import api from "@/lib/axios";
 import { db, storage } from "@/lib/firebase";
+import { useAuth } from "@/context/AuthContext";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import Script from "next/script";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -56,19 +57,17 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
     const [resetErrors, setResetErrors] = useState<Record<string, string>>({});
     const [isResetting, setIsResetting] = useState(false);
 
+    const { isInitialized } = useAuth();
+
     useEffect(() => {
         const fetchData = async () => {
             const userId = authUser?.id;
 
             if (!userId) {
-                // If not in store, check localStorage as fallback
                 const storedUserStr = localStorage.getItem("userData");
                 if (storedUserStr) {
                     const storedUser = JSON.parse(storedUserStr);
-                    if (storedUser.id || storedUser.uid) {
-                        // We have a user in localStorage, but maybe not in store yet
-                        // (though authStore persist should handle this)
-                    } else {
+                    if (!(storedUser.id || storedUser.uid)) {
                         router.push("/auth/login");
                         return;
                     }
@@ -79,7 +78,6 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
             }
 
             if (!userId) {
-                // ... logic to handle redirect or check localStorage ...
                 setLoading(false);
                 return;
             }
@@ -107,8 +105,11 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                 setLoading(false);
             }
         };
-        fetchData();
-    }, [router, authUser?.id, setAuth]);
+
+        if (isInitialized) {
+            fetchData();
+        }
+    }, [router, authUser?.id, setAuth, isInitialized]);
 
     const validate = () => {
         const newErrors: Record<string, string> = {};

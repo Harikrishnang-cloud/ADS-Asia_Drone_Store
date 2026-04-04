@@ -51,10 +51,10 @@ export default function ProductCard({ product }: ProductCardProps) {
     };
 
     return (
-        <div className="group bg-white border border-slate-100 overflow-hidden hover:shadow-xl hover:shadow-brand-blue/10 transition-all duration-500 flex flex-col h-full relative">
+        <div className="group bg-white border border-slate-100 rounded-xl sm:rounded-xl lg:rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-brand-blue/10 transition-all duration-500 flex flex-col h-full relative">
            
-            <div className="absolute top-4 left-4 z-10">
-                <span className={`px-3 py-1 rounded-sm text-[10px] font-black uppercase tracking-widest shadow-sm ${product.stock > 0 ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'
+            <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-20">
+                <span className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-sm text-[8px] sm:text-[10px] font-black uppercase tracking-widest shadow-sm ${product.stock > 0 ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'
                     }`}>
                     {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
                 </span>
@@ -71,62 +71,64 @@ export default function ProductCard({ product }: ProductCardProps) {
                     />
                 </Link>
 
-                {/* Overlay Actions */}
-                <div className="absolute inset-0 bg-brand-blue-dark/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 pointer-events-none">
+                
+                <div className="absolute inset-0 bg-brand-blue-dark/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 sm:gap-3 pointer-events-none">
                     <button
                         onClick={handleToggleWishlist}
-                        className={`p-3 rounded-lg transition-all shadow-xl cursor-pointer pointer-events-auto z-20 relative ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white text-brand-blue-dark hover:bg-red-50 hover:text-red-500'}`}
+                        className={`p-2 sm:p-3 rounded-lg transition-all shadow-xl cursor-pointer pointer-events-auto z-30 relative ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white text-brand-blue-dark hover:bg-red-50 hover:text-red-500'}`}
                     >
-                        <Heart size={20} className={isWishlisted ? "fill-white" : ""} />
+                        <Heart size={18} className={isWishlisted ? "fill-white" : ""} />
                     </button>
                     <button
                         onClick={handleAddToCart}
-                        className="p-3 bg-brand-orange text-white rounded-lg hover:bg-brand-blue-dark transition-all shadow-xl cursor-pointer pointer-events-auto z-20 relative"
+                        className="p-2 sm:p-3 bg-brand-orange text-white rounded-lg hover:bg-brand-blue-dark transition-all shadow-xl cursor-pointer pointer-events-auto z-30 relative"
                     >
-                        <ShoppingCart size={20} />
+                        <ShoppingCart size={18} />
+                    </button>
+                </div>
+
+                {/* Mobile Quick Actions (Bottom small buttons on image) */}
+                <div className="absolute bottom-2 right-2 flex flex-col gap-2 md:hidden z-30">
+                    <button
+                        onClick={handleAddToCart}
+                        className="p-2 bg-brand-orange/90 backdrop-blur-sm text-white rounded-lg shadow-lg active:scale-95"
+                    >
+                        <ShoppingCart size={16} />
                     </button>
                 </div>
             </div>
 
             {/* Product Info */}
-            <div className="p-6 flex flex-col flex-1">
-                {/* <div className="mb-2">
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-orange/80">{product.category}</span>
-                </div> */}
-                <div className="flex items-start justify-between gap-3">
-                    <Link href={`/products/${product.id}`} className="block flex-1">
-                        <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-orange transition-colors duration-300 line-clamp-1 mb-1">{product.name}</h3>
+            <div className="p-3 sm:p-5 md:p-6 flex flex-col flex-1">
+                <div className="flex items-start justify-between gap-2 mb-2 md:mb-3">
+                    <Link href={`/products/${product.id}`} className="block flex-1 min-w-0">
+                        <h3 className="text-sm sm:text-base md:text-lg font-extrabold text-slate-900 group-hover:text-brand-orange transition-colors duration-300 line-clamp-2 md:line-clamp-1 leading-tight">{product.name}</h3>
                     </Link>
-                    <div>
-                        <div className="flex items-center gap-1 bg-slate-100 border border-slate-100 px-2 py-0.5 rounded-sm shadow-sm shrink-0">
-                            <span className="text-sm font-bold text-slate-700">{(product.averageRating || product.rating || 0).toFixed(1)}</span>
-                            <span className="text-[12px]">⭐</span>
+                    <div className="shrink-0">
+                        <div className="flex items-center gap-0.5 sm:gap-1 bg-slate-50 border border-slate-100 px-1.5 py-0.5 md:px-2 md:py-0.5 rounded-sm shadow-sm">
+                            <span className="text-[10px] sm:text-sm font-bold text-slate-700">{(product.averageRating || product.rating || 0).toFixed(1)}</span>
+                            <span className="text-[10px] sm:text-[12px]">⭐</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+                <div className="mt-auto pt-3 md:pt-4 border-t border-slate-100">
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Starting from</span>
+                        <span className="text-[8px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1 hidden sm:block">Starting from</span>
                         {product.offerPrice ? (
-                            <div className="flex flex-wrap items-center gap-3">
-                                <span className="text-xl font-black text-brand-orange">₹{Number(product.offerPrice).toLocaleString('en-IN')}</span>
-                                <span className="text-[16px] text-slate-400 font-medium line-through">₹{formattedPrice}</span>
-                                <div className="flex items-center gap-2">
-                                    {product.offerPercentage && (
-                                        <span className="text-[11px] font-black uppercase bg-emerald-100 text-emerald-700 px-1 py-0.5 rounded-xs">
-                                            {product.offerPercentage}% OFF
-                                        </span>
-                                    )}
-                                </div>
+                            <div className="flex flex-wrap items-baseline gap-2">
+                                <span className="text-base sm:text-lg md:text-xl font-black text-brand-orange">₹{Number(product.offerPrice).toLocaleString('en-IN')}</span>
+                                <span className="text-[11px] sm:text-sm text-slate-400 font-medium line-through">₹{formattedPrice}</span>
+                                {product.offerPercentage && (
+                                    <span className="text-[9px] font-black uppercase bg-emerald-50 text-emerald-700 px-1 py-0.5 rounded-xs mt-1">
+                                        {product.offerPercentage}% OFF
+                                    </span>
+                                )}
                             </div>
                         ) : (
-                            <span className="text-xl font-black text-brand-blue-dark">₹{formattedPrice}</span>
+                            <span className="text-base sm:text-lg md:text-xl font-black text-brand-blue-dark">₹{formattedPrice}</span>
                         )}
                     </div>
-                    {/* <Link href={`/products/${product.id}`} className="px-5 py-2.5 bg-slate-900 text-white text-xs font-black uppercase tracking-widest rounded cursor-pointer hover:bg-brand-orange transition-all shadow-lg active:scale-95">
-                        Details
-                    </Link> */}
                 </div>
             </div>
         </div>

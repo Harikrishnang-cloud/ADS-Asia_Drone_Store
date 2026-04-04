@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { db } from "@/lib/firebase";
+import { useAuth } from "@/context/AuthContext";
 import { collection, query, getDocs, QueryConstraint } from "firebase/firestore";
 import toast from "react-hot-toast";
 
@@ -64,9 +65,13 @@ export function useFirestoreCollection<T>({
         }
     }, [collectionName, orderByField, orderDirection, memoizedConstraints]);
 
+    const { isInitialized } = useAuth();
+
     useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+        if (isInitialized) {
+            fetchData();
+        }
+    }, [fetchData, isInitialized]);
 
     return { data, setData, loading, error, refresh: fetchData };
 }

@@ -2,19 +2,23 @@ import admin from "firebase-admin";
 import fs from "fs";
 import path from "path";
 
+
+const keyPath =
+  process.env.NODE_ENV === "production"
+    ? "/home/ubuntu/ADS-Asia_Drone_Store/BackEnd/serviceAccountKey.json"
+    : path.resolve("./serviceAccountKey.json");
+
 let serviceAccount: any = {};
-const keyPath = path.resolve(process.cwd(), "serviceAccountKey.json");
+
 if (fs.existsSync(keyPath)) {
   serviceAccount = JSON.parse(fs.readFileSync(keyPath, "utf-8"));
 }
 
-admin.initializeApp({
-  credential: admin.credential.cert({
-    projectId: process.env.FIREBASE_PROJECT_ID || serviceAccount.project_id,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL || serviceAccount.client_email,
-    privateKey: (process.env.FIREBASE_PRIVATE_KEY || serviceAccount.private_key)?.replace(/\\n/g, "\n"),
-  }),
-});
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
 
 const db = admin.firestore();
 

@@ -190,14 +190,14 @@ export default function ProductsPage() {
 
                     {/* Products Grid */}
                     {loading ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-6">
                             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                                <div key={i} className="animate-pulse bg-slate-50 border border-slate-100 rounded-xl h-[400px]"></div>
+                                <div key={i} className="animate-pulse bg-slate-50 border border-slate-100 rounded-xl h-[300px] sm:h-[400px]"></div>
                             ))}
                         </div>
                     ) : paginatedProducts.length > 0 ? (
                         <>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+                            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-6">
                                 {paginatedProducts.map((product) => (
                                     <div key={product.id} className="h-full flex flex-col">
                                         <ProductCard product={product} />

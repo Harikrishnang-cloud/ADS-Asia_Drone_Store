@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
+import { useAuth } from "@/context/AuthContext";
 import { collection, query, where, getDocs, Timestamp } from "firebase/firestore";
 import { useAuthStore } from "@/store/authStore";
 
@@ -25,6 +26,8 @@ export default function MessagesPage() {
     const [messages, setMessages] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
+
+    const { isInitialized } = useAuth();
 
     useEffect(() => {
         const fetchMessages = async () => {
@@ -62,8 +65,10 @@ export default function MessagesPage() {
             }
         };
 
-        fetchMessages();
-    }, [user]);
+        if (isInitialized) {
+            fetchMessages();
+        }
+    }, [user, isInitialized]);
 
     const formatDate = (timestamp: Timestamp | string | number | Date | null) => {
         if (!timestamp) return 'No Date';

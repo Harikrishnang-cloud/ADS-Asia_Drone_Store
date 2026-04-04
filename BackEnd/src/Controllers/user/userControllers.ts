@@ -13,8 +13,13 @@ export class userController {
     async userRegister(req: Request, res: Response) {
         try {
             const user: Iuser = req.body;
-            const result = await this.userService.register(user);
-            res.status(201).json({ success: true, message: "User registered successfully", result });
+            const { firebaseToken, ...result } = await this.userService.register(user);
+            res.status(201).json({ 
+                success: true, 
+                message: "User registered successfully", 
+                result,
+                firebaseToken 
+            });
         } catch (error) {
             if (error instanceof Error) {
                 res.status(500).json({ success: false, message: error.message });
@@ -64,7 +69,8 @@ export class userController {
                 message: "User logged in successfully",
                 result: selectedUserData,
                 accessToken: tokens.accessToken,
-                refreshToken: tokens.refreshToken
+                refreshToken: tokens.refreshToken,
+                firebaseToken: user.firebaseToken
             });
         } catch (error) {
             if (error instanceof Error) {
@@ -83,7 +89,12 @@ export class userController {
                 return;
             }
             const result = await this.userService.refreshToken(refreshToken);
-            res.status(200).json({ success: true, message: "Token refreshed successfully", accessToken: result.accessToken });
+            res.status(200).json({ 
+                success: true, 
+                message: "Token refreshed successfully", 
+                accessToken: result.accessToken,
+                firebaseToken: result.firebaseToken
+            });
         } catch (error) {
             if (error instanceof Error) {
                 res.status(401).json({ success: false, message: error.message || "Invalid or expired refresh token" });

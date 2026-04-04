@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import { collection, query, orderBy, limit, getDocs, getDoc, doc, where, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useAuth } from "@/context/AuthContext";
 import { WishlistDropdown } from "./dropdowns/WishlistDropdown";
 import { CartDropdown } from "./dropdowns/CartDropdown";
 import { NotificationDropdown, Notification } from "./dropdowns/NotificationDropdown";
@@ -55,8 +56,10 @@ export function Navbar() {
     }, []);
 
     // Sync user data and wallet balance from Firestore
+    const { isInitialized } = useAuth();
+
     useEffect(() => {
-        if (!hasHydrated || !user?.id) return;
+        if (!hasHydrated || !user?.id || !isInitialized) return;
 
         const fetchLatestUser = async () => {
             try {
@@ -74,7 +77,7 @@ export function Navbar() {
 
         fetchLatestUser();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [hasHydrated, user?.id]);
+    }, [hasHydrated, user?.id, isInitialized]);
 
 
     useEffect(() => {
@@ -113,7 +116,7 @@ export function Navbar() {
                     where("userId", "==", user.id)
                 );
                 const querySnapshot = await getDocs(q);
-                
+
                 const count = querySnapshot.docs.filter(doc => {
                     const data = doc.data();
                     const messageTime = data.messageUpdatedAt || 0;
@@ -126,7 +129,6 @@ export function Navbar() {
             }
         };
 
-        // Check for new notifications since last visit
         const checkNotifications = async () => {
             try {
                 const lastRead = typeof window !== "undefined" ? localStorage.getItem("ads_notifications_last_read") : null;
@@ -163,9 +165,12 @@ export function Navbar() {
                 console.error("Error checking notifications:", error);
             }
         };
-        checkNotifications();
-        checkMessages();
-    }, [pathname, setNotifications, user, setAuth]);
+        
+        if (isInitialized) {
+            checkNotifications();
+            checkMessages();
+        }
+    }, [pathname, setNotifications, user, setAuth, isInitialized]);
 
     // Skip rendering navbar on authentication or admin pages
     if (pathname?.startsWith("/auth") || pathname?.startsWith("/admin")) {

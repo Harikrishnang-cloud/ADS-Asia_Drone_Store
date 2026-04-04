@@ -33,9 +33,9 @@ export default function ProductGrid({ category, limit, title }: ProductGridProps
         return (
             <div className="w-full">
                 {title && <h2 className="text-2xl font-black text-slate-800 mb-8">{title}</h2>}
-                <div className="grid grid-flow-col auto-cols-[85%] sm:auto-cols-[45%] md:auto-cols-[30%] lg:auto-cols-[23%] 2xl:auto-cols-[18%] gap-6 md:gap-8 overflow-x-auto pb-8 snap-x snap-mandatory custom-scrollbar">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                        <div key={i} className="animate-pulse bg-slate-50 border border-slate-100 rounded-3xl h-[400px] snap-center"></div>
+                <div className="grid grid-flow-col auto-cols-[48%] sm:auto-cols-[45%] md:auto-cols-[30%] lg:auto-cols-[23%] 2xl:auto-cols-[18%] gap-4 md:gap-8 overflow-x-auto pb-8 snap-x snap-mandatory custom-scrollbar">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <div key={i} className="animate-pulse bg-slate-50 border border-slate-100 rounded-md h-[300px] sm:h-[400px] snap-center"></div>
                     ))}
                 </div>
             </div>
@@ -49,7 +49,7 @@ export default function ProductGrid({ category, limit, title }: ProductGridProps
                     <span className="text-4xl text-slate-300"></span>
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-2">No products found</h3>
-               
+
             </div>
         );
     }
@@ -64,7 +64,7 @@ export default function ProductGrid({ category, limit, title }: ProductGridProps
                     </div>
                 </div>
             )}
-            <div className="grid grid-flow-col auto-cols-[85%] sm:auto-cols-[45%] md:auto-cols-[30%] lg:auto-cols-[23%] 2xl:auto-cols-[18%] gap-4 md:gap-6 lg:gap-8 overflow-x-auto pb-10 snap-x snap-mandatory custom-scrollbar">
+            <div className="grid grid-flow-col auto-cols-[48%] sm:auto-cols-[45%] md:auto-cols-[30%] lg:auto-cols-[23%] 2xl:auto-cols-[18%] gap-3 md:gap-6 lg:gap-8 overflow-x-auto pb-10 snap-x snap-mandatory custom-scrollbar">
                 {displayProducts.map((product) => (
                     <div key={product.id} className="animate-in fade-in slide-in-from-bottom-5 duration-700 snap-center h-full">
                         <ProductCard product={product} />

@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import Modal from "@/components/ui/Modal";
 import { useAuthStore } from "@/store/authStore";
 import { db } from "@/lib/firebase";
+import { useAuth } from "@/context/AuthContext";
 import { collection, addDoc, getDoc, doc, Timestamp } from "firebase/firestore";
 import Script from "next/script";
 import api from "@/lib/axios";
@@ -59,8 +60,10 @@ export default function CheckoutPage() {
     // Dynamic checking of the address from context storage
     const [savedAddresses, setSavedAddresses] = useState<{ id: string; type: string; address: string; city: string; state: string; zip: string; isPrimary: boolean }[]>([]);
 
+    const { isInitialized } = useAuth();
+
     useEffect(() => {
-        if (!user?.id) return;
+        if (!user?.id || !isInitialized) return;
 
         const fetchLatestUser = async () => {
             try {
@@ -78,7 +81,7 @@ export default function CheckoutPage() {
 
         fetchLatestUser();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user?.id]);
+    }, [user?.id, isInitialized]);
 
     useEffect(() => {
         if (user) {
