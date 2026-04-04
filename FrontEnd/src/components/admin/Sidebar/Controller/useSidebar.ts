@@ -62,12 +62,22 @@ export function useSidebar(): SidebarViewProps {
         );
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem("adminData");
-        localStorage.removeItem("adminAccessToken");
-        localStorage.removeItem("adminRefreshToken");
-        toast.success("Logged out successfully");
-        router.push("/admin/login");
+    const handleLogout = async () => {
+        try {
+            const refreshToken = localStorage.getItem("adminRefreshToken");
+            if (refreshToken) {
+                const { authService } = await import("@/services/auth.service");
+                await authService.adminLogout(refreshToken);
+            }
+        } catch (error) {
+            console.error("Admin logout error:", error);
+        } finally {
+            localStorage.removeItem("adminData");
+            localStorage.removeItem("adminAccessToken");
+            localStorage.removeItem("adminRefreshToken");
+            toast.success("Logged out successfully");
+            router.push("/admin/login");
+        }
     };
 
     return {

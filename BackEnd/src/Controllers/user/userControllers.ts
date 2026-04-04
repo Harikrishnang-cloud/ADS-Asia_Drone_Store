@@ -43,6 +43,22 @@ export class userController {
                 role: user.role
             };
 
+            // Set secure cookies
+            const isProduction = process.env.NODE_ENV === "production";
+            res.cookie("accessToken", tokens.accessToken, {
+                httpOnly: true,
+                secure: isProduction,
+                sameSite: isProduction ? "none" : "lax",
+                maxAge: 24 * 60 * 60 * 1000 // 1 day
+            });
+
+            res.cookie("refreshToken", tokens.refreshToken, {
+                httpOnly: true,
+                secure: isProduction,
+                sameSite: isProduction ? "none" : "lax",
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            });
+
             res.status(200).json({
                 success: true,
                 message: "User logged in successfully",
@@ -85,6 +101,8 @@ export class userController {
                 return;
             }
             await this.userService.logout(refreshToken);
+            res.clearCookie("accessToken");
+            res.clearCookie("refreshToken");
             res.status(200).json({ success: true, message: "Logged out successfully" });
         } catch (error) {
             res.status(500).json({ success: false, message: "Logout failed" });

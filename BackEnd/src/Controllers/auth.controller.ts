@@ -90,6 +90,23 @@ export class authController {
             }
 
             const loginResponse = await this.service.googleLogin(token);
+            
+            // Set secure cookies for Google login
+            const isProduction = process.env.NODE_ENV === "production";
+            res.cookie("accessToken", loginResponse.accessToken, {
+                httpOnly: true,
+                secure: isProduction,
+                sameSite: isProduction ? "none" : "lax",
+                maxAge: 24 * 60 * 60 * 1000
+            });
+
+            res.cookie("refreshToken", loginResponse.refreshToken, {
+                httpOnly: true,
+                secure: isProduction,
+                sameSite: isProduction ? "none" : "lax",
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            });
+
             return res.status(200).json({ success: true, message: "Google login successful", ...loginResponse });
         } catch (error: any) {
             return res.status(401).json({ success: false, message: error.message || "Invalid or expired Google token" });

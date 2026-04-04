@@ -23,7 +23,28 @@ export class adminControllers {
                 name: user.name,
                 role: user.role
             };
-            return res.status(200).json({success: true, message: "Admin logged in successfully", result: selectedUserData, ...tokens});
+            const isProduction = process.env.NODE_ENV === "production";
+            res.cookie("adminAccessToken", tokens.accessToken, {
+                httpOnly: true,
+                secure: isProduction,
+                sameSite: isProduction ? "none" : "lax",
+                maxAge: 24 * 60 * 60 * 1000 // 1 day
+            });
+
+            res.cookie("adminRefreshToken", tokens.refreshToken, {
+                httpOnly: true,
+                secure: isProduction,
+                sameSite: isProduction ? "none" : "lax",
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            });
+
+            return res.status(200).json({
+                success: true,
+                message: "Admin logged in successfully",
+                result: selectedUserData,
+                accessToken: tokens.accessToken,
+                refreshToken: tokens.refreshToken
+            });
         } catch (error) {
             if (error instanceof Error) {
                 if (error.message === "Admin not found" || error.message === "Invalid password") {
@@ -36,6 +57,16 @@ export class adminControllers {
             } else {
                 return res.status(500).json({ success: false, message: "internal server error" });
             }
+        }
+    };
+
+    logout = async (req: Request, res: Response) => {
+        try {
+            res.clearCookie("adminAccessToken");
+            res.clearCookie("adminRefreshToken");
+            return res.status(200).json({ success: true, message: "Admin logged out successfully" });
+        } catch (error) {
+            return res.status(500).json({ success: false, message: "Logout failed" });
         }
     };
 

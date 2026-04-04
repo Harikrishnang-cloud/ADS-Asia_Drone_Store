@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 
 const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:7878",
+    withCredentials: true,
     headers: {
         "Content-Type": "application/json"
     }
@@ -15,7 +16,6 @@ api.interceptors.request.use(
         let tokenKey = isAdminRequest ? "adminAccessToken" : "accessToken";
         
         let token = localStorage.getItem(tokenKey);
-
         // Fallback: If not an admin request but user token missing, try admin token
         if (!isAdminRequest && !token) {
             const adminToken = localStorage.getItem("adminAccessToken");
