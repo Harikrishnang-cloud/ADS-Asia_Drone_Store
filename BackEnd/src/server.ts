@@ -1,11 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-<<<<<<< HEAD
-import cookieParser from "cookie-parser"; // ✅ Restored for authentication
-=======
 import cookieParser from "cookie-parser";
->>>>>>> 7451e1b323daae99019620a32dd656ddf04f85d5
 import { userRoutes } from "./Routes/user/userRoutes.ts";
 import { userController } from "./Controllers/user/userControllers.ts";
 import { userRepository } from "./Repository/user/userRepository.ts";
@@ -28,18 +24,13 @@ const FRONTEND_URLS = [
 
 app.use(cors({
     origin: (origin, callback) => {
-<<<<<<< HEAD
         if (!origin) return callback(null, true);
-        const isAllowed = FRONTEND_URLS.includes(origin) || origin.endsWith(".asiadronestore.online");
-=======
-        // Allow requests with no origin (like mobile apps or curl)
-        if (!origin) return callback(null, true);
-        
-        const isAllowed = FRONTEND_URLS.includes(origin) || 
-                         origin.includes('localhost') || origin.includes("asiadronestore.online") ||
-                         origin.includes('127.0.0.1');
 
->>>>>>> 7451e1b323daae99019620a32dd656ddf04f85d5
+        const isAllowed = FRONTEND_URLS.includes(origin) ||
+            origin.endsWith(".asiadronestore.online") ||
+            origin.includes('localhost') ||
+            origin.includes('127.0.0.1');
+
         if (isAllowed || process.env.NODE_ENV === 'development') {
             callback(null, true);
         } else {
@@ -52,11 +43,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
-<<<<<<< HEAD
-app.use(cookieParser()); 
-=======
 app.use(cookieParser());
->>>>>>> 7451e1b323daae99019620a32dd656ddf04f85d5
 
 const userRepo = new userRepository();
 const userSvc = new userService(userRepo);
