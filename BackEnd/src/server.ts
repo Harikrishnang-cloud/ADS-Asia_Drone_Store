@@ -22,24 +22,28 @@ const FRONTEND_URLS = [
     "https://www.asiadronestore.online",
 ];
 
+// Ironclad CORS logic for production and local development
 app.use(cors({
     origin: (origin, callback) => {
+        // 1. Allow non-browser requests (like Insomnia/Postman)
         if (!origin) return callback(null, true);
 
-        const isAllowed = FRONTEND_URLS.includes(origin) ||
-            origin.endsWith(".asiadronestore.online") ||
-            origin.includes('localhost') ||
-            origin.includes('127.0.0.1');
+        // 2. Allow any subdomain of asiadronestore.online OR localhost
+        const isDomainMatch = origin.endsWith(".asiadronestore.online") || origin === "https://asiadronestore.online";
+        const isLocalMatch = origin.includes("localhost") || origin.includes("127.0.0.1");
 
-        if (isAllowed || process.env.NODE_ENV === 'development') {
+        if (isDomainMatch || isLocalMatch || process.env.NODE_ENV === 'development') {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            console.error(`Blocked by specialized CORS policy: ${origin}`);
+            callback(new Error('Cross-Origin Request Blocked by Asia Drone Store Security Polcy'));
         }
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 }));
 
 app.use(express.json());
