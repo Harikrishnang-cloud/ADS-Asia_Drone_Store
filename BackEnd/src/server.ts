@@ -15,28 +15,19 @@ import { reviewRoutes } from "./Routes/review/reviewRoutes.ts";
 
 const app = express();
 
-const FRONTEND_URLS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://asiadronestore.online",
-    "https://www.asiadronestore.online",
-];
-
-// Ironclad CORS logic for production and local development
 app.use(cors({
     origin: (origin, callback) => {
-        // 1. Allow non-browser requests (like Insomnia/Postman)
         if (!origin) return callback(null, true);
 
-        // 2. Allow any subdomain of asiadronestore.online OR localhost
-        const isDomainMatch = origin.endsWith(".asiadronestore.online") || origin === "https://asiadronestore.online";
+        // Safely check if origin belongs to your domain or local dev
+        const isDomainMatch = origin.endsWith("asiadronestore.online");
         const isLocalMatch = origin.includes("localhost") || origin.includes("127.0.0.1");
 
         if (isDomainMatch || isLocalMatch || process.env.NODE_ENV === 'development') {
             callback(null, true);
         } else {
             console.error(`Blocked by specialized CORS policy: ${origin}`);
-            callback(new Error('Cross-Origin Request Blocked by Asia Drone Store Security Polcy'));
+            callback(new Error('Cross-Origin Request Blocked by Asia Drone Store Security Policy'));
         }
     },
     credentials: true,

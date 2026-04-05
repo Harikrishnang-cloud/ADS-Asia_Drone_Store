@@ -111,7 +111,12 @@ export default function AdminDashboardPage() {
                     
                     <div className="flex items-center gap-3 bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
                         <div className="px-4 py-2 text-sm font-bold text-slate-600 border-r border-slate-100">
-                            {dateTime.toLocaleDateString()} | {dateTime.toLocaleTimeString()}
+                            {dateTime.toLocaleDateString()} | {dateTime.toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit',
+                                hour12: true
+                            })}
                         </div>
                         <div className="px-4 py-2 text-sm font-black text-brand-blue uppercase tracking-widest flex items-center gap-2">
                             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
