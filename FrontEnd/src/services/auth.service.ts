@@ -32,6 +32,11 @@ export const authService = {
         const response = await api.post("/admin/login", credentials);
         return response.data;
     },
+    
+    adminLogout: async (refreshToken: string) => {
+        const response = await api.post("/admin/logout", { refreshToken });
+        return response.data;
+    },
 
     // Password Management
     forgotPassword: async (email: string) => {
