@@ -99,10 +99,6 @@ export default function BannerSlider() {
                             </picture>
                         )}
 
-                        {/* Elegant Overlay Gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent hidden md:block"></div>
-
                         {/* Responsive Content Container */}
                         <div className="absolute inset-0 flex items-center">
                             <div className="container mx-auto px-6 md:px-12 lg:px-20">

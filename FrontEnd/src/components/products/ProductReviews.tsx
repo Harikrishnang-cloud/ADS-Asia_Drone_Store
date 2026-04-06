@@ -113,7 +113,6 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
         setEditingReviewId(review.id);
         setRating(review.rating);
         setComment(review.comment || "");
-        // Scroll to form (simplified)
         document.getElementById("review-form")?.scrollIntoView({ behavior: 'smooth' });
     };
 
@@ -129,7 +128,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
     const hasUserReviewed = user && reviews.some(r => r.userId === user.id);
 
     return (
-        <div className="mt-20 pt-16 border-t border-slate-100">
+        <div className="mt-15 border-t border-slate-100">
             <h2 className="text-2xl md:text-3xl font-black text-brand-blue-dark mb-10">Customer Reviews</h2>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">

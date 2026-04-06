@@ -315,18 +315,20 @@ export function Navbar() {
                                     </div>
 
                                     {/* User Dropdown Menu - Redesigned Premium Style */}
-                                    <div className="absolute top-[120%] right-0 w-72 bg-white rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right border border-slate-100 overflow-hidden translate-y-4 group-hover:translate-y-0 z-[100]">
+                                    <div className="absolute top-[120%] right-0 w-72 bg-white rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right border border-slate-100 overflow-hidden translate-y-4 group-hover:translate-y-0 z-[100]">
 
                                         {/* User Header Section */}
-                                        <div className="p-5 flex flex-col gap-4 border-b border-slate-100 bg-slate-50/50">
+                                        <div className="flex flex-col gap-4 border-b border-slate-100 bg-slate-50/50">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-full bg-brand-blue-dark text-white flex items-center justify-center font-bold text-lg shadow-inner flex-shrink-0">
-                                                    {user?.name ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'U'}
-                                                </div>
-                                                <div className="flex flex-col overflow-hidden">
-                                                    <p className="font-bold text-slate-900 truncate leading-tight capitalize">{user?.name || 'User'}</p>
-                                                    <p className="text-xs text-slate-500 truncate mt-1">{user?.email}</p>
-                                                </div>
+                                                <Link href="/user/profile" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
+                                                    <div className="w-12 h-12 rounded-full bg-brand-blue-dark text-white flex items-center justify-center font-bold text-lg shadow-inner flex-shrink-0">
+                                                        {user?.name ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'U'}
+                                                    </div>
+                                                    <div className="flex flex-col overflow-hidden">
+                                                        <p className="font-bold text-slate-900 truncate leading-tight capitalize">{user?.name || 'User'}</p>
+                                                        <p className="text-xs text-slate-500 truncate mt-1">{user?.email}</p>
+                                                    </div>
+                                                </Link>
                                             </div>
 
                                             {/* Wallet Summary in Dropdown */}
@@ -346,10 +348,6 @@ export function Navbar() {
 
                                             {/* Group 1: Learning & Shopping */}
                                             <div className="py-1 border-b border-slate-100">
-                                                {/* <Link href="/my-learning" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <BookOpen size={18} />
-                                                <span>My learning</span>
-                                            </Link> */}
                                                 <Link href="/user/cart" className="flex items-center justify-between px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
                                                     <div className="flex items-center gap-3">
                                                         <ShoppingCart size={18} />
@@ -407,14 +405,6 @@ export function Navbar() {
                                                     <CreditCard size={18} />
                                                     <span>Payment methods</span>
                                                 </Link>
-                                                {/* <Link href="/subscriptions" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <Layers size={18} />
-                                                <span>Subscriptions</span>
-                                            </Link> */}
-                                                {/* <button className="w-full flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                <BadgeDollarSign size={18} />
-                                                <span>ADS credits</span>
-                                            </button> */}
                                                 <Link href="/user/orders" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
                                                     <History size={18} />
                                                     <span>My Orders</span>
@@ -440,10 +430,6 @@ export function Navbar() {
                                                 <Link href="/user/profile" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
                                                     <UserCircle size={18} />
                                                     <span>My profile</span>
-                                                </Link>
-                                                <Link href="/user/profile/edit" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                    <UserCircle size={18} />
-                                                    <span>Edit profile</span>
                                                 </Link>
                                             </div>
 
@@ -491,8 +477,6 @@ export function Navbar() {
             <div
                 className={`fixed inset-0 bg-white z-40 lg:hidden flex flex-col pt-28 px-6 overflow-y-auto transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
                     }`}>
-
-
                 <div className="flex flex-col space-y-2 text-center">
                     {navLinks.map((link) => (
                         <Link

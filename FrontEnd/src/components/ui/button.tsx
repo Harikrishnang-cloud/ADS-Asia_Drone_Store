@@ -8,6 +8,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     size?: "default" | "sm" | "lg" | "icon" | "icon-sm";
     loading?: boolean;
     icon?: React.ReactNode;
+    iconPosition?: "left" | "right";
     fullWidth?: boolean;
 }
 
@@ -17,6 +18,7 @@ export default function Button({
     size = "default",
     loading = false,
     icon,
+    iconPosition = "left",
     fullWidth = false,
     className = "",
     disabled,
@@ -25,11 +27,11 @@ export default function Button({
     const baseStyles = "inline-flex items-center justify-center gap-2 rounded-xl font-bold transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer";
 
     const sizes = {
-        default: "px-6 py-3",
-        sm: "px-4 py-2 text-sm",
-        lg: "px-8 py-4 text-lg",
-        icon: "p-2.5",
-        "icon-sm": "w-8 h-8",
+        default: "text-sm px-4 py-2.5 md:text-base md:px-6 md:py-3",
+        sm: "text-xs px-3 py-1.5 md:text-sm md:px-4 md:py-2",
+        lg: "text-base px-5 py-3 md:text-lg md:px-8 md:py-4",
+        icon: "p-2 md:p-2.5",
+        "icon-sm": "w-7 h-7 md:w-8 md:h-8",
     };
 
     const variants = {
@@ -53,9 +55,10 @@ export default function Button({
             {loading ? (
                 <Loader2 className="animate-spin" size={18} />
             ) : (
-                icon && <span className="flex-shrink-0">{icon}</span>
+                icon && iconPosition === "left" && <span className="flex-shrink-0">{icon}</span>
             )}
             {children}
+            {!loading && icon && iconPosition === "right" && <span className="flex-shrink-0">{icon}</span>}
         </button>
     );
 }

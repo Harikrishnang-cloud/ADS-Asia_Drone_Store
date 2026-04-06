@@ -67,7 +67,7 @@ export default function HelpCenter() {
     });
 
     return (
-        <div className="bg-slate-50 min-h-screen">
+        <div className="min-h-screen">
             {/* Hero Section */}
             <section className="bg-brand-blue-dark pt-32 pb-20 md:pt-48 md:pb-32 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-96 h-96 bg-brand-orange/10 blur-[100px] rounded-full"></div>

@@ -38,7 +38,6 @@ export default function ProductCard({ product }: ProductCardProps) {
         e.stopPropagation();
         if (isWishlisted) {
             removeWishlist(product.id);
-            toast.success("Removed from wishlist");
         } else {
             addWishlist({
                 id: product.id,
@@ -46,7 +45,6 @@ export default function ProductCard({ product }: ProductCardProps) {
                 price: Number(product.offerPrice || product.price),
                 image: product.imageUrl
             });
-            toast.success("Added to wishlist");
         }
     };
 
@@ -71,27 +69,23 @@ export default function ProductCard({ product }: ProductCardProps) {
                     />
                 </Link>
 
-                
-                <div className="absolute inset-0 bg-brand-blue-dark/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 sm:gap-3 pointer-events-none">
+                {/* Wishlist Action (Top Right) */}
+                <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-30 opacity-100 lg:opacity-0 lg:-translate-y-3 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 transition-all duration-500 ease-out">
                     <button
                         onClick={handleToggleWishlist}
-                        className={`p-2 sm:p-3 rounded-lg transition-all shadow-xl cursor-pointer pointer-events-auto z-30 relative ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white text-brand-blue-dark hover:bg-red-50 hover:text-red-500'}`}
+                        className={`p-2 rounded-full shadow-md transition-all active:scale-95 ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white/90 backdrop-blur-sm text-slate-400 hover:text-red-500 hover:bg-white'}`}
+                        title="Toggle Wishlist"
                     >
-                        <Heart size={18} className={isWishlisted ? "fill-white" : ""} />
-                    </button>
-                    <button
-                        onClick={handleAddToCart}
-                        className="p-2 sm:p-3 bg-brand-orange text-white rounded-lg hover:bg-brand-blue-dark transition-all shadow-xl cursor-pointer pointer-events-auto z-30 relative"
-                    >
-                        <ShoppingCart size={18} />
+                        <Heart size={16} className={isWishlisted ? "fill-white" : ""} />
                     </button>
                 </div>
 
-                {/* Mobile Quick Actions (Bottom small buttons on image) */}
-                <div className="absolute bottom-2 right-2 flex flex-col gap-2 md:hidden z-30">
+                {/* Add to Cart Action (Bottom Right) */}
+                <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 z-30 opacity-100 lg:opacity-0 lg:translate-y-3 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 transition-all duration-500 ease-out lg:delay-75">
                     <button
                         onClick={handleAddToCart}
-                        className="p-2 bg-brand-orange/90 backdrop-blur-sm text-white rounded-lg shadow-lg active:scale-95"
+                        className="p-2 bg-brand-orange/90 backdrop-blur-sm text-white rounded-lg shadow-md transition-all active:scale-95 hover:bg-brand-orange"
+                        title="Add to Cart"
                     >
                         <ShoppingCart size={16} />
                     </button>

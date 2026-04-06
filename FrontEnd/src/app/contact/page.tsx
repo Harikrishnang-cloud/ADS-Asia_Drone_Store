@@ -76,14 +76,14 @@ export default function ContactPage() {
                                 <a href="mailto:enterprise@asiadronestore.com" className="flex items-start gap-5 group/item">
                                     <div>
                                         <p className="text-white/60 text-xs font-bold uppercase tracking-widest mb-1">Enterprise Sales</p>
-                                        <p className="text-lg font-bold group-hover/item:text-brand-orange transition-colors">enterprise@asiadronestore.com</p>
+                                        <p className="text-lg font-bold group-hover/item:text-brand-orange transition-colors">asiadronestore@gmail.com</p>
                                     </div>
                                 </a>
                                 
                                 <a href="tel:+919876543210" className="flex items-start gap-5 group/item">
                                     <div>
                                         <p className="text-white/60 text-xs font-bold uppercase tracking-widest mb-1">Technical Support</p>
-                                        <p className="text-lg font-bold group-hover/item:text-brand-blue transition-colors">+91 98765 43210</p>
+                                        <p className="text-lg font-bold group-hover/item:text-brand-blue transition-colors">+91 9745860278</p>
                                     </div>
                                 </a>
                             </div>
@@ -113,10 +113,7 @@ export default function ContactPage() {
                     </div>
 
                     {/* Right Column: Advanced Form Interface */}
-                    <div className="lg:col-span-7 bg-white/80 backdrop-blur-2xl rounded-md p-8 md:p-12 shadow-2xl shadow-slate-200/50 border border-white flex flex-col justify-center animate-in fade-in slide-in-from-right-12 duration-1000 delay-500 relative">
-                        
-                        <div className="absolute top-0 right-0 w-1/2 h-1 bg-gradient-to-r from-transparent via-brand-blue to-brand-orange opacity-50"></div>
-                        
+                    <div className="lg:col-span-7 bg-white/80 backdrop-blur-2xl rounded-md p-8 md:p-12 shadow-2xl shadow-slate-200/50 border border-white flex flex-col justify-center animate-in fade-in slide-in-from-right-12 duration-1000 delay-500 relative">                        
                         <div className="mb-10">
                             <h2 className="text-3xl font-black text-slate-900 mb-3">Contact Us</h2>
                             <p className="text-slate-500 text-sm font-medium">Transmit your requirements into our highly secure portal. Operational response metrics dictate a reply within 24 hours.</p>
@@ -197,10 +194,10 @@ export default function ContactPage() {
                                 <button 
                                     type="submit" 
                                     disabled={isSubmitting}
-                                    className="group relative w-1/2 flex justify-center items-center gap-3 bg-slate-900 hover:bg-brand-blue-dark text-white p-5 rounded-xl font-black uppercase tracking-[0.2em] text-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-brand-blue-dark/30 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+                                    className="group relative w-full md:w-1/2 flex justify-center items-center gap-2 md:gap-3 bg-slate-900 hover:bg-brand-blue-dark text-white p-3.5 md:p-5 rounded-xl font-black uppercase tracking-[0.1em] md:tracking-[0.2em] text-xs md:text-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-brand-blue-dark/30 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
                                 >
                                     <span className="relative z-10">{isSubmitting ? 'Sending Message...' : 'Send Message'}</span>
-                                    {!isSubmitting && <ArrowRight size={18} className="relative z-10 group-hover:translate-x-2 transition-transform duration-300" />}
+                                    {!isSubmitting && <ArrowRight size={18} className="relative z-10 group-hover:translate-x-2 transition-transform duration-300 w-4 h-4 md:w-5 md:h-5" />}
                                     <div className="absolute inset-0 bg-gradient-to-r from-brand-orange to-brand-blue-dark opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                                 </button>
                             </div>

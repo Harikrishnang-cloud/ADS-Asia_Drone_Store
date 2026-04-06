@@ -38,6 +38,10 @@ function ProductsContent() {
         const cats = Array.from(new Set(products.map(p => p.category).filter(Boolean)));
         return ["All", ...cats];
     }, [products]);
+    const gridPattern = {
+        backgroundImage: `radial-gradient(#cbd5e1 1px, transparent 2px)`,
+        backgroundSize: '32px 32px'
+    };
 
     // Apply Filters & Sorting
     const filteredProducts = useMemo(() => {
@@ -101,11 +105,13 @@ function ProductsContent() {
 
     return (
         <main className="max-w-screen-3xl mx-auto px-4 sm:px-8 pt-24 md:pt-10 relative z-10 w-full">
+            <div className="absolute inset-0 -z-10 pointer-events-none opacity-40" style={gridPattern}></div>
             {/* Page Header */}
+           
             <div className="flex flex-col mb-10 relative">
                 <span className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-orange mb-3">Asia Drone Store Inventory</span>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-brand-blue-dark tracking-tighter mb-4">
-                    {search ? `Search Results for "${search}"` : <>Professional <br /> Drone Solutions</>}
+                    {search ? `Search Results for "${search}"` : <>Professional <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-orange">Drone Solutions</span></>}
                 </h1>
                 <p className="text-slate-500 font-medium max-w-xl text-lg">
                     {search 

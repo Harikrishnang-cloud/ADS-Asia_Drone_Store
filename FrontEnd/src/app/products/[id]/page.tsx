@@ -103,7 +103,7 @@ export default function ProductDetailPage() {
         if (!product) return;
         if (isWishlisted) {
             removeWishlist(product.id);
-            toast.success("Removed from wishlist");
+           
         } else {
             addWishlist({
                 id: product.id,
@@ -111,7 +111,7 @@ export default function ProductDetailPage() {
                 price: Number(product.offerPrice || product.price),
                 image: product.imageUrl
             });
-            toast.success("Added to wishlist");
+           
         }
     };
 
@@ -129,7 +129,6 @@ export default function ProductDetailPage() {
                 console.log("Sharing cancelled or failed");
             }
         } else {
-            // Fallback for desktop/unsupported browsers
             navigator.clipboard.writeText(window.location.href);
             toast.success("Product link copied to clipboard!");
         }
@@ -163,15 +162,15 @@ export default function ProductDetailPage() {
     }
 
     return (
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 md:pt-32 pb-20 relative z-10">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 md:pt-6 pb-6 relative z-10">
             <button onClick={() => router.back()}
-                className="flex items-center gap-2 text-slate-400 hover:text-brand-orange transition-colors font-bold uppercase text-[10px] tracking-widest mb-10 cursor-pointer">
+                className="flex items-center gap-2 text-slate-400 hover:text-brand-orange transition-colors font-bold uppercase text-[10px] tracking-widest mb-4 cursor-pointer">
                 <ChevronLeft size={16} /> Back
             </button>
 
-            <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
+            <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
                 {/* Image Gallery */}
-                <div className="w-full lg:w-1/2 space-y-6">
+                <div className="w-full lg:w-1/2 space-y-4">
                     <div className="group aspect-square bg-white rounded-md border border-slate-100 overflow-hidden shadow-2xl shadow-slate-200/50">
                         <ImageMagnifier src={selectedImage || product.imageUrl} />
                     </div>
@@ -180,7 +179,6 @@ export default function ProductDetailPage() {
                             <div 
                                 onClick={() => setSelectedImage(product.imageUrl)} 
                                 className={`aspect-square rounded-lg border ${selectedImage === product.imageUrl || !selectedImage ? 'border-brand-orange' : 'border-slate-100'} overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer`}>
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img src={product.imageUrl} alt={`${product.name} Main`} className="w-full h-full object-cover" />
                             </div>
                             {product.images.map((img, i) => (
@@ -188,7 +186,6 @@ export default function ProductDetailPage() {
                                     key={i} 
                                     onClick={() => setSelectedImage(img)}
                                     className={`aspect-square rounded-lg border ${selectedImage === img ? 'border-brand-orange' : 'border-slate-100'} overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer`}>
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img src={img} alt={`${product.name} ${i}`} className="w-full h-full object-cover" />
                                 </div>
                             ))}
@@ -197,8 +194,8 @@ export default function ProductDetailPage() {
                 </div>
 
                 {/* Product Info */}
-                <div className="w-full lg:w-1/2 space-y-8">
-                    <div className="space-y-4">
+                <div className="w-full lg:w-1/2 space-y-4">
+                    <div className="space-y-2">
                         <span className="text-[10px] font-black uppercase tracking-[0.4em] text-brand-orange bg-brand-orange/10 px-3 py-1.5 rounded-sm inline-block mb-2">{product.category}</span>
                         <h1 className="text-4xl md:text-5xl font-black text-brand-blue-dark tracking-tight leading-tight">{product.name}</h1>
                         
@@ -214,7 +211,7 @@ export default function ProductDetailPage() {
                             <span className="text-sm font-bold text-slate-400 underline decoration-slate-200 underline-offset-4 cursor-pointer hover:text-brand-orange">{product.totalReviews || product.reviews || 0} Reviews</span>
                         </div>
 
-                        <div className="flex items-center gap-4 mt-8">
+                        <div className="flex items-center gap-4 mt-4">
                             {product.offerPrice ? (
                                 <div className="flex flex-wrap items-center gap-3">
                                     <span className="text-4xl font-black text-brand-orange">
@@ -244,10 +241,10 @@ export default function ProductDetailPage() {
                             </span>
                         </div>
 
-                        <p className="text-slate-500 text-lg leading-relaxed pt-4 border-t border-slate-100">{product.description || "Experience the pinnacle of aerial technology. Designed for ultimate performance and reliability, this professional-grade drone solution is meticulously crafted to handle the most demanding environments across Asia seamlessly and securely."}</p>
+                        <p className="text-slate-500 text-lg leading-relaxed pt-2 border-t border-slate-100">{product.description || "Experience the pinnacle of aerial technology. Designed for ultimate performance and reliability, this professional-grade drone solution is meticulously crafted to handle the most demanding environments across Asia seamlessly and securely."}</p>
                         
                         {/* Highlights */}
-                        <div className="grid grid-cols-2 gap-3 pt-2">
+                        <div className="grid grid-cols-2 gap-2 pt-1">
                             {["High Precision Engineering", "Certified Components", "Extended Battery Life", "Smart Tracking & Analytics"].map((feature, idx) => (
                                 <div key={idx} className="flex items-center gap-2 text-slate-600 text-sm font-semibold">
                                     <CheckCircle2 size={16} className="text-brand-orange shrink-0" />
@@ -257,46 +254,43 @@ export default function ProductDetailPage() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-3 pt-6">
-                        <div className="flex items-center h-14 rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden w-32 shrink-0">
+                    <div className="flex flex-row flex-wrap items-center w-full gap-2.5 md:gap-3 pt-4">
+                        <div className="flex items-center h-11 md:h-14 rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden w-24 md:w-32 shrink-0">
                             <button 
                                 onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-                                className="w-12 h-full flex items-center justify-center text-slate-400 cursor-pointer hover:bg-slate-50 hover:text-brand-orange transition-colors active:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-10 md:w-12 h-full flex items-center justify-center text-slate-400 cursor-pointer hover:bg-slate-50 hover:text-brand-orange transition-colors active:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled={quantity <= 1}
                             >
-                                <Minus size={18} />
+                                <Minus className="w-4 h-4 md:w-[18px] md:h-[18px]" />
                             </button>
-                            <div className="flex-1 h-full flex items-center justify-center font-bold text-slate-700 text-lg border-x border-slate-100">
+                            <div className="flex-1 h-full flex items-center justify-center font-bold text-slate-700 text-base md:text-lg border-x border-slate-100">
                                 {quantity}
                             </div>
                             <button 
                                 onClick={() => setQuantity(prev => Math.min(product.stock, prev + 1))}
-                                className="w-12 h-full flex items-center justify-center text-slate-400 cursor-pointer hover:bg-slate-50 hover:text-brand-orange transition-colors active:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-10 md:w-12 h-full flex items-center justify-center text-slate-400 cursor-pointer hover:bg-slate-50 hover:text-brand-orange transition-colors active:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled={quantity >= product.stock}
                             >
-                                <Plus size={18} />
+                                <Plus className="w-4 h-4 md:w-[18px] md:h-[18px]" />
                             </button>
                         </div>
-                        <Button className="flex-1 py-4 text-sm tracking-widest shadow-xl shadow-brand-blue/20" icon={<ShoppingCart size={20} />} onClick={handleAddToCart}>
+                        <Button className="flex-1 min-w-[140px] py-3 md:py-4 h-11 md:h-14 text-xs md:text-sm tracking-widest shadow-xl shadow-brand-blue/20" icon={<ShoppingCart className="w-4 h-4 md:w-5 md:h-5" />} onClick={handleAddToCart}>
                             Add to Cart
                         </Button>
-                        {/* <Button className="flex-1 py-4 text-sm tracking-widest bg-brand-orange hover:bg-brand-orange-dark border-brand-orange shadow-xl shadow-brand-orange/20 text-white">
-                            Buy Now
-                        </Button> */}
-                        <div className="flex gap-3">
+                        <div className="flex gap-2.5 md:gap-3">
                             <button 
                                 onClick={handleToggleWishlist}
-                                className={`w-14 h-14 rounded-xl transition-all active:scale-95 shadow-sm flex items-center justify-center border cursor-pointer ${isWishlisted ? 'bg-red-50 text-red-500 border-red-100 hover:bg-red-100' : 'bg-white text-slate-400 border-slate-200 hover:bg-slate-50 hover:text-red-500'}`}
+                                className={`w-11 md:w-14 h-11 md:h-14 rounded-xl transition-all active:scale-95 shadow-sm flex items-center justify-center border cursor-pointer ${isWishlisted ? 'bg-red-50 text-red-500 border-red-100 hover:bg-red-100' : 'bg-white text-slate-400 border-slate-200 hover:bg-slate-50 hover:text-red-500'}`}
                                 title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
                             >
-                                <Heart size={24} className={isWishlisted ? "fill-red-500" : ""} />
+                                <Heart className={`w-5 h-5 md:w-6 md:h-6 ${isWishlisted ? "fill-red-500" : ""}`} />
                             </button>
                             <button 
                                 onClick={handleShare}
-                                className="w-14 h-14 bg-white border border-slate-200 text-slate-400 rounded-xl hover:bg-slate-50 hover:text-brand-blue-dark transition-all active:scale-95 shadow-sm flex items-center justify-center cursor-pointer"
+                                className="w-11 md:w-14 h-11 md:h-14 bg-white border border-slate-200 text-slate-400 rounded-xl hover:bg-slate-50 hover:text-brand-blue-dark transition-all active:scale-95 shadow-sm flex items-center justify-center cursor-pointer"
                                 title="Share this product"
                             >
-                                <Share2 size={24} />
+                                <Share2 className="w-5 h-5 md:w-6 md:h-6" />
                             </button>
                         </div>
                     </div>
@@ -305,8 +299,8 @@ export default function ProductDetailPage() {
 
             {/* Product Specifications Section */}
             {product.specifications && product.specifications.length > 0 && (
-                <div className="mt-20 pt-16 border-t border-slate-100">
-                    <h2 className="text-2xl md:text-3xl font-black text-brand-blue-dark mb-10">Product Specifications</h2>
+                <div className="mt-8 pt-4 border-t border-slate-100">
+                    <h2 className="text-2xl md:text-2xl font-black text-brand-blue-dark mb-4">Product Specifications</h2>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-8">
                         {product.specifications.map((spec, i) => (
@@ -326,7 +320,7 @@ export default function ProductDetailPage() {
 
             {/* Related Products Section */}
             {product && (
-                <div className="mt-24 pt-16 border-t border-slate-100">
+                <div className="mt-8 pt-4 border-t border-slate-100">
                     <ProductGrid 
                         title="You May Also Like" 
                         category={product.category} 

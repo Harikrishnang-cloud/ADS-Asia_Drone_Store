@@ -12,44 +12,80 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Button from "@/components/ui/button";
+ const gridPattern = {
+        backgroundImage: `radial-gradient(#cbd5e1 1px, transparent 2px)`,
+        backgroundSize: '32px 32px'
+    };
 
 export default function AboutPage() {
     return (
         <div className="bg-slate-50 flex flex-col">
-
             {/* Hero Section */}
-            <section className="pt-32 pb-20 md:pt-40 md:pb-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+            <section className="pt-12 pb-12 md:pt-20 md:pb-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+                <div className="absolute inset-0 -z-10 pointer-events-none opacity-40" style={gridPattern}></div>
                 <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-brand-blue/[0.03] rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
                 <div className="max-w-7xl mx-auto">
-                    <div className="max-w-3xl space-y-6 relative z-10">
-                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-blue/5 border border-brand-blue/10 text-[10px] font-black uppercase tracking-widest text-brand-blue">
-                            <span className="w-1.5 h-1.5 rounded-full bg-brand-blue animate-pulse"></span>
-                            Since 2018
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+                        <div className="max-w-2xl space-y-6 relative z-10">
+                            <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-[1.1]">
+                                Elevating Your <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-orange">Aerial Experience.</span>
+                            </h1>
+                            <p className="text-lg md:text-xl text-slate-500 font-medium leading-relaxed max-w-2xl">
+                                Welcome to Asia Drone Store. We don&apos;t just sell drones; we provide the wings for your imagination, creativity, and professional aspirations. As the leading premium drone retailer, we are committed to pushing the boundaries of what&apos;s possible in the sky.
+                            </p>
+                            <div className="pt-4 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 w-full">
+                                <Link href="/products" className="w-full sm:w-auto" title="See all the products">
+                                    <Button variant="primary" size="default" fullWidth icon={<ChevronRight size={16} />}>
+                                        Explore Our Catalog     
+                                    </Button>
+                                </Link>
+                                <Link href="/contact" className="w-full sm:w-auto" title="our team will help you to get your drone">
+                                    <Button variant="secondary" size="default" fullWidth>
+                                        Get in Touch
+                                    </Button>
+                                </Link>
+                                <Link href="https://asiasoftlab.in" className="w-full sm:w-auto" target="_blank" rel="noopener noreferrer" title="Register through our official website">
+                                    <Button variant="secondary" size="default" fullWidth icon={<ChevronRight size={16} />} iconPosition="right">
+                                         Drone pilot license, Please register
+                                    </Button>
+                                </Link>
+                            </div>
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-[1.1]">
-                            Elevating Your Aerial Experience.
-                        </h1>
-                        <p className="text-lg md:text-xl text-slate-500 font-medium leading-relaxed max-w-2xl">
-                            Welcome to Asia Drone Store. We don&apos;t just sell drones; we provide the wings for your imagination, creativity, and professional aspirations. As the leading premium drone retailer, we are committed to pushing the boundaries of what&apos;s possible in the sky.
-                        </p>
-                        <div className="pt-4 flex flex-wrap gap-4">
-                            <Link href="/products">
-                                <Button variant="primary" size="lg" icon={<ChevronRight size={18} />}>
-                                    Explore Our Catalog
-                                </Button>
-                            </Link>
-                            <Link href="/contact">
-                                <Button variant="secondary" size="lg">
-                                    Get in Touch
-                                </Button>
-                            </Link>
+
+                        {/* Right Side: Iframe Website projection */}
+                        <div className="relative z-10 w-full h-[400px] md:h-[500px] xl:h-[600px] rounded-[1.5rem] overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] border-4 border-white bg-slate-100 flex flex-col group pointer-events-auto transform rotate-1 hover:rotate-0 transition-transform duration-500 ease-out">
+                            
+                            <a 
+                                href="https://asiasoftlab.in" 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="absolute inset-0 z-30 cursor-pointer" 
+                                aria-label="Visit Asia Soft Lab Official Website"
+                                title="Click to open official website"
+                            ></a>
+
+                            {/* Browser-like window header for premium feel */}
+                            <div className="w-full h-9 bg-slate-200 border-b border-slate-300 flex items-center px-4 gap-2 z-20 shrink-0 select-none">
+                                <div className="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
+                                <div className="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
+                                <div className="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+                                <div className="mx-auto text-[11px] font-bold text-slate-500 tracking-wider font-mono bg-white/50 px-3 py-1 rounded-md shadow-sm">asiasoftlab.in</div>
+                            </div>
+                            <iframe 
+                                src="https://asiasoftlab.in" 
+                                className="w-full flex-1 border-none bg-white pointer-events-none"
+                                title="Asia Soft Lab Official Website"
+                                loading="lazy"
+                                tabIndex={-1}
+                                scrolling="no"
+                            ></iframe>
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* Core Values Section */}
-            <section className="py-24 bg-slate-50 relative">
+            <section className="py-6 md:py-12 bg-slate-50 relative">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
                         <h2 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center justify-center gap-2">
@@ -108,7 +144,7 @@ export default function AboutPage() {
             </section>
 
             {/* CTA Section */}
-            <section className="py-24 bg-white border-t border-slate-100">
+            <section className="py-12 md:py-20 bg-white border-t border-slate-100">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
                     <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">
                         Ready to take<br />your creativity higher?

@@ -57,14 +57,14 @@ export default function ProductGrid({ category, limit, title }: ProductGridProps
     return (
         <section className="w-full">
             {title && (
-                <div className="flex items-center justify-between mb-10 w-full relative">
+                <div className="flex items-center justify-between mb-6 md:mb-8 w-full relative">
                     <div className="flex flex-col">
-                        <span className="text-sm font-black uppercase tracking-[0.3em] text-brand-orange mb-2">Exclusive Inventory</span>
-                        <h2 className="text-3xl md:text-4xl font-black text-brand-blue-dark tracking-tight leading-none">{title}</h2>
+                        <span className="text-xs md:text-sm font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-brand-orange mb-1 md:mb-2">Exclusive Inventory</span>
+                        <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-brand-blue-dark tracking-tight leading-none">{title}</h2>
                     </div>
                 </div>
             )}
-            <div className="grid grid-flow-col auto-cols-[48%] sm:auto-cols-[45%] md:auto-cols-[30%] lg:auto-cols-[23%] 2xl:auto-cols-[18%] gap-3 md:gap-6 lg:gap-8 overflow-x-auto pb-10 snap-x snap-mandatory custom-scrollbar">
+            <div className="grid grid-flow-col auto-cols-[48%] sm:auto-cols-[45%] md:auto-cols-[30%] lg:auto-cols-[23%] 2xl:auto-cols-[18%] gap-3 md:gap-6 lg:gap-8 overflow-x-auto pb-4 md:pb-8 snap-x snap-mandatory custom-scrollbar">
                 {displayProducts.map((product) => (
                     <div key={product.id} className="animate-in fade-in slide-in-from-bottom-5 duration-700 snap-center h-full">
                         <ProductCard product={product} />
