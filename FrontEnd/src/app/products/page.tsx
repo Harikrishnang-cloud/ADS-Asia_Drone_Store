@@ -1,13 +1,17 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, Suspense } from "react";
 import { useFirestoreCollection } from "@/hooks/useFirestore";
 import { Product } from "@/types/product.types";
 import ProductCard from "@/components/products/ProductCard";
 import Pagination from "@/components/ui/Pagination";
 import { Filter, SlidersHorizontal, ChevronDown } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
-export default function ProductsPage() {
+function ProductsContent() {
+    const searchParams = useSearchParams();
+    const search = searchParams.get("search") || "";
+
     const { data: products, loading } = useFirestoreCollection<Product>({
         collectionName: "products",
         orderByField: "createdAt",
@@ -27,7 +31,7 @@ export default function ProductsPage() {
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setCurrentPage(1);
-    }, [selectedCategory, priceRange, sortBy]);
+    }, [selectedCategory, priceRange, sortBy, search]);
 
     // Extract unique categories directly from products
     const categories = useMemo(() => {
@@ -38,6 +42,15 @@ export default function ProductsPage() {
     // Apply Filters & Sorting
     const filteredProducts = useMemo(() => {
         let result = [...products];
+
+        // 0. Search Filter
+        if (search) {
+            const query = search.toLowerCase();
+            result = result.filter(p => 
+                p.name?.toLowerCase().includes(query) || 
+                p.category?.toLowerCase().includes(query)
+            );
+        }
 
         // 1. Category Filter
         if (selectedCategory !== "All") {
@@ -77,7 +90,7 @@ export default function ProductsPage() {
         });
 
         return result;
-    }, [products, selectedCategory, priceRange, sortBy]);
+    }, [products, selectedCategory, priceRange, sortBy, search]);
 
     // Paginate results
     const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
@@ -92,10 +105,12 @@ export default function ProductsPage() {
             <div className="flex flex-col mb-10 relative">
                 <span className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-orange mb-3">Asia Drone Store Inventory</span>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-brand-blue-dark tracking-tighter mb-4">
-                    Professional <br /> Drone Solutions
+                    {search ? `Search Results for "${search}"` : <>Professional <br /> Drone Solutions</>}
                 </h1>
                 <p className="text-slate-500 font-medium max-w-xl text-lg">
-                    Browse our elite selection of UAVs, high-performance parts, and specialized accessories engineered for unique flight conditions.
+                    {search 
+                        ? `Found ${filteredProducts.length} results matching your search.`
+                        : "Browse our elite selection of UAVs, high-performance parts, and specialized accessories engineered for unique flight conditions."}
                 </p>
             </div>
 
@@ -231,5 +246,13 @@ export default function ProductsPage() {
                 </div>
             </div>
         </main>
+    );
+}
+
+export default function ProductsPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading products...</div>}>
+            <ProductsContent />
+        </Suspense>
     );
 }

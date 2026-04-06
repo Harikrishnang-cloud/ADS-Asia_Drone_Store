@@ -19,6 +19,8 @@ import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import { generateInvoice } from "@/lib/invoiceGenerator";
 import api from "@/lib/axios";
 import Script from "next/script";
+import { useRouter } from "next/navigation";
+import { useCartStore } from "@/store/cartStore";
 
 interface OrderItem {
     id: string;
@@ -55,6 +57,8 @@ interface Order {
 }
 
 export default function OrdersPage() {
+    const router = useRouter();
+    const { addItem } = useCartStore();
     const { user } = useAuthStore();
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
@@ -237,6 +241,18 @@ export default function OrdersPage() {
         }
     };
 
+    const handleBuyAgain = (item: OrderItem) => {
+        addItem({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            image: item.image,
+            quantity: 1
+        });
+        toast.success(`${item.name} added to cart!`);
+        router.push("/user/cart");
+    };
+
     return (
         <ProtectedRoute allowedRole="user">
             <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
@@ -356,10 +372,10 @@ export default function OrdersPage() {
                                                                         </div>
                                                                         <p className="text-sm text-slate-500 mt-1">Quantity: <span className="font-bold text-slate-700">{item.quantity}</span></p>
                                                                         <div className="mt-3 flex gap-4">
-                                                                            <button className="text-[10px] font-black uppercase tracking-widest text-brand-blue hover:text-brand-orange transition-colors flex items-center gap-1">
+                                                                            <button onClick={() => router.push(`/products/${item.id}`)} className="text-[10px] font-black uppercase tracking-widest text-brand-blue hover:text-brand-orange transition-colors flex items-center gap-1 cursor-pointer">
                                                                                 <ExternalLink size={12} /> Product Specs
                                                                             </button>
-                                                                            <button className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-brand-blue transition-colors flex items-center gap-1">
+                                                                            <button onClick={() => handleBuyAgain(item)} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-brand-blue transition-colors flex items-center gap-1 cursor-pointer">
                                                                                 <ShoppingBag size={12} /> Buy Again
                                                                             </button>
                                                                         </div>

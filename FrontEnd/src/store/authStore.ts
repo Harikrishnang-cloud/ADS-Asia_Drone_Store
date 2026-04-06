@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { authService } from '../services/auth.service';
+import { useCartStore } from './cartStore';
+import { useWishlistStore } from './wishlistStore';
+import { useNotificationStore } from './notificationStore';
 
 export interface UserAddress {
     id: string;
@@ -57,6 +60,11 @@ export const useAuthStore = create<AuthState>()(
                     localStorage.removeItem('adminAccessToken');
                     localStorage.removeItem('adminRefreshToken');
                     localStorage.removeItem('adminData');
+                    
+                    // Clear user-specific stores so new users get an empty cart/wishlist
+                    useCartStore.getState().clearCart();
+                    useWishlistStore.getState().clearWishlist();
+                    useNotificationStore.getState().setNotifications([]);
                     
                     set({ user: null, accessToken: null });
                 }

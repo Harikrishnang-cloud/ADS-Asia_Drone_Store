@@ -229,17 +229,30 @@ export function Navbar() {
                         <div className="relative group hidden lg:flex items-center">
                             <input
                                 type="text"
-                                placeholder="Search"
+                                placeholder="Search products..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && searchQuery.trim()) {
+                                        router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+                                    }
+                                }}
                                 suppressHydrationWarning
                                 className={`w-48 lg:w-64 px-4 py-2 pl-10 text-sm rounded-full border transition-all duration-300 focus:w-64 lg:focus:w-80 outline-none ${isScrolled && isHomePage
                                     ? "bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:bg-white/20 focus:border-white/40"
                                     : "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand-blue/30 focus:shadow-md"
                                     }`}
                             />
-                            <Search size={16} className={`absolute left-3.5 transition-colors ${isScrolled && isHomePage ? "text-white/60 group-focus-within:text-white" : "text-slate-400 group-focus-within:text-brand-blue"
-                                }`} />
+                            <Search 
+                                size={16} 
+                                onClick={() => {
+                                    if (searchQuery.trim()) {
+                                        router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+                                    }
+                                }}
+                                className={`absolute left-3.5 transition-colors cursor-pointer ${isScrolled && isHomePage ? "text-white/60 group-focus-within:text-white" : "text-slate-400 group-focus-within:text-brand-blue"
+                                }`} 
+                            />
                         </div>
 
                         {/* Action Icons */}
@@ -479,18 +492,6 @@ export function Navbar() {
                 className={`fixed inset-0 bg-white z-40 lg:hidden flex flex-col pt-28 px-6 overflow-y-auto transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
                     }`}>
 
-                {/* Mobile Search Bar */}
-                <div className="relative group flex items-center mb-6">
-                    <input
-                        type="text"
-                        placeholder="Search"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        suppressHydrationWarning
-                        className="w-full px-4 py-3 pl-12 text-base rounded-2xl border border-slate-100 bg-slate-50 text-slate-900 placeholder:text-slate-400 outline-none focus:bg-white focus:border-brand-blue/30 focus:shadow-sm"
-                    />
-                    <Search size={20} className="absolute left-4 text-slate-400" />
-                </div>
 
                 <div className="flex flex-col space-y-2 text-center">
                     {navLinks.map((link) => (

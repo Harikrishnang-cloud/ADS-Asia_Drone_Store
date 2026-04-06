@@ -12,7 +12,7 @@ import Modal from "@/components/ui/Modal";
 import { useAuthStore } from "@/store/authStore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/context/AuthContext";
-import { collection, addDoc, getDoc, doc, Timestamp } from "firebase/firestore";
+import { collection, addDoc, getDoc, doc, Timestamp, updateDoc, arrayUnion } from "firebase/firestore";
 import Script from "next/script";
 import api from "@/lib/axios";
 
@@ -175,7 +175,13 @@ export default function CheckoutPage() {
             newErrors.phone = "Please enter a valid 10-digit Indian phone number";
         }
 
-        if (savedAddresses.length > 0 && !selectedAddressId) {
+        if (savedAddresses.length === 0) {
+            if (!formData.address.trim()) newErrors.address = "Address is required";
+            if (!formData.city.trim()) newErrors.city = "City is required";
+            if (!formData.state.trim()) newErrors.state = "State is required";
+            if (!formData.zip.trim()) newErrors.zip = "PIN code is required";
+            else if (!/^\d{6}$/.test(formData.zip.trim())) newErrors.zip = "Enter a valid 6-digit PIN code";
+        } else if (!selectedAddressId) {
             newErrors.address = "Please select a shipping address";
         }
 
@@ -183,16 +189,11 @@ export default function CheckoutPage() {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handlePlaceOrder = (e: React.FormEvent) => {
+    const handlePlaceOrder = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!validate()) {
             toast.error("Please fix the errors in your shipping details.");
-            return;
-        }
-
-        if (savedAddresses.length === 0) {
-            toast.error("You need a saved address in your profile to checkout.");
             return;
         }
 
@@ -204,6 +205,42 @@ export default function CheckoutPage() {
         setIsProcessing(true);
 
         const selectedAddress = savedAddresses.find(a => a.id === selectedAddressId);
+        
+        let finalShippingAddress;
+        if (savedAddresses.length > 0 && selectedAddress) {
+            finalShippingAddress = {
+                address: selectedAddress.address,
+                city: selectedAddress.city,
+                state: selectedAddress.state,
+                zip: selectedAddress.zip,
+                type: selectedAddress.type || "N/A"
+            };
+        } else {
+            finalShippingAddress = {
+                address: formData.address,
+                city: formData.city,
+                state: formData.state,
+                zip: formData.zip,
+                type: "Home" // Default type
+            };
+
+            // Optionally auto-save this address to their profile to make it user-friendly
+            try {
+                await updateDoc(doc(db, "users", user.id), {
+                    addresses: arrayUnion({
+                        id: Date.now().toString(),
+                        type: "Home",
+                        address: formData.address,
+                        city: formData.city,
+                        state: formData.state,
+                        pin: formData.zip,
+                        isPrimary: true
+                    })
+                });
+            } catch (err) {
+                console.error("Auto-save address failed:", err);
+            }
+        }
 
         const orderData = {
             userId: user.id,
@@ -220,13 +257,7 @@ export default function CheckoutPage() {
             paymentMethod: paymentMethod,
             status: "Processing",
             createdAt: Timestamp.now(),
-            shippingAddress: {
-                address: selectedAddress?.address || "N/A",
-                city: selectedAddress?.city || "N/A",
-                state: selectedAddress?.state || "N/A",
-                zip: selectedAddress?.zip || "N/A",
-                type: selectedAddress?.type || "N/A"
-            },
+            shippingAddress: finalShippingAddress,
             contact: {
                 name: `${formData.firstName} ${formData.lastName}`,
                 email: formData.email,
@@ -570,17 +601,68 @@ export default function CheckoutPage() {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="bg-white rounded-lg p-6 md:p-8 shadow-sm border border-slate-100 min-h-[250px] flex flex-col items-center justify-center text-center">
-                                        <div className="w-16 h-16 bg-brand-blue/5 rounded-full flex items-center justify-center mb-4">
-                                            <MapPin className="text-brand-blue" size={24} />
+                                    <div className="bg-white rounded-lg p-6 md:p-8 shadow-sm border border-slate-100">
+                                         <h2 className="text-xl font-black text-slate-900 mb-6 flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <span className="w-8 h-8 rounded-lg bg-brand-blue/10 text-brand-blue flex items-center justify-center text-sm font-bold">2</span>
+                                                Shipping Address
+                                            </div>
+                                        </h2>
+                                        <p className="text-sm font-medium text-slate-500 mb-6">Please enter your delivery address to proceed.</p>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-1 md:col-span-2">
+                                                <label className="text-sm font-bold text-slate-700 ml-1">Street Address*</label>
+                                                <input
+                                                    type="text"
+                                                    name="address"
+                                                    value={formData.address}
+                                                    onChange={handleInputChange}
+                                                    suppressHydrationWarning
+                                                    className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.address ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`}
+                                                    placeholder="House/Flat No, Street, Landmark"
+                                                />
+                                                {errors.address && <p className="text-[10px] font-bold text-red-500 ml-2">{errors.address}</p>}
+                                            </div>
+                                            <div className="space-y-1">
+                                                <label className="text-sm font-bold text-slate-700 ml-1">City*</label>
+                                                <input
+                                                    type="text"
+                                                    name="city"
+                                                    value={formData.city}
+                                                    onChange={handleInputChange}
+                                                    suppressHydrationWarning
+                                                    className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.city ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`}
+                                                    placeholder="City or Town"
+                                                />
+                                                {errors.city && <p className="text-[10px] font-bold text-red-500 ml-2">{errors.city}</p>}
+                                            </div>
+                                            <div className="space-y-1">
+                                                <label className="text-sm font-bold text-slate-700 ml-1">State*</label>
+                                                <input
+                                                    type="text"
+                                                    name="state"
+                                                    value={formData.state}
+                                                    onChange={handleInputChange}
+                                                    suppressHydrationWarning
+                                                    className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.state ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`}
+                                                    placeholder="State"
+                                                />
+                                                {errors.state && <p className="text-[10px] font-bold text-red-500 ml-2">{errors.state}</p>}
+                                            </div>
+                                            <div className="space-y-1">
+                                                <label className="text-sm font-bold text-slate-700 ml-1">PIN Code*</label>
+                                                <input
+                                                    type="text"
+                                                    name="zip"
+                                                    value={formData.zip}
+                                                    onChange={handleInputChange}
+                                                    suppressHydrationWarning
+                                                    className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.zip ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`}
+                                                    placeholder="6-digit PIN"
+                                                />
+                                                {errors.zip && <p className="text-[10px] font-bold text-red-500 ml-2">{errors.zip}</p>}
+                                            </div>
                                         </div>
-                                        <h2 className="text-xl font-black text-slate-900 mb-2">No Address Found</h2>
-                                        <p className="text-slate-500 mb-6 max-w-[280px]">You need a delivery address to complete your checkout. Let&apos;s add one to your profile.</p>
-                                        <Link href="/user/profile">
-                                            <Button type="button" variant="primary" icon={<MapPin size={18} />}>
-                                                Add New Address
-                                            </Button>
-                                        </Link>
                                     </div>
                                 )}
 
