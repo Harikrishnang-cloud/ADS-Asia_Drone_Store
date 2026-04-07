@@ -46,7 +46,6 @@ export function useSidebar(): SidebarViewProps {
             item.subItems && item.subItems.some(sub => pathname === sub.href)
         );
         if (currentActiveMenu) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
             setOpenMenus(prev => {
                 if (!prev.includes(currentActiveMenu.label)) {
                     return [...prev, currentActiveMenu.label];
@@ -64,17 +63,13 @@ export function useSidebar(): SidebarViewProps {
 
     const handleLogout = async () => {
         try {
-            const refreshToken = localStorage.getItem("adminRefreshToken");
-            if (refreshToken) {
-                const { authService } = await import("@/services/auth.service");
-                await authService.adminLogout(refreshToken);
-            }
+            const { authService } = await import("@/services/auth.service");
+            await authService.adminLogout();
         } catch (error) {
             console.error("Admin logout error:", error);
         } finally {
             localStorage.removeItem("adminData");
-            localStorage.removeItem("adminAccessToken");
-            localStorage.removeItem("adminRefreshToken");
+            // Tokens are in HttpOnly cookies, no need to remove them from localStorage here
             toast.success("Logged out successfully");
             router.push("/admin/login");
         }

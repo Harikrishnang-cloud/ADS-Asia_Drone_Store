@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useCartStore } from "@/store/cartStore";
 import { Trash2, Minus, Plus, ShoppingBag, ArrowRight } from "lucide-react";
 import Link from "next/link";

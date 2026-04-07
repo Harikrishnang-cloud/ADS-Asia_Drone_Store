@@ -26,6 +26,7 @@ function ProductsContent() {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const ITEMS_PER_PAGE = 12; 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCurrentPage(1);
     }, [selectedCategory, priceRange, sortBy, search]);
     const categories = useMemo(() => {

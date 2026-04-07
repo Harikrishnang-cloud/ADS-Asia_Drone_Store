@@ -179,6 +179,7 @@ export default function ProductDetailPage() {
                             <div 
                                 onClick={() => setSelectedImage(product.imageUrl)} 
                                 className={`aspect-square rounded-lg border ${selectedImage === product.imageUrl || !selectedImage ? 'border-brand-orange' : 'border-slate-100'} overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer`}>
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img src={product.imageUrl} alt={`${product.name} Main`} className="w-full h-full object-cover" />
                             </div>
                             {product.images.map((img, i) => (
@@ -186,6 +187,7 @@ export default function ProductDetailPage() {
                                     key={i} 
                                     onClick={() => setSelectedImage(img)}
                                     className={`aspect-square rounded-lg border ${selectedImage === img ? 'border-brand-orange' : 'border-slate-100'} overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer`}>
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img src={img} alt={`${product.name} ${i}`} className="w-full h-full object-cover" />
                                 </div>
                             ))}
