@@ -8,30 +8,30 @@ const navItems: NavItem[] = [
     { label: "Dashboard", icon: LayoutDashboard, href: "/admin/dashboard" },
     { label: "Banners", icon: Image, href: "/admin/banners" },
     { label: "Categories (Maintenance)", icon: Layers, href: "/admin/categories" },
-    { 
-        label: "Products", 
-        icon: Package, 
+    {
+        label: "Products",
+        icon: Package,
         subItems: [
             { label: "Products", href: "/admin/products", icon: Package },
             { label: "Spare Parts", href: "/admin/products/spare-parts", icon: Wrench },
             { label: "Accessories", href: "/admin/products/accessories", icon: Bolt },
-        ] 
+        ]
     },
     { label: "Orders", icon: ShoppingCart, href: "/admin/orders" },
     { label: "Users", icon: Users, href: "/admin/users" },
     { label: "Payments", icon: CreditCard, href: "/admin/payments" },
     { label: "User-Notifications", icon: Bell, href: "/admin/userNotifications" },
     { label: "Reviews", icon: Star, href: "/admin/reviews" },
-    { 
-        label: "Support", 
-        icon: Mail, 
+    {
+        label: "Support",
+        icon: Mail,
         subItems: [
             { label: "Contact Messages", href: "/admin/support/contact", icon: Mail },
             { label: "Newsletters", href: "/admin/support/newsletter", icon: Mail },
-        ] 
+        ]
     },
     { label: "Settings (Maintenance)", icon: Settings, href: "/admin/settings" },
-    
+
 ];
 
 export function useSidebar(): SidebarViewProps {
@@ -42,7 +42,7 @@ export function useSidebar(): SidebarViewProps {
     const isChildActive = (subItems: { href: string }[]) => subItems.some(item => pathname === item.href);
 
     useEffect(() => {
-        const currentActiveMenu = navItems.find(item => 
+        const currentActiveMenu = navItems.find(item =>
             item.subItems && item.subItems.some(sub => pathname === sub.href)
         );
         if (currentActiveMenu) {
@@ -57,7 +57,7 @@ export function useSidebar(): SidebarViewProps {
     }, [pathname]);
 
     const toggleMenu = (label: string) => {
-        setOpenMenus(prev => 
+        setOpenMenus(prev =>
             prev.includes(label) ? prev.filter(l => l !== label) : [...prev, label]
         );
     };

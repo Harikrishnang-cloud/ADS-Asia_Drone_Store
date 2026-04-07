@@ -19,14 +19,10 @@ export default function ProtectedRoute({ children, allowedRole }: ProtectedRoute
             // Determine storage keys based on target route or role
             const isAdminPath = pathname.startsWith('/admin');
             const targetRole = allowedRole || (isAdminPath ? 'admin' : 'user');
-            
-            const tokenKey = targetRole === 'admin' ? "adminAccessToken" : "accessToken";
             const userKey = targetRole === 'admin' ? "adminData" : "userData";
-
-            const token = localStorage.getItem(tokenKey);
             const storedUserStr = localStorage.getItem(userKey);
 
-            if (!token || !storedUserStr) {
+            if (!storedUserStr) {
                 // If not logged in for this specific context, redirect
                 if (isAdminPath) {
                     router.push("/admin/login");
@@ -43,7 +39,6 @@ export default function ProtectedRoute({ children, allowedRole }: ProtectedRoute
                 const user = JSON.parse(storedUserStr);
                 if (user.status === 'blocked') {
                     console.warn("Access denied: User account is blocked.");
-                    localStorage.removeItem(tokenKey);
                     localStorage.removeItem(userKey);
                     toast.error("Your account has been blocked. Please contact support.");
                     router.push(isAdminPath ? "/admin/login?error=blocked" : "/auth/login?error=blocked");
@@ -52,18 +47,17 @@ export default function ProtectedRoute({ children, allowedRole }: ProtectedRoute
 
                 if (targetRole && user.role !== targetRole) {
                     console.warn(`Access denied: context requires ${targetRole}, but user is ${user.role}`);
-                    
+
                     router.push(user.role === 'admin' ? "/admin/dashboard" : "/");
                     return;
                 }
                 setIsAuthorized(true);
             } catch {
-                localStorage.removeItem(tokenKey);
                 localStorage.removeItem(userKey);
                 router.push(isAdminPath ? "/admin/login" : "/auth/login");
             }
         };
-        
+
         checkAuth();
     }, [router, allowedRole, pathname]);
 

@@ -14,11 +14,11 @@ export class userController {
         try {
             const user: Iuser = req.body;
             const { firebaseToken, ...result } = await this.userService.register(user);
-            res.status(201).json({ 
-                success: true, 
-                message: "User registered successfully", 
+            res.status(201).json({
+                success: true,
+                message: "User registered successfully",
                 result,
-                firebaseToken 
+                firebaseToken
             });
         } catch (error) {
             if (error instanceof Error) {
@@ -54,7 +54,7 @@ export class userController {
                 httpOnly: true,
                 secure: isProduction,
                 sameSite: isProduction ? "none" : "lax",
-                maxAge: 24 * 60 * 60 * 1000 // 1 day
+                maxAge: 15 * 60 * 1000 // 15 minutes
             });
 
             res.cookie("refreshToken", tokens.refreshToken, {
@@ -68,8 +68,6 @@ export class userController {
                 success: true,
                 message: "User logged in successfully",
                 result: selectedUserData,
-                accessToken: tokens.accessToken,
-                refreshToken: tokens.refreshToken,
                 firebaseToken: user.firebaseToken
             });
         } catch (error) {
@@ -83,16 +81,24 @@ export class userController {
 
     async refreshToken(req: Request, res: Response) {
         try {
-            const { refreshToken } = req.body;
+            const refreshToken = req.cookies.refreshToken;
             if (!refreshToken) {
                 res.status(400).json({ success: false, message: "Refresh token is required" });
                 return;
             }
             const result = await this.userService.refreshToken(refreshToken);
-            res.status(200).json({ 
-                success: true, 
-                message: "Token refreshed successfully", 
-                accessToken: result.accessToken,
+
+            const isProduction = process.env.NODE_ENV === "production";
+            res.cookie("accessToken", result.accessToken, {
+                httpOnly: true,
+                secure: isProduction,
+                sameSite: isProduction ? "none" : "lax",
+                maxAge: 15 * 60 * 1000 // 15 minutes
+            });
+
+            res.status(200).json({
+                success: true,
+                message: "Token refreshed successfully",
                 firebaseToken: result.firebaseToken
             });
         } catch (error) {
@@ -106,12 +112,10 @@ export class userController {
 
     async logout(req: Request, res: Response) {
         try {
-            const { refreshToken } = req.body;
-            if (!refreshToken) {
-                res.status(400).json({ success: false, message: "Refresh token is required" });
-                return;
+            const refreshToken = req.cookies.refreshToken;
+            if (refreshToken) {
+                await this.userService.logout(refreshToken);
             }
-            await this.userService.logout(refreshToken);
             res.clearCookie("accessToken");
             res.clearCookie("refreshToken");
             res.status(200).json({ success: true, message: "Logged out successfully" });

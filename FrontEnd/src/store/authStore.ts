@@ -32,8 +32,7 @@ export interface UserProfile {
 
 interface AuthState {
     user: UserProfile | null;
-    accessToken: string | null;
-    setAuth: (user: UserProfile | null, token: string | null) => void;
+    setAuth: (user: UserProfile | null) => void;
     logout: () => void;
 }
 
@@ -41,32 +40,24 @@ export const useAuthStore = create<AuthState>()(
     persist(
         (set) => ({
             user: null,
-            accessToken: null,
-            setAuth: (user, token) => set({ user, accessToken: token }),
+            setAuth: (user) => set({ user }),
             logout: async () => {
                 try {
-                    const refreshToken = localStorage.getItem('refreshToken');
-                    if (refreshToken) {
-                        await authService.logout(refreshToken);
-                    }
+                    await authService.logout();
                 } catch (error) {
                     console.error("Backend logout failed:", error);
                 } finally {
-                    localStorage.removeItem('accessToken');
-                    localStorage.removeItem('refreshToken');
                     localStorage.removeItem('userData');
-                    
-                    // Also clear admin tokens just in case
-                    localStorage.removeItem('adminAccessToken');
-                    localStorage.removeItem('adminRefreshToken');
+
+                    // Also clear admin data
                     localStorage.removeItem('adminData');
-                    
+
                     // Clear user-specific stores so new users get an empty cart/wishlist
                     useCartStore.getState().clearCart();
                     useWishlistStore.getState().clearWishlist();
                     useNotificationStore.getState().setNotifications([]);
-                    
-                    set({ user: null, accessToken: null });
+
+                    set({ user: null });
                 }
             },
         }),

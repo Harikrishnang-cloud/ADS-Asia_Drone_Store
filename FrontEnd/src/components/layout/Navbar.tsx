@@ -67,7 +67,7 @@ export function Navbar() {
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
                     const updatedUser = { ...user, ...userData, id: userDoc.id };
-                    setAuth(updatedUser, localStorage.getItem("accessToken"));
+                    setAuth(updatedUser);
                     localStorage.setItem("userData", JSON.stringify(updatedUser));
                 }
             } catch (error: unknown) {
@@ -91,13 +91,12 @@ export function Navbar() {
 
     useEffect(() => {
 
-        const token = localStorage.getItem("accessToken");
         const storedUserStr = localStorage.getItem("userData");
-        if (token && storedUserStr && !user) {
+        if (storedUserStr && !user) {
             try {
                 const storedUser = JSON.parse(storedUserStr);
                 if (storedUser.role === 'user') {
-                    setAuth(storedUser, token);
+                    setAuth(storedUser);
                 }
             } catch (e) {
                 console.error("Auth sync error", e);

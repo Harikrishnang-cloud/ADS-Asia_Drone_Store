@@ -17,6 +17,20 @@ export class authRepository {
         return userData;
     }
 
+    async findUserByPhone(phone: string) {
+        const snapshot = await usersCollection.where("phone", "==", phone).get();
+
+        if (snapshot.empty) {
+            return null;
+        }
+        let userData: any = null;
+        snapshot.forEach((doc) => {
+            userData = { _id: doc.id, ...doc.data() };
+        });
+
+        return userData;
+    }
+
     async updateResetToken(userId: string, resetData: { resetOtp: string | null, resetOtpExpiry: Date | null }) {
         await usersCollection.doc(userId).update(resetData);
         return true;

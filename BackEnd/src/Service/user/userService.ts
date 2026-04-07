@@ -22,13 +22,18 @@ export class userService implements IuserService {
         if (userExists) {
             throw new Error("User already exists");
         }
+
+        // Strong password rules (min 8 chars, uppercase, number, symbol)
+        if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(user.password)) {
+            throw new Error("Password must be at least 8 characters long, contain an uppercase letter, a number, and a symbol");
+        }
         const hashedPassword = await this.bcryptPassword.hashPassword(user.password);
         const userData = { ...user, password: hashedPassword };
         const savedUser = await this.userRepository.register(userData);
-        
+
         // Generate Firebase Custom Token for the new user
         const firebaseToken = await admin.auth().createCustomToken(savedUser._id!.toString());
-        
+
         return { ...savedUser, firebaseToken };
     }
 
@@ -41,10 +46,10 @@ export class userService implements IuserService {
         if (!isPasswordValid) {
             throw new Error("Invalid password");
         }
-        
+
         // Generate Firebase Custom Token to sync with Firestore Rules
         const firebaseToken = await admin.auth().createCustomToken(userExists._id!.toString());
-        
+
         return { ...userExists, firebaseToken };
     }
 
@@ -73,10 +78,10 @@ export class userService implements IuserService {
             role: decoded.role
         };
         const accessToken = this.jwt.generateAccessToken(payload);
-        
+
         // Also refresh Firebase token to ensure user stays logged into Firestore
         const firebaseToken = await admin.auth().createCustomToken(decoded.id.toString());
-        
+
         return { accessToken, firebaseToken };
     }
 

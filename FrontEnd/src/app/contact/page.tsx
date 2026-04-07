@@ -46,7 +46,7 @@ export default function ContactPage() {
     };
 
     return (
-        <main className="w-full bg-slate-50 relative overflow-hidden flex flex-col">
+        <main className="w-full pb-20 bg-slate-50 relative overflow-hidden flex flex-col">
             {/* Tech Grid Background */}
             <div className="absolute inset-0 z-1 pointer-events-none opacity-40" style={gridPattern}></div>
             <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 lg:px-12 w-full pt-12 md:pt-10 relative z-10 flex-1 flex flex-col">
@@ -73,17 +73,17 @@ export default function ContactPage() {
                             <h3 className="text-2xl font-black mb-8 relative z-10">Direct Communications</h3>
                             
                             <div className="space-y-8 relative z-10">
-                                <a href="mailto:enterprise@asiadronestore.com" className="flex items-start gap-5 group/item">
+                                <a href="mailto:asiadronestore@gmail.com" className="flex items-start gap-5 group/item">
                                     <div>
                                         <p className="text-white/60 text-xs font-bold uppercase tracking-widest mb-1">Enterprise Sales</p>
                                         <p className="text-lg font-bold group-hover/item:text-brand-orange transition-colors">asiadronestore@gmail.com</p>
                                     </div>
                                 </a>
                                 
-                                <a href="tel:+919876543210" className="flex items-start gap-5 group/item">
+                                <a href="tel:+917012147575" className="flex items-start gap-5 group/item">
                                     <div>
                                         <p className="text-white/60 text-xs font-bold uppercase tracking-widest mb-1">Technical Support</p>
-                                        <p className="text-lg font-bold group-hover/item:text-brand-blue transition-colors">+91 9745860278</p>
+                                        <p className="text-lg font-bold group-hover/item:text-brand-orange transition-colors">+91 70121 47575</p>
                                     </div>
                                 </a>
                             </div>
@@ -135,6 +135,7 @@ export default function ContactPage() {
                                         onBlur={() => setFocusedField(null)}
                                         value={formData.name}
                                         onChange={handleChange}
+                                        suppressHydrationWarning
                                         className="w-full px-4 pt-7 pb-2 bg-transparent outline-none text-slate-900 font-medium"
                                     />
                                 </div>
@@ -152,6 +153,7 @@ export default function ContactPage() {
                                         onBlur={() => setFocusedField(null)}
                                         value={formData.email}
                                         onChange={handleChange}
+                                        suppressHydrationWarning
                                         className="w-full px-4 pt-7 pb-2 bg-transparent outline-none text-slate-900 font-medium"
                                     />
                                 </div>
@@ -169,6 +171,7 @@ export default function ContactPage() {
                                     onBlur={() => setFocusedField(null)}
                                     value={formData.subject}
                                     onChange={handleChange}
+                                    suppressHydrationWarning
                                     className="w-full px-4 pt-7 pb-2 bg-transparent outline-none text-slate-900 font-medium"
                                 />
                             </div>
@@ -186,6 +189,7 @@ export default function ContactPage() {
                                     onBlur={() => setFocusedField(null)}
                                     value={formData.message}
                                     onChange={handleChange}
+                                    suppressHydrationWarning
                                     className="w-full px-4 pt-9 pb-3 bg-transparent outline-none text-slate-900 font-medium resize-none"
                                 ></textarea>
                             </div>

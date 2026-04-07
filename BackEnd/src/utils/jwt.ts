@@ -24,7 +24,7 @@ export class jwtToken {
     }
 
     generateAccessToken(payload: JwtPayload): string {
-        return jwt.sign(payload, this.accessSecret, { expiresIn: "1d" });
+        return jwt.sign(payload, this.accessSecret, { expiresIn: "15m" });
     }
 
     generateRefreshToken(payload: JwtPayload): string {

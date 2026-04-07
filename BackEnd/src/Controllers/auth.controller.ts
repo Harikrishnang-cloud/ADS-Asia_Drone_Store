@@ -10,13 +10,13 @@ export class authController {
 
     async forgotPassword(req: Request, res: Response) {
         try {
-            const { email } = req.body;
-            if (!email) {
-                return res.status(400).json({ success: false, message: "Email is required" });
+            const { contact, method } = req.body; // method: 'email' | 'phone'
+            if (!contact) {
+                return res.status(400).json({ success: false, message: "Contact information is required" });
             }
 
-            await this.service.forgotPassword(email);
-            return res.status(200).json({ success: true, message: "OTP sent to email successfully" });
+            const result = await this.service.forgotPassword(contact, method || 'email');
+            return res.status(200).json({ success: true, message: result.message });
         } catch (error: any) {
             if (error.message === "User not found") {
                 return res.status(404).json({ success: false, message: error.message });
@@ -27,12 +27,12 @@ export class authController {
 
     async verifyResetOtp(req: Request, res: Response) {
         try {
-            const { email, otp } = req.body;
-            if (!email || !otp) {
-                return res.status(400).json({ success: false, message: "Email and OTP are required" });
+            const { contact, otp, method } = req.body;
+            if (!contact || !otp) {
+                return res.status(400).json({ success: false, message: "Contact and OTP are required" });
             }
 
-            await this.service.verifyResetOtp(email, otp);
+            await this.service.verifyResetOtp(contact, otp, method || 'email');
             return res.status(200).json({ success: true, message: "OTP verified correctly" });
         } catch (error: any) {
             if (error.message === "User not found") {
@@ -47,12 +47,12 @@ export class authController {
 
     async resetPassword(req: Request, res: Response) {
         try {
-            const { email, password } = req.body;
-            if (!email || !password) {
-                return res.status(400).json({ success: false, message: "Email and new password are required" });
+            const { contact, password, method } = req.body;
+            if (!contact || !password) {
+                return res.status(400).json({ success: false, message: "Contact and new password are required" });
             }
 
-            await this.service.resetPassword(email, password);
+            await this.service.resetPassword(contact, password, method || 'email');
             return res.status(200).json({ success: true, message: "Password reset successfully" });
         } catch (error: any) {
             if (error.message === "User not found") {
@@ -64,13 +64,13 @@ export class authController {
 
     async resendResetOtp(req: Request, res: Response) {
         try {
-            const { email } = req.body;
-            if (!email) {
-                return res.status(400).json({ success: false, message: "Email is required" });
+            const { contact, method } = req.body;
+            if (!contact) {
+                return res.status(400).json({ success: false, message: "Contact is required" });
             }
 
-            await this.service.resendResetOtp(email);
-            return res.status(200).json({ success: true, message: "New OTP sent to email successfully" });
+            const result = await this.service.resendResetOtp(contact, method || 'email');
+            return res.status(200).json({ success: true, message: result.message });
         } catch (error: any) {
             if (error.message === "User not found") {
                 return res.status(404).json({ success: false, message: error.message });
@@ -90,14 +90,14 @@ export class authController {
             }
 
             const loginResponse = await this.service.googleLogin(token);
-            
+
             // Set secure cookies for Google login
             const isProduction = process.env.NODE_ENV === "production";
             res.cookie("accessToken", loginResponse.accessToken, {
                 httpOnly: true,
                 secure: isProduction,
                 sameSite: isProduction ? "none" : "lax",
-                maxAge: 24 * 60 * 60 * 1000
+                maxAge: 15 * 60 * 1000
             });
 
             res.cookie("refreshToken", loginResponse.refreshToken, {
@@ -107,7 +107,8 @@ export class authController {
                 maxAge: 7 * 24 * 60 * 60 * 1000
             });
 
-            return res.status(200).json({ success: true, message: "Google login successful", ...loginResponse });
+            const { accessToken, refreshToken, ...safeResponse } = loginResponse;
+            return res.status(200).json({ success: true, message: "Google login successful", ...safeResponse });
         } catch (error: any) {
             return res.status(401).json({ success: false, message: error.message || "Invalid or expired Google token" });
         }

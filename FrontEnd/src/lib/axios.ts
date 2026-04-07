@@ -9,25 +9,9 @@ const api = axios.create({
     }
 });
 
-// Request interceptor for attaching tokens
+// Request interceptor not needed for attaching tokens anymore as HttpOnly cookies are used
 api.interceptors.request.use(
     (config) => {
-        const isAdminRequest = config.url?.startsWith('/admin') || config.url?.includes('/admin/');
-        let tokenKey = isAdminRequest ? "adminAccessToken" : "accessToken";
-        
-        let token = localStorage.getItem(tokenKey);
-        // Fallback: If not an admin request but user token missing, try admin token
-        if (!isAdminRequest && !token) {
-            const adminToken = localStorage.getItem("adminAccessToken");
-            if (adminToken) {
-                token = adminToken;
-                tokenKey = "adminAccessToken (Fallback)";
-            }
-        }
-       
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
         return config;
     },
     (error) => Promise.reject(error)
@@ -41,9 +25,7 @@ api.interceptors.response.use(
             console.error("Unauthorized access, redirecting...");
             if (typeof window !== "undefined" && !window.location.pathname.includes('/auth/login')) {
                 toast.error("Session expired. Please log in again.");
-                localStorage.removeItem("accessToken");
-                localStorage.removeItem("adminAccessToken");
-                window.location.href = "/auth/login";
+
             }
         } else if (error.response?.status === 403) {
             toast.error("You do not have permission to perform this action");

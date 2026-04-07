@@ -1,5 +1,6 @@
 import { authRepository } from "../Repository/auth.repository.ts";
 import { sendResetOTPEmail } from "../utils/email.service.ts";
+import { sendResetOTPSMS } from "../utils/sms.service.ts";
 import bcrypt from "bcrypt";
 import { admin } from "../Config/config.firebase.ts";
 import { jwtToken } from "../utils/jwt.ts";
@@ -13,10 +14,13 @@ export class authService {
         this.jwtUtils = new jwtToken();
     }
 
-    async forgotPassword(email: string) {
-        const user = await this.repo.findUserByEmail(email);
+    async forgotPassword(contact: string, method: 'email' | 'phone' = 'email') {
+        const user = method === 'email' 
+            ? await this.repo.findUserByEmail(contact) 
+            : await this.repo.findUserByPhone(contact);
+
         if (!user) {
-            console.log(`❌ Error: User with email ${email} DOES NOT exist in Firebase database.`);
+            console.log(`❌ Error: User with ${method} ${contact} DOES NOT exist.`);
             throw new Error("User not found");
         }
         // Generate 6 digit OTP
@@ -27,14 +31,20 @@ export class authService {
 
         await this.repo.updateResetToken(user._id, { resetOtp: otp, resetOtpExpiry: expiry });
 
-        // Send Email
-        await sendResetOTPEmail(user.name, email, otp);
-
-        return { message: "OTP sent to email successfully" };
+        // Send OTP via correct channel
+        if (method === 'email') {
+            await sendResetOTPEmail(user.name, contact, otp);
+            return { message: "OTP sent to email successfully" };
+        } else {
+            await sendResetOTPSMS(user.name, contact, otp);
+            return { message: "OTP sent to phone successfully" };
+        }
     }
 
-    async verifyResetOtp(email: string, otp: string) {
-        const user = await this.repo.findUserByEmail(email);
+    async verifyResetOtp(contact: string, otp: string, method: 'email' | 'phone' = 'email') {
+        const user = method === 'email' 
+            ? await this.repo.findUserByEmail(contact) 
+            : await this.repo.findUserByPhone(contact);
         
         if (!user) {
             throw new Error("User not found");
@@ -51,13 +61,15 @@ export class authService {
         return { message: "OTP verified successfully" };
     }
 
-    async resetPassword(email: string, password: string) {
-        const user = await this.repo.findUserByEmail(email);
+    async resetPassword(contact: string, password: string, method: 'email' | 'phone' = 'email') {
+        const user = method === 'email' 
+            ? await this.repo.findUserByEmail(contact) 
+            : await this.repo.findUserByPhone(contact);
         if (!user) {
             throw new Error("User not found");
         }
 
-        console.log(`Resetting Password for: ${email} `);
+        console.log(`Resetting Password for: ${contact} `);
         console.log(`New Password is: ${password}`);
 
 
@@ -67,8 +79,10 @@ export class authService {
         return { message: "Password reset successfully" };
     }
 
-    async resendResetOtp(email: string) {
-        const user = await this.repo.findUserByEmail(email);
+    async resendResetOtp(contact: string, method: 'email' | 'phone' = 'email') {
+        const user = method === 'email' 
+            ? await this.repo.findUserByEmail(contact) 
+            : await this.repo.findUserByPhone(contact);
         if (!user) {
             throw new Error("User not found");
         }
@@ -83,9 +97,14 @@ export class authService {
         const expiry = new Date(Date.now() + 5 * 60 * 1000);
 
         await this.repo.updateResetToken(user._id, { resetOtp: otp, resetOtpExpiry: expiry });
-        await sendResetOTPEmail(user.name,email, otp);
-
-        return { message: "New OTP sent to email successfully" };
+        
+        if (method === 'email') {
+            await sendResetOTPEmail(user.name, contact, otp);
+            return { message: "New OTP sent to email successfully" };
+        } else {
+            await sendResetOTPSMS(user.name, contact, otp);
+            return { message: "New OTP sent to phone successfully" };
+        }
     }
 
     async googleLogin(token: string) {

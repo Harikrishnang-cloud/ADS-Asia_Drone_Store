@@ -11,7 +11,8 @@ import { authService } from "@/services/auth.service";
 export default function ResetPasswordPage() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [email, setEmail] = useState("");
+    const [contact, setContact] = useState("");
+    const [method, setMethod] = useState<'email' | 'phone'>("email");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
@@ -20,11 +21,14 @@ export default function ResetPasswordPage() {
 
     useEffect(() => {
         setIsMounted(true);
-        const storedEmail = localStorage.getItem("resetEmail");
-        if (!storedEmail) {
+        const storedContact = localStorage.getItem("resetContact");
+        const storedMethod = localStorage.getItem("resetMethod") as 'email' | 'phone';
+        
+        if (!storedContact) {
             router.push("/auth/forgot-password");
         } else {
-            setEmail(storedEmail);
+            setContact(storedContact);
+            if (storedMethod) setMethod(storedMethod);
         }
     }, [router]);
 
@@ -46,11 +50,12 @@ export default function ResetPasswordPage() {
         }
 
         try {
-            const data = await authService.resetPassword({ email, password });
+            const data = await authService.resetPassword({ contact, password, method });
 
             if (data.success) {
                 setSuccess(data.message);
-                localStorage.removeItem("resetEmail");
+                localStorage.removeItem("resetContact");
+                localStorage.removeItem("resetMethod");
                 setTimeout(() => {
                     router.push("/auth/login");
                 }, 2000);

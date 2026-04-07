@@ -213,7 +213,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
             await updateDoc(doc(db, "users", user.id), finalData);
             const updatedUser = { ...user, ...finalData };
             localStorage.setItem("userData", JSON.stringify(updatedUser));
-            setAuth(updatedUser, localStorage.getItem("accessToken"));
+            setAuth(updatedUser);
             toast.success("Profile updated!");
             router.push("/user/profile");
         } catch (err: unknown) {
@@ -250,7 +250,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                 const updatedUser = { ...user, profileImage: url };
                 setUser(updatedUser);
                 localStorage.setItem("userData", JSON.stringify(updatedUser));
-                setAuth(updatedUser, localStorage.getItem("accessToken"));
+                setAuth(updatedUser);
                 toast.success("Image updated!");
                 setIsUploading(false);
             }
@@ -364,7 +364,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                             const updatedUser = { ...user, walletBalance: newBalance };
                             setUser(updatedUser);
                             localStorage.setItem("userData", JSON.stringify(updatedUser));
-                            setAuth(updatedUser, localStorage.getItem("accessToken"));
+                            setAuth(updatedUser);
                             
                             toast.success(`₹${amount.toLocaleString('en-IN')} added to wallet!`);
                             setAddMoneyAmount("");

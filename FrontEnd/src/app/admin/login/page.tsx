@@ -21,7 +21,7 @@ export default function AdminLoginPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!validateEmail(email)) {
             setError("Please enter a valid email address");
             return;
@@ -38,8 +38,6 @@ export default function AdminLoginPage() {
             const data = await authService.adminLogin({ email, password });
 
             if (data.success) {
-                localStorage.setItem("adminAccessToken", data.accessToken);
-                localStorage.setItem("adminRefreshToken", data.refreshToken);
                 localStorage.setItem("adminData", JSON.stringify(data.result));
                 toast.success("Welcome back, Vishnu");
                 router.push("/admin/dashboard");
@@ -110,7 +108,7 @@ export default function AdminLoginPage() {
                     >
                         {loading ? "Authenticating..." : "Login"}
                     </button>
-                    
+
                     <div className="text-center pt-4">
                         <span className="text-[10px] text-slate-400 uppercase tracking-widest font-mono font-semibold">
                             Connection encrypted • IPv6 Secure

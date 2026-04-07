@@ -20,20 +20,14 @@ function ProductsContent() {
 
     // Filter states
     const [selectedCategory, setSelectedCategory] = useState<string>("All");
-    const [priceRange, setPriceRange] = useState<number>(50000); // Default max 50k
+    const [priceRange, setPriceRange] = useState<number>(25000); 
     const [sortBy, setSortBy] = useState<string>("newest");
 
-    // Pagination state
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const ITEMS_PER_PAGE = 12; // 3 blocks wide x 4 rows = 12 products per page on Desktop
-
-    // Reset pagination when any filter or sort changes
+    const ITEMS_PER_PAGE = 12; 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCurrentPage(1);
     }, [selectedCategory, priceRange, sortBy, search]);
-
-    // Extract unique categories directly from products
     const categories = useMemo(() => {
         const cats = Array.from(new Set(products.map(p => p.category).filter(Boolean)));
         return ["All", ...cats];
@@ -43,11 +37,9 @@ function ProductsContent() {
         backgroundSize: '32px 32px'
     };
 
-    // Apply Filters & Sorting
     const filteredProducts = useMemo(() => {
         let result = [...products];
 
-        // 0. Search Filter
         if (search) {
             const query = search.toLowerCase();
             result = result.filter(p => 
@@ -104,13 +96,13 @@ function ProductsContent() {
     }, [filteredProducts, currentPage]);
 
     return (
-        <main className="max-w-screen-3xl mx-auto px-4 sm:px-8 pt-24 md:pt-10 relative z-10 w-full">
+        <main className="max-w-screen-3xl mx-auto px-4 sm:px-8 pt-24 pb-20 md:pt-10 relative z-10 w-full">
             <div className="absolute inset-0 -z-10 pointer-events-none opacity-40" style={gridPattern}></div>
             {/* Page Header */}
            
             <div className="flex flex-col mb-10 relative">
                 <span className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-orange mb-3">Asia Drone Store Inventory</span>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-brand-blue-dark tracking-tighter mb-4">
+                <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-brand-blue-dark tracking-tighter mb-4">
                     {search ? `Search Results for "${search}"` : <>Professional <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-orange">Drone Solutions</span></>}
                 </h1>
                 <p className="text-slate-500 font-medium max-w-xl text-lg">
@@ -136,6 +128,7 @@ function ProductsContent() {
                                 {categories.map(category => (
                                     <button
                                         key={category}
+                                        suppressHydrationWarning
                                         onClick={() => setSelectedCategory(category)}
                                         className={`text-left px-3 py-2 rounded-md text-sm font-semibold transition-all duration-300 cursor-pointer ${selectedCategory === category
                                                 ? 'bg-brand-orange/10 text-brand-orange'

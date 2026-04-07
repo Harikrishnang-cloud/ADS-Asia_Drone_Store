@@ -57,7 +57,7 @@ export default function RegisterPage() {
                 if (data.firebaseToken) {
                     await signInWithCustomToken(auth, data.firebaseToken);
                 }
-                
+
                 toast.success("Account created successfully! Please log in.");
                 router.push("/auth/login");
             } else {
@@ -86,10 +86,8 @@ export default function RegisterPage() {
             const data = await authService.googleLogin(token);
 
             if (data.success) {
-                localStorage.setItem("accessToken", data.accessToken);
-                localStorage.setItem("refreshToken", data.refreshToken);
                 localStorage.setItem("userData", JSON.stringify(data.user));
-                setAuth(data.user, data.accessToken);
+                setAuth(data.user);
                 toast.success("Signed in with Google!");
                 router.push("/");
             } else {

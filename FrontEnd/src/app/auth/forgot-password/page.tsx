@@ -8,7 +8,8 @@ import { authService } from "@/services/auth.service";
 
 
 export default function ForgotPasswordPage() {
-    const [email, setEmail] = useState("");
+    const [method, setMethod] = useState<'email' | 'phone'>("email");
+    const [contact, setContact] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
@@ -21,11 +22,12 @@ export default function ForgotPasswordPage() {
         setSuccess("");
 
         try {
-            const data = await authService.forgotPassword(email);
+            const data = await authService.forgotPassword(contact, method);
 
             if (data.success) {
                 setSuccess(data.message);
-                localStorage.setItem("resetEmail", email);
+                localStorage.setItem("resetContact", contact);
+                localStorage.setItem("resetMethod", method);
                 setTimeout(() => {
                     router.push("/auth/verify-otp");
                 }, 1500);
@@ -52,8 +54,26 @@ export default function ForgotPasswordPage() {
                 <div className="mb-6 text-center">
                     <h2 className="text-2xl font-semibold text-slate-900">Reset Password</h2>
                     <p className="text-slate-500 text-sm mt-2 leading-relaxed">
-                        Enter your email address. We will transmit a secure, time-sensitive sequence to verify your identity.
+                        Choose your preferred verification method. We will transmit a secure, time-sensitive sequence to verify your identity.
                     </p>
+                </div>
+
+                <div className="flex p-1 bg-slate-100 rounded-xl mb-6">
+                    <button
+                        type="button"
+                        onClick={() => { setMethod('email'); setContact(""); setError(""); }}
+                        className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${method === 'email' ? 'bg-white text-brand-orange shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                    >
+                        Email
+                    </button>
+                    <button
+                        type="button"
+                        id="phone-method-btn"
+                        onClick={() => { setMethod('phone'); setContact(""); setError(""); }}
+                        className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${method === 'phone' ? 'bg-white text-brand-orange shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                    >
+                        Phone
+                    </button>
                 </div>
 
                 {error && <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl mb-6 text-sm text-center font-medium animate-in fade-in">{error}</div>}
@@ -61,14 +81,16 @@ export default function ForgotPasswordPage() {
 
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Your Email</label>
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                            {method === 'email' ? 'Your Email' : 'Mobile Number'}
+                        </label>
                         <input
-                            type="email"
-                            placeholder="Enter your email"
+                            type={method === 'email' ? 'email' : 'tel'}
+                            placeholder={method === 'email' ? 'Enter your email' : 'Enter 10-digit number'}
                             required
                             className="bg-slate-50 border border-slate-200 text-slate-900 w-full p-3.5 rounded-xl focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-all placeholder:text-slate-400"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={contact}
+                            onChange={(e) => setContact(e.target.value)}
                         />
                     </div>
 

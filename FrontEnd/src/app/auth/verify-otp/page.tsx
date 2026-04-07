@@ -10,7 +10,8 @@ import { authService } from "@/services/auth.service";
 
 export default function VerifyOtpPage() {
     const [otp, setOtp] = useState("");
-    const [email, setEmail] = useState("");
+    const [contact, setContact] = useState("");
+    const [method, setMethod] = useState<'email' | 'phone'>("email");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
@@ -21,11 +22,14 @@ export default function VerifyOtpPage() {
 
     useEffect(() => {
         setIsMounted(true);
-        const storedEmail = localStorage.getItem("resetEmail");
-        if (!storedEmail) {
+        const storedContact = localStorage.getItem("resetContact");
+        const storedMethod = localStorage.getItem("resetMethod") as 'email' | 'phone';
+        
+        if (!storedContact) {
             router.push("/auth/forgot-password");
         } else {
-            setEmail(storedEmail);
+            setContact(storedContact);
+            if (storedMethod) setMethod(storedMethod);
         }
     }, [router]);
 
@@ -42,7 +46,7 @@ export default function VerifyOtpPage() {
         setError("");
 
         try {
-            const data = await authService.verifyResetOtp({ email, otp });
+            const data = await authService.verifyResetOtp({ contact, otp, method });
 
             if (data.success) {
                 setSuccess(data.message);
@@ -69,7 +73,7 @@ export default function VerifyOtpPage() {
         setSuccess("");
 
         try {
-            const data = await authService.resendResetOtp(email);
+            const data = await authService.resendResetOtp(contact, method);
 
             if (data.success) {
                 setSuccess(data.message);
@@ -105,7 +109,7 @@ export default function VerifyOtpPage() {
                         Input the secure 6-digit flight clearance transmitted to
                         <br />
                         <span className="font-semibold text-slate-900 mt-1 border border-slate-200 bg-slate-100/50 px-3 py-1 rounded inline-block">
-                            {email}
+                            {contact}
                         </span>
                     </p>
                 </div>
@@ -148,7 +152,7 @@ export default function VerifyOtpPage() {
 
                 <div className="mt-8 pt-6 border-t border-slate-200 text-center text-xs text-slate-500 font-medium">
                     <Link href="/auth/forgot-password" className="text-slate-500 hover:text-slate-700 transition-colors uppercase tracking-widest">
-                        &larr; Re-enter Pilot Email
+                        &larr; Re-enter Pilot Info
                     </Link>
                 </div>
             </form>

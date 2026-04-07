@@ -71,7 +71,7 @@ export default function CheckoutPage() {
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
                     const updatedUser = { ...user, ...userData, id: userDoc.id };
-                    setAuth(updatedUser, localStorage.getItem("accessToken"));
+                    setAuth(updatedUser);
                     localStorage.setItem("userData", JSON.stringify(updatedUser));
                 }
             } catch (error) {
@@ -293,7 +293,7 @@ export default function CheckoutPage() {
                                 ...user,
                                 walletBalance: (user.walletBalance || 0) - total
                             };
-                            setAuth(updatedUser, localStorage.getItem("accessToken"));
+                            setAuth(updatedUser);
                             localStorage.setItem("userData", JSON.stringify(updatedUser));
                         }
                     } catch (error: unknown) {

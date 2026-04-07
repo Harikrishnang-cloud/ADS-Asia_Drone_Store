@@ -28,7 +28,7 @@ export class adminControllers {
                 httpOnly: true,
                 secure: isProduction,
                 sameSite: isProduction ? "none" : "lax",
-                maxAge: 24 * 60 * 60 * 1000 // 1 day
+                maxAge: 15 * 60 * 1000 // 15 minutes
             });
 
             res.cookie("adminRefreshToken", tokens.refreshToken, {
@@ -41,18 +41,16 @@ export class adminControllers {
             return res.status(200).json({
                 success: true,
                 message: "Admin logged in successfully",
-                result: selectedUserData,
-                accessToken: tokens.accessToken,
-                refreshToken: tokens.refreshToken
+                result: selectedUserData
             });
         } catch (error) {
             if (error instanceof Error) {
                 if (error.message === "Admin not found" || error.message === "Invalid password") {
                     return res.status(401).json({ success: false, message: "Invalid credentials" });
                 } else if (error.message === "Access denied: Not an Admin") {
-                    return res.status(403).json({ success: false, message:"forbidden",error:error.message});
+                    return res.status(403).json({ success: false, message: "forbidden", error: error.message });
                 } else {
-                    return res.status(500).json({ success: false, message:"internal server error",error:error.message });
+                    return res.status(500).json({ success: false, message: "internal server error", error: error.message });
                 }
             } else {
                 return res.status(500).json({ success: false, message: "internal server error" });

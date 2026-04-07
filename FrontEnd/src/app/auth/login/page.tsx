@@ -49,10 +49,8 @@ export default function LoginPage() {
                     await signInWithCustomToken(auth, data.firebaseToken);
                 }
 
-                localStorage.setItem("accessToken", data.accessToken);
-                localStorage.setItem("refreshToken", data.refreshToken);
                 localStorage.setItem("userData", JSON.stringify(data.result));
-                setAuth(data.result, data.accessToken);
+                setAuth(data.result);
                 toast.success("Login successful! Welcome back.");
                 router.push("/");
             } else {
@@ -81,10 +79,8 @@ export default function LoginPage() {
             const data = await authService.googleLogin(token);
 
             if (data.success) {
-                localStorage.setItem("accessToken", data.accessToken);
-                localStorage.setItem("refreshToken", data.refreshToken);
                 localStorage.setItem("userData", JSON.stringify(data.user));
-                setAuth(data.user, data.accessToken);
+                setAuth(data.user);
                 toast.success("Signed in with Google!");
                 router.push("/");
             } else {
@@ -188,8 +184,8 @@ export default function LoginPage() {
                     </button>
 
                     <div className="mt-8 text-center">
-                        <Link 
-                            href="/products" 
+                        <Link
+                            href="/products"
                             className="text-slate-500 hover:text-brand-blue font-semibold text-sm transition-colors flex items-center justify-center gap-2 group"
                         >
                             <span>Browse all products as guest</span>

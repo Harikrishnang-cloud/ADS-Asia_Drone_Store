@@ -2,21 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-    Facebook,
-    Twitter,
-    Instagram,
-    Youtube,
-    Mail,
-    Phone,
-    MapPin,
-    ArrowRight,
-    Send
-} from "lucide-react";
+import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin, ArrowRight, Send } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import api from "@/lib/axios";
+
 
 export function Footer() {
     const pathname = usePathname();
@@ -58,17 +49,16 @@ export function Footer() {
         ],
         company: [
             { name: "About ADS", href: "/about" },
-            { name: "Our Gallery", href: "/gallery" },
             { name: "Contact Us", href: "/contact" },
             { name: "Help Center", href: "/help" },
             { name: "Terms of Service", href: "/terms" },
             { name: "Privacy Policy", href: "/privacy" },
         ],
         social: [
-            { name: "Facebook", icon: Facebook, href: "https://facebook.com" },
-            { name: "Instagram", icon: Instagram, href: "https://instagram.com" },
-            { name: "Twitter", icon: Twitter, href: "https://twitter.com" },
-            { name: "Youtube", icon: Youtube, href: "https://youtube.com" },
+            { name: "Facebook", icon: Facebook, href: "https://www.facebook.com/asiadronestore.global" },
+            { name: "Instagram", icon: Instagram, href: "https://www.instagram.com/asiadronestore" },
+            { name: "Twitter", icon: Twitter, href: "https://x.com/AsiaDroneStore" },
+            { name: "Youtube", icon: Youtube, href: "https://www.youtube.com/@asiadronestore" },
         ]
     };
 
@@ -179,15 +169,15 @@ export function Footer() {
                         <div className="space-y-4">
                             <div className="flex items-start gap-4 text-sm text-slate-400 hover:text-white transition-colors cursor-pointer group">
                                 <MapPin size={18} className="text-brand-orange flex-shrink-0 group-hover:scale-110 transition-transform" />
-                                <span>{"//////"}</span>
+                                <span>{"Asia Softlab Pvt Ltd, 1st Floor - MG Corporate Center, Ulloor, Thiruvananthapuram, Kerala, 695011"}</span>
                             </div>
                             <div className="flex items-center gap-4 text-sm text-slate-400 hover:text-white transition-colors cursor-pointer group">
                                 <Phone size={18} className="text-brand-orange flex-shrink-0 group-hover:scale-110 transition-transform" />
-                                <span>{"+91 //////"}</span>
+                                <span>{"+91 7012147575"}</span>
                             </div>
                             <div className="flex items-center gap-4 text-sm text-slate-400 hover:text-white transition-colors cursor-pointer group">
                                 <Mail size={18} className="text-brand-orange flex-shrink-0 group-hover:scale-110 transition-transform" />
-                                <span>{"//////"}</span>
+                                <span>{"asiadronestore@gmail.com"}</span>
                             </div>
                         </div>
                     </div>
