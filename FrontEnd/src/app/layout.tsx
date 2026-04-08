@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Poppins } from "next/font/google";
 import { Toaster } from "react-hot-toast"
 import { AuthProvider } from "@/context/AuthContext";
+import { PWAInstall } from "@/components/layout/PWAInstall";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -13,8 +14,19 @@ const poppins = Poppins({
 export const metadata = {
   title: "Asia Drone Store",
   description: "Drone e-commerce platform by asia softlab",
+  manifest: "/manifest.json",
+  themeColor: "#004b93",
   icons: {
     icon: "/favicon.webp",
+    apple: "/log-ads.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Asia Drone Store",
+  },
+  formatDetection: {
+    telephone: false,
   },
 };
 
@@ -39,7 +51,26 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <PWAInstall />
         </AuthProvider>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').then(
+                    function(registration) {
+                      console.log('Service Worker registration successful with scope: ', registration.scope);
+                    },
+                    function(err) {
+                      console.log('Service Worker registration failed: ', err);
+                    }
+                  );
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );
