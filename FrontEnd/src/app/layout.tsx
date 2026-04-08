@@ -15,7 +15,6 @@ export const metadata = {
   title: "Asia Drone Store",
   description: "Drone e-commerce platform by asia softlab",
   manifest: "/manifest.json",
-  themeColor: "#004b93",
   icons: {
     icon: "/favicon.webp",
     apple: "/log-ads.png",
@@ -28,6 +27,10 @@ export const metadata = {
   formatDetection: {
     telephone: false,
   },
+};
+
+export const viewport = {
+  themeColor: "#004b93",
 };
 
 export default function RootLayout({

@@ -7,7 +7,6 @@ import { collection, query, where, getDocs, Timestamp } from "firebase/firestore
 import { db } from "@/lib/firebase";
 import toast from "react-hot-toast";
 import { generateSalesReport, SalesData } from "@/lib/reportGenerator";
-import { useAuth } from "@/context/AuthContext";
 
 type ReportFilter = 'today' | 'weekly' | 'monthly' | 'custom';
 type StatusFilter = 'all' | 'completed' | 'uncompleted';

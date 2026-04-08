@@ -14,6 +14,9 @@ export function PWAInstall() {
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: Event) => {
+      // Don't show if already in standalone mode
+      if (window.matchMedia('(display-mode: standalone)').matches) return;
+      
       // Prevent the default browser prompt
       e.preventDefault();
       // Store the event for later use
@@ -23,11 +26,6 @@ export function PWAInstall() {
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-
-    // Check if the app is already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-       setIsVisible(false);
-    }
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
