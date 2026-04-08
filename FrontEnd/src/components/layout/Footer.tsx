@@ -173,7 +173,7 @@ export function Footer() {
                             </div>
                             <div className="flex items-center gap-4 text-sm text-slate-400 hover:text-white transition-colors cursor-pointer group">
                                 <Phone size={18} className="text-brand-orange flex-shrink-0 group-hover:scale-110 transition-transform" />
-                                <span>{"+91 7012147575"}</span>
+                                <span>{"+91 70121 47575"}</span>
                             </div>
                             <div className="flex items-center gap-4 text-sm text-slate-400 hover:text-white transition-colors cursor-pointer group">
                                 <Mail size={18} className="text-brand-orange flex-shrink-0 group-hover:scale-110 transition-transform" />

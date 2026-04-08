@@ -79,7 +79,7 @@ export default function VerifyOtpPage() {
                 setSuccess(data.message);
                 setCountdown(60);
             } else {
-                setError(data.message || "Failed to transmit new sequence");
+                setError(data.message || "Failed to transmit new OTP");
             }
         } catch (error: unknown) {
             const err = error as { response?: { data?: { message?: string } }; message?: string };
@@ -100,7 +100,7 @@ export default function VerifyOtpPage() {
             <form onSubmit={handleSubmit} className="relative z-10 border border-slate-200 bg-white/80 backdrop-blur-xl p-8 sm:p-10 rounded-2xl w-full max-w-md shadow-xl">
                 <div className="flex flex-col items-center mb-8">
                     <Logo width={160} height={160} className="w-32 md:w-[160px]" imageClassName="w-full h-auto" />
-                    <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-brand-orange -mt-2">Identity Verification</span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-brand-orange -mt-2">OTP Verification</span>
                 </div>
 
 
@@ -135,7 +135,7 @@ export default function VerifyOtpPage() {
                         disabled={loading || otp.length < 6}
                         className="bg-gradient-to-r from-brand-orange to-brand-orange-dark hover:from-brand-orange-dark hover:to-orange-700 active:scale-[0.98] disabled:opacity-50 text-white font-semibold w-full p-4 rounded-xl transition-all shadow-lg shadow-brand-orange/20 mt-4 uppercase tracking-widest text-sm"
                     >
-                        {loading ? "Verifying Sequence..." : "Confirm Identity"}
+                        {loading ? "Verifying OTP..." : "Confirm OTP"}
                     </button>
 
                     <div className="text-center mt-6">
@@ -145,14 +145,14 @@ export default function VerifyOtpPage() {
                             disabled={countdown > 0 || resendLoading}
                             className={`text-xs font-semibold uppercase tracking-wider transition-colors ${countdown > 0 ? "text-slate-400 cursor-not-allowed" : "text-brand-orange hover:text-brand-orange-dark"}`}
                         >
-                            {resendLoading ? "Retransmitting..." : countdown > 0 ? `Retransmit available in ${countdown}s` : "Request New Sequence"}
+                            {resendLoading ? "Resend OTP..." : countdown > 0 ? `Resend OTP available in ${countdown}s` : "Request New OTP"}
                         </button>
                     </div>
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-slate-200 text-center text-xs text-slate-500 font-medium">
                     <Link href="/auth/forgot-password" className="text-slate-500 hover:text-slate-700 transition-colors uppercase tracking-widest">
-                        &larr; Re-enter Pilot Info
+                        &larr; Re-enter Contact Info
                     </Link>
                 </div>
             </form>

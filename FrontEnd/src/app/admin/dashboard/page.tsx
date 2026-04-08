@@ -7,6 +7,7 @@ import { collection, query, where, getDocs, Timestamp } from "firebase/firestore
 import { db } from "@/lib/firebase";
 import toast from "react-hot-toast";
 import { generateSalesReport, SalesData } from "@/lib/reportGenerator";
+import { useAuth } from "@/context/AuthContext";
 
 type ReportFilter = 'today' | 'weekly' | 'monthly' | 'custom';
 type StatusFilter = 'all' | 'completed' | 'uncompleted';
@@ -106,11 +107,11 @@ export default function AdminDashboardPage() {
                         <div className="flex items-center gap-3 mb-2">
                              <h2 className="text-3xl font-black text-slate-900 tracking-tight uppercase">System Overview</h2>
                          </div>
-                         <p className="text-slate-500 font-medium">Manage and track your performance.</p>
+                         <p className="text-slate-500 font-medium">Welcome, Vishnu! Your dashboard to manage and grow everything in one place.</p>
                     </div>
                     
                     <div className="flex items-center gap-3 bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
-                        <div className="px-4 py-2 text-sm font-bold text-slate-600 border-r border-slate-100">
+                        <div className="px-4 py-2 text-sm font-bold text-slate-600 border-r border-slate-100 uppercase">
                             {dateTime.toLocaleDateString()} | {dateTime.toLocaleTimeString([], {
                                 hour: '2-digit',
                                 minute: '2-digit',
