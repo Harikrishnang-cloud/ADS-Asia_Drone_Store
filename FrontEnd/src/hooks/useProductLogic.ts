@@ -8,11 +8,7 @@ import { useFirestoreCollection } from "./useFirestore";
 import { Product, ProductFormData } from "@/types/product.types";
 
 export const useProductLogic = (initialCategory?: string) => {
-    const { 
-        data: products, 
-        loading, 
-        refresh: fetchProducts 
-    } = useFirestoreCollection<Product>({
+    const { data: products, loading, refresh: fetchProducts } = useFirestoreCollection<Product>({
         collectionName: "products",
         orderByField: "createdAt",
         orderDirection: "desc"

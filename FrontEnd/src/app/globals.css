@@ -78,3 +78,50 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #cbd5e1;
 }
+
+/* Phone Input Premium Styling */
+.phone-input-container .react-tel-input .form-control {
+    width: 100% !important;
+    height: auto !important;
+    padding: 1.2rem 1rem 1.2rem 4rem !important;
+    border-radius: 0.75rem !important;
+    border: 1px solid #e2e8f0 !important;
+    font-size: 1rem !important;
+    line-height: 1.5rem !important;
+    transition: all 0.2s !important;
+    background-color: white !important;
+}
+
+.phone-input-container .react-tel-input .form-control:focus {
+    border-color: #004b93 !important;
+    box-shadow: 0 0 0 4px rgba(0, 75, 147, 0.05) !important;
+}
+
+.phone-input-container .react-tel-input .flag-dropdown {
+    border: 1px solid #e2e8f0 !important;
+    border-right: none !important;
+    border-radius: 0.75rem 0 0 0.75rem !important;
+    background-color: #f8fafc !important;
+    transition: all 0.2s !important;
+    z-index: 10 !important;
+}
+
+.phone-input-container .react-tel-input .selected-flag {
+    border-radius: 0.75rem 0 0 0.75rem !important;
+    width: 4rem !important;
+    padding-left: 0.75rem !important;
+}
+
+.phone-input-container .react-tel-input .selected-flag .flag {
+    transform: scale(1.3);
+}
+
+.error-phone .form-control {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
+}
+
+.error-phone .flag-dropdown {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
+}

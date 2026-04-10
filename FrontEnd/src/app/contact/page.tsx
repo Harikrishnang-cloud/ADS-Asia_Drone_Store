@@ -39,16 +39,10 @@ export default function ContactPage() {
         }
     };
 
-    // Advanced SVG Grid Background Pattern
-    const gridPattern = {
-        backgroundImage: `radial-gradient(#cbd5e1 1px, transparent 2px)`,
-        backgroundSize: '32px 32px'
-    };
-
     return (
         <main className="w-full pb-20 bg-slate-50 relative overflow-hidden flex flex-col">
             {/* Tech Grid Background */}
-            <div className="absolute inset-0 z-1 pointer-events-none opacity-40" style={gridPattern}></div>
+            <div className="absolute inset-0 z-1 pointer-events-none opacity-40"></div>
             <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 lg:px-12 w-full pt-12 md:pt-10 relative z-10 flex-1 flex flex-col">
                 
                 {/* Advanced Header */}
@@ -99,14 +93,14 @@ export default function ContactPage() {
                             </div>
                             
                             <div className="relative w-full flex-1 min-h-[200px] rounded-xl overflow-hidden border border-slate-200">
-                                <div className="absolute inset-0 bg-slate-100 animate-pulse"></div> {/* Loading skeleton */}
+                                <div className="absolute inset-0 bg-slate-100 animate-pulse"></div>
                                 <iframe 
-                                    src="https://www.google.com/maps?q=M.G.+Corporate+Center,+Thiruvananthapuram&output=embed"                                    className="absolute inset-0 w-full h-full z-10 filter grayscale opacity-90 transition-all duration-700 hover:grayscale-0 hover:opacity-100"
+                                    src="https://www.google.com/maps?q=M.G.+Corporate+Center,+Thiruvananthapuram&output=embed" 
+                                    className="absolute inset-0 w-full h-full z-10 opacity-100 transition-all duration-700"
                                     style={{ border: 0 }} 
                                     allowFullScreen={false} 
                                     loading="lazy" 
-                                    referrerPolicy="no-referrer-when-downgrade"
-                                ></iframe>
+                                    referrerPolicy="no-referrer-when-downgrade"></iframe>
                             </div>
                         </div>
 
@@ -138,6 +132,9 @@ export default function ContactPage() {
                                         suppressHydrationWarning
                                         className="w-full px-4 pt-7 pb-2 bg-transparent outline-none text-slate-900 font-medium"
                                     />
+                                    {formData.name && (
+                                        <div className="absolute top-2 right-4 text-green-500 text-xs font-bold">✓</div>
+                                    )}
                                 </div>
 
                                 {/* Dynamic Input: Email */}
@@ -156,6 +153,14 @@ export default function ContactPage() {
                                         suppressHydrationWarning
                                         className="w-full px-4 pt-7 pb-2 bg-transparent outline-none text-slate-900 font-medium"
                                     />
+                                    {formData.email ? (
+                                        formData.email.includes('@') ? (
+                                            <div className="absolute top-2 right-4 text-green-500 text-xs font-bold">✓</div>
+                                        ) : (
+                                            <div className="absolute top-2 right-4 text-red-500 text-xs font-bold">✗</div>
+                                        )
+                                    ) : null}
+                                    
                                 </div>
                             </div>
                             
@@ -174,6 +179,13 @@ export default function ContactPage() {
                                     suppressHydrationWarning
                                     className="w-full px-4 pt-7 pb-2 bg-transparent outline-none text-slate-900 font-medium"
                                 />
+                                {formData.subject ? (
+                                        formData.subject.length > 10 ? (
+                                            <div className="absolute top-2 right-4 text-green-500 text-xs font-bold">✓</div>
+                                        ) : (
+                                            <div className="absolute top-2 right-4 text-red-500 text-xs font-bold">✗</div>
+                                        )
+                                    ) : null}
                             </div>
 
                             {/* Dynamic Input: Message */}
@@ -192,23 +204,27 @@ export default function ContactPage() {
                                     suppressHydrationWarning
                                     className="w-full px-4 pt-9 pb-3 bg-transparent outline-none text-slate-900 font-medium resize-none"
                                 ></textarea>
+                                {formData.message ? (
+                                        formData.message.length > 10 ? (
+                                            <div className="absolute top-2 right-4 text-green-500 text-xs font-bold">✓</div>
+                                        ) : (
+                                            <div className="absolute top-2 right-4 text-red-500 text-xs font-bold">✗</div>
+                                        )
+                                    ) : null}
                             </div>
 
                             <div className="pt-2">
                                 <button 
                                     type="submit" 
                                     disabled={isSubmitting}
-                                    className="group relative w-full md:w-1/2 flex justify-center items-center gap-2 md:gap-3 bg-slate-900 hover:bg-brand-blue-dark text-white p-3.5 md:p-5 rounded-xl font-black uppercase tracking-[0.1em] md:tracking-[0.2em] text-xs md:text-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-brand-blue-dark/30 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
-                                >
+                                    className="group relative w-full md:w-1/2 flex justify-center items-center gap-2 md:gap-3 bg-slate-900 hover:bg-brand-blue-dark text-white p-3.5 md:p-5 rounded-lg font-black uppercase tracking-[0.1em] md:tracking-[0.2em] text-xs md:text-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-brand-blue-dark/30 active:scale-[0.98] disabled:opacity-70 cursor-pointer">
                                     <span className="relative z-10">{isSubmitting ? 'Sending Message...' : 'Send Message'}</span>
                                     {!isSubmitting && <ArrowRight size={18} className="relative z-10 group-hover:translate-x-2 transition-transform duration-300 w-4 h-4 md:w-5 md:h-5" />}
-                                    <div className="absolute inset-0 bg-gradient-to-r from-brand-orange to-brand-blue-dark opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                                 </button>
                             </div>
-
                         </form>
                     </div>
-
                 </div>
             </div>
         </main>

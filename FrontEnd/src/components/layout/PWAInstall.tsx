@@ -1,7 +1,7 @@
  "use client";
 
 import { useState, useEffect } from "react";
-import { Download, X, Rocket } from "lucide-react";
+import { Download, X } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -18,7 +18,6 @@ export function PWAInstall() {
     const handleBeforeInstallPrompt = (e: Event) => {
       // Don't show if already in standalone mode
       if (window.matchMedia('(display-mode: standalone)').matches) return;
-      
       // Prevent the default browser prompt
       e.preventDefault();
       // Store the event for later use
@@ -68,14 +67,13 @@ export function PWAInstall() {
             <button 
               onClick={() => setIsVisible(false)}
               className="absolute top-3 right-3 text-slate-500 hover:text-white transition-colors"
-              aria-label="Close"
-            >
+              aria-label="Close">
               <X size={18} />
             </button>
 
             <div className="flex gap-4 items-start">
               <div className="w-12 h-12 rounded-xl bg-brand-orange/10 flex items-center justify-center flex-shrink-0">
-                <Rocket className="text-brand-orange" size={24} />
+                <Download className="text-brand-orange" size={24} />
               </div>
               <div className="flex-1 pr-6">
                 <h3 className="text-white font-bold text-base">Get the ADS App</h3>
@@ -85,10 +83,8 @@ export function PWAInstall() {
               </div>
             </div>
 
-            <button
-              onClick={handleInstallClick}
-              className="w-full bg-brand-orange hover:bg-brand-orange-dark text-white font-semibold py-2.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 text-sm shadow-lg shadow-brand-orange/20"
-            >
+            <button onClick={handleInstallClick}
+              className="w-full bg-brand-orange hover:bg-brand-orange-dark text-white font-semibold py-2.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 text-sm shadow-lg shadow-brand-orange/20">
               <Download size={16} />
               Install ADS App
             </button>

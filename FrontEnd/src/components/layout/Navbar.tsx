@@ -55,7 +55,6 @@ export function Navbar() {
         return () => clearTimeout(timer);
     }, []);
 
-    // Sync user data and wallet balance from Firestore
     const { isInitialized } = useAuth();
 
     useEffect(() => {
@@ -209,7 +208,7 @@ export function Navbar() {
                             <Link
                                 key={link.name}
                                 href={link.path}
-                                className={`relative text-[15px] font-medium transition-colors hover:text-brand-orange group py-2 ${pathname === link.path ? "text-brand-orange" : (isScrolled && isHomePage) ? "text-white" : "text-brand-blue-dark"
+                                className={`relative text-[15px] font-medium transition-colors hover:text-brand-orange group py-2 ${pathname === link.path ? "text-brand-orange" : (isScrolled && isHomePage) ? "text-brand-blue-dark" : "text-brand-blue-dark"
                                     }`}
                             >
                                 {link.name}
@@ -238,7 +237,7 @@ export function Navbar() {
                                 }}
                                 suppressHydrationWarning
                                 className={`w-48 lg:w-64 px-4 py-2 pl-10 text-sm rounded-full border transition-all duration-300 focus:w-64 lg:focus:w-80 outline-none ${isScrolled && isHomePage
-                                    ? "bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:bg-white/20 focus:border-white/40"
+                                    ? "bg-blue-dark/10 border-blue-dark/20 text-blue-dark placeholder:text-blue-dark/60 focus:bg-blue-dark/20 focus:border-blue-dark/40"
                                     : "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand-blue/30 focus:shadow-md"
                                     }`}
                             />
@@ -249,7 +248,7 @@ export function Navbar() {
                                         router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
                                     }
                                 }}
-                                className={`absolute left-3.5 transition-colors cursor-pointer ${isScrolled && isHomePage ? "text-white/60 group-focus-within:text-white" : "text-slate-400 group-focus-within:text-brand-blue"
+                                className={`absolute left-3.5 transition-colors cursor-pointer ${isScrolled && isHomePage ? "text-blue-dark/60 group-focus-within:text-blue-dark" : "text-slate-400 group-focus-within:text-brand-blue"
                                 }`} 
                             />
                         </div>
@@ -258,7 +257,7 @@ export function Navbar() {
                         <div className="flex items-center gap-5 mr-2">
                             {/* Wishlist Icon with Dropdown */}
                             <div className="relative group cursor-pointer">
-                                <Link href="/user/wishlist" className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${(isScrolled && isHomePage) ? "text-white" : "text-brand-blue-dark"}`}>
+                                <Link href="/user/wishlist" className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${(isScrolled && isHomePage) ? "text-blue-dark" : "text-brand-blue-dark"}`}>
                                     <Heart size={20} strokeWidth={2} />
                                     {hasHydrated && wishlistItemCount > 0 && (
                                         <span className="absolute top-1 -right-2 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
@@ -270,7 +269,7 @@ export function Navbar() {
                             </div>
 
                             <div className="relative group cursor-pointer">
-                                <Link href="/user/cart" className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${(isScrolled && isHomePage) ? "text-white" : "text-brand-blue-dark"}`}>
+                                <Link href="/user/cart" className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${(isScrolled && isHomePage) ? "text-blue-dark" : "text-brand-blue-dark"}`}>
                                     <ShoppingCart size={20} strokeWidth={2} />
                                     {hasHydrated && cartItemCount > 0 && (
                                         <span className="absolute top-1 -right-2 min-w-[18px] h-[18px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
@@ -283,7 +282,7 @@ export function Navbar() {
 
                             {/* Notification Icon with Dropdown */}
                             <div className="relative group cursor-pointer">
-                                <Link href={user ? "/user/notifications" : "/auth/login"} className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${(isScrolled && isHomePage) ? "text-white" : "text-brand-blue-dark"}`}>
+                                <Link href={user ? "/user/notifications" : "/auth/login"} className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${(isScrolled && isHomePage) ? "text-blue-dark" : "text-brand-blue-dark"}`}>
                                     <Bell size={20} strokeWidth={2} />
                                     {notificationCount > 0 && (
                                         <span className="absolute top-1 -right-2 min-w-[18px] h-[18px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
@@ -303,7 +302,7 @@ export function Navbar() {
 
                         {hasHydrated && user ? (
                             <div className="flex items-center gap-4">
-                                <span className={`text-sm font-medium hidden xl:block ${(isScrolled && isHomePage) ? "text-white" : "text-brand-blue-dark"}`}>
+                                <span className={`text-sm font-medium hidden xl:block ${(isScrolled && isHomePage) ? "text-blue-dark" : "text-brand-blue-dark"}`}>
                                     Welcome, <span className="text-brand-orange capitalize">{user?.name ? user.name.split(' ')[0] : 'User'}</span>
                                 </span>
 

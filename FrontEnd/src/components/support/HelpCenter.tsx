@@ -130,7 +130,7 @@ export default function HelpCenter() {
                                         }`}>
                                         <category.icon
                                             size={32}
-                                            className={`transition-all duration-500 ${isSelected ? "text-brand-orange scale-110" : `${category.color} group-hover:text-white group-hover:scale-110 group-hover:rotate-12`}`} />
+                                            className={`transition-all duration-500 ${isSelected ? "text-brand-orange scale-110" : `${category.color} group-hover:text-white group-hover:scale-110`}`} />
                                     </div>
                                     <h3 className={`text-2xl font-black mb-3 transition-colors duration-300 ${isSelected ? "text-brand-orange" : "text-brand-blue-dark group-hover:text-white"}`}>
                                         {category.name}
@@ -208,9 +208,8 @@ export default function HelpCenter() {
                         Our expert support team is ready to help you with any technical issues or inquiries.
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 cursor-pointer">
-                        {/* Live Chat */}
+                
                         <a href="/contact" className="block w-full relative p-8 rounded-xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-xl text-center">
-                            {/* Opposite Direction Background */}
                             <div className="absolute -top-1/4 -right-1/4 w-[150%] h-[150%] bg-brand-blue-dark transition-all duration-1000 ease-out rotate-12 -translate-y-full group-hover:translate-y-0 group-hover:rotate-0 z-0" />
                             <div className="relative z-10 flex flex-col items-center">
                                 <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-slate-50 mb-8 transition-all duration-1000 group-hover:bg-white/10 group-hover:shadow-lg">
@@ -254,7 +253,7 @@ export default function HelpCenter() {
                             <div className="absolute -top-1/4 -right-1/4 w-[150%] h-[150%] bg-brand-blue-dark transition-all duration-1000 ease-out rotate-12 -translate-y-full group-hover:translate-y-0 group-hover:rotate-0 z-0" />
                             <div className="relative z-10 flex flex-col items-center">
                                 <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-slate-50 mb-8 transition-all duration-1000 group-hover:bg-white/10 group-hover:shadow-lg">
-                                    <Phone className="text-brand-blue group-hover:text-white group-hover:scale-110 group-hover:rotate-12 transition-all duration-500" size={32} />
+                                    <Phone className="text-brand-blue group-hover:text-white group-hover:scale-110 transition-all duration-500" size={32} />
                                 </div>
                                 
                                 <h4 className="text-2xl font-black mb-3 text-brand-blue-dark group-hover:text-white transition-colors duration-300">

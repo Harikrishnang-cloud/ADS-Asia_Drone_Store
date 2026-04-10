@@ -14,6 +14,8 @@ import { PasswordInput } from "@/components/PasswordInput";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import { useAuthStore } from "@/store/authStore";
 import { authService } from "@/services/auth.service";
@@ -117,8 +119,14 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
             newErrors.name = "Name must be at least 3 characters long";
 
         }
-        if (formData.phone && !/^\d{10}$/.test(formData.phone)) {
-            newErrors.phone = "Phone number must be exactly 10 digits";
+        if (formData.phone) {
+            // Remove any non-numeric characters for length check if needed, 
+            // but react-phone-input-2 usually returns digits.
+            // For India (+91), total length is 12. 
+            // We want at least 10 digits for the main number plus country code.
+            if (formData.phone.length < 10) {
+                newErrors.phone = "Please enter a valid phone number";
+            }
         }
         // Removed Top-Level PIN validation here because it's replaced by the address list below
 
@@ -498,23 +506,24 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                     <div>
                         <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wide opacity-70">Phone Number</label>
                         {isEdit ? (
-                            <div className="space-y-1">
-                                <div className="relative">
-                                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                                    <input
-                                        type="tel"
-                                        className={`w-full p-4 pl-12 border rounded-xl outline-none transition-all ${errors.phone ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5'}`}
-                                        value={formData.phone}
-                                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                        placeholder="e.g. 9876543210"
-                                    />
-                                </div>
+                            <div className="space-y-1 phone-input-container">
+                                <PhoneInput
+                                    country={'in'}
+                                    value={formData.phone}
+                                    onChange={(phone) => setFormData({ ...formData, phone })}
+                                    inputProps={{
+                                        name: 'phone',
+                                        required: true,
+                                        autoFocus: false
+                                    }}
+                                    containerClass={errors.phone ? 'error-phone' : ''}
+                                />
                                 {errors.phone && <p className="text-red-500 text-xs font-medium ml-1">{errors.phone}</p>}
                             </div>
                         ) : (
                             <div className="flex items-center gap-2 p-4 bg-white border border-slate-100 rounded-xl font-bold text-slate-800">
                                 <Phone size={16} className="text-slate-400" />
-                                <span>{user.phone || "Not set"}</span>
+                                <span>{formData.phone ? `+${formData.phone}` : "Not set"}</span>
                             </div>
                         )}
                     </div>

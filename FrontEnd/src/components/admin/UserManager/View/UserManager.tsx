@@ -78,7 +78,7 @@ export default function UserManager() {
                                                                 <>
                                                                     <span className="w-1 h-1 rounded-xl bg-slate-200"></span>
                                                                     <Phone size={12} />
-                                                                    <span>{user.phone}</span>
+                                                                    <span>{user.phone ? (user.phone.startsWith('+') ? user.phone : `+${user.phone}`) : "N/A"}</span>
                                                                 </>
                                                             )}
                                                         </div>

@@ -33,10 +33,6 @@ function ProductsContent() {
         const cats = Array.from(new Set(products.map(p => p.category).filter(Boolean)));
         return ["All", ...cats];
     }, [products]);
-    const gridPattern = {
-        backgroundImage: `radial-gradient(#cbd5e1 1px, transparent 2px)`,
-        backgroundSize: '32px 32px'
-    };
 
     const filteredProducts = useMemo(() => {
         let result = [...products];
@@ -98,7 +94,7 @@ function ProductsContent() {
 
     return (
         <main className="max-w-screen-3xl mx-auto px-4 sm:px-8 pt-24 pb-20 md:pt-10 relative z-10 w-full">
-            <div className="absolute inset-0 -z-10 pointer-events-none opacity-40" style={gridPattern}></div>
+            <div className="absolute inset-0 -z-10 pointer-events-none opacity-40"></div>
             {/* Page Header */}
            
             <div className="flex flex-col mb-10 relative">
@@ -106,7 +102,7 @@ function ProductsContent() {
                 <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-brand-blue-dark tracking-tighter mb-4">
                     {search ? `Search Results for "${search}"` : <>Professional <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-orange">Drone Solutions</span></>}
                 </h1>
-                <p className="text-slate-500 font-medium max-w-xl text-lg">
+                <p className="text-slate-500 text-base md:text-lg leading-relaxed max-w-2xl">
                     {search 
                         ? `Found ${filteredProducts.length} results matching your search.`
                         : "Browse our elite selection of UAVs, high-performance parts, and specialized accessories engineered for unique flight conditions."}

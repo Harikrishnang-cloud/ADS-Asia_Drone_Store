@@ -12,17 +12,13 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Button from "@/components/ui/button";
- const gridPattern = {
-        backgroundImage: `radial-gradient(#cbd5e1 1px, transparent 2px)`,
-        backgroundSize: '32px 32px'
-    };
 
 export default function AboutPage() {
     return (
         <div className="bg-slate-50 flex flex-col">
             {/* Hero Section */}
             <section className="pt-12 pb-12 md:pt-20 md:pb-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-                <div className="absolute inset-0 -z-10 pointer-events-none opacity-40" style={gridPattern}></div>
+                <div className="absolute inset-0 -z-10 pointer-events-none opacity-40"></div>
                 <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-brand-blue/[0.03] rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
                 <div className="max-w-7xl mx-auto">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
@@ -30,7 +26,7 @@ export default function AboutPage() {
                             <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-[1.1]">
                                 Elevating Your <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-orange">Aerial Experience.</span>
                             </h1>
-                            <p className="text-lg md:text-xl text-slate-500 font-medium leading-relaxed max-w-2xl">
+                            <p className="text-slate-500 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
                                 Welcome to Asia Drone Store. We don&apos;t just sell drones; we provide the wings for your imagination, creativity, and professional aspirations. As the leading premium drone retailer, we are committed to pushing the boundaries of what&apos;s possible in the sky.
                             </p>
                             <div className="pt-4 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 w-full">
@@ -129,10 +125,10 @@ export default function AboutPage() {
                                 desc: "Crashes happen. Our in-house repair facility is equipped with OEM parts and trained engineers to get you back in the air quickly."
                             }
                         ].map((feature, idx) => (
-                            <div key={idx} className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow group">
+                            <div key={idx} className="bg-white p-8 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow group">
                                 <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center mb-6 border border-slate-100 group-hover:bg-brand-blue group-hover:border-brand-blue transition-colors">
                                     <feature.icon className="text-slate-600 group-hover:text-white transition-colors" size={24} />
-                                </div>
+                                    </div>      
                                 <h4 className="text-lg font-bold text-slate-900 mb-3">{feature.title}</h4>
                                 <p className="text-sm font-medium text-slate-500 leading-relaxed">
                                     {feature.desc}
