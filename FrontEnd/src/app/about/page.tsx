@@ -125,11 +125,12 @@ export default function AboutPage() {
                                 desc: "Crashes happen. Our in-house repair facility is equipped with OEM parts and trained engineers to get you back in the air quickly."
                             }
                         ].map((feature, idx) => (
-                            <div key={idx} className="bg-white p-8 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow group">
-                                <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center mb-6 border border-slate-100 group-hover:bg-brand-blue group-hover:border-brand-blue transition-colors">
-                                    <feature.icon className="text-slate-600 group-hover:text-white transition-colors" size={24} />
-                                    </div>      
-                                <h4 className="text-lg font-bold text-slate-900 mb-3">{feature.title}</h4>
+                            <div key={idx} className="bg-white p-10 rounded-2xl border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 hover:-translate-y-2 transition-all duration-500 group relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-slate-50 rounded-bl-[100px] -mr-8 -mt-8 transition-all group-hover:bg-brand-blue/5"></div>
+                                <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center mb-8 border border-slate-100 group-hover:bg-brand-blue group-hover:border-brand-blue group-hover:scale-110 transition-all duration-300 shadow-inner">
+                                    <feature.icon className="text-slate-600 group-hover:text-white transition-colors" size={26} />
+                                </div>      
+                                <h4 className="text-xl font-black text-slate-900 mb-4 tracking-tight group-hover:text-brand-blue transition-colors">{feature.title}</h4>
                                 <p className="text-sm font-medium text-slate-500 leading-relaxed">
                                     {feature.desc}
                                 </p>

@@ -28,6 +28,17 @@ export interface UserProfile {
     addresses?: UserAddress[];
     profileImage?: string;
     walletBalance?: number;
+    preferences?: {
+        emailNotifications: boolean;
+        pushNotifications: boolean;
+        smsNotifications: boolean;
+        marketingEmails: boolean;
+    };
+    regional?: {
+        language: string;
+        currency: string;
+        timezone: string;
+    };
 }
 
 interface AuthState {
@@ -48,11 +59,7 @@ export const useAuthStore = create<AuthState>()(
                     console.error("Backend logout failed:", error);
                 } finally {
                     localStorage.removeItem('userData');
-
-                    // Also clear admin data
                     localStorage.removeItem('adminData');
-
-                    // Clear user-specific stores so new users get an empty cart/wishlist
                     useCartStore.getState().clearCart();
                     useWishlistStore.getState().clearWishlist();
                     useNotificationStore.getState().setNotifications([]);

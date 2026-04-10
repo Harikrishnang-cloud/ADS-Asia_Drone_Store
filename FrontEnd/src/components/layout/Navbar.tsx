@@ -5,8 +5,8 @@ import { usePathname, useRouter } from "next/navigation";
 import {
     User, LogOut, Menu, X, Heart, ShoppingCart, Bell, Wallet,
     UserPlus, MessageCircle,
-    Settings, CreditCard,
-    History, Globe, UserCircle, HelpCircle, Search
+    Settings,
+    History, Globe, UserCircle, HelpCircle, Search, ChevronRight
 } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
@@ -163,7 +163,7 @@ export function Navbar() {
                 console.error("Error checking notifications:", error);
             }
         };
-        
+
         if (isInitialized) {
             checkNotifications();
             checkMessages();
@@ -241,15 +241,15 @@ export function Navbar() {
                                     : "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand-blue/30 focus:shadow-md"
                                     }`}
                             />
-                            <Search 
-                                size={16} 
+                            <Search
+                                size={16}
                                 onClick={() => {
                                     if (searchQuery.trim()) {
                                         router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
                                     }
                                 }}
                                 className={`absolute left-3.5 transition-colors cursor-pointer ${isScrolled && isHomePage ? "text-blue-dark/60 group-focus-within:text-blue-dark" : "text-slate-400 group-focus-within:text-brand-blue"
-                                }`} 
+                                    }`}
                             />
                         </div>
 
@@ -399,26 +399,22 @@ export function Navbar() {
                                                     <Settings size={18} />
                                                     <span>Account settings</span>
                                                 </Link>
-                                                <Link href="/user/payments" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
-                                                    <CreditCard size={18} />
-                                                    <span>Payment methods</span>
-                                                </Link>
                                                 <Link href="/user/orders" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-blue transition-colors">
                                                     <History size={18} />
                                                     <span>My Orders</span>
                                                 </Link>
                                             </div>
 
-                                            {/* Group 4: Localization */}
+                                            {/* Group 4: Localization - Locked for now */}
                                             <div className="py-1 border-b border-slate-100">
-                                                <div className="flex items-center justify-between px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer group/lang">
+                                                <div className="flex items-center justify-between px-5 py-2.5 text-sm font-medium text-slate-400 opacity-60 cursor-not-allowed group/lang">
                                                     <div className="flex items-center gap-3">
                                                         <Globe size={18} />
                                                         <span>Language</span>
                                                     </div>
-                                                    <div className="flex items-center gap-1.5 text-slate-400 group-hover/lang:text-brand-blue">
-                                                        <span>English</span>
-                                                        <Globe size={14} strokeWidth={3} />
+                                                    <div className="flex items-center gap-1.5 text-slate-300">
+                                                        <span className="capitalize">{user?.regional?.language || "English"}</span>
+                                                        <ChevronRight size={14} strokeWidth={3} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -532,14 +528,6 @@ export function Navbar() {
 
                             {/* Mobile Quick Links Grid */}
                             <div className="grid grid-cols-2 gap-3 mt-2">
-                                {/* <Link 
-                                    href="/my-learning" 
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="flex flex-col items-center justify-center gap-2 p-4 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-brand-blue transition-colors shadow-sm"
-                                >
-                                    <BookOpen size={20} />
-                                    <span className="text-[11px] font-bold uppercase tracking-tight">Learning</span>
-                                </Link> */}
                                 <Link
                                     href="/user/orders"
                                     onClick={() => setIsMobileMenuOpen(false)}
@@ -623,7 +611,7 @@ export function Navbar() {
                 title="Log Out"
                 message="Are you sure you want to log out of your account? You will need to sign in again to access your private data."
                 confirmText="Yes, Log Out"
-                type="warning"
+                type="danger"
             />
         </>
     );
