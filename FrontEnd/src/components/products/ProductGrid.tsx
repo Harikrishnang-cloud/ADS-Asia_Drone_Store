@@ -2,6 +2,8 @@
 
 import React from "react";
 import { useFirestoreCollection } from "@/hooks/useFirestore";
+import { useState, useEffect } from "react";
+
 import { Product } from "@/types/product.types";
 import ProductCard from "./ProductCard";
 
@@ -12,11 +14,21 @@ interface ProductGridProps {
 }
 
 export default function ProductGrid({ category, limit, title }: ProductGridProps) {
+    const [hasHydrated, setHasHydrated] = useState(false);
+    
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setHasHydrated(true);
+        }, 0);
+        return () => clearTimeout(timer);
+    }, []);
+
     const { data: products, loading } = useFirestoreCollection<Product>({
         collectionName: "products",
         orderByField: "createdAt",
         orderDirection: "desc"
     });
+
 
     const displayProducts = React.useMemo(() => {
         let filtered = products;
@@ -29,7 +41,7 @@ export default function ProductGrid({ category, limit, title }: ProductGridProps
         return filtered;
     }, [products, category, limit]);
 
-    if (loading) {
+    if (!hasHydrated || loading) {
         return (
             <div className="w-full">
                 {title && <h2 className="text-2xl font-black text-slate-800 mb-8">{title}</h2>}
@@ -41,6 +53,7 @@ export default function ProductGrid({ category, limit, title }: ProductGridProps
             </div>
         );
     }
+
 
     if (displayProducts.length === 0) {
         return (

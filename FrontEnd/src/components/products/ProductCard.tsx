@@ -50,7 +50,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
     return (
         <div className="group bg-white border border-slate-100 rounded-xl sm:rounded-xl lg:rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-brand-blue/10 transition-all duration-500 flex flex-col h-full relative">
-           
+
             <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-20">
                 <span className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-sm text-[8px] sm:text-[10px] font-black uppercase tracking-widest shadow-sm ${product.stock > 0 ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'
                     }`}>
@@ -58,7 +58,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 </span>
             </div>
 
-           
+
             <div className="relative aspect-square overflow-hidden bg-slate-50">
                 <Link href={`/products/${product.id}`} className="block w-full h-full">
                     <Image

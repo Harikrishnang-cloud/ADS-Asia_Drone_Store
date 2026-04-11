@@ -681,7 +681,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                                     onClick={handleDelete}
                                     className="w-full text-red-500 py-2 rounded-lg text-xs font-black uppercase tracking-widest hover:bg-red-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
                                 >
-                                    <Trash2 size={16} /> Danger: Permanent Account Deletion
+                                    <Trash2 size={16} /> Delete My Account
                                 </button>
                             </div>
                         </div>

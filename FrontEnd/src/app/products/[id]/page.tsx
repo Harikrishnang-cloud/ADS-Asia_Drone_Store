@@ -72,10 +72,10 @@ function ImageMagnifier({ src }: { src: string }) {
 export default function ProductDetailPage() {
     const { id } = useParams();
     const router = useRouter();
-    const { data: products, loading } = useFirestoreCollection<Product>({collectionName: "products"});
+    const { data: products, loading } = useFirestoreCollection<Product>({ collectionName: "products" });
     const { addItem } = useCartStore();
     const { addItem: addWishlist, removeItem: removeWishlist, isInWishlist } = useWishlistStore();
-    
+
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
 
@@ -103,7 +103,7 @@ export default function ProductDetailPage() {
         if (!product) return;
         if (isWishlisted) {
             removeWishlist(product.id);
-           
+
         } else {
             addWishlist({
                 id: product.id,
@@ -111,13 +111,13 @@ export default function ProductDetailPage() {
                 price: Number(product.offerPrice || product.price),
                 image: product.imageUrl
             });
-           
+
         }
     };
 
     const handleShare = async () => {
         if (!product) return;
-        
+
         if (navigator.share) {
             try {
                 await navigator.share({
@@ -176,15 +176,15 @@ export default function ProductDetailPage() {
                     </div>
                     {product.images && product.images.length > 0 && (
                         <div className="grid grid-cols-4 gap-4">
-                            <div 
-                                onClick={() => setSelectedImage(product.imageUrl)} 
+                            <div
+                                onClick={() => setSelectedImage(product.imageUrl)}
                                 className={`aspect-square rounded-lg border ${selectedImage === product.imageUrl || !selectedImage ? 'border-brand-orange' : 'border-slate-100'} overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer`}>
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img src={product.imageUrl} alt={`${product.name} Main`} className="w-full h-full object-cover" />
                             </div>
                             {product.images.map((img, i) => (
-                                <div 
-                                    key={i} 
+                                <div
+                                    key={i}
                                     onClick={() => setSelectedImage(img)}
                                     className={`aspect-square rounded-lg border ${selectedImage === img ? 'border-brand-orange' : 'border-slate-100'} overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer`}>
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -200,7 +200,7 @@ export default function ProductDetailPage() {
                     <div className="space-y-2">
                         <span className="text-[10px] font-black uppercase tracking-[0.4em] text-brand-orange bg-brand-orange/10 px-3 py-1.5 rounded-sm inline-block mb-2">{product.category}</span>
                         <h1 className="text-4xl md:text-5xl font-black text-brand-blue-dark tracking-tight leading-tight">{product.name}</h1>
-                        
+
                         <div className="flex items-center gap-4 mt-2">
                             <div className="flex items-center gap-1 shadow-sm border border-slate-100 bg-white px-3 py-1.5 rounded-full">
                                 <span className="text-sm font-black text-slate-700">{(product.averageRating || product.rating || 0).toFixed(1)}</span>
@@ -217,11 +217,11 @@ export default function ProductDetailPage() {
                             {product.offerPrice ? (
                                 <div className="flex flex-wrap items-center gap-3">
                                     <span className="text-4xl font-black text-brand-orange">
-                                        <span className="font-sans font-semibold mr-1" style={{fontFamily: 'system-ui, Arial, sans-serif'}}>₹</span>
+                                        <span className="font-sans font-semibold mr-1" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
                                         {Number(product.offerPrice).toLocaleString('en-IN')}
                                     </span>
                                     <span className="text-xl text-slate-400 font-bold line-through">
-                                        <span className="font-sans font-normal mr-0.5" style={{fontFamily: 'system-ui, Arial, sans-serif'}}>₹</span>
+                                        <span className="font-sans font-normal mr-0.5" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
                                         {Number(product.price).toLocaleString('en-IN')}
                                     </span>
                                     {product.offerPercentage && (
@@ -232,19 +232,18 @@ export default function ProductDetailPage() {
                                 </div>
                             ) : (
                                 <span className="text-4xl font-black text-brand-blue-dark">
-                                    <span className="font-sans font-semibold mr-1" style={{fontFamily: 'system-ui, Arial, sans-serif'}}>₹</span>
+                                    <span className="font-sans font-semibold mr-1" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
                                     {Number(product.price).toLocaleString('en-IN')}
                                 </span>
                             )}
-                            <span className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border ${
-                                product.stock > 0 ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'
-                            }`}>
+                            <span className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border ${product.stock > 0 ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'
+                                }`}>
                                 {product.stock > 0 ? `${product.stock} In Stock` : 'Out of Stock'}
                             </span>
                         </div>
 
                         <p className="text-slate-500 text-lg leading-relaxed pt-2 border-t border-slate-100">{product.description || "Experience the pinnacle of aerial technology. Designed for ultimate performance and reliability, this professional-grade drone solution is meticulously crafted to handle the most demanding environments across Asia seamlessly and securely."}</p>
-                        
+
                         {/* Highlights */}
                         <div className="grid grid-cols-2 gap-2 pt-1">
                             {["High Precision Engineering", "Certified Components", "Extended Battery Life", "Smart Tracking & Analytics"].map((feature, idx) => (
@@ -258,7 +257,7 @@ export default function ProductDetailPage() {
 
                     <div className="flex flex-row flex-wrap items-center w-full gap-2.5 md:gap-3 pt-4">
                         <div className="flex items-center h-11 md:h-14 rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden w-24 md:w-32 shrink-0">
-                            <button 
+                            <button
                                 onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
                                 className="w-10 md:w-12 h-full flex items-center justify-center text-slate-400 cursor-pointer hover:bg-slate-50 hover:text-brand-orange transition-colors active:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled={quantity <= 1}
@@ -268,7 +267,7 @@ export default function ProductDetailPage() {
                             <div className="flex-1 h-full flex items-center justify-center font-bold text-slate-700 text-base md:text-lg border-x border-slate-100">
                                 {quantity}
                             </div>
-                            <button 
+                            <button
                                 onClick={() => setQuantity(prev => Math.min(product.stock, prev + 1))}
                                 className="w-10 md:w-12 h-full flex items-center justify-center text-slate-400 cursor-pointer hover:bg-slate-50 hover:text-brand-orange transition-colors active:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled={quantity >= product.stock}
@@ -280,14 +279,14 @@ export default function ProductDetailPage() {
                             Add to Cart
                         </Button>
                         <div className="flex gap-2.5 md:gap-3">
-                            <button 
+                            <button
                                 onClick={handleToggleWishlist}
                                 className={`w-11 md:w-14 h-11 md:h-14 rounded-xl transition-all active:scale-95 shadow-sm flex items-center justify-center border cursor-pointer ${isWishlisted ? 'bg-red-50 text-red-500 border-red-100 hover:bg-red-100' : 'bg-white text-slate-400 border-slate-200 hover:bg-slate-50 hover:text-red-500'}`}
                                 title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
                             >
                                 <Heart className={`w-5 h-5 md:w-6 md:h-6 ${isWishlisted ? "fill-red-500" : ""}`} />
                             </button>
-                            <button 
+                            <button
                                 onClick={handleShare}
                                 className="w-11 md:w-14 h-11 md:h-14 bg-white border border-slate-200 text-slate-400 rounded-xl hover:bg-slate-50 hover:text-brand-blue-dark transition-all active:scale-95 shadow-sm flex items-center justify-center cursor-pointer"
                                 title="Share this product"
@@ -303,7 +302,7 @@ export default function ProductDetailPage() {
             {product.specifications && product.specifications.length > 0 && (
                 <div className="mt-8 pt-4 border-t border-slate-100">
                     <h2 className="text-2xl md:text-2xl font-black text-brand-blue-dark mb-4">Product Specifications</h2>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-8">
                         {product.specifications.map((spec, i) => (
                             <div key={i} className="pb-4 border-b border-slate-100">
@@ -323,10 +322,10 @@ export default function ProductDetailPage() {
             {/* Related Products Section */}
             {product && (
                 <div className="mt-8 pt-4 border-t border-slate-100">
-                    <ProductGrid 
-                        title="You May Also Like" 
-                        category={product.category} 
-                        limit={5} 
+                    <ProductGrid
+                        title="You May Also Like"
+                        category={product.category}
+                        limit={5}
                     />
                 </div>
             )}

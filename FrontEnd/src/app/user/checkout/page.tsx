@@ -205,7 +205,7 @@ export default function CheckoutPage() {
         setIsProcessing(true);
 
         const selectedAddress = savedAddresses.find(a => a.id === selectedAddressId);
-        
+
         let finalShippingAddress;
         if (savedAddresses.length > 0 && selectedAddress) {
             finalShippingAddress = {
@@ -602,7 +602,7 @@ export default function CheckoutPage() {
                                     </div>
                                 ) : (
                                     <div className="bg-white rounded-lg p-6 md:p-8 shadow-sm border border-slate-100">
-                                         <h2 className="text-xl font-black text-slate-900 mb-6 flex items-center justify-between">
+                                        <h2 className="text-xl font-black text-slate-900 mb-6 flex items-center justify-between">
                                             <div className="flex items-center gap-3">
                                                 <span className="w-8 h-8 rounded-lg bg-brand-blue/10 text-brand-blue flex items-center justify-center text-sm font-bold">2</span>
                                                 Shipping Address
