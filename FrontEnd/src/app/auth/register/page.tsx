@@ -140,7 +140,6 @@ export default function RegisterPage() {
                             className="bg-slate-50 border border-slate-200 text-slate-900 w-full p-3.5 rounded-xl focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all placeholder:text-slate-400"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            suppressHydrationWarning
                         />
                     </div>
                     <div>
@@ -152,7 +151,6 @@ export default function RegisterPage() {
                             className="bg-slate-50 border border-slate-200 text-slate-900 w-full p-3.5 rounded-xl focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all placeholder:text-slate-400"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            suppressHydrationWarning
                         />
                     </div>
                     <div>
@@ -163,14 +161,12 @@ export default function RegisterPage() {
                             className="bg-slate-50 border border-slate-200 text-slate-900 w-full p-3.5 rounded-xl focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all placeholder:text-slate-400"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            suppressHydrationWarning
                         />
                     </div>
                     <button
                         type="submit"
                         disabled={loading}
                         className="bg-gradient-to-r from-brand-orange to-brand-orange-dark hover:from-brand-orange-dark hover:to-orange-700 active:scale-[0.98] disabled:opacity-50 text-white font-semibold w-full p-3.5 rounded-xl transition-all mt-4 shadow-lg shadow-brand-orange/20"
-                        suppressHydrationWarning
                     >
                         {loading ? "Registering..." : "Create Account"}
                     </button>
@@ -186,7 +182,6 @@ export default function RegisterPage() {
                         onClick={loginWithGoogle}
                         disabled={loading}
                         className="flex flex-row items-center justify-center gap-3 bg-white text-slate-700 hover:bg-slate-50 active:scale-[0.98] disabled:opacity-50 font-semibold w-full p-3.5 rounded-xl transition-all shadow-sm border border-slate-200 hover:border-slate-300"
-                        suppressHydrationWarning
                     >
                         <svg className="w-5 h-5" viewBox="0 0 24 24">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />

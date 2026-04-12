@@ -89,8 +89,7 @@ export function Navbar() {
 
 
     useEffect(() => {
-
-        const storedUserStr = localStorage.getItem("userData");
+        const storedUserStr = typeof window !== "undefined" ? localStorage.getItem("userData") : null;
         if (storedUserStr && !user) {
             try {
                 const storedUser = JSON.parse(storedUserStr);
@@ -101,7 +100,9 @@ export function Navbar() {
                 console.error("Auth sync error", e);
             }
         }
+    }, [user, setAuth]);
 
+    useEffect(() => {
         // Check for new messages since last viewing the messages page
         const checkMessages = async () => {
             if (!user?.id) return;
@@ -235,7 +236,6 @@ export function Navbar() {
                                         router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
                                     }
                                 }}
-                                suppressHydrationWarning
                                 className={`w-48 lg:w-64 px-4 py-2 pl-10 text-sm rounded-full border transition-all duration-300 focus:w-64 lg:focus:w-80 outline-none ${isScrolled && isHomePage
                                     ? "bg-blue-dark/10 border-blue-dark/20 text-blue-dark placeholder:text-blue-dark/60 focus:bg-blue-dark/20 focus:border-blue-dark/40"
                                     : "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand-blue/30 focus:shadow-md"

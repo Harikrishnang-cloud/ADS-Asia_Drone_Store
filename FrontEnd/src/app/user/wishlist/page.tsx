@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { useCartStore } from "@/store/cartStore";
-import { Heart, Trash2, ShoppingCart } from "lucide-react";
+import { Trash2, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import Button from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
@@ -66,11 +66,11 @@ export default function WishlistPage() {
 
     return (
         <>
-            <div className="min-h-screen pt-24 md:pt-32 pb-12 md:pb-20 bg-slate-50">
+            <div className="min-h-screen pt-6 md:pt-12 pb-12 md:pb-16 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between mb-8">
                         <h1 className="text-2xl md:text-3xl font-black text-brand-blue-dark flex items-center gap-3">
-                            <Heart className="text-red-500 fill-red-500" size={28} />
+                            
                             My Wishlist
                         </h1>
                         {items.length > 0 && (
@@ -82,9 +82,7 @@ export default function WishlistPage() {
 
                     {items.length === 0 ? (
                         <div className="bg-white rounded-xl p-12 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
-                            <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6">
-                                <Heart size={40} className="text-slate-300" />
-                            </div>
+                           
                             <h2 className="text-xl font-bold text-slate-900 mb-2">Your wishlist is empty</h2>
                             <p className="text-slate-500 mb-8 max-w-sm">Save your favorite drones and accessories here to easily find them later.</p>
                             <Link href="/products">

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin, ArrowRight, Send } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import api from "@/lib/axios";
 
@@ -13,6 +13,14 @@ export function Footer() {
     const pathname = usePathname();
     const [email, setEmail] = useState("");
     const [isSubscribing, setIsSubscribing] = useState(false);
+    const [currentYear, setCurrentYear] = useState<number | null>(null);
+    const [hasMounted, setHasMounted] = useState(false);
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setHasMounted(true);
+        setCurrentYear(new Date().getFullYear());
+    }, []);
 
     const handleSubscribe = async () => {
         if (!email) {
@@ -36,8 +44,6 @@ export function Footer() {
     if (pathname?.startsWith("/auth") || pathname?.startsWith("/admin")) {
         return null;
     }
-
-    const currentYear = new Date().getFullYear();
 
     const footerLinks = {
         shop: [
@@ -150,7 +156,6 @@ export function Footer() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleSubscribe()}
-                                    suppressHydrationWarning
                                     className="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 pl-4 pr-12 text-sm focus:outline-none focus:border-brand-orange transition-all"
                                 />
                                 <button 
@@ -158,7 +163,6 @@ export function Footer() {
                                     onClick={handleSubscribe}
                                     disabled={isSubscribing}
                                     aria-label="Subscribe to newsletter"
-                                    suppressHydrationWarning
                                     className="absolute right-2 top-1/2 -translate-y-1/2 bg-brand-orange p-2 rounded-lg hover:bg-white hover:text-brand-orange transition-all duration-300 disabled:opacity-50"
                                 >
                                     <Send size={16} className={isSubscribing ? "opacity-50 cursor-wait" : ""} />
@@ -187,7 +191,7 @@ export function Footer() {
                 {/* Bottom Bar */}
                 <div className="pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6">
                     <p className="text-slate-400 text-sm text-center text-white md:text-left">
-                        © {currentYear} <span className="text-brand-orange">Asia Drone Store</span>. All Rights Reserved. Designed and developed by Asia Softlab.
+                        © {hasMounted ? (currentYear || 2026) : 2026} <span className="text-brand-orange">Asia Drone Store</span>. All Rights Reserved. Designed and developed by Asia Softlab.
                     </p>
                     <div className="flex flex-wrap justify-center gap-6">
                         {/* privacy policy & terms and conditions */}

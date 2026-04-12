@@ -12,13 +12,15 @@ type ReportFilter = 'today' | 'weekly' | 'monthly' | 'custom';
 type StatusFilter = 'all' | 'completed' | 'uncompleted';
 
 export default function AdminDashboardPage() {
-    const [dateTime, setDateTime] = useState(new Date());
+    const [dateTime, setDateTime] = useState<Date | null>(null);
     const [isGenerating, setIsGenerating] = useState(false);
     const [activeFilter, setActiveFilter] = useState<ReportFilter>('today');
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [customDates, setCustomDates] = useState({ start: '', end: '' });
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setDateTime(new Date());
         const interval = setInterval(() => {
             setDateTime(new Date());
         }, 1000);
@@ -111,12 +113,18 @@ export default function AdminDashboardPage() {
                     
                     <div className="flex items-center gap-3 bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
                         <div className="px-4 py-2 text-sm font-bold text-slate-600 border-r border-slate-100 uppercase">
-                            {dateTime.toLocaleDateString()} | {dateTime.toLocaleTimeString([], {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                second: '2-digit',
-                                hour12: true
-                            })}
+                            {dateTime ? (
+                                <>
+                                    {dateTime.toLocaleDateString()} | {dateTime.toLocaleTimeString([], {
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        second: '2-digit',
+                                        hour12: true
+                                    })}
+                                </>
+                            ) : (
+                                "Loading..."
+                            )}
                         </div>
                         <div className="px-4 py-2 text-sm font-black text-brand-blue uppercase tracking-widest flex items-center gap-2">
                             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>

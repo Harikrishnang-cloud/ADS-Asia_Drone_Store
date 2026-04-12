@@ -24,7 +24,14 @@ function ProductsContent() {
     const [sortBy, setSortBy] = useState<string>("newest");
 
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [hasMounted, setHasMounted] = useState(false);
     const ITEMS_PER_PAGE = 12; 
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setHasMounted(true);
+    }, []);
+
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setCurrentPage(1);
@@ -122,10 +129,9 @@ function ProductsContent() {
                         <div className="mb-8">
                             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Categories</h3>
                             <div className="flex flex-col gap-2">
-                                {categories.map(category => (
+                                {hasMounted ? categories.map(category => (
                                     <button
                                         key={category}
-                                        suppressHydrationWarning
                                         onClick={() => setSelectedCategory(category)}
                                         className={`text-left px-3 py-2 rounded-md text-sm font-semibold transition-all duration-300 cursor-pointer ${selectedCategory === category
                                                 ? 'bg-brand-orange/10 text-brand-orange'
@@ -139,7 +145,13 @@ function ProductsContent() {
                                                 : products.filter(p => p.category === category).length}
                                         </span>
                                     </button>
-                                ))}
+                                )) : (
+                                    <div className="space-y-2">
+                                        {[1, 2, 3].map(i => (
+                                            <div key={i} className="h-9 bg-slate-50 animate-pulse rounded-md"></div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </div>
 

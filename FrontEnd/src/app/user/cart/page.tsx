@@ -53,10 +53,9 @@ export default function CartPage() {
 
     return (
         <>
-            <div className="min-h-screen pt-24 md:pt-32 pb-12 md:pb-20 bg-slate-50">
+            <div className="min-h-screen pt-6 md:pt-12 pb-12 md:pb-16 bg-slate-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h1 className="text-2xl md:text-3xl font-black text-brand-blue-dark mb-8 flex items-center gap-3">
-                        <ShoppingBag className="text-brand-orange" size={28} />
                         My Shopping Cart
                     </h1>
 

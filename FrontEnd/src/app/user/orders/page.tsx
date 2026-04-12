@@ -256,13 +256,12 @@ export default function OrdersPage() {
     return (
         <ProtectedRoute allowedRole="user">
             <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
-            <div className="min-h-screen bg-slate-50 pt-24 md:pt-32 pb-20">
+            <div className="min-h-screen pt-6 md:pt-12 pb-12 md:pb-16 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Page Header */}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
                         <div className="space-y-1">
                             <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-                                <ShoppingBag className="text-brand-blue" size={32} />
                                 My Orders
                             </h1>
                             <p className="text-slate-500 font-medium ml-1">Track and manage your premium drone purchases.</p>

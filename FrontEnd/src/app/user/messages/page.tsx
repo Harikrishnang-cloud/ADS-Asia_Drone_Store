@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { 
-    MessageCircle, Calendar, 
+    Calendar, 
     ArrowRight, ShoppingBag, Mail,
     Search
 } from "lucide-react";
@@ -89,14 +89,13 @@ export default function MessagesPage() {
 
     return (
         <ProtectedRoute allowedRole="user">
-            <div className="min-h-screen bg-slate-50 pt-24 md:pt-32 pb-20">
+            <div className="min-h-screen pt-6 md:pt-12 pb-12 md:pb-16 bg-slate-50">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     
                     {/* Header */}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                         <div className="space-y-1">
                             <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-                                <MessageCircle className="text-brand-blue" size={32} />
                                 Support Messages
                             </h1>
                             <p className="text-slate-500 font-medium ml-1">View official updates and messages regarding your orders.</p>
@@ -122,9 +121,7 @@ export default function MessagesPage() {
                         </div>
                     ) : filteredMessages.length === 0 ? (
                         <div className="bg-white rounded-lg p-16 border border-slate-100 shadow-sm flex flex-col items-center text-center">
-                            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
-                                <Mail className="text-slate-200 w-10 h-10" />
-                            </div>
+                            
                             <h2 className="text-2xl font-bold text-slate-900 mb-2">No Messages Found</h2>
                             <p className="text-slate-500 max-w-sm mb-8">
                                 {searchQuery 

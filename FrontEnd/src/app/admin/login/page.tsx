@@ -86,7 +86,6 @@ export default function AdminLoginPage() {
                             className="bg-slate-50 border border-slate-200 text-slate-900 w-full p-3.5 rounded-xl focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all placeholder:text-slate-400"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            suppressHydrationWarning
                         />
                     </div>
                     <div>
@@ -97,14 +96,12 @@ export default function AdminLoginPage() {
                             className="bg-slate-50 border border-slate-200 text-slate-900 w-full p-3.5 rounded-xl focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all placeholder:text-slate-400"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            suppressHydrationWarning
                         />
                     </div>
                     <button
                         type="submit"
                         disabled={loading}
                         className="bg-gradient-to-r from-red-600 to-brand-orange-dark hover:from-red-500 hover:to-orange-600 active:scale-[0.98] disabled:opacity-50 text-white font-bold tracking-wide uppercase text-sm w-full p-4 rounded-xl transition-all mt-4 shadow-lg shadow-red-500/20"
-                        suppressHydrationWarning
                     >
                         {loading ? "Authenticating..." : "Login"}
                     </button>

@@ -129,7 +129,6 @@ export default function ContactPage() {
                                         onBlur={() => setFocusedField(null)}
                                         value={formData.name}
                                         onChange={handleChange}
-                                        suppressHydrationWarning
                                         className="w-full px-4 pt-7 pb-2 bg-transparent outline-none text-slate-900 font-medium"
                                     />
                                     {formData.name && (
@@ -150,7 +149,6 @@ export default function ContactPage() {
                                         onBlur={() => setFocusedField(null)}
                                         value={formData.email}
                                         onChange={handleChange}
-                                        suppressHydrationWarning
                                         className="w-full px-4 pt-7 pb-2 bg-transparent outline-none text-slate-900 font-medium"
                                     />
                                     {formData.email ? (
@@ -176,7 +174,6 @@ export default function ContactPage() {
                                     onBlur={() => setFocusedField(null)}
                                     value={formData.subject}
                                     onChange={handleChange}
-                                    suppressHydrationWarning
                                     className="w-full px-4 pt-7 pb-2 bg-transparent outline-none text-slate-900 font-medium"
                                 />
                                 {formData.subject ? (
@@ -201,7 +198,6 @@ export default function ContactPage() {
                                     onBlur={() => setFocusedField(null)}
                                     value={formData.message}
                                     onChange={handleChange}
-                                    suppressHydrationWarning
                                     className="w-full px-4 pt-9 pb-3 bg-transparent outline-none text-slate-900 font-medium resize-none"
                                 ></textarea>
                                 {formData.message ? (

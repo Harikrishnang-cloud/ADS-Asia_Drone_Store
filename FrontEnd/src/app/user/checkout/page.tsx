@@ -511,7 +511,6 @@ export default function CheckoutPage() {
                                                 name="firstName"
                                                 value={formData.firstName}
                                                 onChange={handleInputChange}
-                                                suppressHydrationWarning
                                                 className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.firstName ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`}
                                                 placeholder="Enter first name"
                                             />
@@ -524,7 +523,6 @@ export default function CheckoutPage() {
                                                 name="lastName"
                                                 value={formData.lastName}
                                                 onChange={handleInputChange}
-                                                suppressHydrationWarning
                                                 className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.lastName ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`}
                                                 placeholder="Enter last name"
                                             />
@@ -537,7 +535,6 @@ export default function CheckoutPage() {
                                                 name="email"
                                                 value={formData.email}
                                                 onChange={handleInputChange}
-                                                suppressHydrationWarning
                                                 className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.email ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`}
                                                 placeholder="Enter email address"
                                             />
@@ -551,7 +548,6 @@ export default function CheckoutPage() {
                                                     name="phone"
                                                     value={formData.phone}
                                                     onChange={handleInputChange}
-                                                    suppressHydrationWarning
                                                     className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.phone ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`}
                                                     placeholder="Enter 10-digit phone number"
                                                 />
@@ -617,7 +613,6 @@ export default function CheckoutPage() {
                                                     name="address"
                                                     value={formData.address}
                                                     onChange={handleInputChange}
-                                                    suppressHydrationWarning
                                                     className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.address ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`}
                                                     placeholder="House/Flat No, Street, Landmark"
                                                 />
@@ -630,7 +625,6 @@ export default function CheckoutPage() {
                                                     name="city"
                                                     value={formData.city}
                                                     onChange={handleInputChange}
-                                                    suppressHydrationWarning
                                                     className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.city ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`}
                                                     placeholder="City or Town"
                                                 />
@@ -643,7 +637,6 @@ export default function CheckoutPage() {
                                                     name="state"
                                                     value={formData.state}
                                                     onChange={handleInputChange}
-                                                    suppressHydrationWarning
                                                     className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.state ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`}
                                                     placeholder="State"
                                                 />
@@ -656,7 +649,6 @@ export default function CheckoutPage() {
                                                     name="zip"
                                                     value={formData.zip}
                                                     onChange={handleInputChange}
-                                                    suppressHydrationWarning
                                                     className={`w-full px-4 py-3 rounded-xl bg-slate-50 border outline-none transition-all text-slate-900 ${errors.zip ? 'border-red-500 ring-2 ring-red-500/10' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20'}`}
                                                     placeholder="6-digit PIN"
                                                 />
