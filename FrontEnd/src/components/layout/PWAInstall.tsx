@@ -23,7 +23,7 @@ export function PWAInstall() {
       // Store the event for later use
       setInstallPrompt(e as BeforeInstallPromptEvent);
       // Show our custom prompt UI after a short delay
-      setTimeout(() => setIsVisible(true), 3000);
+      setTimeout(() => setIsVisible(true), 1000);
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);

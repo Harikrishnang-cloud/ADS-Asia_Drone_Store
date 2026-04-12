@@ -93,7 +93,7 @@ export function Navbar() {
         if (storedUserStr && !user) {
             try {
                 const storedUser = JSON.parse(storedUserStr);
-                if (storedUser.role === 'user') {
+                if (storedUser && storedUser.role === 'user') {
                     setAuth(storedUser);
                 }
             } catch (e) {
@@ -284,7 +284,7 @@ export function Navbar() {
                             <div className="relative group cursor-pointer">
                                 <Link href={user ? "/user/notifications" : "/auth/login"} className={`relative hover:text-brand-orange transition-colors flex items-center h-10 ${(isScrolled && isHomePage) ? "text-blue-dark" : "text-brand-blue-dark"}`}>
                                     <Bell size={20} strokeWidth={2} />
-                                    {notificationCount > 0 && (
+                                    {hasHydrated && notificationCount > 0 && (
                                         <span className="absolute top-1 -right-2 min-w-[18px] h-[18px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
                                             {notificationCount > 9 ? '9+' : notificationCount}
                                         </span>
@@ -504,7 +504,7 @@ export function Navbar() {
                     </Link>
                     <Link href={hasHydrated && user ? "/user/notifications" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="relative text-brand-blue-dark hover:text-brand-orange transition-colors" title="Notifications">
                         <Bell size={26} strokeWidth={2} />
-                        {notificationCount > 0 && (
+                        {hasHydrated && notificationCount > 0 && (
                             <span className="absolute -top-1 -right-1 min-w-[20px] h-[20px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
                                 {notificationCount > 9 ? '9+' : notificationCount}
                             </span>
