@@ -58,8 +58,6 @@ export function Footer() {
             { name: "About ADS", href: "/about" },
             { name: "Contact Us", href: "/contact" },
             { name: "Help Center", href: "/help" },
-            { name: "Terms of Service", href: "/terms" },
-            { name: "Privacy Policy", href: "/privacy" },
         ],
         social: [
             { name: "Facebook", icon: Facebook, href: "https://www.facebook.com/asiadronestore.global" },
@@ -82,7 +80,7 @@ export function Footer() {
                     <div className="space-y-6">
                         <Logo width={180} height={180} className="w-[140px] md:w-[180px]" imageClassName="w-full h-auto" />
                         <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
-                            Asia Drone Store (ADS) is your premium destination for high-end drones, spare parts, and professional aerial accessories across Asia.
+                            Asia Drone Store (ADS) is your premium destination for high-end drones, spare parts, and professional aerial accessories across the World.
                         </p>
                         <div className="flex items-center gap-4">
                             {footerLinks.social.map((item) => (
@@ -190,12 +188,35 @@ export function Footer() {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <p className="text-slate-400 text-sm text-center text-white md:text-left">
-                        © {hasMounted ? (currentYear || 2026) : 2026} <span className="text-brand-orange">Asia Drone Store</span>. All Rights Reserved. Designed and developed by Asia Softlab.
-                    </p>
-                    <div className="flex flex-wrap justify-center gap-6">
-                        {/* privacy policy & terms and conditions */}
+                <div className="pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-8 md:gap-4">
+                    {/* Left: Copyright */}
+                    <div className="flex-1 text-center md:text-left">
+                        <p className="text-slate-400 text-sm whitespace-nowrap">
+                            © {hasMounted ? (currentYear || 2026) : 2026} <span className="text-brand-orange font-bold">Asia Drone Store</span>. All Rights Reserved. 
+                        </p>
+                    </div>
+
+                    {/* Center: Credits */}
+                    <div className="flex-1 text-center">
+                        <p className="text-slate-500 text-sm">
+                            Designed and developed by <span className="text-slate-400 hover:text-brand-orange transition-colors cursor-pointer font-medium">Asia Softlab</span>.
+                        </p>
+                    </div>
+                    
+                    {/* Right: Legal Links */}
+                    <div className="flex-1 flex items-center justify-center md:justify-end gap-6">
+                        <Link href="/privacy" className="text-slate-400 text-sm hover:text-brand-orange transition-all relative group">
+                            Privacy Policy
+                            <span className="absolute bg-brand-orange transition-all group-hover:w-full"></span>
+                        </Link>
+                        <Link href="/terms" className="text-slate-400 text-sm hover:text-brand-orange transition-all relative group">
+                            Terms & Conditions
+                            <span className="absolute bg-brand-orange transition-all group-hover:w-full"></span>
+                        </Link>
+                        <Link href="/faq" className="text-slate-400 text-sm hover:text-brand-orange transition-all relative group">
+                            FAQ
+                            <span className="absolute bg-brand-orange transition-all group-hover:w-full"></span>
+                        </Link>
                     </div>
                 </div>
             </div>
