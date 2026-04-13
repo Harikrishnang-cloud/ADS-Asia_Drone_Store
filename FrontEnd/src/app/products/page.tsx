@@ -100,13 +100,13 @@ function ProductsContent() {
     }, [filteredProducts, currentPage]);
 
     return (
-        <main className="max-w-screen-3xl mx-auto px-4 sm:px-8 pt-24 pb-20 md:pt-10 relative z-10 w-full">
+        <main className="mx-auto w-full px-4 sm:px-8 pt-24 pb-20 md:pt-10 relative z-10 ">
             <div className="absolute inset-0 -z-10 pointer-events-none opacity-40"></div>
             {/* Page Header */}
            
             <div className="flex flex-col mb-10 relative">
                 <span className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-orange mb-3">Asia Drone Store Inventory</span>
-                <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-brand-blue-dark tracking-tighter mb-4">
+                <h1 className="text-5xl md:text-7xl lg:text-7xl font-black tracking-tighter mb-4">
                     {search ? `Search Results for "${search}"` : <>Professional <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-orange">Drone Solutions</span></>}
                 </h1>
                 <p className="text-slate-500 text-base md:text-lg leading-relaxed max-w-2xl">

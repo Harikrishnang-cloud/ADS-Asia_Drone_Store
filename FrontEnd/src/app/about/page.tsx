@@ -21,27 +21,14 @@ export default function AboutPage() {
                 <div className="absolute inset-0 -z-10 pointer-events-none opacity-40"></div>
                 <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-brand-blue/[0.03] rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
                 <div className="max-w-7xl mx-auto">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-                        <div className="max-w-2xl space-y-6 relative z-10">
-                            <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-[1.1]">
+                    <div className="flex flex-col items-center justify-center">
+                        <div className="text-center max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
+                            <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-[1.1] mb-6">
                                 Elevating Your <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-orange">Aerial Experience.</span>
                             </h1>
                             <p className="text-slate-500 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
                                 Welcome to Asia Drone Store. We don&apos;t just sell drones; we provide the wings for your imagination, creativity, and professional aspirations. As the leading premium drone retailer, we are committed to pushing the boundaries of what&apos;s possible in the sky.
                             </p>
-                            <div className="pt-4 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 w-full">
-                                <Link href="/products" className="w-full sm:w-auto" title="See all the products">
-                                    <Button variant="primary" size="default" fullWidth icon={<ChevronRight size={16} />}>
-                                        Explore Our Catalog     
-                                    </Button>
-                                </Link>
-                                <Link href="/contact" className="w-full sm:w-auto" title="our team will help you to get your drone">
-                                    <Button variant="secondary" size="default" fullWidth>
-                                        Get in Touch
-                                    </Button>
-                                </Link>
-                               
-                            </div>
                         </div>
                     </div>
                 </div>

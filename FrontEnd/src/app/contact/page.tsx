@@ -44,7 +44,6 @@ export default function ContactPage() {
             {/* Tech Grid Background */}
             <div className="absolute inset-0 z-1 pointer-events-none opacity-40"></div>
             <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 lg:px-12 w-full pt-12 md:pt-10 relative z-10 flex-1 flex flex-col">
-                
                 {/* Advanced Header */}
                 <div className="text-center max-w-4xl mx-auto mb-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
                     <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter mb-6 leading-tight">
