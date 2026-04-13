@@ -7,6 +7,7 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting(); // Force the waiting service worker to become the active service worker
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
@@ -15,8 +16,12 @@ self.addEventListener('install', (event) => {
   );
 });
 
+self.addEventListener('activate', (event) => {
+  event.waitUntil(clients.claim()); // Force the service worker to take control of all open pages immediately
+});
+
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
+  event.respondWith(                  
     caches.match(event.request)
       .then((response) => {
         if (response) {

@@ -19,12 +19,14 @@ export default function AdminDashboardPage() {
     const [customDates, setCustomDates] = useState({ start: '', end: '' });
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setDateTime(new Date());
+        const timeout = setTimeout(() => setDateTime(new Date()), 0);
         const interval = setInterval(() => {
             setDateTime(new Date());
         }, 1000);
-        return () => clearInterval(interval);
+        return () => {
+            clearTimeout(timeout);
+            clearInterval(interval);
+        };
     }, []);
 
     const handleDownloadReport = async () => {

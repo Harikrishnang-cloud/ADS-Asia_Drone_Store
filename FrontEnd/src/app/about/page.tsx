@@ -40,41 +40,8 @@ export default function AboutPage() {
                                         Get in Touch
                                     </Button>
                                 </Link>
-                                <Link href="https://asiasoftlab.in" className="w-full sm:w-auto" target="_blank" rel="noopener noreferrer" title="Register through our official website">
-                                    <Button variant="secondary" size="default" fullWidth icon={<ChevronRight size={16} />} iconPosition="right">
-                                         Drone pilot license, Please register
-                                    </Button>
-                                </Link>
+                               
                             </div>
-                        </div>
-
-                        {/* Right Side: Iframe Website projection */}
-                        <div className="relative z-10 w-full h-[400px] md:h-[500px] xl:h-[600px] rounded-[1.5rem] overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] border-4 border-white bg-slate-100 flex flex-col group pointer-events-auto transform rotate-1 hover:rotate-0 transition-transform duration-500 ease-out">
-                            
-                            <a 
-                                href="https://asiasoftlab.in" 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="absolute inset-0 z-30 cursor-pointer" 
-                                aria-label="Visit Asia Soft Lab Official Website"
-                                title="Click to open official website"
-                            ></a>
-
-                            {/* Browser-like window header for premium feel */}
-                            <div className="w-full h-9 bg-slate-200 border-b border-slate-300 flex items-center px-4 gap-2 z-20 shrink-0 select-none">
-                                <div className="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
-                                <div className="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
-                                <div className="w-3 h-3 rounded-full bg-[#27c93f]"></div>
-                                <div className="mx-auto text-[11px] font-bold text-slate-500 tracking-wider font-mono bg-white/50 px-3 py-1 rounded-md shadow-sm">asiasoftlab.in</div>
-                            </div>
-                            <iframe 
-                                src="https://asiasoftlab.in" 
-                                className="w-full flex-1 border-none bg-white pointer-events-none"
-                                title="Asia Soft Lab Official Website"
-                                loading="lazy"
-                                tabIndex={-1}
-                                scrolling="no"
-                            ></iframe>
                         </div>
                     </div>
                 </div>

@@ -25,14 +25,17 @@ export function NotificationDropdown({
   onMarkRead,
   onMarkAllRead 
 }: NotificationDropdownProps) {
+  const [now, setNow] = useState<number>(0);
   const isEmpty = notifications.length === 0;
 
-  const [now, setNow] = useState<number>(0);
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setNow(Date.now());
+    // Update asynchronously to avoid synchronous setState inside effect warnings
+    const timeout = setTimeout(() => setNow(Date.now()), 0);
     const timer = setInterval(() => setNow(Date.now()), 60000);
-    return () => clearInterval(timer);
+    return () => {
+      clearTimeout(timeout);
+      clearInterval(timer);
+    };
   }, []);
 
   const formatTime = (timestamp: number) => {

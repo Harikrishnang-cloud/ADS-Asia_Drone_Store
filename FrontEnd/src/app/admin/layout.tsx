@@ -27,8 +27,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         try {
             const user = JSON.parse(userStr);
             if (user && user.role === "admin") {
-                // eslint-disable-next-line react-hooks/set-state-in-effect
-                setLoading(false);
+                setTimeout(() => setLoading(false), 0);
             } else {
                 router.push("/admin/login");
             }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useAuthStore } from "@/store/authStore";
 import { Copy, Check, Share2 } from "lucide-react";
@@ -9,13 +9,10 @@ import toast from "react-hot-toast";
 export default function ReferPage() {
     const { user } = useAuthStore();
     const [copied, setCopied] = useState(false);
-    const [referralLink, setReferralLink] = useState("");
-
-    useEffect(() => {
+    const referralLink = React.useMemo(() => {
+        if (typeof window === "undefined") return "";
         const uniqueCode = user?.id ? user.id.slice(0, 8).toUpperCase() : (user?.name?.slice(0, 4).toUpperCase() || "USER") + "X9";
-        const link = `${window.location.origin}/signup?ref=${uniqueCode}`;
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setReferralLink(link);
+        return `${window.location.origin}/signup?ref=${uniqueCode}`;
     }, [user]);
 
     const handleCopy = () => {

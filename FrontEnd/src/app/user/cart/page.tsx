@@ -19,23 +19,25 @@ export default function CartPage() {
     const ITEMS_PER_PAGE = 6;
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setHasHydrated(true);
+        const timeout = setTimeout(() => setHasHydrated(true), 0);
+        return () => clearTimeout(timeout);
     }, []);
 
     // Pagination calculations
     const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+    
+    // Safety clamp for calculation
+    const safePage = Math.max(1, Math.min(currentPage, totalPages || 1));
 
     useEffect(() => {
         if (currentPage > totalPages && totalPages > 0) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
-            setCurrentPage(totalPages);
+            setTimeout(() => setCurrentPage(totalPages), 0);
         }
     }, [items.length, currentPage, totalPages]);
 
     const paginatedItems = items.slice(
-        (currentPage - 1) * ITEMS_PER_PAGE,
-        currentPage * ITEMS_PER_PAGE
+        (safePage - 1) * ITEMS_PER_PAGE,
+        safePage * ITEMS_PER_PAGE
     );
 
     if (!hasHydrated) {

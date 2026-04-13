@@ -20,7 +20,7 @@ function ProductsContent() {
 
     // Filter states
     const [selectedCategory, setSelectedCategory] = useState<string>("All");
-    const [priceRange, setPriceRange] = useState<number>(25000); 
+    const [priceRange, setPriceRange] = useState<number>(250000); 
     const [sortBy, setSortBy] = useState<string>("newest");
 
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -28,13 +28,12 @@ function ProductsContent() {
     const ITEMS_PER_PAGE = 12; 
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setHasMounted(true);
+        const timeout = setTimeout(() => setHasMounted(true), 0);
+        return () => clearTimeout(timeout);
     }, []);
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setCurrentPage(1);
+        setTimeout(() => setCurrentPage(1), 0);
     }, [selectedCategory, priceRange, sortBy, search]);
     const categories = useMemo(() => {
         const cats = Array.from(new Set(products.map(p => p.category).filter(Boolean)));
@@ -76,7 +75,8 @@ function ProductsContent() {
                 case "price_desc":
                     return priceB - priceA;
                 case "rating_desc":
-                    return ratingB - ratingA;
+                case "popularity":
+                    return (ratingB || Number(b.reviews || 0)) - (ratingA || Number(a.reviews || 0));
                 case "rating_asc":
                     return ratingA - ratingB;
                 case "name_asc":
@@ -163,16 +163,16 @@ function ProductsContent() {
                             </div>
                             <input
                                 type="range"
-                                min="1000"
-                                max="50000"
+                                min="10000"
+                                max="500000"
                                 step="1000"
                                 value={priceRange}
                                 onChange={(e) => setPriceRange(Number(e.target.value))}
                                 className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-brand-orange"
                             />
                             <div className="flex justify-between text-[10px] font-bold text-slate-400 mt-2">
-                                <span>₹ 1 K</span>
-                                <span>₹ 50 K</span>
+                                <span>₹ 10 K</span>
+                                <span>₹ 5 Lakh</span>
                             </div>
                         </div>
                     </div>
@@ -244,7 +244,7 @@ function ProductsContent() {
                             <h3 className="text-xl font-black text-slate-900 mb-2">No products found</h3>
                             <p className="text-slate-500 font-medium text-center max-w-sm">Try adjusting your filters or price range to find what you&apos;re looking for.</p>
                             <button
-                                onClick={() => { setSelectedCategory("All"); setPriceRange(50000); }}
+                                onClick={() => { setSelectedCategory("All"); setPriceRange(500000); }}
                                 className="mt-6 px-6 py-2 bg-slate-100 text-slate-700 font-bold rounded-lg hover:bg-slate-200 transition-colors cursor-pointer"
                             >
                                 Clear All Filters

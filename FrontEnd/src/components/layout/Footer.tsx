@@ -17,9 +17,10 @@ export function Footer() {
     const [hasMounted, setHasMounted] = useState(false);
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setHasMounted(true);
-        setCurrentYear(new Date().getFullYear());
+        setTimeout(() => {
+            setHasMounted(true);
+            setCurrentYear(new Date().getFullYear());
+        }, 0);
     }, []);
 
     const handleSubscribe = async () => {

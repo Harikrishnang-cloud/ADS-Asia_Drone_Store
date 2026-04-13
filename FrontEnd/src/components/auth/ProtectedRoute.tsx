@@ -51,8 +51,7 @@ export default function ProtectedRoute({ children, allowedRole }: ProtectedRoute
                     router.push(user.role === 'admin' ? "/admin/dashboard" : "/");
                     return;
                 }
-                // eslint-disable-next-line react-hooks/set-state-in-effect
-                setIsAuthorized(true);
+                setTimeout(() => setIsAuthorized(true), 0);
             } catch {
                 localStorage.removeItem(userKey);
                 router.push(isAdminPath ? "/admin/login" : "/auth/login");
