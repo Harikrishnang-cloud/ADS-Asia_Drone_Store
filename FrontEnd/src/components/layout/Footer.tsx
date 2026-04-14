@@ -78,9 +78,9 @@ export function Footer() {
 
                     {/* Brand Info */}
                     <div className="space-y-6">
-                        <Logo width={180} height={180} className="w-[140px] md:w-[180px]" imageClassName="w-full h-auto" />
+                        <Logo width={180} height={180} className="w-[140px] md:w-[180px]" />
                         <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
-                            Asia Drone Store (ADS) is your premium destination for high-end drones, spare parts, and professional aerial accessories across the World.
+                            Asia Drone Store (ADS) is your premium destination for high-end drones, spare parts, and professional aerial accessories across Asia.
                         </p>
                         <div className="flex items-center gap-4">
                             {footerLinks.social.map((item) => (
@@ -156,6 +156,7 @@ export function Footer() {
                                     onChange={(e) => setEmail(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleSubscribe()}
                                     className="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 pl-4 pr-12 text-sm focus:outline-none focus:border-brand-orange transition-all"
+                                    suppressHydrationWarning
                                 />
                                 <button 
                                     type="button" 
@@ -163,6 +164,7 @@ export function Footer() {
                                     disabled={isSubscribing}
                                     aria-label="Subscribe to newsletter"
                                     className="absolute right-2 top-1/2 -translate-y-1/2 bg-brand-orange p-2 rounded-lg hover:bg-white hover:text-brand-orange transition-all duration-300 disabled:opacity-50"
+                                    suppressHydrationWarning
                                 >
                                     <Send size={16} className={isSubscribing ? "opacity-50 cursor-wait" : ""} />
                                 </button>

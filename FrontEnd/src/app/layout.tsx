@@ -39,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body
         className={`bg-slate-50 text-slate-800 relative overflow-x-hidden min-h-screen flex flex-col`}
         style={{ fontFamily: `'RupeeSystem', ${poppins.style.fontFamily}` }}>

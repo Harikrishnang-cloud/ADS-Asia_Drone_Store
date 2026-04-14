@@ -200,7 +200,7 @@ export function Navbar() {
 
                     {/* Left Side: Logo */}
                     <div className="flex-shrink-0 z-50">
-                        <Logo width={160} height={160} className="w-[120px] md:w-[160px]" imageClassName="w-full h-auto" />
+                        <Logo width={160} height={160} className="w-[120px] md:w-[160px]" />
                     </div>
 
                     {/* Center: Navigation Menu (Desktop) */}
@@ -460,6 +460,7 @@ export function Navbar() {
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                             className="text-brand-blue-dark hover:text-brand-orange transition-colors focus:outline-none p-2"
                             aria-label="Toggle Menu"
+                            suppressHydrationWarning
                         >
                             {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
                         </button>

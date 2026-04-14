@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query } from "firebase/firestore";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -89,14 +90,14 @@ export default function BannerSlider() {
                                 playsInline
                             />
                         ) : (
-                            <picture>
-                                <img
-                                    src={banner.imageUrl}
-                                    alt={banner.title}
-                                    className="w-full h-full object-cover select-none"
-                                    loading="eager"
-                                />
-                            </picture>
+                            <Image
+                                src={banner.imageUrl}
+                                alt={banner.title}
+                                fill
+                                priority={banners.indexOf(banner) < 3}
+                                className="w-full h-full object-cover select-none"
+                                sizes="100vw"
+                            />
                         )}
 
                         {/* Responsive Content Container */}

@@ -1,6 +1,7 @@
- "use client";
+"use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { Download, X } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 
@@ -10,20 +11,23 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export function PWAInstall() {
+  const pathname = usePathname();
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isInstalling, setIsInstalling] = useState(false);
 
   useEffect(() => {
+    // Only proceed if we are on the homepage
+    if (pathname !== "/") return;
+
     const handleBeforeInstallPrompt = (e: Event) => {
-      // Don't show if already in standalone mode
       if (window.matchMedia('(display-mode: standalone)').matches) return;
-      // Prevent the default browser prompt
+      const displayCount = parseInt(localStorage.getItem("pwa_prompt_display_count") || "0");
+      if (displayCount >= 4) return;
       e.preventDefault();
-      // Store the event for later use
       setInstallPrompt(e as BeforeInstallPromptEvent);
-      // Show our custom prompt UI after a short delay
-      setTimeout(() => setIsVisible(true), 1000);
+      localStorage.setItem("pwa_prompt_display_count", (displayCount + 1).toString());
+      setTimeout(() => setIsVisible(true), 5000);
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -31,7 +35,7 @@ export function PWAInstall() {
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     };
-  }, []);
+  }, [pathname]);
 
   const handleInstallClick = async () => {
     if (!installPrompt) return;
@@ -48,7 +52,6 @@ export function PWAInstall() {
     const { outcome } = await installPrompt.userChoice;
     console.log(`User response to the install prompt: ${outcome}`);
 
-    // We used the prompt, so clear it
     setInstallPrompt(null);
     setIsInstalling(false);
     setIsVisible(false);

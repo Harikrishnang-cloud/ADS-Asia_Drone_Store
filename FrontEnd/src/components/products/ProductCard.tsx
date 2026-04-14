@@ -59,12 +59,13 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
 
 
-            <div className="relative aspect-square overflow-hidden bg-slate-50">
-                <Link href={`/products/${product.id}`} className="block w-full h-full">
+            <div className="relative aspect-square overflow-hidden bg-slate-50 text-center">
+                <Link href={`/products/${product.id}`} className="block w-full h-full relative">
                     <Image
                         src={product.imageUrl}
                         alt={product.name}
                         fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover group-hover:scale-110 transition-transform duration-700"
                     />
                 </Link>
