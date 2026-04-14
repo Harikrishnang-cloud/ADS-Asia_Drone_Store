@@ -6,11 +6,16 @@ import { Product } from "@/types/product.types";
 import ProductCard from "@/components/products/ProductCard";
 import Pagination from "@/components/ui/Pagination";
 import { Filter, SlidersHorizontal, ChevronDown } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 function ProductsContent() {
     const searchParams = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+    
     const search = searchParams.get("search") || "";
+    const categoryParam = searchParams.get("category") || "All";
+    const sortByParam = searchParams.get("sortBy") || "newest";
 
     const { data: products, loading } = useFirestoreCollection<Product>({
         collectionName: "products",
@@ -18,19 +23,33 @@ function ProductsContent() {
         orderDirection: "desc"
     });
 
-    // Filter states
-    const [selectedCategory, setSelectedCategory] = useState<string>("All");
+    // States for non-URL filters (like price range and pagination)
     const [priceRange, setPriceRange] = useState<number>(250000); 
-    const [sortBy, setSortBy] = useState<string>("newest");
-
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [hasMounted, setHasMounted] = useState(false);
     const ITEMS_PER_PAGE = 12; 
+
+    // Derived filters from URL
+    const selectedCategory = categoryParam;
+    const sortBy = sortByParam;
 
     useEffect(() => {
         const timeout = setTimeout(() => setHasMounted(true), 0);
         return () => clearTimeout(timeout);
     }, []);
+
+    // Helper to update search params
+    const updateFilters = (updates: Record<string, string | null>) => {
+        const params = new URLSearchParams(searchParams.toString());
+        Object.entries(updates).forEach(([key, value]) => {
+            if (value === null || value === "All") {
+                params.delete(key);
+            } else {
+                params.set(key, value);
+            }
+        });
+        router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    };
 
     useEffect(() => {
         setTimeout(() => setCurrentPage(1), 0);
@@ -132,7 +151,7 @@ function ProductsContent() {
                                 {hasMounted ? categories.map(category => (
                                     <button
                                         key={category}
-                                        onClick={() => setSelectedCategory(category)}
+                                        onClick={() => updateFilters({ category: category })}
                                         className={`text-left px-3 py-2 rounded-md text-sm font-semibold transition-all duration-300 cursor-pointer ${selectedCategory === category
                                                 ? 'bg-brand-orange/10 text-brand-orange'
                                                 : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
@@ -196,7 +215,7 @@ function ProductsContent() {
                                 <select
                                     className="w-full appearance-none bg-slate-50 border border-slate-200 text-sm font-bold text-slate-700 py-2.5 pl-4 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-orange/20 cursor-pointer"
                                     value={sortBy}
-                                    onChange={(e) => setSortBy(e.target.value)}>
+                                    onChange={(e) => updateFilters({ sortBy: e.target.value })}>
                                     <option value="newest">What&apos;s New</option>
                                     <option value="popularity">Popularity</option>
                                     <option value="price_asc">Price: Low to High</option>
@@ -244,7 +263,10 @@ function ProductsContent() {
                             <h3 className="text-xl font-black text-slate-900 mb-2">No products found</h3>
                             <p className="text-slate-500 font-medium text-center max-w-sm">Try adjusting your filters or price range to find what you&apos;re looking for.</p>
                             <button
-                                onClick={() => { setSelectedCategory("All"); setPriceRange(500000); }}
+                                onClick={() => { 
+                                    setPriceRange(500000);
+                                    updateFilters({ category: null, sortBy: null, search: null });
+                                }}
                                 className="mt-6 px-6 py-2 bg-slate-100 text-slate-700 font-bold rounded-lg hover:bg-slate-200 transition-colors cursor-pointer"
                             >
                                 Clear All Filters

@@ -48,11 +48,11 @@ export function Footer() {
 
     const footerLinks = {
         shop: [
-            { name: "Professional Drones", href: "/products/professional" },
-            { name: "Photography Drones", href: "/products/photography" },
-            { name: "Spare Parts", href: "/products/spare-parts" },
-            { name: "Accessories", href: "/products/accessories" },
-            { name: "New Arrivals", href: "/products/new-arrivals" },
+            { name: "Professional Drones", href: "/products?category=Atmos C" },
+            { name: "Photography Drones", href: "/products?category=Atmos X" },
+            { name: "Spare Parts", href: "/products?category=Spares" },
+            { name: "Accessories", href: "/products?category=Accessories" },
+            { name: "New Arrivals", href: "/products?sortBy=newest" },
         ],
         company: [
             { name: "About ADS", href: "/about" },
@@ -213,7 +213,7 @@ export function Footer() {
                             Terms & Conditions
                             <span className="absolute bg-brand-orange transition-all group-hover:w-full"></span>
                         </Link>
-                        <Link href="/faq" className="text-slate-400 text-sm hover:text-brand-orange transition-all relative group">
+                        <Link href="/help#faq" className="text-slate-400 text-sm hover:text-brand-orange transition-all relative group">
                             FAQ
                             <span className="absolute bg-brand-orange transition-all group-hover:w-full"></span>
                         </Link>

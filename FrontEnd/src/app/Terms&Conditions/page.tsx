@@ -76,7 +76,7 @@ export default function TermsAndConditions() {
         {
             id: "drone-safety",
             title: "8. Drone Safety & Regulations",
-            subtitle: "For more Details Visit our Official Pilot Training Website",
+            subtitle: "For more Details Visit our Official Pilot Training (please visit)",
             content: "Operating a drone requires responsibility and adherence to local laws. By purchasing from us, you agree to:",
             list: [
                 "Comply with all local civil aviation authority (e.g., DGCA in India) regulations.",

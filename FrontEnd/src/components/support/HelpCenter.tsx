@@ -155,7 +155,7 @@ export default function HelpCenter() {
             </section>
 
             {/* FAQ Section */}
-            <section className="container mx-auto px-6 py-20">
+            <section id="faq" className="container mx-auto px-6 py-8">
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-4xl font-black text-brand-blue-dark mb-4">Frequently Asked Questions</h2>
@@ -201,7 +201,7 @@ export default function HelpCenter() {
             </section>
 
             {/* Contact Support Section */}
-            <section className="bg-white py-24">
+            <section className="bg-white py-10">
                 <div className="container mx-auto px-6 text-center">
                     <h2 className="text-3xl md:text-5xl font-black text-brand-blue-dark mb-6">Still need assistance?</h2>
                     <p className="text-slate-500 text-lg mb-16 max-w-2xl mx-auto font-medium">
