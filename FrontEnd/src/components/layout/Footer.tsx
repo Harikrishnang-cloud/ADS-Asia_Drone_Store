@@ -199,7 +199,7 @@ export function Footer() {
                     {/* Center: Credits */}
                     <div className="flex-1 text-center">
                         <p className="text-slate-500 text-sm">
-                            Designed and developed by <span className="text-slate-400 hover:text-brand-orange transition-colors cursor-pointer font-medium">Asia Softlab</span>.
+                            Designed, Developed and Hosted by <span className="text-slate-400 hover:text-brand-orange transition-colors cursor-pointer font-medium">Asia Softlab Pvt. Ltd.</span>
                         </p>
                     </div>
                     
@@ -209,7 +209,7 @@ export function Footer() {
                             Privacy Policy
                             <span className="absolute bg-brand-orange transition-all group-hover:w-full"></span>
                         </Link>
-                        <Link href="/terms" className="text-slate-400 text-sm hover:text-brand-orange transition-all relative group">
+                        <Link href="/Terms&Conditions" className="text-slate-400 text-sm hover:text-brand-orange transition-all relative group">
                             Terms & Conditions
                             <span className="absolute bg-brand-orange transition-all group-hover:w-full"></span>
                         </Link>
