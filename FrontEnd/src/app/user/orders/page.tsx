@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import { 
-    ShoppingBag, Package, Truck, CheckCircle2, 
-    XCircle, Clock, ChevronRight, MapPin, 
+import {
+    ShoppingBag, Package, Truck, CheckCircle2,
+    XCircle, Clock, ChevronRight, MapPin,
     CreditCard, Hash,
-    ChevronDown, ChevronUp, ExternalLink, Mail, Download
+    ChevronDown, ChevronUp, ExternalLink, Mail, Download, RotateCcw
 } from "lucide-react";
 import Link from "next/link";
 import { collection, query, where, getDocs, Timestamp, doc, updateDoc, increment } from "firebase/firestore";
@@ -54,6 +54,9 @@ interface Order {
     trackingId?: string;
     trackingLink?: string;
     adminMessage?: string;
+    messageUpdatedAt?: number;
+    deliveredAt?: number;
+    returnedAt?: number;
 }
 
 export default function OrdersPage() {
@@ -65,6 +68,19 @@ export default function OrdersPage() {
     const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
     const [isCancelling, setIsCancelling] = useState(false);
     const [cancelOrderId, setCancelOrderId] = useState<string | null>(null);
+    const [returnOrderId, setReturnOrderId] = useState<string | null>(null);
+    const [returnReason, setReturnReason] = useState("");
+    const [returnComment, setReturnComment] = useState("");
+    const [isSubmittingReturn, setIsSubmittingReturn] = useState(false);
+
+    const returnReasons = [
+        "Defective/Damaged product",
+        "Wrong item received",
+        "Product not as described",
+        "Performance not satisfactory",
+        "Changed my mind",
+        "Other"
+    ];
 
     const { isInitialized } = useAuth();
 
@@ -77,9 +93,9 @@ export default function OrdersPage() {
                     collection(db, "orders"),
                     where("userId", "==", user.id)
                 );
-                
+
                 const querySnapshot = await getDocs(q);
-                
+
                 const orderData = querySnapshot.docs.map(doc => {
                     const data = doc.data();
                     return {
@@ -87,14 +103,14 @@ export default function OrdersPage() {
                         ...data
                     };
                 }) as Order[];
-                
+
                 // Sort in memory instead
                 orderData.sort((a, b) => {
                     const dateA = a.createdAt instanceof Timestamp ? a.createdAt.toMillis() : (a.createdAt ? new Date(a.createdAt).getTime() : 0);
                     const dateB = b.createdAt instanceof Timestamp ? b.createdAt.toMillis() : (b.createdAt ? new Date(b.createdAt).getTime() : 0);
                     return dateB - dateA;
                 });
-                
+
                 setOrders(orderData);
             } catch (error) {
                 console.error("Error fetching orders:", error);
@@ -122,10 +138,48 @@ export default function OrdersPage() {
                 return { bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-orange-100', icon: Truck };
             case 'cancelled':
                 return { bg: 'bg-red-50', text: 'text-red-600', border: 'border-red-100', icon: XCircle };
+            case 'returned':
+                return { bg: 'bg-red-50', text: 'text-red-600', border: 'border-red-100', icon: RotateCcw };
+            case 'return requested':
+                return { bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-orange-100', icon: Clock };
             default:
                 return { bg: 'bg-slate-50', text: 'text-slate-600', border: 'border-slate-100', icon: Package };
         }
     };
+
+    const handleReturnRequest = async () => {
+        if (!returnOrderId || !returnReason) {
+            toast.error("Please select a reason for return.");
+            return;
+        }
+
+        setIsSubmittingReturn(true);
+        try {
+            const orderRef = doc(db, "orders", returnOrderId);
+            const returnData = {
+                status: "Return Requested",
+                returnReason: returnReason,
+                returnComment: returnReason === "Other" ? returnComment : "",
+                returnRequestedAt: Date.now()
+            };
+
+            await updateDoc(orderRef, returnData);
+
+            setOrders(orders.map(o => o.id === returnOrderId ? { ...o, ...returnData } : o));
+            toast.success("Return request submitted successfully!");
+
+            // Reset state
+            setReturnOrderId(null);
+            setReturnReason("");
+            setReturnComment("");
+        } catch (error) {
+            console.error("Return request failed:", error);
+            toast.error("Failed to submit return request.");
+        } finally {
+            setIsSubmittingReturn(false);
+        }
+    };
+
 
     const toggleExpand = (orderId: string) => {
         setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
@@ -133,7 +187,7 @@ export default function OrdersPage() {
 
     const handleCancelOrder = async () => {
         if (!cancelOrderId || !user?.id) return;
-        
+
         const orderToCancel = orders.find(o => o.id === cancelOrderId);
         if (!orderToCancel || orderToCancel.status.toLowerCase() !== 'processing') {
             toast.error("This order cannot be cancelled.");
@@ -144,10 +198,10 @@ export default function OrdersPage() {
         setIsCancelling(true);
         try {
             const orderRef = doc(db, "orders", cancelOrderId);
-            
+
             // 1. Update order status
             await updateDoc(orderRef, { status: "Cancelled" });
-            
+
             // 2. If paid via wallet, refund the money
             if (orderToCancel.paymentMethod.toLowerCase() === 'wallet') {
                 const userRef = doc(db, "users", user.id);
@@ -161,7 +215,7 @@ export default function OrdersPage() {
 
             // 3. Update local state
             setOrders(orders.map(o => o.id === cancelOrderId ? { ...o, status: "Cancelled" } : o));
-            
+
         } catch (error) {
             console.error("Cancel failed:", error);
             toast.error("Failed to cancel order. Please try again.");
@@ -328,10 +382,10 @@ export default function OrdersPage() {
                                                 <div className="flex -space-x-3 overflow-hidden">
                                                     {order.items.slice(0, 3).map((item, i) => (
                                                         /* eslint-disable-next-line @next/next/no-img-element */
-                                                        <img 
-                                                            key={i} 
-                                                            src={item.image} 
-                                                            alt={item.name} 
+                                                        <img
+                                                            key={i}
+                                                            src={item.image}
+                                                            alt={item.name}
                                                             className="inline-block h-12 w-12 rounded-lg ring-2 ring-white object-cover bg-slate-50"
                                                         />
                                                     ))}
@@ -351,7 +405,7 @@ export default function OrdersPage() {
                                         {isExpanded && (
                                             <div className="border-t border-slate-100 bg-slate-50/50 animate-in slide-in-from-top-2 duration-300">
                                                 <div className="p-6 md:p-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
-                                                    
+
                                                     {/* Items Column */}
                                                     <div className="lg:col-span-2 space-y-6">
                                                         <h4 className="text-sm font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
@@ -418,7 +472,7 @@ export default function OrdersPage() {
                                                                     <div className={`w-full h-1 -mx-2 mb-4 bg-slate-100 overflow-hidden`}>
                                                                         <div className={`h-full bg-brand-blue transition-all duration-1000 ${['delivered'].includes(order.status.toLowerCase()) ? 'w-full' : 'w-0'}`}></div>
                                                                     </div>
-                                                                    
+
                                                                     <div className="flex-1 flex flex-col items-center text-center gap-2 relative z-10">
                                                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${order.status.toLowerCase() === 'delivered' ? 'bg-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'bg-slate-100 text-slate-400'}`}>4</div>
                                                                         <span className="text-[10px] font-black uppercase">Delivered</span>
@@ -438,7 +492,7 @@ export default function OrdersPage() {
                                                                         <p className="text-sm font-bold text-slate-700 italic">&quot;{order.adminMessage}&quot;</p>
                                                                     </div>
                                                                 )}
-                                                                
+
                                                                 {order.trackingId && (
                                                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-3 border-t border-brand-blue/10">
                                                                         <div className="space-y-1">
@@ -446,9 +500,9 @@ export default function OrdersPage() {
                                                                             <p className="text-sm font-black text-slate-900 tracking-tight">{order.trackingId}</p>
                                                                         </div>
                                                                         {order.trackingLink && (
-                                                                            <a 
-                                                                                href={order.trackingLink} 
-                                                                                target="_blank" 
+                                                                            <a
+                                                                                href={order.trackingLink}
+                                                                                target="_blank"
                                                                                 rel="noopener noreferrer"
                                                                                 className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-brand-blue/20 rounded-xl text-xs font-black uppercase text-brand-blue hover:bg-brand-blue hover:text-white transition-all shadow-sm"
                                                                             >
@@ -515,10 +569,10 @@ export default function OrdersPage() {
 
                                                         <div className="space-y-3 pt-2">
                                                             <div className="rounded-lg cursor-pointer">
-                                                                <Button 
-                                                                    fullWidth 
-                                                                    variant="secondary" 
-                                                                    size="sm" 
+                                                                <Button
+                                                                    fullWidth
+                                                                    variant="secondary"
+                                                                    size="sm"
                                                                     icon={<Download size={14} />}
                                                                     onClick={() => generateInvoice(order)}
                                                                 >
@@ -526,7 +580,7 @@ export default function OrdersPage() {
                                                                 </Button>
                                                             </div>
                                                             {order.status.toLowerCase() === 'processing' && (
-                                                                <button 
+                                                                <button
                                                                     onClick={() => setCancelOrderId(order.id)}
                                                                     className="w-full py-2.5 rounded-lg text-xs font-black uppercase tracking-widest text-red-500 hover:bg-red-50 border border-red-100 transition-all flex items-center justify-center gap-2"
                                                                 >
@@ -534,12 +588,29 @@ export default function OrdersPage() {
                                                                 </button>
                                                             )}
                                                             {order.status.toLowerCase() === 'pending payment' && (
-                                                                <button 
+                                                                <button
                                                                     onClick={() => handleRetryPayment(order)}
                                                                     className="w-full py-2.5 rounded-lg text-xs font-black uppercase tracking-widest text-white bg-brand-orange hover:bg-orange-600 transition-all flex items-center justify-center gap-2 shadow-sm"
                                                                 >
                                                                     <CreditCard size={14} /> Complete Payment
                                                                 </button>
+                                                            )}
+                                                            {order.status.toLowerCase() === 'delivered' && (
+                                                                (() => {
+                                                                    const deliveredAt = order.deliveredAt;
+                                                                    const isWithinWindow = deliveredAt && (Date.now() - deliveredAt < 5 * 24 * 60 * 60 * 1000);
+                                                                    if (isWithinWindow) {
+                                                                        return (
+                                                                            <button
+                                                                                onClick={() => setReturnOrderId(order.id)}
+                                                                                className="w-full py-2.5 rounded-lg text-xs font-black uppercase tracking-widest text-orange-600 hover:bg-orange-50 border border-orange-100 transition-all flex items-center justify-center gap-2"
+                                                                            >
+                                                                                <RotateCcw size={14} /> Request Return
+                                                                            </button>
+                                                                        );
+                                                                    }
+                                                                    return null;
+                                                                })()
                                                             )}
                                                         </div>
                                                     </div>
@@ -553,7 +624,7 @@ export default function OrdersPage() {
                     )}
                 </div>
 
-                <ConfirmationModal 
+                <ConfirmationModal
                     isOpen={!!cancelOrderId}
                     onClose={() => setCancelOrderId(null)}
                     onConfirm={handleCancelOrder}
@@ -563,6 +634,74 @@ export default function OrdersPage() {
                     type="danger"
                     isLoading={isCancelling}
                 />
+
+                {/* Return Request Modal */}
+                {returnOrderId && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+                        <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
+                            <div className="p-8">
+                                <div className="flex items-center gap-4 mb-6">
+                                    <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-600">
+                                        <RotateCcw size={24} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">Request Return</h3>
+                                        <p className="text-sm text-slate-500 font-medium">Please provide a reason for returning this item.</p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-5">
+                                    <div>
+                                        <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2 block ml-1">Reason for Return</label>
+                                        <select
+                                            className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-orange-500 outline-none transition-all text-sm font-bold text-slate-700 appearance-none cursor-pointer"
+                                            value={returnReason}
+                                            onChange={(e) => setReturnReason(e.target.value)}
+                                        >
+                                            <option value="">Select a reason...</option>
+                                            {returnReasons.map(reason => (
+                                                <option key={reason} value={reason}>{reason}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    {returnReason === "Other" && (
+                                        <div className="animate-in slide-in-from-top-2 duration-300">
+                                            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2 block ml-1">Additional Details</label>
+                                            <textarea
+                                                className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-orange-500 outline-none transition-all text-sm font-medium text-slate-700 resize-none h-24"
+                                                placeholder="Tell us more about the issue..."
+                                                value={returnComment}
+                                                onChange={(e) => setReturnComment(e.target.value)}
+                                            />
+                                        </div>
+                                    )}
+
+                                    <div className="flex gap-3 pt-2">
+                                        <button
+                                            onClick={() => {
+                                                setReturnOrderId(null);
+                                                setReturnReason("");
+                                                setReturnComment("");
+                                            }}
+                                            className="flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest text-slate-400 hover:bg-slate-50 transition-all"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <Button
+                                            variant="orange"
+                                            fullWidth
+                                            onClick={handleReturnRequest}
+                                            loading={isSubmittingReturn}
+                                        >
+                                            Submit Request
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </ProtectedRoute>
     );

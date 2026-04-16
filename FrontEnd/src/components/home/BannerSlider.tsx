@@ -121,8 +121,6 @@ export default function BannerSlider() {
                     </div>
                 ))}
             </div>
-
-            {/* Navigation Arrows - hidden on small touch devices for cleaner look */}
             {banners.length > 1 && (
                 <>
                     <button

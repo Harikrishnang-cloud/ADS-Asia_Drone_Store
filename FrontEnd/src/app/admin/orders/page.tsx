@@ -45,6 +45,8 @@ interface Order {
     trackingLink?: string;
     adminMessage?: string;
     messageUpdatedAt?: number;
+    deliveredAt?: number;
+    returnedAt?: number;
 }
 
 export default function AdminOrdersPage() {
@@ -94,12 +96,18 @@ export default function AdminOrdersPage() {
         setIsUpdating(true);
         try {
             const orderRef = doc(db, "orders", orderId);
-            await updateDoc(orderRef, { status: newStatus });
+            const updateData: Partial<Order> = { status: newStatus };
+            
+            if (newStatus === "Delivered") {
+                updateData.deliveredAt = Date.now();
+            }
+            
+            await updateDoc(orderRef, updateData);
 
             // Update local state
-            setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+            setOrders(orders.map(o => o.id === orderId ? { ...o, ...updateData } : o));
             if (selectedOrder?.id === orderId) {
-                setSelectedOrder({ ...selectedOrder, status: newStatus });
+                setSelectedOrder({ ...selectedOrder, ...updateData });
             }
 
             toast.success(`Order status updated to ${newStatus}`);
@@ -282,7 +290,7 @@ export default function AdminOrdersPage() {
                         {selectedOrder ? (
                             <div className="bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden animate-in slide-in-from-right-4 duration-500 h-fit sticky top-6">
                                 <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                                    <h3 className="font-black text-slate-900 uppercase tracking-widest text-sm">Order Detail View</h3>
+                                    <h3 className="font-black text-slate-900 uppercase tracking-widest text-md">Order Detail View</h3>
                                     <button onClick={() => setSelectedOrder(null)} className="text-slate-400 hover:text-slate-900 transition-colors">
                                         <XCircle size={20} />
                                     </button>
@@ -341,7 +349,7 @@ export default function AdminOrdersPage() {
                                                 onClick={updateTrackingInfo}
                                                 disabled={isUpdating}
                                             >
-                                                {isUpdating ? "Updating..." : "Send to User"}
+                                                {isUpdating ? "Updating..." : `Send to ${selectedOrder.contact.name}`}
                                             </Button>
                                         </div>
                                     </div>
@@ -358,7 +366,7 @@ export default function AdminOrdersPage() {
                                         </div>
                                         <div className="flex items-start gap-3">
                                             <MapPin className="text-slate-300 mt-1" size={16} />
-                                            <p className="text-xs font-medium text-slate-500 italic leading-relaxed">
+                                            <p className="text-xs font-medium text-slate-600 leading-relaxed">
                                                 {selectedOrder.shippingAddress.address}, {selectedOrder.shippingAddress.city}, {selectedOrder.shippingAddress.state} - {selectedOrder.shippingAddress.zip}
                                             </p>
                                         </div>
