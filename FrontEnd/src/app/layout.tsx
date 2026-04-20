@@ -12,6 +12,7 @@ const poppins = Poppins({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://asiadronestore.online"),
   title: "Asia Drone Store",
   description: "Drone e-commerce platform by asia softlab",
   manifest: "/manifest.json",
@@ -39,8 +40,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={`bg-slate-50 text-slate-800 relative overflow-x-hidden min-h-screen flex flex-col`}
         style={{ fontFamily: `'RupeeSystem', ${poppins.style.fontFamily}` }}>
         <AuthProvider>
@@ -56,24 +58,6 @@ export default function RootLayout({
           <Footer />
           <PWAInstall />
         </AuthProvider>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js').then(
-                    function(registration) {
-                      console.log('Service Worker registration successful with scope: ', registration.scope);
-                    },
-                    function(err) {
-                      console.log('Service Worker registration failed: ', err);
-                    }
-                  );
-                });
-              }
-            `,
-          }}
-        />
       </body>
     </html>
   );

@@ -6,14 +6,14 @@ export async function POST(req: Request) {
         const { name, category, price, specifications } = body;
 
         // Using Groq which is globally free and un-restricted!
-        const apiKey = process.env.GROQ_API_KEY; 
-        
+        const apiKey = process.env.GROQ_API_KEY;
+
         if (!apiKey) {
             return NextResponse.json({ error: "GROQ_API_KEY is not defined in the environment variables." }, { status: 500 });
         }
 
-        const formattedSpecs = specifications && specifications.length > 0 
-            ? specifications.map((s: { label: string; value: string }) => `- ${s.label}: ${s.value}`).join('\n') 
+        const formattedSpecs = specifications && specifications.length > 0
+            ? specifications.map((s: { label: string; value: string }) => `- ${s.label}: ${s.value}`).join('\n')
             : "No specific details logged";
 
         const prompt = `

@@ -177,7 +177,7 @@ function ProductsContent() {
                         {/* Price Range Filter */}
                         <div>
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Max Price</h3>
+                                <h3 className="text-xs font-bold text-brand-blue-dark uppercase tracking-widest">Min Price</h3>
                                 <span className="text-sm font-black text-brand-blue-dark">₹{priceRange.toLocaleString('en-IN')}</span>
                             </div>
                             <input

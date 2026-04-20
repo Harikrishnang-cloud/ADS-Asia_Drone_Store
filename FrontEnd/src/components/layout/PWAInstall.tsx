@@ -17,6 +17,11 @@ export function PWAInstall() {
   const [isInstalling, setIsInstalling] = useState(false);
 
   useEffect(() => {
+    // Safely register service worker here
+    if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+        navigator.serviceWorker.register('/sw.js').catch(err => console.error("SW Registration failed: ", err));
+    }
+
     // Only proceed if we are on the homepage
     if (pathname !== "/") return;
 

@@ -84,7 +84,7 @@ export function Footer() {
                         </p>
                         <div className="flex items-center gap-4">
                             {footerLinks.social.map((item) => (
-                                <a
+                                <a suppressHydrationWarning
                                     key={item.name}
                                     href={item.href}
                                     target="_blank"
@@ -106,7 +106,7 @@ export function Footer() {
                         <ul className="space-y-4">
                             {footerLinks.shop.map((link) => (
                                 <li key={link.name}>
-                                    <Link
+                                    <Link suppressHydrationWarning
                                         href={link.href}
                                         className="text-slate-400 hover:text-brand-orange transition-colors flex items-center gap-2 group text-sm"
                                     >
@@ -128,7 +128,7 @@ export function Footer() {
                         <ul className="space-y-4">
                             {footerLinks.company.map((link) => (
                                 <li key={link.name}>
-                                    <Link
+                                    <Link suppressHydrationWarning
                                         href={link.href}
                                         className="text-slate-400 hover:text-brand-orange transition-colors flex items-center gap-2 group text-sm"
                                     >
@@ -158,8 +158,8 @@ export function Footer() {
                                     className="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 pl-4 pr-12 text-sm focus:outline-none focus:border-brand-orange transition-all"
                                     suppressHydrationWarning
                                 />
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     onClick={handleSubscribe}
                                     disabled={isSubscribing}
                                     aria-label="Subscribe to newsletter"
@@ -194,7 +194,7 @@ export function Footer() {
                     {/* Left: Copyright */}
                     <div className="flex-1 text-center md:text-left">
                         <p className="text-slate-400 text-sm whitespace-nowrap">
-                            © {hasMounted ? (currentYear || 2026) : 2026} <span className="text-brand-orange font-bold">Asia Drone Store</span>. All Rights Reserved. 
+                            © {hasMounted ? (currentYear || 2026) : 2026} <span className="text-brand-orange font-bold">Asia Drone Store</span>. All Rights Reserved.
                         </p>
                     </div>
 
@@ -204,18 +204,18 @@ export function Footer() {
                             Designed, Developed and Hosted by <span className="text-slate-400 hover:text-brand-orange transition-colors cursor-pointer font-medium">Asia Softlab Pvt. Ltd.</span>
                         </p>
                     </div>
-                    
+
                     {/* Right: Legal Links */}
                     <div className="flex-1 flex items-center justify-center md:justify-end gap-6">
-                        <Link href="/privacy" className="text-slate-400 text-sm hover:text-brand-orange transition-all relative group">
+                        <Link suppressHydrationWarning href="/privacy" className="text-slate-400 text-sm hover:text-brand-orange transition-all relative group">
                             Privacy Policy
                             <span className="absolute bg-brand-orange transition-all group-hover:w-full"></span>
                         </Link>
-                        <Link href="/Terms&Conditions" className="text-slate-400 text-sm hover:text-brand-orange transition-all relative group">
+                        <Link suppressHydrationWarning href="/terms-and-conditions" className="text-slate-400 text-sm hover:text-brand-orange transition-all relative group">
                             Terms & Conditions
                             <span className="absolute bg-brand-orange transition-all group-hover:w-full"></span>
                         </Link>
-                        <Link href="/help#faq" className="text-slate-400 text-sm hover:text-brand-orange transition-all relative group">
+                        <Link suppressHydrationWarning href="/help#faq" className="text-slate-400 text-sm hover:text-brand-orange transition-all relative group">
                             FAQ
                             <span className="absolute bg-brand-orange transition-all group-hover:w-full"></span>
                         </Link>
