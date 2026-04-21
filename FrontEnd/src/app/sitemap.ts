@@ -32,7 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       next: { revalidate: 3600 } // Cache for 1 hour
     });
     const products = await res.json();
-    
+
     // Check if products is an array or an object containing an array
     const productList: SitemapProduct[] = Array.isArray(products) ? products : (products.products || []);
 
