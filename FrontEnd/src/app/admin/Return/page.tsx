@@ -2,11 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import {
-    Search, Filter, Eye,
-    RotateCcw, Package, Clock, AlertCircle, 
-    CheckCircle2, XCircle
-} from "lucide-react";
+import { Search, Filter, Eye, RotateCcw, Package, Clock, AlertCircle, CheckCircle2, XCircle} from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs, doc, updateDoc, Timestamp } from "firebase/firestore";
 import toast from "react-hot-toast";

@@ -59,12 +59,31 @@ function ProductsContent() {
         return ["All", ...cats];
     }, [products]);
 
+    const suggestions = useMemo(() => {
+        if (!search) return [];
+        const query = search.toLowerCase();
+        // Get unique names and categories that match
+        const matchingNames = products
+            .filter(p => p.name?.toLowerCase().includes(query))
+            .map(p => p.name)
+            .slice(0, 5);
+
+        const matchingCategories = products
+            .filter(p => p.category?.toLowerCase().includes(query))
+            .map(p => p.category)
+            .slice(0, 3);
+
+        return Array.from(new Set([...matchingNames, ...matchingCategories]))
+            .filter(s => s.toLowerCase() !== search.toLowerCase());
+    }, [products, search]);
+
     const filteredProducts = useMemo(() => {
         let result = [...products];
 
         if (search) {
             const query = search.toLowerCase();
             result = result.filter(p => 
+                
                 p.name?.toLowerCase().includes(query) || 
                 p.category?.toLowerCase().includes(query)
             );
@@ -122,7 +141,6 @@ function ProductsContent() {
         <main className="mx-auto w-full px-4 sm:px-8 pt-24 pb-20 md:pt-10 relative z-10 ">
             <div className="absolute inset-0 -z-10 pointer-events-none opacity-40"></div>
             {/* Page Header */}
-           
             <div className="flex flex-col mb-10 relative">
                 <span className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-orange mb-3">Asia Drone Store Inventory</span>
                 <h1 className="text-5xl md:text-7xl lg:text-7xl font-black tracking-tighter mb-4">
@@ -133,6 +151,21 @@ function ProductsContent() {
                         ? `Found ${filteredProducts.length} results matching your search.`
                         : "Browse our elite selection of UAVs, high-performance parts, and specialized accessories engineered for unique flight conditions."}
                 </p>
+
+                {search && suggestions.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-2 mt-6 animate-in fade-in slide-in-from-top-4 duration-500">
+                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mr-2">Suggestions:</span>
+                        {suggestions.map((suggestion) => (
+                            <button
+                                key={suggestion}
+                                onClick={() => updateFilters({ search: suggestion })}
+                                className="px-4 py-1.5 bg-white border border-slate-200 hover:border-brand-orange hover:text-brand-orange text-slate-600 text-xs font-bold rounded-full transition-all duration-300 shadow-sm hover:shadow-brand-orange/10"
+                            >
+                                {suggestion}
+                            </button>
+                        ))}
+                    </div>
+                )}
             </div>
 
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 w-full">

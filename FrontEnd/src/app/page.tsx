@@ -29,7 +29,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "Asia Drone Store | Premium Drones & Accessories",
         description: "Your ultimate destination for professional drones and aerial technology.",
-        images: ["/og-image.jpg"],
+        images: ["/log-ads.png"],
     },
     
     robots: {

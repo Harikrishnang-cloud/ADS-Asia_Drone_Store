@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
     User, LogOut, Menu, X, Heart, ShoppingCart, Bell, Wallet,
@@ -9,6 +9,7 @@ import {
     History, Globe, UserCircle, HelpCircle, Search, ChevronRight
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Logo } from "@/components/ui/Logo";
 import toast from "react-hot-toast";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
@@ -22,6 +23,8 @@ import { useAuthStore } from "@/store/authStore";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { useNotificationStore } from "@/store/notificationStore";
+import { useFirestoreCollection } from "@/hooks/useFirestore";
+import { Product } from "@/types/product.types";
 
 const navLinks = [
     { name: "HOME", path: "/" },
@@ -45,6 +48,8 @@ export function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
     const [unreadMessageCount, setUnreadMessageCount] = useState(0);
     const [hasHydrated, setHasHydrated] = useState(false);
 
@@ -54,6 +59,55 @@ export function Navbar() {
         }, 0);
         return () => clearTimeout(timer);
     }, []);
+
+    const { data: allProducts } = useFirestoreCollection<Product>({
+        collectionName: "products",
+    });
+
+    const suggestions = useMemo(() => {
+        if (!searchQuery.trim()) return [];
+        const query = searchQuery.toLowerCase();
+        return allProducts
+            .filter(p => 
+                p.name?.toLowerCase().includes(query) || 
+                p.category?.toLowerCase().includes(query)
+            )
+            .slice(0, 6);
+    }, [allProducts, searchQuery]);
+
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (!(e.target as HTMLElement).closest(".search-container")) {
+                setShowSuggestions(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const handleSearchSubmit = (query: string) => {
+        if (query.trim()) {
+            router.push(`/products?search=${encodeURIComponent(query.trim())}`);
+            setShowSuggestions(false);
+            setSearchQuery("");
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === "ArrowDown") {
+            setSelectedIndex(prev => (prev < suggestions.length - 1 ? prev + 1 : prev));
+        } else if (e.key === "ArrowUp") {
+            setSelectedIndex(prev => (prev > -1 ? prev - 1 : prev));
+        } else if (e.key === "Enter") {
+            if (selectedIndex >= 0) {
+                handleSearchSubmit(suggestions[selectedIndex].name);
+            } else {
+                handleSearchSubmit(searchQuery);
+            }
+        } else if (e.key === "Escape") {
+            setShowSuggestions(false);
+        }
+    };
 
     const { isInitialized } = useAuth();
 
@@ -225,17 +279,18 @@ export function Navbar() {
                     <div className="hidden md:flex items-center gap-6 z-50">
 
                         {/* Search Bar - Desktop */}
-                        <div className="relative group hidden lg:flex items-center">
+                        <div className="relative group hidden lg:flex items-center search-container">
                             <input
                                 type="text"
                                 placeholder="Search products..."
                                 value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && searchQuery.trim()) {
-                                        router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
-                                    }
+                                onFocus={() => setShowSuggestions(true)}
+                                onChange={(e) => {
+                                    setSearchQuery(e.target.value);
+                                    setShowSuggestions(true);
+                                    setSelectedIndex(-1);
                                 }}
+                                onKeyDown={handleKeyDown}
                                 className={`w-48 lg:w-64 px-4 py-2 pl-10 text-sm rounded-full border transition-all duration-300 focus:w-64 lg:focus:w-80 outline-none ${isScrolled && isHomePage
                                     ? "bg-blue-dark/10 border-blue-dark/20 text-blue-dark placeholder:text-blue-dark/60 focus:bg-blue-dark/20 focus:border-blue-dark/40"
                                     : "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand-blue/30 focus:shadow-md"
@@ -243,14 +298,64 @@ export function Navbar() {
                             />
                             <Search
                                 size={16}
-                                onClick={() => {
-                                    if (searchQuery.trim()) {
-                                        router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
-                                    }
-                                }}
+                                onClick={() => handleSearchSubmit(searchQuery)}
                                 className={`absolute left-3.5 transition-colors cursor-pointer ${isScrolled && isHomePage ? "text-blue-dark/60 group-focus-within:text-blue-dark" : "text-slate-400 group-focus-within:text-brand-blue"
                                     }`}
                             />
+
+                            {/* Search Suggestions Dropdown */}
+                            {showSuggestions && searchQuery.trim() && (
+                                <div className="absolute top-[calc(100%+10px)] left-0 w-full lg:w-96 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-[100] animate-in fade-in zoom-in-95 duration-200">
+                                    {suggestions.length > 0 ? (
+                                        <div className="py-2">
+                                            <div className="px-4 py-2 border-b border-slate-50">
+                                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Best Matches</span>
+                                            </div>
+                                            {suggestions.map((product, index) => (
+                                                <div
+                                                    key={product.id}
+                                                    onClick={() => handleSearchSubmit(product.name)}
+                                                    onMouseEnter={() => setSelectedIndex(index)}
+                                                    className={`px-4 py-3 flex items-center gap-3 cursor-pointer transition-colors ${selectedIndex === index ? "bg-slate-50" : "hover:bg-slate-50"
+                                                        }`}
+                                                >
+                                                    <div className="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 shrink-0 border border-slate-200 relative">
+                                                        <Image src={product.imageUrl} alt={product.name} fill className="object-cover" />
+                                                    </div>
+                                                    <div className="flex flex-col flex-1 min-w-0">
+                                                        <span className="text-sm font-bold text-slate-900 truncate">
+                                                            {product.name}
+                                                        </span>
+                                                        <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+                                                            {product.category}
+                                                        </span>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <span className="text-sm font-black text-brand-orange">
+                                                            ₹{(product.offerPrice || product.price).toLocaleString('en-IN')}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            <div 
+                                                onClick={() => handleSearchSubmit(searchQuery)}
+                                                className="px-4 py-3 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between group/all cursor-pointer"
+                                            >
+                                                <span className="text-xs font-bold text-slate-600">See all results for &quot;{searchQuery}&quot;</span>
+                                                <ChevronRight size={14} className="text-slate-400 group-hover/all:translate-x-1 transition-transform" />
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="p-8 text-center">
+                                            <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                <Search size={20} className="text-slate-300" />
+                                            </div>
+                                            <p className="text-sm font-bold text-slate-900">No matches found</p>
+                                            <p className="text-xs text-slate-500 mt-1">Try searching for drones, parts, or accessories</p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         {/* Action Icons */}

@@ -1,10 +1,6 @@
 import { MetadataRoute } from "next";
 
-interface SitemapProduct {
-  _id?: string;
-  id?: string;
-  updatedAt?: string | number | Date;
-}
+
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://asiadronestore.online";
@@ -28,22 +24,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic product routes
   let productRoutes: MetadataRoute.Sitemap = [];
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
-      next: { revalidate: 3600 } // Cache for 1 hour
+    const { collection, getDocs, query, orderBy } = await import("firebase/firestore");
+    const { db } = await import("@/lib/firebase");
+    
+    const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
+    
+    productRoutes = querySnapshot.docs.map((doc) => {
+      const data = doc.data();
+      const id = doc.id;
+      // Handle timestamp
+      let lastModified = new Date();
+      if (data.updatedAt) {
+        lastModified = typeof data.updatedAt === 'number' 
+          ? new Date(data.updatedAt) 
+          : data.updatedAt.toDate ? data.updatedAt.toDate() : new Date(data.updatedAt);
+      } else if (data.createdAt) {
+        lastModified = typeof data.createdAt === 'number'
+          ? new Date(data.createdAt)
+          : data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
+      }
+
+      return {
+        url: `${baseUrl}/products/${id}`,
+        lastModified,
+        changeFrequency: "daily" as const,
+        priority: 0.6,
+      };
     });
-    const products = await res.json();
-
-    // Check if products is an array or an object containing an array
-    const productList: SitemapProduct[] = Array.isArray(products) ? products : (products.products || []);
-
-    productRoutes = productList.map((product: SitemapProduct) => ({
-      url: `${baseUrl}/products/${product._id || product.id}`,
-      lastModified: product.updatedAt ? new Date(product.updatedAt) : new Date(),
-      changeFrequency: "daily" as const,
-      priority: 0.6,
-    }));
   } catch (error) {
-    console.error("Error fetching products for sitemap:", error);
+    console.error("Error generating product sitemap entries:", error);
   }
 
   return [...staticRoutes, ...productRoutes];
