@@ -9,9 +9,18 @@ import Button from "@/components/ui/button";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import Image from "next/image";
-import ProductGrid from "@/components/products/ProductGrid";
-import ProductReviews from "@/components/products/ProductReviews";
 import toast from "react-hot-toast";
+import dynamic from 'next/dynamic';
+
+const ProductGrid = dynamic(() => import("@/components/products/ProductGrid"), {
+    loading: () => <div className="h-96 animate-pulse bg-slate-50 rounded-xl" />,
+    ssr: false
+});
+
+const ProductReviews = dynamic(() => import("@/components/products/ProductReviews"), {
+    loading: () => <div className="h-96 animate-pulse bg-slate-50 rounded-xl" />,
+    ssr: false
+});
 
 
 export default function ProductDetailPage() {
@@ -104,14 +113,34 @@ export default function ProductDetailPage() {
 
     if (loading) {
         return (
-            <div className="max-w-7xl mx-auto px-4 pt-32 pb-20 animate-pulse">
-                <div className="flex flex-col md:flex-row gap-12">
-                    <div className="w-full md:w-1/2 aspect-square bg-slate-50 rounded-[40px]"></div>
-                    <div className="w-full md:w-1/2 space-y-6">
-                        <div className="h-4 w-24 bg-slate-100 rounded-full"></div>
-                        <div className="h-12 w-3/4 bg-slate-100 rounded-2xl"></div>
-                        <div className="h-24 w-full bg-slate-100 rounded-2xl"></div>
-                        <div className="h-12 w-1/3 bg-slate-100 rounded-2xl"></div>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 md:pt-6 pb-20 animate-pulse">
+                <div className="w-16 h-4 bg-slate-100 rounded mb-4"></div>
+                <div className="flex flex-col lg:flex-row gap-8 md:gap-12">
+                    {/* Left: Image Skeleton */}
+                    <div className="w-full lg:w-1/2">
+                        <div className="aspect-square bg-slate-100 rounded-xl"></div>
+                        <div className="grid grid-cols-4 gap-4 mt-6">
+                            {[1, 2, 3, 4].map(i => <div key={i} className="aspect-square bg-slate-100 rounded-xl"></div>)}
+                        </div>
+                    </div>
+                    {/* Right: Info Skeleton */}
+                    <div className="w-full lg:w-1/2 space-y-8">
+                        <div className="space-y-4">
+                            <div className="w-24 h-6 bg-slate-100 rounded"></div>
+                            <div className="w-full h-12 bg-slate-100 rounded"></div>
+                            <div className="w-48 h-6 bg-slate-100 rounded"></div>
+                        </div>
+                        <div className="w-32 h-10 bg-slate-100 rounded"></div>
+                        <div className="space-y-3 pt-6 border-t border-slate-100">
+                            <div className="w-full h-4 bg-slate-100 rounded"></div>
+                            <div className="w-full h-4 bg-slate-100 rounded"></div>
+                            <div className="w-3/4 h-4 bg-slate-100 rounded"></div>
+                        </div>
+                        <div className="flex gap-4 pt-4">
+                            <div className="w-32 h-14 bg-slate-100 rounded-xl"></div>
+                            <div className="flex-1 h-14 bg-slate-100 rounded-xl"></div>
+                            <div className="w-14 h-14 bg-slate-100 rounded-xl"></div>
+                        </div>
                     </div>
                 </div>
             </div>

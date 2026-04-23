@@ -63,7 +63,12 @@ export default function BannerSlider() {
     }, [banners, current]);
 
     if (loading) {
-        return <div className="w-full h-[60vh] md:h-screen bg-slate-100 animate-pulse"></div>;
+        return <div className="w-full h-[60vh] sm:h-[75vh] lg:h-screen bg-slate-100 animate-pulse flex items-center justify-center">
+            <div className="container mx-auto px-6 md:px-12 lg:px-20 space-y-6">
+                <div className="w-2/3 h-20 md:h-32 bg-slate-200 rounded-lg"></div>
+                <div className="w-1/3 h-12 bg-slate-200 rounded-full"></div>
+            </div>
+        </div>;
     }
 
     if (banners.length === 0) return null;
