@@ -93,6 +93,7 @@ export default function BannerSlider() {
                                 loop
                                 muted
                                 playsInline
+                                crossOrigin="anonymous"
                             />
                         ) : (
                             <Image
