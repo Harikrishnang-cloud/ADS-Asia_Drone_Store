@@ -4,70 +4,15 @@ import React, { useState } from "react";
 import { useFirestoreCollection } from "@/hooks/useFirestore";
 import { Product } from "@/types/product.types";
 import { useParams, useRouter } from "next/navigation";
-import { ChevronLeft, ShoppingCart, Share2, Package, Heart, Star, CheckCircle2, Minus, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Maximize2, ShoppingCart, Share2, Package, Heart, Star, CheckCircle2, Minus, Plus } from "lucide-react";
 import Button from "@/components/ui/button";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
+import Image from "next/image";
 import ProductGrid from "@/components/products/ProductGrid";
 import ProductReviews from "@/components/products/ProductReviews";
 import toast from "react-hot-toast";
 
-function ImageMagnifier({ src }: { src: string }) {
-    const [[x, y], setXY] = useState([0, 0]);
-    const [[imgWidth, imgHeight], setSize] = useState([0, 0]);
-    const [showMagnifier, setShowMagnifier] = useState(false);
-    const magnifierSize = 250;
-    const zoomLevel = 2.5;
-
-    return (
-        <div className="relative w-full h-full cursor-none">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-                src={src}
-                className="w-full h-full object-cover"
-                onMouseEnter={(e) => {
-                    const elem = e.currentTarget;
-                    const { width, height } = elem.getBoundingClientRect();
-                    setSize([width, height]);
-                    setShowMagnifier(true);
-                }}
-                onMouseMove={(e) => {
-                    const elem = e.currentTarget;
-                    const { top, left } = elem.getBoundingClientRect();
-                    // Calculate mouse position relative to image
-                    const x = e.clientX - left;
-                    const y = e.clientY - top;
-                    setXY([x, y]);
-                }}
-                onMouseLeave={() => setShowMagnifier(false)}
-                alt="Product"
-            />
-
-            <div
-                style={{
-                    display: showMagnifier ? "block" : "none",
-                    position: "absolute",
-                    pointerEvents: "none",
-                    height: `${magnifierSize}px`,
-                    width: `${magnifierSize}px`,
-                    top: `${y - magnifierSize / 2}px`,
-                    left: `${x - magnifierSize / 2}px`,
-                    opacity: "1",
-                    border: "2px solid white",
-                    backgroundColor: "white",
-                    backgroundImage: `url('${src}')`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: `${imgWidth * zoomLevel}px ${imgHeight * zoomLevel}px`,
-                    backgroundPositionX: `${-x * zoomLevel + magnifierSize / 2}px`,
-                    backgroundPositionY: `${-y * zoomLevel + magnifierSize / 2}px`,
-                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.2)",
-                    borderRadius: "8px", // small rounding for modern premium feel, but still a square
-                    zIndex: 50
-                }}
-            />
-        </div>
-    );
-}
 
 export default function ProductDetailPage() {
     const { id } = useParams();
@@ -77,14 +22,37 @@ export default function ProductDetailPage() {
     const { addItem: addWishlist, removeItem: removeWishlist, isInWishlist } = useWishlistStore();
 
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [quantity, setQuantity] = useState<number>(1);
 
     const product = React.useMemo(() => {
         return products.find(p => p.id === id);
     }, [products, id]);
 
-    const isWishlisted = product ? isInWishlist(product.id) : false;
+    // Keyboard controls for modal
+    React.useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (!isModalOpen || !product) return;
 
+            const allImages = [product.imageUrl, ...(product.images || [])];
+            const curr = allImages.indexOf(selectedImage || product.imageUrl);
+
+            if (e.key === "Escape") setIsModalOpen(false);
+            if (e.key === "ArrowLeft") {
+                const next = (curr - 1 + allImages.length) % allImages.length;
+                setSelectedImage(allImages[next]);
+            }
+            if (e.key === "ArrowRight") {
+                const next = (curr + 1) % allImages.length;
+                setSelectedImage(allImages[next]);
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [isModalOpen, selectedImage, product]);
+
+    const isWishlisted = product ? isInWishlist(product.id) : false;
     const handleAddToCart = () => {
         if (!product) return;
         addItem({
@@ -171,25 +139,62 @@ export default function ProductDetailPage() {
             <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
                 {/* Image Gallery */}
                 <div className="w-full lg:w-1/2 space-y-4">
-                    <div className="group aspect-square bg-white rounded-md border border-slate-100 overflow-hidden shadow-2xl shadow-slate-200/50">
-                        <ImageMagnifier src={selectedImage || product.imageUrl} />
+                    <div
+                        onClick={() => setIsModalOpen(true)}
+                        className="group aspect-square bg-white rounded-xl border border-slate-100 overflow-hidden shadow-2xl shadow-slate-200/50 flex items-center justify-center relative cursor-zoom-in"
+                    >
+                        <Image
+                            src={selectedImage || product.imageUrl}
+                            alt={product.name}
+                            fill
+                            className="object-cover rounded-xl transition-transform duration-700 group-hover:scale-105"
+                            priority
+                        />
+                        {/* Fullscreen Trigger Overlay */}
+                        <div className="absolute inset-0 bg-brand-blue-dark/0 group-hover:bg-brand-blue-dark/5 transition-colors duration-300" />
+                        <button
+                            className="absolute bottom-4 right-4 p-3 bg-white/90 backdrop-blur-md rounded-full text-slate-700 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:text-brand-orange hover:scale-110 shadow-xl z-20"
+                            title="View Fullscreen"
+                        >
+                            <Maximize2 size={20} />
+                        </button>
                     </div>
+                    {/* Thumbnails */}
                     {product.images && product.images.length > 0 && (
-                        <div className="grid grid-cols-4 gap-4">
-                            <div
+                        <div className="grid grid-cols-4 gap-3 md:gap-4 mt-6">
+                            {/* Main Image Thumbnail */}
+                            <button
                                 onClick={() => setSelectedImage(product.imageUrl)}
-                                className={`aspect-square rounded-lg border ${selectedImage === product.imageUrl || !selectedImage ? 'border-brand-orange' : 'border-slate-100'} overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer`}>
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={product.imageUrl} alt={`${product.name} Main`} className="w-full h-full object-cover" />
-                            </div>
-                            {product.images.map((img, i) => (
-                                <div
+                                className={`group relative aspect-square rounded-xl border-2 transition-all duration-300 overflow-hidden bg-white ${selectedImage === product.imageUrl || !selectedImage
+                                    ? 'border-brand-orange shadow-md shadow-brand-orange/10 scale-[1.02]'
+                                    : 'border-slate-100 hover:border-slate-300'
+                                    }`}>
+                                <Image 
+                                    src={product.imageUrl} 
+                                    alt="Main thumbnail" 
+                                    fill
+                                    className="object-cover transition-transform duration-500 group-hover:scale-110" 
+                                />
+                                {(selectedImage === product.imageUrl || !selectedImage) && <div className="absolute inset-0 bg-brand-orange/5" />}
+                            </button>
+
+                            {/* Additional Images Thumbnails */}
+                            {product.images.slice(0, 4).map((img, i) => (
+                                <button
                                     key={i}
                                     onClick={() => setSelectedImage(img)}
-                                    className={`aspect-square rounded-lg border ${selectedImage === img ? 'border-brand-orange' : 'border-slate-100'} overflow-hidden bg-white hover:border-brand-orange transition-all cursor-pointer`}>
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img src={img} alt={`${product.name} ${i}`} className="w-full h-full object-cover" />
-                                </div>
+                                    className={`group relative aspect-square rounded-xl border-2 transition-all duration-300 overflow-hidden bg-white ${selectedImage === img
+                                        ? 'border-brand-orange shadow-md shadow-brand-orange/10 scale-[1.02]'
+                                        : 'border-slate-100 hover:border-slate-300'
+                                        }`}>
+                                    <Image 
+                                        src={img} 
+                                        alt={`Thumbnail ${i + 1}`} 
+                                        fill
+                                        className="object-cover transition-transform duration-500 group-hover:scale-110" 
+                                    />
+                                    {selectedImage === img && <div className="absolute inset-0 bg-brand-orange/5" />}
+                                </button>
                             ))}
                         </div>
                     )}
@@ -327,6 +332,65 @@ export default function ProductDetailPage() {
                         category={product.category}
                         limit={5}
                     />
+                </div>
+            )}
+
+            {/* Professional Image Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 md:p-8">
+                    {/* Backdrop */}
+                    <div
+                        className="absolute inset-0 bg-slate-950/95 backdrop-blur-md transition-opacity duration-300"
+                        onClick={() => setIsModalOpen(false)}
+                    />
+
+                    {/* Modal Content */}
+                    <div className="relative w-full h-full flex flex-col items-center justify-center z-10 p-4 pt-16 md:pt-20">
+                        {/* Close Button */}
+                        <button
+                            onClick={() => setIsModalOpen(false)}
+                            className="absolute top-24 right-24 md:top-24 md:right-24 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all duration-300 z-50 backdrop-blur-xl border border-white/10"
+                        >
+                            <X size={28} />
+                        </button>
+
+                        {/* Main Image Container */}
+                        <div className="relative max-w-5xl w-full h-full flex items-center justify-center">
+                            {/* Navigation Arrows */}
+                            <button
+                                onClick={() => {
+                                    const allImages = [product.imageUrl, ...(product.images || [])];
+                                    const curr = allImages.indexOf(selectedImage || product.imageUrl);
+                                    const next = (curr - 1 + allImages.length) % allImages.length;
+                                    setSelectedImage(allImages[next]);
+                                }}
+                                className="absolute left-0 md:-left-16 p-4 text-white/50 hover:text-white hover:bg-white/5 rounded-full transition-all duration-300"
+                            >
+                                <ChevronLeft size={48} />
+                            </button>
+
+                            <div className="relative w-full h-full max-h-[85vh]">
+                                <Image
+                                    src={selectedImage || product.imageUrl}
+                                    alt={product.name}
+                                    fill
+                                    className="object-contain rounded-lg shadow-2xl transition-all duration-500 scale-100 select-none"
+                                />
+                            </div>
+
+                            <button
+                                onClick={() => {
+                                    const allImages = [product.imageUrl, ...(product.images || [])];
+                                    const curr = allImages.indexOf(selectedImage || product.imageUrl);
+                                    const next = (curr + 1) % allImages.length;
+                                    setSelectedImage(allImages[next]);
+                                }}
+                                className="absolute right-0 md:-right-16 p-4 text-white/50 hover:text-white hover:bg-white/5 rounded-full transition-all duration-300"
+                            >
+                                <ChevronRight size={48} />
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
         </main>

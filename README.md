@@ -84,17 +84,30 @@
 
 ```text
 ADS/
-├── FrontEnd/          # Next.js Application
-│   ├── src/app/       # Routes and Pages
-│   ├── components/    # Reusable UI Components
-│   ├── hooks/         # Custom React Hooks
-│   ├── types/         # TypeScript Interfaces
-│   └── public/        # Static Assets
-├── BackEnd/           # Express Server
-│   ├── src/           # Source Code (Repository Pattern)
-│   ├── dist/          # Compiled JS
-│   └── serviceAccountKey.json
-└── docs/              # Documentation Assets
+├── FrontEnd/              # Next.js Application
+│   ├── src/
+│   │   ├── app/           # App Router (Routes & Pages)
+│   │   ├── components/    # Reusable UI Components
+│   │   ├── context/       # React Context Providers
+│   │   ├── hooks/         # Custom React Hooks
+│   │   ├── lib/           # Utility Libraries
+│   │   ├── services/      # API Service Calls
+│   │   ├── store/         # State Management (Zustand)
+│   │   └── types/         # TypeScript Definitions
+│   └── public/            # Static Assets
+├── BackEnd/               # Express Server (Repository Pattern)
+│   ├── src/
+│   │   ├── Config/        # Database & Environment Config
+│   │   ├── Controllers/   # Request Handlers
+│   │   ├── Interface/     # TS Interfaces/Types
+│   │   ├── Middleware/    # Express Middlewares
+│   │   ├── Models/        # Data Models
+│   │   ├── Repository/    # Data Access Layer
+│   │   ├── Routes/        # API Route Definitions
+│   │   ├── Service/       # Business Logic Layer
+│   │   └── utils/         # Helper Functions
+│   └── serviceAccountKey.json # Firebase Admin Key
+└── docs/                  # Project Documentation
 ```
 
 ## License
@@ -106,5 +119,5 @@ Distributed under the ISC License. See `LICENSE` for more information.
 - Project: [Asia Drone Store](https://github.com/Harikrishnang-cloud/ADS-Asia_Drone_Store)
 
 ---
-<p align="center">Built by <a href="https://www.asiasoftlab.in">Asia Soft Lab</a> and developed by <a href="https://www.linkedin.com/in/harikrishnan-g-1315721b7/">Harikrishnan G</a></p>
+<p align="center">Built by <a href="https://asiasoftlab.in/">Asia SoftLab</a> and developed by <a href="https://www.linkedin.com/in/harikrishnan-g-1315721b7/">HARIKRISHNAN G</a></p>
 
