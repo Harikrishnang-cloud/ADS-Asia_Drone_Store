@@ -59,8 +59,8 @@
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-repo/ads-drone-store.git
-   cd ads-drone-store
+   git clone https://github.com/Harikrishnang-cloud/ADS-Asia_Drone_Store.git
+   cd FrontEnd or BackEnd
    ```
 
 2. **Frontend Setup**
