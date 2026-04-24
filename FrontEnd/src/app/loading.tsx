@@ -1,8 +1,8 @@
 import { Logo } from "@/components/ui/Logo";
 
-export default function Loading() {
+export default function Loading({ className = "min-h-[60vh]" }: { className?: string }) {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center w-full min-h-[60vh] relative z-10 px-4">
+    <div className={`flex-1 flex flex-col items-center justify-center w-full relative z-10 px-4 ${className}`}>
       {/* Soft Glow Background */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 bg-brand-blue/10 rounded-full blur-[100px] pointer-events-none"></div>
       

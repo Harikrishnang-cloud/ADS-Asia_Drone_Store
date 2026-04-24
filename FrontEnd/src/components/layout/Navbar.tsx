@@ -141,6 +141,11 @@ export function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    // Close mobile menu on route change
+    useEffect(() => {
+        setIsMobileMenuOpen(false);
+    }, [pathname]);
+
 
     useEffect(() => {
         const storedUserStr = typeof window !== "undefined" ? localStorage.getItem("userData") : null;
@@ -581,7 +586,8 @@ export function Navbar() {
                     }`}>
                 <div className="flex flex-col space-y-2 text-center">
                     {navLinks.map((link) => (
-                        <Link suppressHydrationWarning
+                        <Link
+                            suppressHydrationWarning
                             key={link.name}
                             href={link.path}
                             onClick={() => setIsMobileMenuOpen(false)}
@@ -602,14 +608,7 @@ export function Navbar() {
                             </span>
                         )}
                     </Link>
-                    <Link suppressHydrationWarning href={hasHydrated && user ? "/user/cart" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="relative text-brand-blue-dark hover:text-brand-orange transition-colors" title="Cart">
-                        <ShoppingCart size={26} strokeWidth={2} />
-                        {hasHydrated && cartItemCount > 0 && (
-                            <span className="absolute -top-1 -right-1 min-w-[20px] h-[20px] bg-brand-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-1">
-                                {cartItemCount > 99 ? '99+' : cartItemCount}
-                            </span>
-                        )}
-                    </Link>
+                    
                     <Link suppressHydrationWarning href={hasHydrated && user ? "/user/notifications" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="relative text-brand-blue-dark hover:text-brand-orange transition-colors" title="Notifications">
                         <Bell size={26} strokeWidth={2} />
                         {hasHydrated && notificationCount > 0 && (
@@ -624,34 +623,24 @@ export function Navbar() {
                     {hasHydrated && user ? (
                         <div className="w-full flex flex-col gap-4">
                             {/* Mobile Profile Header */}
-                            <div className="flex items-center gap-4 bg-slate-50 p-5 rounded-2xl w-full border border-slate-100 shadow-sm">
-                                <div className="w-14 h-14 rounded-full bg-brand-blue-dark text-white flex items-center justify-center font-bold text-xl flex-shrink-0 shadow-md">
+                            <Link 
+                                suppressHydrationWarning 
+                                href="/user/profile" 
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center gap-4 bg-slate-50 p-5 rounded-2xl w-full border border-slate-100 shadow-sm hover:bg-slate-100 transition-colors cursor-pointer group/profile"
+                            >
+                                <div className="w-14 h-14 rounded-full bg-brand-blue-dark text-white flex items-center justify-center font-bold text-xl flex-shrink-0 shadow-md group-hover/profile:scale-105 transition-transform">
                                     {user?.name ? user.name.split(' ').map((n) => n[0]).join('').substring(0, 2).toUpperCase() : 'U'}
                                 </div>
-                                <div className="text-left overflow-hidden">
+                                <div className="text-left overflow-hidden flex-1">
                                     <p className="text-brand-blue-dark text-lg font-bold capitalize truncate">{user?.name || 'User'}</p>
                                     <p className="text-slate-500 text-xs truncate">{user?.email}</p>
                                 </div>
-                            </div>
+                                <ChevronRight size={18} className="text-slate-400 group-hover/profile:translate-x-1 transition-transform" />
+                            </Link>
 
                             {/* Mobile Quick Links Grid */}
                             <div className="grid grid-cols-2 gap-3 mt-2">
-                                <Link suppressHydrationWarning
-                                    href="/user/orders"
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="flex flex-col items-center justify-center gap-2 p-4 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-brand-blue transition-colors shadow-sm"
-                                >
-                                    <History size={20} />
-                                    <span className="text-[11px] font-bold uppercase tracking-tight">Orders</span>
-                                </Link>
-                                <Link suppressHydrationWarning
-                                    href="/user/profile"
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="flex flex-col items-center justify-center gap-2 p-4 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-brand-blue transition-colors shadow-sm"
-                                >
-                                    <UserCircle size={20} />
-                                    <span className="text-[11px] font-bold uppercase tracking-tight">Profile</span>
-                                </Link>
                                 <Link suppressHydrationWarning
                                     href="/user/settings"
                                     onClick={() => setIsMobileMenuOpen(false)}
@@ -673,17 +662,21 @@ export function Navbar() {
                                         </span>
                                     )}
                                 </Link>
-                            </div>
-
-                            {/* Secondary Mobile Links */}
-                            <div className="flex flex-col gap-1 px-1">
-                                <Link suppressHydrationWarning href="/user/refer" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 py-3 text-slate-600 text-sm font-medium border-b border-slate-50">
-                                    <UserPlus size={18} className="text-slate-400" />
-                                    <span>Refer a friend</span>
+                                <Link suppressHydrationWarning
+                                    href="/user/refer"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="flex flex-col items-center justify-center gap-2 p-4 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-brand-blue transition-colors shadow-sm"
+                                >
+                                    <UserPlus size={20} />
+                                    <span className="text-[11px] font-bold uppercase tracking-tight">Refer a friend</span>
                                 </Link>
-                                <Link suppressHydrationWarning href="/help" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 py-3 text-slate-600 text-sm font-medium border-b border-slate-50">
-                                    <HelpCircle size={18} className="text-slate-400" />
-                                    <span>Help and Support</span>
+                                <Link suppressHydrationWarning
+                                    href="/help"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="flex flex-col items-center justify-center gap-2 p-4 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-brand-blue transition-colors shadow-sm"
+                                >
+                                    <HelpCircle size={20} />
+                                    <span className="text-[11px] font-bold uppercase tracking-tight">Help & Support</span>
                                 </Link>
                             </div>
 
@@ -692,11 +685,12 @@ export function Navbar() {
                                     handleLogout();
                                     setIsMobileMenuOpen(false);
                                 }}
-                                className="w-full bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-600 py-4 rounded-2xl transition-all font-bold flex items-center justify-center gap-3 mt-4 border border-red-100"
+                                className="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl transition-all font-bold flex items-center justify-center gap-3 mt-6 shadow-lg shadow-red-200"
                             >
                                 <LogOut size={20} strokeWidth={2.5} />
                                 Sign Out
                             </button>
+                            <div className="h-16" />
                         </div>
                     ) : hasHydrated ? (
                         <button

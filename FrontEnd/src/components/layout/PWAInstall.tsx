@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Download, X } from "lucide-react";
-import { Logo } from "@/components/ui/Logo";
+import Loading from "@/app/loading";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -98,20 +98,8 @@ export function PWAInstall() {
             </button>
           </>
         ) : (
-          <div className="py-6 flex flex-col items-center gap-6 animate-in zoom-in-95 duration-300">
-            {/* Using the loading design requested */}
-            <div className="animate-bounce duration-1000">
-              <Logo width={60} height={60} className="w-12" imageClassName="w-full h-auto" />
-            </div>
-            
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-brand-blue animate-bounce [animation-delay:-0.3s]"></span>
-                <span className="w-2 h-2 rounded-full bg-brand-orange animate-bounce [animation-delay:-0.15s]"></span>
-                <span className="w-2 h-2 rounded-full bg-brand-blue animate-bounce"></span>
-              </div>
-              <span className="text-slate-400 text-xs font-medium tracking-wide">Preparing Installation...</span>
-            </div>
+          <div className="flex flex-col items-center justify-center">
+            <Loading className="min-h-0 py-6 scale-75" />
           </div>
         )}
       </div>

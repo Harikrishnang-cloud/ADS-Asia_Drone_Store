@@ -138,7 +138,7 @@ function ProductsContent() {
     }, [filteredProducts, currentPage]);
 
     return (
-        <main className="mx-auto w-full px-4 sm:px-8 pt-24 pb-20 md:pt-10 relative z-10 ">
+        <main className="mx-auto w-full px-4 sm:px-8 pt-10 pb-20 md:pt-10 relative z-10 ">
             <div className="absolute inset-0 -z-10 pointer-events-none opacity-40"></div>
             {/* Page Header */}
             <div className="flex flex-col mb-10 relative">
