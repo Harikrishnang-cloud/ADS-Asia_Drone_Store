@@ -74,10 +74,10 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-30 opacity-100 lg:opacity-0 lg:-translate-y-3 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 transition-all duration-500 ease-out">
                     <button
                         onClick={handleToggleWishlist}
-                        className={`p-2 rounded-full shadow-md transition-all active:scale-95 ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white/90 backdrop-blur-sm text-slate-400 hover:text-red-500 hover:bg-white'}`}
+                        className={`p-1.5 sm:p-2 rounded-full shadow-md transition-all active:scale-95 ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white/90 backdrop-blur-sm text-slate-400 hover:text-red-500 hover:bg-white'}`}
                         title="Toggle Wishlist"
                     >
-                        <Heart size={16} className={isWishlisted ? "fill-white" : ""} />
+                        <Heart size={14} className={isWishlisted ? "fill-white" : ""} />
                     </button>
                 </div>
 
@@ -85,43 +85,43 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 z-30 opacity-100 lg:opacity-0 lg:translate-y-3 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 transition-all duration-500 ease-out lg:delay-75">
                     <button
                         onClick={handleAddToCart}
-                        className="p-2 bg-brand-orange/90 backdrop-blur-sm text-white rounded-lg shadow-md transition-all active:scale-95 hover:bg-brand-orange"
+                        className="p-1.5 sm:p-2 bg-brand-orange/90 backdrop-blur-sm text-white rounded-lg shadow-md transition-all active:scale-95 hover:bg-brand-orange"
                         title="Add to Cart"
                     >
-                        <ShoppingCart size={16} />
+                        <ShoppingCart size={14} />
                     </button>
                 </div>
             </div>
 
             {/* Product Info */}
-            <div className="p-3 sm:p-5 md:p-6 flex flex-col flex-1">
-                <div className="flex items-start justify-between gap-2 mb-2 md:mb-3">
+            <div className="p-2 sm:p-4 md:p-6 flex flex-col flex-1">
+                <div className="flex items-start justify-between gap-1 mb-1 md:mb-3">
                     <Link href={`/products/${product.id}`} className="block flex-1 min-w-0">
-                        <h3 className="text-sm sm:text-base md:text-lg font-extrabold text-slate-900 group-hover:text-brand-orange transition-colors duration-300 line-clamp-2 md:line-clamp-1 leading-tight">{product.name}</h3>
+                        <h3 className="text-[11px] sm:text-base md:text-lg font-bold sm:font-extrabold text-slate-900 group-hover:text-brand-orange transition-colors duration-300 line-clamp-2 leading-tight">{product.name}</h3>
                     </Link>
                     <div className="shrink-0">
-                        <div className="flex items-center gap-0.5 sm:gap-1 bg-slate-50 border border-slate-100 px-1.5 py-0.5 md:px-2 md:py-0.5 rounded-sm shadow-sm">
-                            <span className="text-[10px] sm:text-sm font-bold text-slate-700">{(product.averageRating || product.rating || 0).toFixed(1)}</span>
-                            <span className="text-[10px] sm:text-[12px]">⭐</span>
+                        <div className="flex items-center gap-0.5 sm:gap-1 bg-slate-50 border border-slate-100 px-1 py-0.5 md:px-2 md:py-0.5 rounded-sm shadow-sm">
+                            <span className="text-[9px] sm:text-sm font-bold text-slate-700">{(product.averageRating || product.rating || 0).toFixed(1)}</span>
+                            <span className="text-[8px] sm:text-[12px]">⭐</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="mt-auto pt-3 md:pt-4 border-t border-slate-100">
+                <div className="mt-auto pt-2 md:pt-4 border-t border-slate-100">
                     <div className="flex flex-col">
-                        <span className="text-[8px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1 hidden sm:block">Starting from</span>
+                        <span className="text-[7px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1 hidden sm:block">Starting from</span>
                         {product.offerPrice ? (
-                            <div className="flex flex-wrap items-baseline gap-2">
-                                <span className="text-base sm:text-lg md:text-xl font-black text-brand-orange">₹{Number(product.offerPrice).toLocaleString('en-IN')}</span>
-                                <span className="text-[11px] sm:text-sm text-slate-400 font-medium line-through">₹{formattedPrice}</span>
+                            <div className="flex flex-wrap items-baseline gap-1 sm:gap-2">
+                                <span className="text-sm sm:text-lg md:text-xl font-black text-brand-orange">₹{Number(product.offerPrice).toLocaleString('en-IN')}</span>
+                                <span className="text-[9px] sm:text-sm text-slate-400 font-medium line-through">₹{formattedPrice}</span>
                                 {product.offerPercentage && (
-                                    <span className="text-[9px] font-black uppercase bg-emerald-50 text-emerald-700 px-1 py-0.5 rounded-xs mt-1">
+                                    <span className="text-[7px] sm:text-[9px] font-black uppercase bg-emerald-50 text-emerald-700 px-1 py-0.5 rounded-xs mt-0.5 sm:mt-1">
                                         {product.offerPercentage}% OFF
                                     </span>
                                 )}
                             </div>
                         ) : (
-                            <span className="text-base sm:text-lg md:text-xl font-black text-brand-blue-dark">₹{formattedPrice}</span>
+                            <span className="text-sm sm:text-lg md:text-xl font-black text-brand-blue-dark">₹{formattedPrice}</span>
                         )}
                     </div>
                 </div>

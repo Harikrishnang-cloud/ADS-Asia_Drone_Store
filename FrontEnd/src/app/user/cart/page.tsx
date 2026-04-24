@@ -25,7 +25,7 @@ export default function CartPage() {
 
     // Pagination calculations
     const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
-    
+
     // Safety clamp for calculation
     const safePage = Math.max(1, Math.min(currentPage, totalPages || 1));
 
@@ -56,8 +56,8 @@ export default function CartPage() {
     return (
         <>
             <div className="min-h-screen pt-6 md:pt-12 pb-12 md:pb-16 bg-slate-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h1 className="text-2xl md:text-3xl font-black text-brand-blue-dark mb-8 flex items-center gap-3">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h1 className="text-2xl md:text-3xl font-black text-brand-blue-dark mb-8 flex items-center gap-3">
                         My Shopping Cart
                     </h1>
 
@@ -74,77 +74,88 @@ export default function CartPage() {
                         </div>
                     ) : (
                         <div className="flex flex-col lg:flex-row gap-8">
-                            {/* Cart Items List */}
-                            <div className="flex-1 space-y-4">
-                                {paginatedItems.map((item) => (
-                                    <div key={item.id} className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-slate-100 flex flex-col sm:flex-row items-start sm:items-center gap-6 group hover:border-brand-blue/20 transition-colors">
-                                        <div className="w-24 h-36 md:w-28 md:h-36 rounded-lg bg-slate-50 overflow-hidden flex-shrink-0 relative">
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                                        </div>
-                                        
-                                        <div className="flex-1 min-w-0">
-                                            <Link href={`/products/${item.id}`} className="hover:text-brand-orange transition-colors">
-                                                <h3 className="text-lg font-bold text-slate-900 truncate mb-1">{item.name}</h3>
-                                            </Link>
-                                            <div className="text-brand-blue font-black text-xl mb-4">
-                                                <span className="font-sans font-semibold mr-0.5" style={{fontFamily: 'system-ui, Arial, sans-serif'}}>₹</span>
-                                                {Number(item.price).toLocaleString('en-IN')}
-                                            </div>
-                                            
-                                            <div className="flex items-center gap-6">
-                                                {/* Quantity Control */}
-                                                <div className="flex items-center gap-3 bg-slate-50 p-1.5 rounded-xl border border-slate-100">
-                                                    <Button 
-                                                        variant="secondary"
-                                                        size="icon-sm"
-                                                        onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                                                        className="rounded-lg bg-white text-slate-500 hover:text-brand-blue border-none shadow-sm cursor-pointer"
-                                                    >
-                                                        <Minus size={14} strokeWidth={3} />
-                                                    </Button>
-                                                    <span className="w-8 text-center font-bold text-sm text-slate-700">{item.quantity}</span>
-                                                    <Button 
-                                                        variant="secondary"
-                                                        size="icon-sm"
-                                                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                                        className="rounded-lg bg-white text-slate-500 hover:text-brand-blue border-none shadow-sm cursor-pointer"
-                                                    >
-                                                        <Plus size={14} strokeWidth={3} />
-                                                    </Button>
-                                                </div>
-                                                
-                                                {/* Remove Button */}
-                                                <Button 
-                                                    variant="ghost-danger"
-                                                    size="icon"
+                            {/* Cart Items Grid/List */}
+                            <div className="flex-1">
+                                <div className="grid grid-cols-2 md:grid-cols-1 gap-3 sm:gap-4 mb-8">
+                                    {paginatedItems.map((item) => (
+                                        <div key={item.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:shadow-brand-blue/10 transition-all border border-slate-100 group flex flex-col md:flex-row md:items-center md:p-6 md:gap-6">
+                                            {/* Image Section */}
+                                            <div className="aspect-square md:aspect-auto md:w-28 md:h-36 bg-slate-50 relative overflow-hidden flex-shrink-0">
+                                                <Link href={`/products/${item.id}`} className="block w-full h-full">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                    <img
+                                                        src={item.image}
+                                                        alt={item.name}
+                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                                    />
+                                                </Link>
+                                                <button
                                                     onClick={() => setItemToDelete(item.id)}
-                                                    title="Remove item"
-                                                    className="cursor-pointer"
+                                                    className="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm text-red-500 rounded-full shadow-md md:hidden z-10"
+                                                    title="Remove from cart"
                                                 >
-                                                    <Trash2 size={20} />
-                                                </Button>
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            </div>
+
+                                            {/* Info Section */}
+                                            <div className="p-2 sm:p-5 flex flex-col flex-1 md:p-0">
+                                                <Link href={`/products/${item.id}`} className="block mb-1 sm:mb-2 flex-1">
+                                                    <h3 className="text-[11px] sm:text-base md:text-lg font-bold text-slate-900 group-hover:text-brand-orange transition-colors duration-300 line-clamp-2 leading-tight">
+                                                        {item.name}
+                                                    </h3>
+                                                </Link>
+
+                                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-1">
+                                                    <div className="font-black text-brand-blue text-sm sm:text-lg">
+                                                        <span className="font-sans font-semibold mr-0.5" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
+                                                        {Number(item.price).toLocaleString('en-IN')}
+
+                                                    </div>
+
+
+                                                    {/* Quantity Control */}
+                                                    <div className="flex items-center gap-1.5 sm:gap-3 bg-slate-50 p-1 rounded-lg border border-slate-100 self-start">
+                                                        <button
+                                                            onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                                                            className="w-6 h-6 flex items-center justify-center rounded-md bg-white text-slate-500 hover:text-brand-blue border-none shadow-sm cursor-pointer disabled:opacity-50"
+                                                            disabled={item.quantity <= 1}
+                                                        >
+                                                            <Minus size={10} strokeWidth={3} />
+                                                        </button>
+                                                        <span className="w-4 sm:w-8 text-center font-bold text-[10px] sm:text-sm text-slate-700">{item.quantity}</span>
+                                                        <button
+                                                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                                            className="w-6 h-6 flex items-center justify-center rounded-md bg-white text-slate-500 hover:text-brand-blue border-none shadow-sm cursor-pointer"
+                                                        >
+                                                            <Plus size={10} strokeWidth={3} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                {/* Desktop Remove Button & Total */}
+                                                <div className="hidden md:flex items-center justify-between mt-4 pt-4 border-t border-slate-50">
+                                                    <Button
+                                                        variant="ghost-danger"
+                                                        size="sm"
+                                                        onClick={() => setItemToDelete(item.id)}
+                                                        className="gap-2"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                        Remove
+                                                    </Button>
+                                                    <div className="text-right">
+                                                        <span className="text-xs text-slate-400 font-bold uppercase tracking-widest block">Subtotal</span>
+                                                        <span className="text-lg font-black text-slate-900">₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        
-                                        <div className="hidden sm:block text-right self-start">
-                                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total</p>
-                                            <p className="text-sm text-slate-500 mt-2">
-                                                <span className="font-sans font-semibold mr-0.5" style={{fontFamily: 'system-ui, Arial, sans-serif'}}>₹</span>
-                                                {item.price} x {item.quantity} = 
-                                                <span className="font-sans font-semibold mx-0.5" style={{fontFamily: 'system-ui, Arial, sans-serif'}}>₹</span>
-                                                {(item.price * item.quantity).toLocaleString('en-IN')}
-                                            </p>
-                                            <p className="text-xl font-black text-slate-900">
-                                                <span className="font-sans font-semibold mr-0.5" style={{fontFamily: 'system-ui, Arial, sans-serif'}}>₹</span>
-                                                {(item.price * item.quantity).toLocaleString('en-IN')}
-                                            </p>
-                                        </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
 
                                 {totalPages > 1 && (
-                                    <Pagination 
+                                    <Pagination
                                         currentPage={currentPage}
                                         totalPages={totalPages}
                                         onPageChange={(page) => {
@@ -159,7 +170,7 @@ export default function CartPage() {
                             <div className="w-full lg:w-[400px]">
                                 <div className="bg-white rounded-lg p-6 md:p-8 shadow-sm border border-slate-100 sticky top-32">
                                     <h3 className="text-xl font-black text-slate-900 mb-6">Order Summary</h3>
-                                    
+
                                     <div className="space-y-4 mb-6">
                                         {/* Individual Items Breakdown */}
                                         <div className="space-y-3 pb-4 border-b border-slate-100">
@@ -174,7 +185,7 @@ export default function CartPage() {
                                                 </div>
                                             ))}
                                         </div>
-                                        
+
                                         {/* Subtotals */}
                                         <div className="flex items-center justify-between text-slate-600 pt-2">
                                             <span>Subtotal ({getItemCount()} items)</span>
@@ -194,7 +205,7 @@ export default function CartPage() {
                                         )}
                                         <p className="text-xs text-slate-500 mt-2">Free shipping on orders above ₹10,000</p>
                                     </div>
-                                    
+
                                     <div className="border-t border-slate-100 pt-6 mb-8">
                                         <div className="flex items-center justify-between">
                                             <span className="text-lg font-bold text-slate-900">Total</span>
@@ -202,7 +213,7 @@ export default function CartPage() {
                                         </div>
                                         <p className="text-xs text-slate-500 mt-2">Includes all taxes and duties</p>
                                     </div>
-                                    
+
                                     <Link href="/user/checkout" className="block w-full">
                                         <Button fullWidth icon={<ArrowRight size={20} />} className="py-4 text-base">
                                             Proceed to Checkout

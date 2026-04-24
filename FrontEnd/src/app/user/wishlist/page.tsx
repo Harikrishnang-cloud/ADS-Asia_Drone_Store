@@ -93,7 +93,7 @@ export default function WishlistPage() {
                         </div>
                     ) : (
                         <div className="flex flex-col">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
                                 {paginatedItems.map((item) => (
                                     <div key={item.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:shadow-brand-blue/10 transition-all border border-slate-100 group flex flex-col">
                                         <div className="aspect-square bg-slate-50 relative overflow-hidden">
@@ -105,35 +105,31 @@ export default function WishlistPage() {
                                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                                                 />
                                             </Link>
+                                            <button 
+                                                onClick={() => setItemToDelete(item.id)}
+                                                className="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm text-red-500 rounded-full shadow-md opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all z-10"
+                                                title="Remove from wishlist"
+                                            >
+                                                <Trash2 size={14} />
+                                            </button>
                                         </div>
-                                        <div className="p-5 flex flex-col flex-1">
-                                            <Link href={`/products/${item.id}`} className="block mb-2 flex-1">
-                                                <h3 className="text-base font-bold text-slate-900 group-hover:text-brand-orange transition-colors duration-300 line-clamp-2">
+                                        <div className="p-2 sm:p-5 flex flex-col flex-1">
+                                            <Link href={`/products/${item.id}`} className="block mb-1 sm:mb-2 flex-1">
+                                                <h3 className="text-[11px] sm:text-base font-bold text-slate-900 group-hover:text-brand-orange transition-colors duration-300 line-clamp-2 leading-tight">
                                                     {item.name}
                                                 </h3>
                                             </Link>
-                                            <div className="font-black text-brand-blue text-lg mb-4">
+                                            <div className="font-black text-brand-blue text-sm sm:text-lg mb-2 sm:mb-4">
                                                 <span className="font-sans font-semibold mr-0.5" style={{fontFamily: 'system-ui, Arial, sans-serif'}}>₹</span>
                                                 {Number(item.price).toLocaleString('en-IN')}
                                             </div>
-                                            <div className="flex gap-2 mt-auto">
-                                                <Button 
-                                                    variant="ghost-danger"
-                                                    size="icon"
-                                                    onClick={() => setItemToDelete(item.id)}
-                                                    className="bg-slate-50 border-none shadow-sm cursor-pointer"
-                                                    title="Remove from wishlist"
-                                                >
-                                                    <Trash2 size={20} />
-                                                </Button>
-                                                <Button 
-                                                    onClick={() => handleMoveToCart(item)}
-                                                    className="flex-1 py-3 text-sm rounded-xl cursor-pointer" 
-                                                    icon={<ShoppingCart size={18} />}
-                                                >
-                                                    Move to Cart
-                                                </Button>
-                                            </div>
+                                            <Button 
+                                                onClick={() => handleMoveToCart(item)}
+                                                className="w-full py-2 sm:py-3 text-[10px] sm:text-sm rounded-md cursor-pointer" 
+                                                icon={<ShoppingCart size={14} />}
+                                            >
+                                                Add to Cart
+                                            </Button>
                                         </div>
                                     </div>
                                 ))}
