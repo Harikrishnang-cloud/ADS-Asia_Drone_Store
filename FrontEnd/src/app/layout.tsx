@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
+import { MobileNav } from "@/components/layout/MobileNav";
 import { Footer } from "@/components/layout/Footer";
 import { Poppins } from "next/font/google";
 import { Toaster } from "react-hot-toast"
@@ -56,6 +57,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <MobileNav />
           <PWAInstall />
         </AuthProvider>
       </body>
