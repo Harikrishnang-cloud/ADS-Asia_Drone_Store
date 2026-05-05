@@ -7,12 +7,12 @@ export const metadata: Metadata = {
     description: "Explore the finest collection of professional drones, agricultural UAVs, and high-quality drone accessories. Asia Drone Store provides cutting-edge aerial solutions for enthusiasts and professionals alike.",
     keywords: "drones, DJI, agricultural drones, drone accessories, Asia Drone Store, UAV, professional drones, drone repair, drone parts",
     alternates: {
-        canonical: "https://asiadronestore.online",
+        canonical: "https://asiadronestore.com",
     },
     openGraph: {
         title: "Asia Drone Store | Premium Drones & Accessories",
         description: "Explore the finest collection of professional drones and accessories. Your one-stop shop for high-performance aerial technology.",
-        url: "https://asiadronestore.online",
+        url: "https://asiadronestore.com",
         siteName: "Asia Drone Store",
         images: [
             {
@@ -50,12 +50,12 @@ export default function Home() {
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "Asia Drone Store",
-        "url": "https://asiadronestore.online",
+        "url": "https://asiadronestore.com",
         "description": "Premium Drones & Accessories store in Asia",
-        "logo": "https://asiadronestore.online/log-ads.png",
+        "logo": "https://asiadronestore.com/log-ads.png",
         "potentialAction": {
             "@type": "SearchAction",
-            "target": "https://asiadronestore.online/search?q={search_term_string}",
+            "target": "https://asiadronestore.com/search?q={search_term_string}",
             "query-input": "required name=search_term_string"
         }
     };

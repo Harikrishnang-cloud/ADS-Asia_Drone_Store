@@ -7,11 +7,11 @@ export const metadata : Metadata ={
     openGraph:{
         title:"Help & Support | Asia Drone Store",
         description:"Get assistance with your drone orders, tracking, warranty, and technical support. Our Help Center is here to provide answers and guide you through any issues.",
-        url:"https://asiadronestore.online/help",
+        url:"https://asiadronestore.com/help",
         siteName:"Asia Drone Store",
         images:[
             {
-                url:"https://asiadronestore.online/log-ads.png",
+                url:"https://asiadronestore.com/log-ads.png",
                 width:1200,
                 height:630,
                 alt:"Asia Drone Store Help & Support",

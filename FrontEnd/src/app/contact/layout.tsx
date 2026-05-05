@@ -7,11 +7,11 @@ export const metadata:Metadata={
     openGraph:{
         title:"Contact Us | Asia Drone Store",
         description:"Contact Asia Drone Store for any queries, support, or information about our products and services.",
-        url:"https://asiadronestore.online/contact",
+        url:"https://asiadronestore.com/contact",
         siteName:"Asia Drone Store",
         images:[
             {
-                url:"https://asiadronestore.online/log-ads.png",
+                url:"https://asiadronestore.com/log-ads.png",
                 width:1200,
                 height:630,
                 alt:"Asia Drone Store Contact Us",

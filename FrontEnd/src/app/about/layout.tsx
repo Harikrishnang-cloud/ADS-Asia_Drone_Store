@@ -7,11 +7,11 @@ export const metadata:Metadata={
     openGraph:{
         title:"About Us | Asia Drone Store",
         description:"Learn about Asia Drone Store, your one-stop destination for drones and drone accessories in India.",
-        url:"https://asiadronestore.online/about",
+        url:"https://asiadronestore.com/about",
         siteName:"Asia Drone Store",
         images:[
             {
-                url:"https://asiadronestore.online/log-ads.png",
+                url:"https://asiadronestore.com/log-ads.png",
                 width:1200,
                 height:630,
                 alt:"Asia Drone Store About Us",

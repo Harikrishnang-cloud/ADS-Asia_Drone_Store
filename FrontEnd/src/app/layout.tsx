@@ -13,7 +13,7 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  metadataBase: new URL("https://asiadronestore.online"),
+  metadataBase: new URL("https://asiadronestore.com"),
   title: "Asia Drone Store",
   description: "Drone e-commerce platform by asia softlab",
   manifest: "/manifest.json",

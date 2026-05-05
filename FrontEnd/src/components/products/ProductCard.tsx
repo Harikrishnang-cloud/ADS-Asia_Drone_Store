@@ -74,10 +74,10 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-30 opacity-100 lg:opacity-0 lg:-translate-y-3 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 transition-all duration-500 ease-out">
                     <button
                         onClick={handleToggleWishlist}
-                        className={`p-1.5 sm:p-2 rounded-full shadow-md transition-all active:scale-95 ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white/90 backdrop-blur-sm text-slate-400 hover:text-red-500 hover:bg-white'}`}
+                        className={`p-2 sm:p-2 rounded-full shadow-md transition-all active:scale-95 ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white/90 backdrop-blur-sm text-slate-400 hover:text-red-500 hover:bg-white'}`}
                         title="Toggle Wishlist"
                     >
-                        <Heart size={14} className={isWishlisted ? "fill-white" : ""} />
+                        <Heart size={18} className={isWishlisted ? "fill-white" : ""} />
                     </button>
                 </div>
 
@@ -85,10 +85,10 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 z-30 opacity-100 lg:opacity-0 lg:translate-y-3 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 transition-all duration-500 ease-out lg:delay-75">
                     <button
                         onClick={handleAddToCart}
-                        className="p-1.5 sm:p-2 bg-brand-orange/90 backdrop-blur-sm text-white rounded-lg shadow-md transition-all active:scale-95 hover:bg-brand-orange"
+                        className="p-2 sm:p-2 bg-brand-orange/90 backdrop-blur-sm text-white rounded-lg shadow-md transition-all active:scale-95 hover:bg-brand-orange"
                         title="Add to Cart"
                     >
-                        <ShoppingCart size={14} />
+                        <ShoppingCart size={18} />
                     </button>
                 </div>
             </div>
@@ -109,13 +109,13 @@ export default function ProductCard({ product }: ProductCardProps) {
 
                 <div className="mt-auto pt-2 md:pt-4 border-t border-slate-100">
                     <div className="flex flex-col">
-                        <span className="text-[7px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1 hidden sm:block">Starting from</span>
+                        <span className="text-[7px] sm:text-[10px] font-bold text-slate-400 tracking-widest leading-none mb-1 hidden sm:block">STARTING FROM (Including GST)</span>
                         {product.offerPrice ? (
                             <div className="flex flex-wrap items-baseline gap-1 sm:gap-2">
                                 <span className="text-sm sm:text-lg md:text-xl font-black text-brand-orange">₹{Number(product.offerPrice).toLocaleString('en-IN')}</span>
                                 <span className="text-[9px] sm:text-sm text-slate-400 font-medium line-through">₹{formattedPrice}</span>
                                 {product.offerPercentage && (
-                                    <span className="text-[7px] sm:text-[9px] font-black uppercase bg-emerald-50 text-emerald-700 px-1 py-0.5 rounded-xs mt-0.5 sm:mt-1">
+                                    <span className="text-[7px] sm:text-[10px] font-black uppercase bg-emerald-50 text-emerald-700 px-1 py-0.5 rounded-xs mt-0.5 sm:mt-1">
                                         {product.offerPercentage}% OFF
                                     </span>
                                 )}

@@ -7,11 +7,11 @@ export const metadata:Metadata={
     openGraph:{
         title:"Privacy Policy | Asia Drone Store",
         description:"Understand your privacy rights when using Asia Drone Store.",
-        url:"https://asiadronestore.online/privacy",
+        url:"https://asiadronestore.com/privacy",
         siteName:"Asia Drone Store",
         images:[
             {
-                url:"https://asiadronestore.online/log-ads.png",
+                url:"https://asiadronestore.com/log-ads.png",
                 width:1200,
                 height:630,
                 alt:"Asia Drone Store - Privacy Policy",
@@ -24,7 +24,7 @@ export const metadata:Metadata={
         card:"summary_large_image",
         title:"Privacy Policy | Asia Drone Store",
         description:"Understand your privacy rights when using Asia Drone Store.",
-        images:["https://asiadronestore.online/log-ads.png"],
+        images:["https://asiadronestore.com/log-ads.png"],
     },
     robots:{
         index:true,

@@ -2,12 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import {
-    User, LogOut, Menu, X, Heart, ShoppingCart, Bell, Wallet,
-    UserPlus, MessageCircle,
-    Settings,
-    History, Globe, UserCircle, HelpCircle, Search, ChevronRight
-} from "lucide-react";
+import { User, LogOut, Menu, X, Heart, ShoppingCart, Bell, Wallet, UserPlus, MessageCircle, Settings, History, Globe, UserCircle, HelpCircle, Search, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Logo } from "@/components/ui/Logo";

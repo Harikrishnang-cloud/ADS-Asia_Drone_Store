@@ -10,6 +10,6 @@ export default function robots(): MetadataRoute.Robots {
         crawlDelay: 1,
       },
     ],
-    sitemap: "https://asiadronestore.online/sitemap.xml",
+    sitemap: "https://asiadronestore.com/sitemap.xml",
   };
 }

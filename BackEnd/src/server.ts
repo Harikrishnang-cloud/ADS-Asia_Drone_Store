@@ -20,7 +20,7 @@ app.use(cors({
         if (!origin) return callback(null, true);
 
         // Safely check if origin belongs to your domain or local dev
-        const isDomainMatch = origin.endsWith("asiadronestore.online");
+        const isDomainMatch = origin.endsWith("asiadronestore.com");
         const isLocalMatch = origin.includes("localhost") || origin.includes("127.0.0.1");
 
         if (isDomainMatch || isLocalMatch || process.env.NODE_ENV === 'development') {

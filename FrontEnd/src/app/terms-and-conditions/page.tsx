@@ -237,7 +237,7 @@ export default function TermsAndConditions() {
                                         <div>
                                             <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Head Office</p>
                                             <p className="text-slate-200 font-medium leading-relaxed">
-                                                Asia Softlab Pvt Ltd, 1st Floor - MG Corporate Center, Ulloor, Thiruvananthapuram, Kerala, 695011
+                                                Asia Softlab Pvt Ltd, 1st Floor - MG Corporate Centre, Ulloor, Thiruvananthapuram, Kerala, 695011
                                             </p>
                                         </div>
                                     </div>
