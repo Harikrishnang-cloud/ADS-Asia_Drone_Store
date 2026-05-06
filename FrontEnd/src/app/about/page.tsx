@@ -7,8 +7,7 @@ import {
     Headphones, 
     Zap, 
     Globe, 
-    Award,
-    ChevronRight
+    Award,ChevronRight
 } from "lucide-react";
 import Link from "next/link";
 import Button from "@/components/ui/button";

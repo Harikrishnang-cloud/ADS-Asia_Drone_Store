@@ -182,7 +182,7 @@ export default function AdminPaymentsPage() {
                                                     'bg-blue-50 text-blue-600 border-blue-100'
                                                 }`}>
                                                     {t.type === 'order' || t.type === 'topup' ? <ArrowUpRight size={12} /> : <ArrowDownLeft size={12} />}
-                                                    {t.type}
+                                                    {t.type === 'topup' ? 'Topup (Wallet)' : t.type}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-6">
