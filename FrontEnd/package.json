@@ -24,6 +24,7 @@
     "react-hot-toast": "^2.6.0",
     "react-inner-image-zoom": "^4.0.1",
     "react-phone-input-2": "^2.15.1",
+    "react-qr-code": "^2.0.21",
     "zustand": "^5.0.12"
   },
   "devDependencies": {

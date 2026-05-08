@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useCartStore } from "@/store/cartStore";
-import { Lock, CreditCard, CheckCircle, ShoppingBag, ArrowLeft, Wallet, Banknote, Smartphone, MapPin, PackageCheck } from "lucide-react";
+import { Lock, CreditCard, CheckCircle, ShoppingBag, ArrowLeft, Wallet, Banknote, MapPin, PackageCheck, QrCode } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/button";
@@ -15,6 +15,7 @@ import { useAuth } from "@/context/AuthContext";
 import { collection, addDoc, getDoc, doc, Timestamp, updateDoc, arrayUnion } from "firebase/firestore";
 import Script from "next/script";
 import api from "@/lib/axios";
+import QRCode from "react-qr-code";
 
 export default function CheckoutPage() {
     const { items, getTotalPrice, clearCart } = useCartStore();
@@ -23,6 +24,8 @@ export default function CheckoutPage() {
     const [hasHydrated, setHasHydrated] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [showQRModal, setShowQRModal] = useState(false);
+    const pendingQRSubmitRef = useRef<(() => void) | null>(null);
     const [isOrderComplete, setIsOrderComplete] = useState(false);
     const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -409,6 +412,32 @@ export default function CheckoutPage() {
                             toast.error("Payment was cancelled. You can retry from your Orders.");
                             await createOrder(null);
                         }
+                    },
+                    config: {
+                        display: {
+                            blocks: {
+                                upi: {
+                                    name: "Pay via UPI / QR Code",
+                                    instruments: [
+                                        {
+                                            method: "upi"
+                                        }
+                                    ]
+                                },
+                                other: {
+                                    name: "Other Payment Modes",
+                                    instruments: [
+                                        { method: "card" },
+                                        { method: "netbanking" },
+                                        { method: "wallet" }
+                                    ]
+                                }
+                            },
+                            sequence: ["block.upi", "block.other"],
+                            preferences: {
+                                show_default_blocks: true
+                            }
+                        }
                     }
                 };
 
@@ -431,10 +460,24 @@ export default function CheckoutPage() {
             }
         };
 
-        if (paymentMethod === "razorpay" || paymentMethod === "online") {
+        if (paymentMethod === "razorpay") {
             initiateRazorpay();
+        } else if (paymentMethod === "online") {
+            pendingQRSubmitRef.current = () => {
+                setShowQRModal(false);
+                setIsProcessing(true);
+                createOrder({ orderId: 'UPI_' + Date.now().toString(), paymentId: 'PAY_' + Date.now().toString() });
+            };
+            setShowQRModal(true);
+            setIsProcessing(false);
         } else {
             createOrder();
+        }
+    };
+
+    const handleQRConfirm = () => {
+        if (pendingQRSubmitRef.current) {
+            pendingQRSubmitRef.current();
         }
     };
 
@@ -716,7 +759,7 @@ export default function CheckoutPage() {
                                                 )}
                                             </div>
                                         </div>
-                                        {/* Online Payment */}
+                                        {/* Online Payment (QR Code) */}
                                         <div
                                             onClick={() => setPaymentMethod("online")}
                                             className={`p-4 border-2 rounded-xl flex items-start gap-4 cursor-pointer relative overflow-hidden transition-all shadow-sm ${paymentMethod === 'online' ? 'border-brand-blue bg-brand-blue/5' : 'border-slate-100 bg-white hover:border-brand-blue/30'}`}
@@ -729,10 +772,10 @@ export default function CheckoutPage() {
                                             </div>
                                             <div>
                                                 <h3 className={`font-bold flex items-center gap-2 flex-wrap transition-colors ${paymentMethod === 'online' ? 'text-brand-blue-dark' : 'text-slate-700'}`}>
-                                                    <Smartphone size={18} className={paymentMethod === 'online' ? 'text-brand-blue' : 'text-slate-400'} />
-                                                    UPI / GPay / PhonePe
+                                                    <QrCode size={18} className={paymentMethod === 'online' ? 'text-brand-blue' : 'text-slate-400'} />
+                                                    Scan QR Code (UPI / GPay)
                                                 </h3>
-                                                <p className="text-sm text-slate-500 mt-1 leading-relaxed">Pay instantly using any UPI app on your mobile device.</p>
+                                                <p className="text-sm text-slate-500 mt-1 leading-relaxed">Pay easily by scanning the QR code using Google Pay, PhonePe, Paytm, or any UPI app.</p>
                                             </div>
                                         </div>
 
@@ -867,6 +910,54 @@ export default function CheckoutPage() {
                         >
                             <PackageCheck size={20} />
                             View My Orders
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+
+            {/* QR Scanner Modal */}
+            <Modal
+                isOpen={showQRModal}
+                onClose={() => setShowQRModal(false)}
+                maxWidth="md"
+            >
+                <div className="flex flex-col items-center text-center py-6 px-4">
+                    <div className="w-16 h-16 bg-brand-blue/10 text-brand-blue rounded-full flex items-center justify-center mb-4">
+                        <QrCode size={32} />
+                    </div>
+                    
+                    <h2 className="text-2xl font-black text-slate-900 mb-2">Scan to Pay</h2>
+                    <p className="text-slate-500 text-sm mb-6">Open GPay, PhonePe, or Paytm and scan the QR code to complete your payment.</p>
+                    
+                    <div className="bg-white p-4 rounded-xl shadow-sm border-2 border-slate-100 mb-6 flex flex-col items-center justify-center w-full max-w-[250px]">
+                        <QRCode
+                            value={`upi://pay?pa=asiadronestore@upi&pn=Asia%20Drone%20Store&am=${total}&cu=INR`}
+                            size={200}
+                            style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                            viewBox={`0 0 256 256`}
+                        />
+                    </div>
+                    
+                    <div className="bg-brand-blue/5 text-brand-blue-dark px-6 py-3 rounded-xl font-black text-2xl mb-8 tracking-tight w-full max-w-[250px] border border-brand-blue/10 flex flex-col items-center">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Amount to Pay</span>
+                        ₹{total.toLocaleString('en-IN')}
+                    </div>
+
+                    <div className="flex flex-col gap-3 w-full">
+                        <button
+                            type="button"
+                            onClick={handleQRConfirm}
+                            className="w-full py-4 px-6 bg-emerald-500 text-white rounded-xl font-bold hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                            <CheckCircle size={20} />
+                            I have completed the payment
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setShowQRModal(false)}
+                            className="w-full py-3 px-6 text-slate-500 font-bold hover:bg-slate-50 rounded-xl transition-all cursor-pointer"
+                        >
+                            Cancel Payment
                         </button>
                     </div>
                 </div>
