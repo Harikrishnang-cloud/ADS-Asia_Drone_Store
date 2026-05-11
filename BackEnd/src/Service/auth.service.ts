@@ -15,8 +15,8 @@ export class authService {
     }
 
     async forgotPassword(contact: string, method: 'email' | 'phone' = 'email') {
-        const user = method === 'email' 
-            ? await this.repo.findUserByEmail(contact) 
+        const user = method === 'email'
+            ? await this.repo.findUserByEmail(contact)
             : await this.repo.findUserByPhone(contact);
 
         if (!user) {
@@ -42,10 +42,10 @@ export class authService {
     }
 
     async verifyResetOtp(contact: string, otp: string, method: 'email' | 'phone' = 'email') {
-        const user = method === 'email' 
-            ? await this.repo.findUserByEmail(contact) 
+        const user = method === 'email'
+            ? await this.repo.findUserByEmail(contact)
             : await this.repo.findUserByPhone(contact);
-        
+
         if (!user) {
             throw new Error("User not found");
         }
@@ -62,8 +62,8 @@ export class authService {
     }
 
     async resetPassword(contact: string, password: string, method: 'email' | 'phone' = 'email') {
-        const user = method === 'email' 
-            ? await this.repo.findUserByEmail(contact) 
+        const user = method === 'email'
+            ? await this.repo.findUserByEmail(contact)
             : await this.repo.findUserByPhone(contact);
         if (!user) {
             throw new Error("User not found");
@@ -80,8 +80,8 @@ export class authService {
     }
 
     async resendResetOtp(contact: string, method: 'email' | 'phone' = 'email') {
-        const user = method === 'email' 
-            ? await this.repo.findUserByEmail(contact) 
+        const user = method === 'email'
+            ? await this.repo.findUserByEmail(contact)
             : await this.repo.findUserByPhone(contact);
         if (!user) {
             throw new Error("User not found");
@@ -97,7 +97,7 @@ export class authService {
         const expiry = new Date(Date.now() + 5 * 60 * 1000);
 
         await this.repo.updateResetToken(user._id, { resetOtp: otp, resetOtpExpiry: expiry });
-        
+
         if (method === 'email') {
             await sendResetOTPEmail(user.name, contact, otp);
             return { message: "New OTP sent to email successfully" };

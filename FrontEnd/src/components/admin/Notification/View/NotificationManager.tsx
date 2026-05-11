@@ -44,6 +44,7 @@ export default function NotificationManager() {
                         <textarea
                             className="w-full border border-slate-300 rounded-lg p-2 h-32 focus:ring-2 focus:ring-brand-orange focus:outline-none"
                             value={formData.message}
+                            name="message"
                             onChange={formdataUpdate}
                             required/>
                     </div>

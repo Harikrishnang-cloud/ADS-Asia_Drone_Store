@@ -10,20 +10,7 @@ import Button from "@/components/ui/button";
 import { useUserManager } from "../Controller/useManager";
 
 export default function UserManager() {
-    const {
-        users, 
-        loading, 
-        searchTerm, 
-        setSearchTerm, 
-        updatingId, 
-        userToUpdate, 
-        setUserToUpdate, 
-        handleToggleStatus, 
-        stats,
-        getAuthLabel,
-        formatDate,
-        formatTime
-    } = useUserManager();
+    const {users, loading, searchTerm, setSearchTerm, updatingId, userToUpdate, setUserToUpdate, handleToggleStatus, stats, getAuthLabel, formatDate, formatTime} = useUserManager();
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500 pb-20">
