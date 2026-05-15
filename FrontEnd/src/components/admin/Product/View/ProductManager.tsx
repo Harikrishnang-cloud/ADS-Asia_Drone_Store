@@ -12,8 +12,8 @@ import { useProductManager } from "../Controller/useProductManager";
 import toast from "react-hot-toast";
 
 export default function ProductManager({ category }: { category?: string }) {
-    const {products,loading,isAdding,setIsAdding,editingId,isSaving,isDeleting,productToDelete,setProductToDelete,formData,setFormData,handleEdit,
-        handleSubmit,confirmDelete,resetForm,searchTerm,setSearchTerm,stats
+    const { products, loading, isAdding, setIsAdding, editingId, isSaving, isDeleting, productToDelete, setProductToDelete, formData, setFormData, handleEdit,
+        handleSubmit, confirmDelete, resetForm, searchTerm, setSearchTerm, stats
     } = useProductManager(category);
 
     const [isGeneratingDescription, setIsGeneratingDescription] = React.useState(false);
@@ -40,9 +40,9 @@ export default function ProductManager({ category }: { category?: string }) {
             });
 
             const data = await res.json();
-            
+
             if (res.ok && data.description) {
-                setFormData({...formData, description: data.description});
+                setFormData({ ...formData, description: data.description });
                 toast.success("Description optimized!", { id: loadToast });
             } else {
                 toast.error(data.error || "Generation failed", { id: loadToast });
@@ -58,15 +58,15 @@ export default function ProductManager({ category }: { category?: string }) {
     return (
         <div className="space-y-10 animate-in fade-in duration-500 pb-20">
             <AdminHeader
-                title="Product Catalog" 
+                title="Product Catalog"
                 description={`Currently managing ${products.length} products`}
                 searchTerm={searchTerm}
                 onSearchChange={setSearchTerm}
                 searchPlaceholder="Search products..."
                 actionButton={
-                    <Button 
-                        onClick={() => {if (isAdding) resetForm(); else setIsAdding(true);}}
-                        variant="orange" 
+                    <Button
+                        onClick={() => { if (isAdding) resetForm(); else setIsAdding(true); }}
+                        variant="orange"
                         icon={isAdding ? <X size={18} /> : <Plus size={18} />}>
                         {isAdding ? "Cancel" : "Add Product"}
                     </Button>
@@ -85,12 +85,12 @@ export default function ProductManager({ category }: { category?: string }) {
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Product Name</label>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     placeholder="Enter Product Name"
                                     className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange focus:ring-4 focus:ring-brand-orange/5 transition-all text-sm font-semibold"
                                     value={formData.name}
-                                    onChange={e => setFormData({...formData, name: e.target.value})}
+                                    onChange={e => setFormData({ ...formData, name: e.target.value })}
                                     required
                                 />
                             </div>
@@ -98,12 +98,12 @@ export default function ProductManager({ category }: { category?: string }) {
                                 <div>
                                     <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Price (INR)</label>
                                     <div className="relative">
-                                        <input 
-                                            type="number" 
+                                        <input
+                                            type="number"
                                             placeholder="0.00"
                                             className="w-full bg-slate-50 border border-slate-200 pl-3 pr-3 py-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold"
                                             value={formData.price}
-                                            onChange={e => setFormData({...formData, price: e.target.value})}
+                                            onChange={e => setFormData({ ...formData, price: e.target.value })}
                                             required
                                         />
                                     </div>
@@ -111,22 +111,22 @@ export default function ProductManager({ category }: { category?: string }) {
                                 <div>
                                     <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Offer Price</label>
                                     <div className="relative">
-                                        <input 
-                                            type="number" 
+                                        <input
+                                            type="number"
                                             placeholder="0.00"
                                             className="w-full bg-slate-50 border border-slate-200 pl-3 pr-3 py-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold"
                                             value={formData.offerPrice || ''}
-                                            onChange={e => setFormData({...formData, offerPrice: e.target.value})}
+                                            onChange={e => setFormData({ ...formData, offerPrice: e.target.value })}
                                         />
                                     </div>
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Category</label>
-                                <select 
+                                <select
                                     className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold appearance-none"
                                     value={formData.category}
-                                    onChange={e => setFormData({...formData, category: e.target.value})}
+                                    onChange={e => setFormData({ ...formData, category: e.target.value })}
                                 >
                                     <option value="All Products">Products</option>
                                     <option value="Spare Parts">Spare Parts</option>
@@ -137,50 +137,92 @@ export default function ProductManager({ category }: { category?: string }) {
                             </div>
                             <div>
                                 <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Sub-Category (Optional)</label>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     placeholder="e.g. Battery, Controller, Motor"
                                     className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold"
                                     value={formData.subCategory}
-                                    onChange={e => setFormData({...formData, subCategory: e.target.value})}
+                                    onChange={e => setFormData({ ...formData, subCategory: e.target.value })}
                                 />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Weight (kg)</label>
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        placeholder="0.00"
+                                        className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold"
+                                        value={formData.weight}
+                                        onChange={e => setFormData({ ...formData, weight: e.target.value })}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-3 gap-2">
+                                    <div>
+                                        <label className="block text-[8px] font-black uppercase text-slate-400 mb-1">L (cm)</label>
+                                        <input
+                                            type="number"
+                                            className="w-full bg-slate-50 border border-slate-200 p-2 rounded-lg focus:outline-none focus:border-brand-orange text-xs font-semibold"
+                                            value={formData.length}
+                                            onChange={e => setFormData({ ...formData, length: e.target.value })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[8px] font-black uppercase text-slate-400 mb-1">W (cm)</label>
+                                        <input
+                                            type="number"
+                                            className="w-full bg-slate-50 border border-slate-200 p-2 rounded-lg focus:outline-none focus:border-brand-orange text-xs font-semibold"
+                                            value={formData.width}
+                                            onChange={e => setFormData({ ...formData, width: e.target.value })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[8px] font-black uppercase text-slate-400 mb-1">H (cm)</label>
+                                        <input
+                                            type="number"
+                                            className="w-full bg-slate-50 border border-slate-200 p-2 rounded-lg focus:outline-none focus:border-brand-orange text-xs font-semibold"
+                                            value={formData.height}
+                                            onChange={e => setFormData({ ...formData, height: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Stock Inventory</label>
-                                <input 
-                                    type="number" 
+                                <input
+                                    type="number"
                                     placeholder="Quantity in hand"
                                     className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold"
                                     value={formData.stock}
-                                    onChange={e => setFormData({...formData, stock: e.target.value})}
+                                    onChange={e => setFormData({ ...formData, stock: e.target.value })}
                                     required
                                 />
                             </div>
                             <div>
                                 <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Main Image URL</label>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     placeholder="https://..."
                                     className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold"
                                     value={formData.imageUrl}
-                                    onChange={e => setFormData({...formData, imageUrl: e.target.value})}
+                                    onChange={e => setFormData({ ...formData, imageUrl: e.target.value })}
                                     required
                                 />
                             </div>
                             <div>
                                 <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Availability Status</label>
                                 <div className="flex bg-slate-50 p-1 rounded-xl border border-slate-200">
-                                    <button 
-                                        type="button" 
-                                        onClick={() => setFormData({...formData, status: 'active'})}
+                                    <button
+                                        type="button"
+                                        onClick={() => setFormData({ ...formData, status: 'active' })}
                                         className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-black uppercase transition-all rounded-lg ${formData.status === 'active' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
                                         <CheckCircle2 size={14} /> Active
                                     </button>
-                                    <button 
-                                        type="button" 
-                                        onClick={() => setFormData({...formData, status: 'inactive'})}
+                                    <button
+                                        type="button"
+                                        onClick={() => setFormData({ ...formData, status: 'inactive' })}
                                         className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-black uppercase transition-all rounded-lg ${formData.status === 'inactive' ? 'bg-white text-slate-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
                                         <Archive size={14} /> Draft
                                     </button>
@@ -192,16 +234,16 @@ export default function ProductManager({ category }: { category?: string }) {
                         <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Related Images (Up to 4)</label>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {[0, 1, 2].map((index) => (
-                                <input 
+                                <input
                                     key={index}
-                                    type="text" 
+                                    type="text"
                                     placeholder={`Additional Image URL ${index + 1}`}
                                     className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold"
                                     value={formData.images?.[index] || ''}
                                     onChange={e => {
                                         const newImages = [...(formData.images || [])];
                                         newImages[index] = e.target.value;
-                                        setFormData({...formData, images: newImages});
+                                        setFormData({ ...formData, images: newImages });
                                     }}
                                 />
                             ))}
@@ -220,19 +262,19 @@ export default function ProductManager({ category }: { category?: string }) {
                                 AI Generate
                             </button>
                         </div>
-                        <textarea 
+                        <textarea
                             rows={3}
                             placeholder="Detailed product features and specifications..."
                             className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold"
                             value={formData.description}
-                            onChange={e => setFormData({...formData, description: e.target.value})}/>
+                            onChange={e => setFormData({ ...formData, description: e.target.value })} />
                     </div>
                     <div>
                         <div className="flex justify-between items-center mb-2">
                             <label className="text-xs font-black uppercase tracking-wider text-slate-500">Product Specifications</label>
                             <button
                                 type="button"
-                                onClick={() => setFormData({...formData, specifications: [...(formData.specifications || []), {label: '', value: ''}]})}
+                                onClick={() => setFormData({ ...formData, specifications: [...(formData.specifications || []), { label: '', value: '' }] })}
                                 className="text-xs font-bold text-brand-orange hover:text-brand-orange-dark cursor-pointer flex items-center gap-1"
                             >
                                 <Plus size={14} /> Add Spec Row
@@ -249,7 +291,7 @@ export default function ProductManager({ category }: { category?: string }) {
                                         onChange={e => {
                                             const newSpecs = [...(formData.specifications || [])];
                                             newSpecs[idx].label = e.target.value;
-                                            setFormData({...formData, specifications: newSpecs});
+                                            setFormData({ ...formData, specifications: newSpecs });
                                         }}
                                     />
                                     <input
@@ -260,7 +302,7 @@ export default function ProductManager({ category }: { category?: string }) {
                                         onChange={e => {
                                             const newSpecs = [...(formData.specifications || [])];
                                             newSpecs[idx].value = e.target.value;
-                                            setFormData({...formData, specifications: newSpecs});
+                                            setFormData({ ...formData, specifications: newSpecs });
                                         }}
                                     />
                                     <button
@@ -269,7 +311,7 @@ export default function ProductManager({ category }: { category?: string }) {
                                         title="Remove row"
                                         onClick={() => {
                                             const newSpecs = formData.specifications?.filter((_, i) => i !== idx);
-                                            setFormData({...formData, specifications: newSpecs});
+                                            setFormData({ ...formData, specifications: newSpecs });
                                         }}
                                     >
                                         <Trash2 size={18} />
@@ -281,7 +323,7 @@ export default function ProductManager({ category }: { category?: string }) {
                                     <p className="text-sm text-slate-400 font-semibold mb-3">No detail rows added yet</p>
                                     <button
                                         type="button"
-                                        onClick={() => setFormData({...formData, specifications: [{label: '', value: ''}]})}
+                                        onClick={() => setFormData({ ...formData, specifications: [{ label: '', value: '' }] })}
                                         className="text-xs font-bold text-brand-orange bg-brand-orange/10 px-4 py-2 rounded-lg hover:bg-brand-orange hover:text-white transition-all cursor-pointer"
                                     >
                                         Add Custom Specification
@@ -366,24 +408,23 @@ export default function ProductManager({ category }: { category?: string }) {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-5 text-center">
-                                                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm border ${
-                                                    product.status === 'active' 
-                                                    ? 'bg-emerald-50 text-emerald-600 border-emerald-100' 
-                                                    : 'bg-slate-50 text-slate-500 border-slate-200'
-                                                }`}>
+                                                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm border ${product.status === 'active'
+                                                        ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                                                        : 'bg-slate-50 text-slate-500 border-slate-200'
+                                                    }`}>
                                                     {product.status === 'active' ? <CheckCircle2 size={12} /> : <Archive size={12} />}
                                                     {product.status}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-5 text-right">
                                                 <div className="flex items-center justify-end gap-2 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-all transform lg:translate-x-2 group-hover:translate-x-0">
-                                                    <button 
+                                                    <button
                                                         onClick={() => handleEdit(product)}
                                                         className="p-2.5 bg-brand-orange/10 text-brand-orange rounded-xl hover:bg-brand-orange hover:text-white transition-all shadow-md"
                                                         title="Edit Product">
                                                         <Edit2 size={16} strokeWidth={2.5} />
                                                     </button>
-                                                    <button 
+                                                    <button
                                                         onClick={() => setProductToDelete(product.id)}
                                                         className="p-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-md"
                                                         title="Delete Product">
@@ -413,7 +454,7 @@ export default function ProductManager({ category }: { category?: string }) {
                 </div>
             )}
 
-            <ConfirmationModal 
+            <ConfirmationModal
                 isOpen={!!productToDelete}
                 onClose={() => setProductToDelete(null)}
                 onConfirm={confirmDelete}

@@ -64,6 +64,10 @@ import { supportRoutes } from "./Routes/support/supportRoutes.ts";
 const supportRouter = new supportRoutes();
 app.use("/support", supportRouter.getSupportRoutes());
 
+import { shippingRoutes } from "./Routes/shippingRoutes.ts";
+const shippingRouter = new shippingRoutes();
+app.use("/shipping", shippingRouter.getShippingRoutes());
+
 const PORT = process.env.PORT || 7878;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

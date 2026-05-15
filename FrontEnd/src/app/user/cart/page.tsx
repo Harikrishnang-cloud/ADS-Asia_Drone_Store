@@ -110,7 +110,6 @@ export default function CartPage() {
                                                     <div className="font-black text-brand-blue text-sm sm:text-lg">
                                                         <span className="font-sans font-semibold mr-0.5" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
                                                         {Number(item.price).toLocaleString('en-IN')}
-
                                                     </div>
 
 

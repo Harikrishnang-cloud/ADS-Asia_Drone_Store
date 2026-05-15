@@ -72,6 +72,8 @@ export default function ProductDetailPage() {
             quantity: quantity,
             rating: product.rating,
             reviews: product.reviews,
+            weight: product.weight,
+            dimensions: product.dimensions
         });
         toast.success(`${product.name} added to cart!`);
     };
@@ -198,11 +200,11 @@ export default function ProductDetailPage() {
                                     ? 'border-brand-orange shadow-md shadow-brand-orange/10 scale-[1.02]'
                                     : 'border-slate-100 hover:border-slate-300'
                                     }`}>
-                                <Image 
-                                    src={product.imageUrl} 
-                                    alt="Main thumbnail" 
+                                <Image
+                                    src={product.imageUrl}
+                                    alt="Main thumbnail"
                                     fill
-                                    className="object-cover transition-transform duration-500 group-hover:scale-110" 
+                                    className="object-cover transition-transform duration-500 group-hover:scale-110"
                                 />
                                 {(selectedImage === product.imageUrl || !selectedImage) && <div className="absolute inset-0 bg-brand-orange/5" />}
                             </button>
@@ -216,11 +218,11 @@ export default function ProductDetailPage() {
                                         ? 'border-brand-orange shadow-md shadow-brand-orange/10 scale-[1.02]'
                                         : 'border-slate-100 hover:border-slate-300'
                                         }`}>
-                                    <Image 
-                                        src={img} 
-                                        alt={`Thumbnail ${i + 1}`} 
+                                    <Image
+                                        src={img}
+                                        alt={`Thumbnail ${i + 1}`}
                                         fill
-                                        className="object-cover transition-transform duration-500 group-hover:scale-110" 
+                                        className="object-cover transition-transform duration-500 group-hover:scale-110"
                                     />
                                     {selectedImage === img && <div className="absolute inset-0 bg-brand-orange/5" />}
                                 </button>

@@ -97,11 +97,11 @@ export default function AdminOrdersPage() {
         try {
             const orderRef = doc(db, "orders", orderId);
             const updateData: Partial<Order> = { status: newStatus };
-            
+
             if (newStatus === "Delivered") {
                 updateData.deliveredAt = Date.now();
             }
-            
+
             await updateDoc(orderRef, updateData);
 
             // Update local state
@@ -343,7 +343,7 @@ export default function AdminOrdersPage() {
                                                 value={adminMessage}
                                                 onChange={(e) => setAdminMessage(e.target.value)}
                                             />
-                                            <Button 
+                                            <Button
                                                 variant="orange"
                                                 size="sm"
                                                 onClick={updateTrackingInfo}
@@ -404,9 +404,9 @@ export default function AdminOrdersPage() {
                                             </div>
                                         </div>
                                         <div className="flex gap-3">
-                                            <Button 
-                                                variant="secondary" 
-                                                size="sm" 
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
                                                 icon={<Download size={14} />}
                                                 onClick={() => generateInvoice(selectedOrder)}
                                             >
@@ -432,7 +432,7 @@ export default function AdminOrdersPage() {
                     </div>
 
                 </div>
-                
+
                 <ConfirmationModal
                     isOpen={isDeleteModalOpen}
                     onClose={() => setIsDeleteModalOpen(false)}

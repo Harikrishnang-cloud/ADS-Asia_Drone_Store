@@ -17,6 +17,8 @@ import Script from "next/script";
 import api from "@/lib/axios";
 import QRCode from "react-qr-code";
 
+import { ShippingOptions } from "@/components/checkout/ShippingOptions";
+
 export default function CheckoutPage() {
     const { items, getTotalPrice, clearCart } = useCartStore();
     const { user, setAuth } = useAuthStore();
@@ -29,6 +31,11 @@ export default function CheckoutPage() {
     const [isOrderComplete, setIsOrderComplete] = useState(false);
     const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
     const [errors, setErrors] = useState<Record<string, string>>({});
+    
+    // DHL Shipping State
+    const [shippingOptions, setShippingOptions] = useState<any[]>([]);
+    const [selectedShippingOption, setSelectedShippingOption] = useState<any>(null);
+    const [isCalculatingShipping, setIsCalculatingShipping] = useState(false);
 
     useEffect(() => {
         setHasHydrated(true);
@@ -44,7 +51,7 @@ export default function CheckoutPage() {
     }, [hasHydrated, items.length, router, showSuccessModal, isOrderComplete]);
 
     const subtotal = getTotalPrice();
-    const actualShipping = subtotal < 10000 ? 0 : 200;
+    const actualShipping = selectedShippingOption?.price || 0;
     const total = subtotal + actualShipping;
 
     const [formData, setFormData] = useState({
@@ -127,6 +134,82 @@ export default function CheckoutPage() {
             }
         }
     }, [user]);
+
+    // Recalculate DHL rates when address changes
+    useEffect(() => {
+        const calculateShipping = async () => {
+            const selectedAddr = savedAddresses.find(a => a.id === selectedAddressId);
+            const destination = selectedAddr ? {
+                city: selectedAddr.city,
+                postalCode: selectedAddr.zip,
+                countryCode: 'IN' // Defaulting to IN for now
+            } : (formData.city && formData.zip ? {
+                city: formData.city,
+                postalCode: formData.zip,
+                countryCode: 'IN'
+            } : null);
+
+            if (!destination || items.length === 0) return;
+
+            setIsCalculatingShipping(true);
+            try {
+                // Hardcoded origin for now - should be in settings
+                const origin = {
+                    city: "Kochi",
+                    postalCode: "682024",
+                    countryCode: "IN"
+                };
+
+                const packages = items.map(item => ({
+                    weight: item.weight || 0.5,
+                    dimensions: item.dimensions || { length: 10, width: 10, height: 10 }
+                }));
+
+                const res = await api.post('/shipping/calculate-rates', {
+                    origin,
+                    destination,
+                    packages
+                });
+
+                // Transform DHL response to our ShippingOption format
+                // This depends on the actual DHL API response structure
+                const options = res.data.products?.map((p: any) => ({
+                    id: p.productCode,
+                    name: p.productName,
+                    //price: p.totalPrice?.[0]?.price || 750,
+                    price: 0, // Set to 0 for testing
+                    estimatedDelivery: p.deliveryCapabilities?.totalTransitDays ? `${p.deliveryCapabilities.totalTransitDays} Days` : "3-5 Days"
+                })) || [];
+
+                if (options.length === 0) {
+                    // Fallback if API is successful but no products returned
+                    const fallbackOptions = [
+                        //{ id: 'dhl_express', name: 'DHL Express Worldwide', price: 750, estimatedDelivery: '2-3 Days' }
+                        { id: 'dhl_express', name: 'DHL Express Worldwide', price: 0, estimatedDelivery: '2-3 Days' }
+                    ];
+                    setShippingOptions(fallbackOptions);
+                    setSelectedShippingOption(fallbackOptions[0]);
+                } else {
+                    setShippingOptions(options);
+                    setSelectedShippingOption(options[0]);
+                }
+            } catch (err) {
+                console.error("Shipping calculation failed:", err);
+                // Fallback for demo/dev
+                setShippingOptions([
+                    //{ id: 'dhl_express', name: 'DHL Express Worldwide', price: 750, estimatedDelivery: '2-3 Days' }
+                    { id: 'dhl_express', name: 'DHL Express Worldwide', price: 0, estimatedDelivery: '2-3 Days' }
+                ]);
+                //setSelectedShippingOption({ id: 'dhl_express', name: 'DHL Express Worldwide', price: 0, estimatedDelivery: '2-3 Days' });
+                setSelectedShippingOption({ id: 'dhl_express', name: 'DHL Express Worldwide', price: 0, estimatedDelivery: '2-3 Days' });
+            } finally {
+                setIsCalculatingShipping(false);
+            }
+        };
+
+        const timer = setTimeout(calculateShipping, 1000); // Debounce
+        return () => clearTimeout(timer);
+    }, [selectedAddressId, formData.city, formData.zip, items, savedAddresses]);
 
     const walletBalance = user?.walletBalance || 0;
 
@@ -265,7 +348,8 @@ export default function CheckoutPage() {
                 name: `${formData.firstName} ${formData.lastName}`,
                 email: formData.email,
                 phone: formData.phone
-            }
+            },
+            shippingDetails: selectedShippingOption
         };
 
         const createOrder = async (razorpayData?: { orderId: string; paymentId: string } | null) => {
@@ -701,7 +785,14 @@ export default function CheckoutPage() {
                                     </div>
                                 )}
 
-                                {/* Payment Method */}
+                                        <ShippingOptions 
+                                            options={shippingOptions} 
+                                            selectedId={selectedShippingOption?.id} 
+                                            onSelect={setSelectedShippingOption}
+                                            isLoading={isCalculatingShipping}
+                                        />
+
+                                        {/* Payment Method */}
                                 <div className="bg-white rounded-lg  p-6 md:p-8 shadow-sm border border-slate-100">
                                     <h2 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-3">
                                         <span className="w-8 h-8 rounded-full bg-brand-blue/10 text-brand-blue flex items-center justify-center text-sm font-bold">3</span>
@@ -846,8 +937,12 @@ export default function CheckoutPage() {
                                         <span className="font-bold text-slate-900">₹{subtotal.toLocaleString('en-IN')}</span>
                                     </div>
                                     <div className="flex items-center justify-between text-sm text-slate-600">
-                                        <span className="font-medium">Estimated Shipping</span>
-                                        <span className="font-bold text-emerald-500">{actualShipping === 0 ? "Free" : `₹${actualShipping.toLocaleString('en-IN')}`}</span>
+                                        <span className="font-medium">DHL Shipping</span>
+                                        <span className={`font-bold ${actualShipping === 0 ? 'text-amber-500' : 'text-emerald-500'}`}>
+                                            {actualShipping === 0 
+                                                ? (isCalculatingShipping ? "Calculating..." : "Select Method") 
+                                                : `₹${actualShipping.toLocaleString('en-IN')}`}
+                                        </span>
                                     </div>
                                 </div>
 
@@ -925,10 +1020,10 @@ export default function CheckoutPage() {
                     <div className="w-16 h-16 bg-brand-blue/10 text-brand-blue rounded-full flex items-center justify-center mb-4">
                         <QrCode size={32} />
                     </div>
-                    
+
                     <h2 className="text-2xl font-black text-slate-900 mb-2">Scan to Pay</h2>
                     <p className="text-slate-500 text-sm mb-6">Open GPay, PhonePe, or Paytm and scan the QR code to complete your payment.</p>
-                    
+
                     <div className="bg-white p-4 rounded-xl shadow-sm border-2 border-slate-100 mb-6 flex flex-col items-center justify-center w-full max-w-[250px]">
                         <QRCode
                             value={`upi://pay?pa=asiadronestore@upi&pn=Asia%20Drone%20Store&am=${total}&cu=INR`}
@@ -937,7 +1032,7 @@ export default function CheckoutPage() {
                             viewBox={`0 0 256 256`}
                         />
                     </div>
-                    
+
                     <div className="bg-brand-blue/5 text-brand-blue-dark px-6 py-3 rounded-xl font-black text-2xl mb-8 tracking-tight w-full max-w-[250px] border border-brand-blue/10 flex flex-col items-center">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Amount to Pay</span>
                         ₹{total.toLocaleString('en-IN')}
