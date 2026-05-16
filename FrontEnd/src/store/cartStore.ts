@@ -9,6 +9,12 @@ export interface CartItem {
     quantity: number;
     rating?: number;
     reviews?: number;
+    weight?: number;
+    dimensions?: {
+        length: number;
+        width: number;
+        height: number;
+    };
 }
 
 interface CartState {

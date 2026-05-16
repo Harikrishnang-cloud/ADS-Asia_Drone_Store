@@ -70,9 +70,9 @@ export function WishlistDropdown({ items = [] }: WishlistDropdownProps) {
                   <h4 className="text-sm font-bold text-slate-900 truncate mb-1">{item.name}</h4>
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-bold text-brand-blue">₹{item.price.toFixed(2)}</p>
-                    <button 
+                    <button
                       onClick={(e) => handleMoveToCart(e, item)}
-                      className="p-1.5 bg-slate-100 hover:bg-brand-blue hover:text-white rounded-lg transition-colors" 
+                      className="p-1.5 bg-slate-100 hover:bg-brand-blue hover:text-white rounded-lg transition-colors"
                       title="Move to Cart"
                     >
                       <ShoppingCart size={14} />
@@ -88,7 +88,7 @@ export function WishlistDropdown({ items = [] }: WishlistDropdownProps) {
       {/* Footer */}
       {!isEmpty && (
         <div className="p-4 border-t border-slate-100 bg-slate-50/30">
-          <Link 
+          <Link
             href="/user/wishlist"
             className="w-full py-3 bg-white text-brand-blue border border-brand-blue rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-brand-blue hover:text-white transition-all active:scale-[0.98]"
           >

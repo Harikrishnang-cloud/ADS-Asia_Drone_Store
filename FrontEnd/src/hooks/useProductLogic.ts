@@ -32,22 +32,30 @@ export const useProductLogic = (initialCategory?: string) => {
         specifications: [],
         stock: "",
         status: "active",
-        offerPrice: ""
+        offerPrice: "",
+        weight: "",
+        length: "",
+        width: "",
+        height: ""
     });
 
     const resetForm = () => {
-        setFormData({ 
-            name: "", 
-            description: "", 
-            price: "", 
-            category: initialCategory || "All Products", 
-            subCategory: "", 
-            imageUrl: "", 
-            images: [], 
+        setFormData({
+            name: "",
+            description: "",
+            price: "",
+            category: initialCategory || "All Products",
+            subCategory: "",
+            imageUrl: "",
+            images: [],
             specifications: [],
-            stock: "", 
+            stock: "",
             status: "active",
-            offerPrice: ""
+            offerPrice: "",
+            weight: "",
+            length: "",
+            width: "",
+            height: ""
         });
         setEditingId(null);
         setIsAdding(false);
@@ -65,7 +73,11 @@ export const useProductLogic = (initialCategory?: string) => {
             specifications: product.specifications || [],
             stock: product.stock,
             status: product.status,
-            offerPrice: product.offerPrice || ""
+            offerPrice: product.offerPrice || "",
+            weight: product.weight || "",
+            length: product.dimensions?.length || "",
+            width: product.dimensions?.width || "",
+            height: product.dimensions?.height || ""
         });
         setEditingId(product.id);
         setIsAdding(true);
@@ -73,7 +85,7 @@ export const useProductLogic = (initialCategory?: string) => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!formData.name || !formData.price || !formData.imageUrl) {
             toast.error("Please fill in required fields (Name, Price, Image URL)");
             return;
@@ -81,11 +93,11 @@ export const useProductLogic = (initialCategory?: string) => {
 
         setIsSaving(true);
         const loadingToast = toast.loading(editingId ? "Updating product..." : "Creating product...");
-        
+
         try {
             const parsedPrice = Number(formData.price);
             const parsedOfferPrice = formData.offerPrice ? Number(formData.offerPrice) : undefined;
-            
+
             let offerPercentage: number | undefined = undefined;
             if (parsedOfferPrice !== undefined && parsedOfferPrice < parsedPrice) {
                 offerPercentage = Math.round(((parsedPrice - parsedOfferPrice) / parsedPrice) * 100);
@@ -99,6 +111,12 @@ export const useProductLogic = (initialCategory?: string) => {
                 offerPrice: parsedOfferPrice,
                 offerPercentage: offerPercentage,
                 stock: Number(formData.stock),
+                weight: formData.weight ? Number(formData.weight) : 0,
+                dimensions: {
+                    length: formData.length ? Number(formData.length) : 0,
+                    width: formData.width ? Number(formData.width) : 0,
+                    height: formData.height ? Number(formData.height) : 0,
+                },
                 updatedAt: Date.now()
             };
 
@@ -125,7 +143,7 @@ export const useProductLogic = (initialCategory?: string) => {
 
     const confirmDelete = async () => {
         if (!productToDelete) return;
-        
+
         setIsDeleting(true);
         const loadingToast = toast.loading("Deleting product...");
         try {
@@ -147,7 +165,7 @@ export const useProductLogic = (initialCategory?: string) => {
         if (initialCategory) {
             list = list.filter(p => p.category === initialCategory);
         }
-        return list.filter(p => 
+        return list.filter(p =>
             p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             p.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
             (p.subCategory && p.subCategory.toLowerCase().includes(searchTerm.toLowerCase()))

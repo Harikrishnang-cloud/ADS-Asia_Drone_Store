@@ -27,7 +27,7 @@ export default function WishlistPage() {
 
     // Pagination calculations
     const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
-    
+
     // Safety clamp for current page
     const safePage = Math.max(1, Math.min(currentPage, totalPages || 1));
 
@@ -39,7 +39,7 @@ export default function WishlistPage() {
     }, [items.length, currentPage, totalPages]);
 
     const paginatedItems = items.slice(
-        (safePage - 1) * ITEMS_PER_PAGE, 
+        (safePage - 1) * ITEMS_PER_PAGE,
         safePage * ITEMS_PER_PAGE
     );
 
@@ -72,7 +72,7 @@ export default function WishlistPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between mb-8">
                         <h1 className="text-2xl md:text-3xl font-black text-brand-blue-dark flex items-center gap-3">
-                            
+
                             My Wishlist
                         </h1>
                         {items.length > 0 && (
@@ -84,7 +84,7 @@ export default function WishlistPage() {
 
                     {items.length === 0 ? (
                         <div className="bg-white rounded-xl p-12 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
-                           
+
                             <h2 className="text-xl font-bold text-slate-900 mb-2">Your wishlist is empty</h2>
                             <p className="text-slate-500 mb-8 max-w-sm">Save your favorite drones and accessories here to easily find them later.</p>
                             <Link href="/products">
@@ -99,13 +99,13 @@ export default function WishlistPage() {
                                         <div className="aspect-square bg-slate-50 relative overflow-hidden">
                                             <Link href={`/products/${item.id}`} className="block w-full h-full">
                                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                <img 
-                                                    src={item.image} 
-                                                    alt={item.name} 
-                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                                                <img
+                                                    src={item.image}
+                                                    alt={item.name}
+                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                                 />
                                             </Link>
-                                            <button 
+                                            <button
                                                 onClick={() => setItemToDelete(item.id)}
                                                 className="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm text-red-500 rounded-full shadow-md opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all z-10"
                                                 title="Remove from wishlist"
@@ -120,12 +120,12 @@ export default function WishlistPage() {
                                                 </h3>
                                             </Link>
                                             <div className="font-black text-brand-blue text-sm sm:text-lg mb-2 sm:mb-4">
-                                                <span className="font-sans font-semibold mr-0.5" style={{fontFamily: 'system-ui, Arial, sans-serif'}}>₹</span>
+                                                <span className="font-sans font-semibold mr-0.5" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
                                                 {Number(item.price).toLocaleString('en-IN')}
                                             </div>
-                                            <Button 
+                                            <Button
                                                 onClick={() => handleMoveToCart(item)}
-                                                className="w-full py-2 sm:py-3 text-[10px] sm:text-sm rounded-md cursor-pointer" 
+                                                className="w-full py-2 sm:py-3 text-[10px] sm:text-sm rounded-md cursor-pointer"
                                                 icon={<ShoppingCart size={14} />}
                                             >
                                                 Add to Cart
@@ -135,13 +135,13 @@ export default function WishlistPage() {
                                 ))}
                             </div>
 
-                            <Pagination 
-                                currentPage={currentPage} 
-                                totalPages={totalPages} 
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
                                 onPageChange={(page) => {
                                     setCurrentPage(page);
                                     window.scrollTo({ top: 0, behavior: 'smooth' });
-                                }} 
+                                }}
                             />
                         </div>
                     )}

@@ -31,7 +31,7 @@ export const metadata: Metadata = {
         description: "Your ultimate destination for professional drones and aerial technology.",
         images: ["/log-ads.png"],
     },
-    
+
     robots: {
         index: true,
         follow: true,
@@ -80,7 +80,7 @@ export default function Home() {
                     <section className="max-w-screen-3xl mx-auto px-4 md:px-8 w-full">
                         <ProductGrid title="Spare Parts" category="Spare Parts" limit={5} />
                     </section>
-                    
+
                     <section className="max-w-screen-3xl mx-auto px-4 md:px-8 w-full">
                         <ProductGrid title="Premium Accessories" category="Accessories" limit={5} />
                     </section>

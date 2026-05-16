@@ -18,6 +18,12 @@ export interface Product {
     averageRating?: number;
     reviews?: number;
     totalReviews?: number;
+    weight?: number; // in grams or kg
+    dimensions?: {
+        length: number;
+        width: number;
+        height: number;
+    };
 }
 
 export interface ProductFormData {
@@ -36,4 +42,8 @@ export interface ProductFormData {
     averageRating?: number;
     reviews?: number;
     totalReviews?: number;
+    weight?: number | string;
+    length?: number | string;
+    width?: number | string;
+    height?: number | string;
 }

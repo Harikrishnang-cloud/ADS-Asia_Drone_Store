@@ -54,7 +54,7 @@ export class userController {
                 httpOnly: true,
                 secure: isProduction,
                 sameSite: isProduction ? "none" : "lax",
-                maxAge: 15 * 60 * 1000 // 15 minutes
+                maxAge: 1 * 60 * 60 * 1000 // 1 hour
             });
 
             res.cookie("refreshToken", tokens.refreshToken, {
@@ -93,7 +93,7 @@ export class userController {
                 httpOnly: true,
                 secure: isProduction,
                 sameSite: isProduction ? "none" : "lax",
-                maxAge: 15 * 60 * 1000 // 15 minutes
+                maxAge: 1 * 60 * 60 * 1000 // 1 hour
             });
 
             res.status(200).json({

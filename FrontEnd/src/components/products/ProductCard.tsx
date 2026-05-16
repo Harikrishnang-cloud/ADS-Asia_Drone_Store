@@ -29,6 +29,8 @@ export default function ProductCard({ product }: ProductCardProps) {
             image: product.imageUrl,
             quantity: 1,
             rating: product.averageRating || product.rating,
+            weight: product.weight,
+            dimensions: product.dimensions
         });
         toast.success(`${product.name} added to cart!`);
     };
