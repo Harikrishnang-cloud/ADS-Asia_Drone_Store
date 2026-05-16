@@ -871,7 +871,7 @@ export default function CheckoutPage() {
                                         </div>
 
                                         {/* COD Option */}
-                                        <div
+                                        {/* <div
                                             onClick={() => isCodAvailable && setPaymentMethod("cod")}
                                             className={`p-4 border-2 rounded-xl flex items-start gap-4 relative overflow-hidden transition-all shadow-sm ${!isCodAvailable
                                                 ? 'opacity-60 cursor-not-allowed border-slate-100 bg-slate-50'
@@ -896,7 +896,7 @@ export default function CheckoutPage() {
                                                     <p className="text-xs font-bold text-red-500 mt-2 bg-red-50 inline-block px-2 py-1 rounded-md">Unavailable for orders ₹1,000 and above</p>
                                                 )}
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                     <p className="text-xs text-slate-400 mt-5 flex items-center gap-2 font-medium">
                                         <Lock size={12} className="text-emerald-500" /> SSL Encrypted Checkout. We do not store your payment credentials.
