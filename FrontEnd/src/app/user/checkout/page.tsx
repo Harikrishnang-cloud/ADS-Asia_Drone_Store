@@ -821,7 +821,7 @@ export default function CheckoutPage() {
                                         </div>
 
                                         {/* Wallet Option */}
-                                        <div
+                                        {/* <div
                                             onClick={() => isWalletAvailable && setPaymentMethod("wallet")}
                                             className={`p-4 border-2 rounded-xl flex items-start gap-4 relative overflow-hidden transition-all shadow-sm ${!isWalletAvailable
                                                 ? 'opacity-60 cursor-not-allowed border-slate-100 bg-slate-50'
@@ -849,7 +849,7 @@ export default function CheckoutPage() {
                                                     <p className="text-xs font-bold text-red-500 mt-2 bg-red-50 inline-block px-2 py-1 rounded-md">Insufficient balance for this order</p>
                                                 )}
                                             </div>
-                                        </div>
+                                        </div> */}
                                         {/* Online Payment (QR Code) */}
                                         <div
                                             onClick={() => setPaymentMethod("online")}
