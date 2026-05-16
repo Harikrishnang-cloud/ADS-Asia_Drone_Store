@@ -820,83 +820,8 @@ export default function CheckoutPage() {
                                             </div>
                                         </div>
 
-                                        {/* Wallet Option */}
-                                        {/* <div
-                                            onClick={() => isWalletAvailable && setPaymentMethod("wallet")}
-                                            className={`p-4 border-2 rounded-xl flex items-start gap-4 relative overflow-hidden transition-all shadow-sm ${!isWalletAvailable
-                                                ? 'opacity-60 cursor-not-allowed border-slate-100 bg-slate-50'
-                                                : paymentMethod === 'wallet'
-                                                    ? 'border-brand-blue bg-brand-blue/5 cursor-pointer'
-                                                    : 'border-slate-100 bg-white hover:border-brand-blue/30 cursor-pointer'
-                                                }`}
-                                        >
-                                            <div className="absolute top-0 right-0 w-16 h-16 bg-brand-blue/10 rounded-bl-full -z-10 opacity-0 transition-opacity" style={{ opacity: paymentMethod === 'wallet' ? 1 : 0 }}></div>
-                                            <div className="mt-1 flex-shrink-0">
-                                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${paymentMethod === 'wallet' ? 'border-brand-blue' : 'border-slate-300'}`}>
-                                                    {paymentMethod === 'wallet' && <div className="w-2.5 h-2.5 rounded-full bg-brand-blue"></div>}
-                                                </div>
-                                            </div>
-                                            <div className="w-full">
-                                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 w-full">
-                                                    <h3 className={`font-bold flex items-center gap-2 flex-wrap transition-colors ${!isWalletAvailable ? 'text-slate-500' : paymentMethod === 'wallet' ? 'text-brand-blue-dark' : 'text-slate-700'}`}>
-                                                        <Wallet size={18} className={!isWalletAvailable ? 'text-slate-400' : paymentMethod === 'wallet' ? 'text-brand-blue' : 'text-slate-400'} />
-                                                        Use Wallet Balance
-                                                    </h3>
-                                                    <span className="font-black text-sm text-brand-blue bg-brand-blue/5 px-2.5 py-1 rounded-lg border border-brand-blue/10 w-fit">₹{walletBalance.toLocaleString('en-IN')}</span>
-                                                </div>
-                                                <p className="text-sm text-slate-500 mt-1 leading-relaxed">Pay instantly using your available wallet funds.</p>
-                                                {!isWalletAvailable && (
-                                                    <p className="text-xs font-bold text-red-500 mt-2 bg-red-50 inline-block px-2 py-1 rounded-md">Insufficient balance for this order</p>
-                                                )}
-                                            </div>
-                                        </div> */}
-                                        {/* Online Payment (QR Code) */}
-                                        {/* <div
-                                            onClick={() => setPaymentMethod("online")}
-                                            className={`p-4 border-2 rounded-xl flex items-start gap-4 cursor-pointer relative overflow-hidden transition-all shadow-sm ${paymentMethod === 'online' ? 'border-brand-blue bg-brand-blue/5' : 'border-slate-100 bg-white hover:border-brand-blue/30'}`}
-                                        >
-                                            <div className="absolute top-0 right-0 w-16 h-16 bg-brand-blue/10 rounded-bl-full -z-10 opacity-0 transition-opacity" style={{ opacity: paymentMethod === 'online' ? 1 : 0 }}></div>
-                                            <div className="mt-1 flex-shrink-0">
-                                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${paymentMethod === 'online' ? 'border-brand-blue' : 'border-slate-300'}`}>
-                                                    {paymentMethod === 'online' && <div className="w-2.5 h-2.5 rounded-full bg-brand-blue"></div>}
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <h3 className={`font-bold flex items-center gap-2 flex-wrap transition-colors ${paymentMethod === 'online' ? 'text-brand-blue-dark' : 'text-slate-700'}`}>
-                                                    <QrCode size={18} className={paymentMethod === 'online' ? 'text-brand-blue' : 'text-slate-400'} />
-                                                    Scan QR Code (UPI / GPay)
-                                                </h3>
-                                                <p className="text-sm text-slate-500 mt-1 leading-relaxed">Pay easily by scanning the QR code using Google Pay, PhonePe, Paytm, or any UPI app.</p>
-                                            </div>
-                                        </div> */}
-
-                                        {/* COD Option */}
-                                        {/* <div
-                                            onClick={() => isCodAvailable && setPaymentMethod("cod")}
-                                            className={`p-4 border-2 rounded-xl flex items-start gap-4 relative overflow-hidden transition-all shadow-sm ${!isCodAvailable
-                                                ? 'opacity-60 cursor-not-allowed border-slate-100 bg-slate-50'
-                                                : paymentMethod === 'cod'
-                                                    ? 'border-brand-blue bg-brand-blue/5 cursor-pointer'
-                                                    : 'border-slate-100 bg-white hover:border-brand-blue/30 cursor-pointer'
-                                                }`}
-                                        >
-                                            <div className="absolute top-0 right-0 w-16 h-16 bg-brand-blue/10 rounded-bl-full -z-10 opacity-0 transition-opacity" style={{ opacity: paymentMethod === 'cod' ? 1 : 0 }}></div>
-                                            <div className="mt-1 flex-shrink-0">
-                                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${paymentMethod === 'cod' ? 'border-brand-blue' : 'border-slate-300'}`}>
-                                                    {paymentMethod === 'cod' && <div className="w-2.5 h-2.5 rounded-full bg-brand-blue"></div>}
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <h3 className={`font-bold flex items-center gap-2 flex-wrap transition-colors ${!isCodAvailable ? 'text-slate-500' : paymentMethod === 'cod' ? 'text-brand-blue-dark' : 'text-slate-700'}`}>
-                                                    <Banknote size={18} className={!isCodAvailable ? 'text-slate-400' : paymentMethod === 'cod' ? 'text-brand-blue' : 'text-slate-400'} />
-                                                    Cash on Delivery (COD)
-                                                </h3>
-                                                <p className="text-sm text-slate-500 mt-1 leading-relaxed">Pay with cash upon the delivery of your premium drone products.</p>
-                                                {!isCodAvailable && (
-                                                    <p className="text-xs font-bold text-red-500 mt-2 bg-red-50 inline-block px-2 py-1 rounded-md">Unavailable for orders ₹1,000 and above</p>
-                                                )}
-                                            </div>
-                                        </div> */}
+                                       
+                                        
                                     </div>
                                     <p className="text-xs text-slate-400 mt-5 flex items-center gap-2 font-medium">
                                         <Lock size={12} className="text-emerald-500" /> SSL Encrypted Checkout. We do not store your payment credentials.
