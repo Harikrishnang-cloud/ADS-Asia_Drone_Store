@@ -851,7 +851,7 @@ export default function CheckoutPage() {
                                             </div>
                                         </div> */}
                                         {/* Online Payment (QR Code) */}
-                                        <div
+                                        {/* <div
                                             onClick={() => setPaymentMethod("online")}
                                             className={`p-4 border-2 rounded-xl flex items-start gap-4 cursor-pointer relative overflow-hidden transition-all shadow-sm ${paymentMethod === 'online' ? 'border-brand-blue bg-brand-blue/5' : 'border-slate-100 bg-white hover:border-brand-blue/30'}`}
                                         >
@@ -868,7 +868,7 @@ export default function CheckoutPage() {
                                                 </h3>
                                                 <p className="text-sm text-slate-500 mt-1 leading-relaxed">Pay easily by scanning the QR code using Google Pay, PhonePe, Paytm, or any UPI app.</p>
                                             </div>
-                                        </div>
+                                        </div> */}
 
                                         {/* COD Option */}
                                         {/* <div
