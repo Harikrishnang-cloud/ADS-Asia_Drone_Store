@@ -1,10 +1,10 @@
 import React from 'react';
 import { Truck, Clock, ShieldCheck, Loader2 } from 'lucide-react';
 
-interface ShippingOption {
+export interface ShippingOption {
     id: string;
     name: string;
-    description: string;
+    description?: string;
     price: number;
     estimatedDelivery: string;
 }

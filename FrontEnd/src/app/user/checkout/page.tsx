@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useCartStore } from "@/store/cartStore";
-import { Lock, CreditCard, CheckCircle, ShoppingBag, ArrowLeft, Wallet, Banknote, MapPin, PackageCheck, QrCode } from "lucide-react";
+import { Lock, CreditCard, CheckCircle, ShoppingBag, ArrowLeft, Wallet, MapPin, PackageCheck, QrCode } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/button";
@@ -17,7 +17,7 @@ import Script from "next/script";
 import api from "@/lib/axios";
 import QRCode from "react-qr-code";
 
-import { ShippingOptions } from "@/components/checkout/ShippingOptions";
+import { ShippingOptions, ShippingOption } from "@/components/checkout/ShippingOptions";
 
 export default function CheckoutPage() {
     const { items, getTotalPrice, clearCart } = useCartStore();
@@ -33,8 +33,8 @@ export default function CheckoutPage() {
     const [errors, setErrors] = useState<Record<string, string>>({});
     
     // DHL Shipping State
-    const [shippingOptions, setShippingOptions] = useState<any[]>([]);
-    const [selectedShippingOption, setSelectedShippingOption] = useState<any>(null);
+    const [shippingOptions, setShippingOptions] = useState<ShippingOption[]>([]);
+    const [selectedShippingOption, setSelectedShippingOption] = useState<ShippingOption | null>(null);
     const [isCalculatingShipping, setIsCalculatingShipping] = useState(false);
 
     useEffect(() => {
@@ -173,7 +173,7 @@ export default function CheckoutPage() {
 
                 // Transform DHL response to our ShippingOption format
                 // This depends on the actual DHL API response structure
-                const options = res.data.products?.map((p: any) => ({
+                const options = res.data.products?.map((p: { productCode: string; productName: string; deliveryCapabilities?: { totalTransitDays?: number } }) => ({
                     id: p.productCode,
                     name: p.productName,
                     //price: p.totalPrice?.[0]?.price || 750,
@@ -787,7 +787,7 @@ export default function CheckoutPage() {
 
                                         <ShippingOptions 
                                             options={shippingOptions} 
-                                            selectedId={selectedShippingOption?.id} 
+                                            selectedId={selectedShippingOption?.id || null} 
                                             onSelect={setSelectedShippingOption}
                                             isLoading={isCalculatingShipping}
                                         />
