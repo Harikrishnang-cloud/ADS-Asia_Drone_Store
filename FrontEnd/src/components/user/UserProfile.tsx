@@ -1,16 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import api from "@/lib/axios";
 import { db, storage } from "@/lib/firebase";
 import { useAuth } from "@/context/AuthContext";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import Script from "next/script";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { User, Mail, Phone, MapPin, Camera, Save, Trash2, Loader2, Edit3, ChevronLeft, Lock, RefreshCcw, Wallet, CreditCard, Plus, Check, Home, Briefcase, MapPinned } from "lucide-react";
+import { User, Mail, Phone, MapPin, Save, Trash2, Loader2, Edit3, ChevronLeft, Plus, Check, Home, Briefcase, MapPinned } from "lucide-react";
 import { UserAddress, UserProfile as UserProfileType } from "@/store/authStore";
 import Image from "next/image";
-import { PasswordInput } from "@/components/PasswordInput";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -18,7 +15,6 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import { useAuthStore } from "@/store/authStore";
-import { authService } from "@/services/auth.service";
 
 interface UserProfileProps {
     isEdit?: boolean;
@@ -48,16 +44,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
 
     const [errors, setErrors] = useState<Record<string, string>>({});
 
-    const [addMoneyAmount, setAddMoneyAmount] = useState("");
-    const [isAddingMoney, setIsAddingMoney] = useState(false);
 
-    // Reset Password States
-    const [resetData, setResetData] = useState({
-        newPassword: "",
-        confirmPassword: ""
-    });
-    const [resetErrors, setResetErrors] = useState<Record<string, string>>({});
-    const [isResetting, setIsResetting] = useState(false);
 
     const { isInitialized } = useAuth();
 
@@ -287,147 +274,13 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
         }
     };
 
-    const handleResetPassword = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!user?.email) return;
 
-        const newResetErrors: Record<string, string> = {};
-        if (!resetData.newPassword) {
-            newResetErrors.newPassword = "New password is required";
-        } else if (resetData.newPassword.length < 6) {
-            newResetErrors.newPassword = "Password must be at least 6 characters";
-        }
-
-        if (resetData.newPassword !== resetData.confirmPassword) {
-            newResetErrors.confirmPassword = "Passwords do not match";
-        }
-
-        setResetErrors(newResetErrors);
-
-        if (Object.keys(newResetErrors).length > 0) return;
-
-        setIsResetting(true);
-        try {
-            const data = await authService.resetPassword({
-                email: user.email,
-                password: resetData.newPassword
-            });
-
-            if (data.success) {
-                toast.success("Password reset successfully!");
-                setResetData({ newPassword: "", confirmPassword: "" });
-            } else {
-                toast.error(data.message || "Reset failed");
-            }
-        } catch (err: unknown) {
-            const errorObj = err as { response?: { data?: { message?: string } }, message?: string };
-            const errorMsg = errorObj.response?.data?.message || errorObj.message || "An error occurred during password reset";
-            toast.error(errorMsg);
-        } finally {
-            setIsResetting(false);
-        }
-    };
-
-    const handleAddMoney = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const amount = parseInt(addMoneyAmount);
-        if (isNaN(amount) || amount <= 10) {
-            toast.error("Minimum top-up amount is ₹10");
-            return;
-        }
-
-        setIsAddingMoney(true);
-        console.log("Initiating Wallet Top-up for amount:", amount);
-
-        try {
-            // 1. Create Razorpay order in Backend
-            const orderRes = await api.post("/payment/create-order", { amount });
-            const order = orderRes.data.order;
-
-            if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) {
-                throw new Error("Razorpay Key ID missing.");
-            }
-
-            // 2. Open Razorpay Modal
-            const options = {
-                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-                amount: order.amount,
-                currency: order.currency,
-                name: "Asia Drone Store",
-                description: "Wallet Top-up",
-                order_id: order.id,
-                handler: async function (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) {
-                    try {
-                        // 3. Verify Payment and update balance on backend
-                        const verifyRes = await api.post("/payment/verify-wallet-topup", {
-                            order_id: response.razorpay_order_id,
-                            payment_id: response.razorpay_payment_id,
-                            signature: response.razorpay_signature,
-                            amount: amount
-                        });
-
-                        if (verifyRes.data.success && user) {
-                            // Update local state by re-fetching or updating directly
-                            const newBalance = (user.walletBalance || 0) + amount;
-                            const updatedUser = { ...user, walletBalance: newBalance };
-                            setUser(updatedUser);
-                            localStorage.setItem("userData", JSON.stringify(updatedUser));
-                            setAuth(updatedUser);
-                            
-                            toast.success(`₹${amount.toLocaleString('en-IN')} added to wallet!`);
-                            setAddMoneyAmount("");
-                        } else {
-                            toast.error(verifyRes.data.message || "Top-up failed.");
-                        }
-                    } catch (err) {
-                        console.error("Top-up verification failed:", err);
-                        toast.error("Transaction verification failed.");
-                    } finally {
-                        setIsAddingMoney(false);
-                    }
-                },
-                prefill: {
-                    name: user?.name || "",
-                    email: user?.email || "",
-                    contact: user?.phone || ""
-                },
-                theme: { color: "#0066CC" },
-                modal: {
-                    ondismiss: function() {
-                        setIsAddingMoney(false);
-                    }
-                }
-            };
-            if (!user) throw new Error("User not found");
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            if (typeof (window as any).Razorpay === 'undefined') {
-                throw new Error("Razorpay SDK not loaded.");
-            }
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const rzp = new (window as any).Razorpay(options);
-            rzp.on('payment.failed', function (response: { error: { description: string } }) {
-                toast.error("Payment failed. " + response.error.description);
-                setIsAddingMoney(false);
-            });
-            rzp.open();
-
-        } catch (error: unknown) {
-            console.error("Wallet Top-up failed:", error);
-            const err = error as { message?: string };
-            toast.error(err.message || "Failed to initiate payment.");
-            setIsAddingMoney(false);
-        }
-    };
 
     if (loading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-brand-blue" size={40} /></div>;
     if (!user) return null;
 
     return (
         <div className="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Script id="razorpay-checkout-js" src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
-            
             {/* Main Profile Info Card */}
             <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 h-full">
                 <div className="flex justify-between items-center mb-8">
@@ -465,12 +318,6 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                     </div>
                     {isEdit && (
                         <>
-                            <button
-                                onClick={() => fileInputRef.current?.click()}
-                                className="mt-4 text-sm font-medium text-brand-blue flex items-center gap-2 hover:underline cursor-pointer"
-                            >
-                                <Camera size={16} /> Change Photo
-                            </button>
                             <input type="file" ref={fileInputRef} onChange={handleImageUpload} className="hidden" accept="image/*" />
                         </>
                     )}
@@ -689,94 +536,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                 </div>
             </div>
 
-            {/* Wallet Card */}
-            {!isEdit && (
-                <div className="bg-white p-8 rounded-lg shadow-sm border border-slate-100 h-fit">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="w-10 h-10 rounded-lg bg-brand-blue/10 flex items-center justify-center">
-                            <Wallet size={20} className="text-brand-blue" />
-                        </div>
-                        <h2 className="text-xl font-bold text-slate-800">My Wallet</h2>
-                    </div>
 
-                    <div className="bg-brand-blue/5 border border-brand-blue/20 rounded-lg p-6 mb-8 flex items-center justify-between overflow-hidden relative">
-                        <div className="relative z-10">
-                            <p className="text-sm font-semibold text-brand-blue-dark/70 uppercase tracking-wider mb-1">Available Balance</p>
-                            <p className="text-4xl font-black text-brand-blue-dark">₹{(user.walletBalance || 0).toLocaleString('en-IN')}</p>
-                        </div>
-                        <Wallet size={80} className="text-brand-blue opacity-10 absolute -right-4 -bottom-4 z-0 rotate-[-15deg]" />
-                    </div>
-
-                    <form onSubmit={handleAddMoney} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-2">Add Money to Wallet (Online Payment)</label>
-                            <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg">₹</span>
-                                <input
-                                    type="number"
-                                    className="w-full p-4 pl-10 border border-slate-200 rounded-lg outline-none focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5 transition-all text-lg font-bold"
-                                    placeholder="Enter amount"
-                                    value={addMoneyAmount}
-                                    onChange={(e) => setAddMoneyAmount(e.target.value)}
-                                    min="10"
-                                    required
-                                />
-                            </div>
-                        </div>
-                        <button
-                            type="submit"
-                            disabled={isAddingMoney}
-                            className="w-fit px-4 py-2 bg-slate-900 text-white rounded-lg font-bold hover:bg-black transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg mt-2"
-                        >
-                            {isAddingMoney ? <Loader2 className="animate-spin" size={20} /> : <><CreditCard size={18} /> Pay Online</>}
-                        </button>
-                    </form>
-                </div>
-            )}
-
-            {/* Reset Password Card */}
-            {isEdit && (
-                <div className="bg-white p-8 rounded-lg shadow-sm border border-slate-100 h-fit">
-                    <div className="flex items-center gap-3 mb-8">
-                        <div className="w-10 h-10 rounded-xl bg-brand-orange/10 flex items-center justify-center">
-                            <Lock size={20} className="text-brand-orange" />
-                        </div>
-                        <h2 className="text-xl font-bold text-slate-800">Security & Password</h2>
-                    </div>
-
-                    <div className="space-y-6">
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wide opacity-70">New Password</label>
-                            <PasswordInput
-                                className={`w-full p-4 border rounded-xl outline-none transition-all ${resetErrors.newPassword ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5'}`}
-                                placeholder="Enter new password"
-                                value={resetData.newPassword}
-                                onChange={(e) => setResetData({ ...resetData, newPassword: e.target.value })}
-                            />
-                            {resetErrors.newPassword && <p className="text-red-500 text-xs font-medium mt-1 ml-1">{resetErrors.newPassword}</p>}
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wide opacity-70">Confirm New Password</label>
-                            <PasswordInput
-                                className={`w-full p-4 border rounded-xl outline-none transition-all ${resetErrors.confirmPassword ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5'}`}
-                                placeholder="Confirm new password"
-                                value={resetData.confirmPassword}
-                                onChange={(e) => setResetData({ ...resetData, confirmPassword: e.target.value })}
-                            />
-                            {resetErrors.confirmPassword && <p className="text-red-500 text-xs font-medium mt-1 ml-1">{resetErrors.confirmPassword}</p>}
-                        </div>
-
-                        <button
-                            onClick={handleResetPassword}
-                            disabled={isResetting}
-                            className="w-full bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-black transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg mt-2"
-                        >
-                            {isResetting ? <Loader2 className="animate-spin" size={20} /> : <><RefreshCcw size={18} /> Update Password</>}
-                        </button>
-                    </div>
-                </div>
-            )}
 
             <ConfirmationModal
                 isOpen={isDeleteModalOpen}
