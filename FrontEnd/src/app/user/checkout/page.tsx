@@ -153,6 +153,10 @@ export default function CheckoutPage() {
 
             setIsCalculatingShipping(true);
             try {
+                // Temporary workaround while waiting for DHL approval
+                // Commenting out the API call to avoid 404/errors
+
+                /* 
                 // Hardcoded origin for now - should be in settings
                 const origin = {
                     city: "Kochi",
@@ -193,14 +197,21 @@ export default function CheckoutPage() {
                     setShippingOptions(options);
                     setSelectedShippingOption(options[0]);
                 }
+                */
+
+                // Set fallback directly since DHL is not approved yet
+                const fallbackOptions = [
+                    { id: 'dhl_express', name: 'DHL Express Worldwide', price: 0, estimatedDelivery: '2-3 Days' }
+                ];
+                setShippingOptions(fallbackOptions);
+                setSelectedShippingOption(fallbackOptions[0]);
+
             } catch (err) {
                 console.error("Shipping calculation failed:", err);
                 // Fallback for demo/dev
                 setShippingOptions([
-                    //{ id: 'dhl_express', name: 'DHL Express Worldwide', price: 750, estimatedDelivery: '2-3 Days' }
                     { id: 'dhl_express', name: 'DHL Express Worldwide', price: 0, estimatedDelivery: '2-3 Days' }
                 ]);
-                //setSelectedShippingOption({ id: 'dhl_express', name: 'DHL Express Worldwide', price: 0, estimatedDelivery: '2-3 Days' });
                 setSelectedShippingOption({ id: 'dhl_express', name: 'DHL Express Worldwide', price: 0, estimatedDelivery: '2-3 Days' });
             } finally {
                 setIsCalculatingShipping(false);
