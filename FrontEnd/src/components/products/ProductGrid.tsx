@@ -23,11 +23,18 @@ export default function ProductGrid({ category, limit, title }: ProductGridProps
         return () => clearTimeout(timer);
     }, []);
 
-    const { data: products, loading } = useFirestoreCollection<Product>({
+    const { data: rawProducts, loading } = useFirestoreCollection<Product>({
         collectionName: "products",
         orderByField: "createdAt",
         orderDirection: "desc"
     });
+
+    const products = React.useMemo(() => {
+        return rawProducts.map(p => ({
+            ...p,
+            category: p.category === "All Products" ? "Drones" : p.category
+        }));
+    }, [rawProducts]);
 
 
     const displayProducts = React.useMemo(() => {

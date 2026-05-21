@@ -128,7 +128,7 @@ export default function ProductManager({ category }: { category?: string }) {
                                     value={formData.category}
                                     onChange={e => setFormData({ ...formData, category: e.target.value })}
                                 >
-                                    <option value="All Products">Products</option>
+                                    <option value="Drones">Drones</option>
                                     <option value="Spare Parts">Spare Parts</option>
                                     <option value="Accessories">Accessories</option>
                                     

@@ -8,11 +8,18 @@ import { useFirestoreCollection } from "./useFirestore";
 import { Product, ProductFormData } from "@/types/product.types";
 
 export const useProductLogic = (initialCategory?: string) => {
-    const { data: products, loading, refresh: fetchProducts } = useFirestoreCollection<Product>({
+    const { data: rawProducts, loading, refresh: fetchProducts } = useFirestoreCollection<Product>({
         collectionName: "products",
         orderByField: "createdAt",
         orderDirection: "desc"
     });
+
+    const products = useMemo(() => {
+        return rawProducts.map(p => ({
+            ...p,
+            category: p.category === "All Products" ? "Drones" : p.category
+        }));
+    }, [rawProducts]);
 
     const [isAdding, setIsAdding] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -25,7 +32,7 @@ export const useProductLogic = (initialCategory?: string) => {
         name: "",
         description: "",
         price: "",
-        category: initialCategory || "All Products",
+        category: initialCategory || "Drones",
         subCategory: "",
         imageUrl: "",
         images: [],
@@ -44,7 +51,7 @@ export const useProductLogic = (initialCategory?: string) => {
             name: "",
             description: "",
             price: "",
-            category: initialCategory || "All Products",
+            category: initialCategory || "Drones",
             subCategory: "",
             imageUrl: "",
             images: [],

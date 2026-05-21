@@ -74,7 +74,7 @@ export default function Home() {
                 <BannerSlider />
                 <div className="flex flex-col gap-6 md:gap-12 py-8 md:py-16">
                     <section className="max-w-screen-3xl mx-auto px-4 md:px-8 w-full">
-                        <ProductGrid title="Featured Selection" category="All Products" limit={5} />
+                        <ProductGrid title="Featured Selection" category="Drones" limit={5} />
                     </section>
 
                     <section className="max-w-screen-3xl mx-auto px-4 md:px-8 w-full">

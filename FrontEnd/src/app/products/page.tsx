@@ -17,11 +17,18 @@ function ProductsContent() {
     const categoryParam = searchParams.get("category") || "All";
     const sortByParam = searchParams.get("sortBy") || "newest";
 
-    const { data: products, loading } = useFirestoreCollection<Product>({
+    const { data: rawProducts, loading } = useFirestoreCollection<Product>({
         collectionName: "products",
         orderByField: "createdAt",
         orderDirection: "desc"
     });
+
+    const products = useMemo(() => {
+        return rawProducts.map(p => ({
+            ...p,
+            category: p.category === "All Products" ? "Drones" : p.category
+        }));
+    }, [rawProducts]);
 
     // States for non-URL filters (like price range and pagination)
     const [priceRange, setPriceRange] = useState<number>(250000); 
