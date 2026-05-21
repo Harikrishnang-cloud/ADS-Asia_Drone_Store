@@ -20,12 +20,12 @@ export default function ProductManager({ category }: { category?: string }) {
 
     const handleGenerateDescription = async () => {
         if (!formData.name) {
-            toast.error("Please enter a Product Name first!");
+            toast.error("Please enter a product name");
             return;
         }
 
         setIsGeneratingDescription(true);
-        const loadToast = toast.loading("AI is crafting the perfect description...");
+        const loadToast = toast.loading("Generating description...");
 
         try {
             const res = await fetch("/api/generate-description", {
@@ -43,13 +43,13 @@ export default function ProductManager({ category }: { category?: string }) {
 
             if (res.ok && data.description) {
                 setFormData({ ...formData, description: data.description });
-                toast.success("Description optimized!", { id: loadToast });
+                toast.success("Description generated", { id: loadToast });
             } else {
-                toast.error(data.error || "Generation failed", { id: loadToast });
+                toast.error(data.error || "Unable to generate description", { id: loadToast });
             }
         } catch (error) {
             console.error(error);
-            toast.error("Connection error to AI service.", { id: loadToast });
+            toast.error("Unable to connect to AI service", { id: loadToast });
         } finally {
             setIsGeneratingDescription(false);
         }

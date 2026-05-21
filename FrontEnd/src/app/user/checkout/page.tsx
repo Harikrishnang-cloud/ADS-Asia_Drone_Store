@@ -290,12 +290,12 @@ export default function CheckoutPage() {
         e.preventDefault();
 
         if (!validate()) {
-            toast.error("Please fix the errors in your shipping details.");
+            toast.error("Please check your shipping details");
             return;
         }
 
         if (!user || !user.id) {
-            toast.error("User session not found. Please log in again.");
+            toast.error("Please log in again to continue");
             return;
         }
 
@@ -445,7 +445,7 @@ export default function CheckoutPage() {
                 }
             } catch (error) {
                 console.error("Order failed:", error);
-                toast.error("Failed to place order. Please try again.");
+                toast.error("Unable to place order at this time");
                 setIsProcessing(false);
             }
         };
@@ -485,12 +485,12 @@ export default function CheckoutPage() {
                                     paymentId: response.razorpay_payment_id
                                 });
                             } else {
-                                toast.error("Payment verification failed. Order saved as Pending Payment.");
+                                toast.error("Payment verification failed");
                                 await createOrder(null);
                             }
                         } catch (err) {
                             console.error("Verification failed:", err);
-                            toast.error("Payment verification failed. Order saved as Pending Payment.");
+                            toast.error("Payment verification failed");
                             await createOrder(null);
                         }
                     },
@@ -504,7 +504,7 @@ export default function CheckoutPage() {
                     },
                     modal: {
                         ondismiss: async function () {
-                            toast.error("Payment was cancelled. You can retry from your Orders.");
+                            toast.error("Payment cancelled");
                             await createOrder(null);
                         }
                     },
@@ -550,7 +550,7 @@ export default function CheckoutPage() {
             } catch (error: unknown) {
                 const err = error as { response?: { data?: { message?: string } } };
                 console.error("Razorpay initiation failed:", err);
-                toast.error(err.response?.data?.message || "Failed to initiate payment. Server might be down.");
+                toast.error(err.response?.data?.message || "Unable to initiate payment");
                 setIsProcessing(false);
             }
         };

@@ -77,10 +77,10 @@ function SettingsContent() {
             const updatedUser = { ...user, preferences: updatedPrefs };
             setAuth(updatedUser);
             localStorage.setItem("userData", JSON.stringify(updatedUser));
-            toast.success("Preference updated");
+            toast.success("Settings saved");
         } catch (error) {
             console.error("Error updating preference:", error);
-            toast.error("Failed to update preference");
+            toast.error("Unable to save settings");
             // Simple revert (not perfectly atomic but good for UI)
             setPreferences(preferences);
         }
@@ -99,10 +99,10 @@ function SettingsContent() {
             const updatedUser = { ...user, regional: updatedRegional };
             setAuth(updatedUser);
             localStorage.setItem("userData", JSON.stringify(updatedUser));
-            toast.success(`${key.charAt(0).toUpperCase() + key.slice(1)} preference updated`);
+            toast.success("Regional settings saved");
         } catch (error) {
             console.error("Error updating regional setting:", error);
-            toast.error("Failed to update regional settings");
+            toast.error("Unable to save regional settings");
             setRegional(regional);
         }
     };

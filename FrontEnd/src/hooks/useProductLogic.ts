@@ -94,7 +94,7 @@ export const useProductLogic = (initialCategory?: string) => {
         e.preventDefault();
 
         if (!formData.name || !formData.price || !formData.imageUrl) {
-            toast.error("Please fill in required fields (Name, Price, Image URL)");
+            toast.error("Please fill in all required fields");
             return;
         }
 
@@ -129,20 +129,20 @@ export const useProductLogic = (initialCategory?: string) => {
 
             if (editingId) {
                 await updateDoc(doc(db, "products", editingId), productData);
-                toast.success("Product updated successfully", { id: loadingToast });
+                toast.success("Product updated", { id: loadingToast });
             } else {
                 await addDoc(collection(db, "products"), {
                     ...productData,
                     createdAt: Date.now()
                 });
-                toast.success("Product created successfully", { id: loadingToast });
+                toast.success("Product created", { id: loadingToast });
             }
             resetForm();
             fetchProducts();
         } catch (error: unknown) {
             console.error("Error saving product:", error);
             const err = error as { message?: string };
-            toast.error(err.message || "Failed to save product", { id: loadingToast });
+            toast.error("Unable to save product", { id: loadingToast });
         } finally {
             setIsSaving(false);
         }
@@ -155,13 +155,13 @@ export const useProductLogic = (initialCategory?: string) => {
         const loadingToast = toast.loading("Deleting product...");
         try {
             await deleteDoc(doc(db, "products", productToDelete));
-            toast.success("Product deleted successfully", { id: loadingToast });
+            toast.success("Product removed", { id: loadingToast });
             setProductToDelete(null);
             fetchProducts();
         } catch (error: unknown) {
             console.error("Error deleting product:", error);
             const err = error as { message?: string };
-            toast.error(err.message || "Failed to delete product", { id: loadingToast });
+            toast.error("Unable to remove product", { id: loadingToast });
         } finally {
             setIsDeleting(false);
         }

@@ -24,13 +24,13 @@ api.interceptors.response.use(
         if (error.response?.status === 401) {
             console.error("Unauthorized access, redirecting...");
             if (typeof window !== "undefined" && !window.location.pathname.includes('/auth/login')) {
-                toast.error("Session expired. Please log in again.");
+                toast.error("Please log in again to continue");
 
             }
         } else if (error.response?.status === 403) {
-            toast.error("You do not have permission to perform this action");
+            toast.error("You don't have access to this action");
         } else if (error.response?.status === 429) {
-            toast.error("Too many requests. Please try again later.");
+            toast.error("Too many attempts. Please wait a moment");
         }
         return Promise.reject(error);
     }

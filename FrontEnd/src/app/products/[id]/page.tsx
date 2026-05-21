@@ -75,7 +75,7 @@ export default function ProductDetailPage() {
             weight: product.weight,
             dimensions: product.dimensions
         });
-        toast.success(`${product.name} added to cart!`);
+        toast.success("Item added to cart");
     };
 
     const handleToggleWishlist = () => {

@@ -34,33 +34,30 @@ export default function ConfirmationModal({
 
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} maxWidth="md">
-            <div className="flex flex-col items-center text-center py-2">
-                {/* <div className={`p-4 ${style.iconBg} rounded-lg mb-6`}>
-                    {style.icon}
-                </div> */}
+        <Modal isOpen={isOpen} onClose={onClose} maxWidth="sm-md">
+            <div className="flex flex-col items-center text-center py-1 sm:py-2">
 
-                <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 mb-2 sm:mb-3 tracking-tight">
                     {title}
                 </h3>
 
-                <p className="text-slate-500 font-medium leading-relaxed mb-8 max-w-xs">
+                <p className="text-sm sm:text-base text-slate-500 font-medium leading-relaxed mb-6 sm:mb-8 max-w-xs">
                     {message}
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-3 w-full">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full">
                     <button
                         onClick={onClose}
                         disabled={isLoading}
-                        className="flex-1 px-6 py-3.5 rounded-lg font-bold text-slate-600 hover:bg-slate-100 transition-all cursor-pointer disabled:opacity-50"
+                        className="flex-1 px-4 sm:px-6 py-2.5 sm:py-3.5 rounded-lg text-sm sm:text-base font-bold text-slate-600 hover:bg-slate-100 transition-all cursor-pointer disabled:opacity-50"
                     >
                         {cancelText}
                     </button>
                     <button
                         onClick={onConfirm}
                         disabled={isLoading}
-                        className={`flex-1 px-6 py-3.5 rounded-lg font-bold text-white shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 ${getButtonStyle()}`}>
-                        {isLoading && <Loader2 className="animate-spin" size={18} />}
+                        className={`flex-1 px-4 sm:px-6 py-2.5 sm:py-3.5 rounded-lg text-sm sm:text-base font-bold text-white shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 ${getButtonStyle()}`}>
+                        {isLoading && <Loader2 className="animate-spin" size={16} />}
                         {confirmText}
                     </button>
                 </div>

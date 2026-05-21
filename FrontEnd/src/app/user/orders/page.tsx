@@ -149,7 +149,7 @@ export default function OrdersPage() {
 
     const handleReturnRequest = async () => {
         if (!returnOrderId || !returnReason) {
-            toast.error("Please select a reason for return.");
+            toast.error("Please select a return reason");
             return;
         }
 
@@ -166,7 +166,7 @@ export default function OrdersPage() {
             await updateDoc(orderRef, returnData);
 
             setOrders(orders.map(o => o.id === returnOrderId ? { ...o, ...returnData } : o));
-            toast.success("Return request submitted successfully!");
+            toast.success("Return request submitted");
 
             // Reset state
             setReturnOrderId(null);
@@ -174,7 +174,7 @@ export default function OrdersPage() {
             setReturnComment("");
         } catch (error) {
             console.error("Return request failed:", error);
-            toast.error("Failed to submit return request.");
+            toast.error("Unable to submit return request");
         } finally {
             setIsSubmittingReturn(false);
         }
@@ -190,7 +190,7 @@ export default function OrdersPage() {
 
         const orderToCancel = orders.find(o => o.id === cancelOrderId);
         if (!orderToCancel || orderToCancel.status.toLowerCase() !== 'processing') {
-            toast.error("This order cannot be cancelled.");
+            toast.error("This order cannot be cancelled");
             setCancelOrderId(null);
             return;
         }
@@ -208,9 +208,9 @@ export default function OrdersPage() {
                 await updateDoc(userRef, {
                     walletBalance: increment(orderToCancel.total)
                 });
-                toast.success("Order cancelled and amount refunded to wallet!");
+                toast.success("Order cancelled and refunded");
             } else {
-                toast.success("Order cancelled successfully.");
+                toast.success("Order cancelled");
             }
 
             // 3. Update local state
@@ -218,7 +218,7 @@ export default function OrdersPage() {
 
         } catch (error) {
             console.error("Cancel failed:", error);
-            toast.error("Failed to cancel order. Please try again.");
+            toast.error("Unable to cancel order");
         } finally {
             setIsCancelling(false);
             setCancelOrderId(null);
@@ -268,14 +268,14 @@ export default function OrdersPage() {
                                 }
                             });
 
-                            toast.success("Payment successful! Order is now processing.");
+                            toast.success("Payment successful");
                             setOrders(orders.map(o => o.id === order.id ? { ...o, status: "Processing" } : o));
                         } else {
-                            toast.error("Payment verification failed. Please contact support.");
+                            toast.error("Payment verification failed");
                         }
                     } catch (err) {
                         console.error("Verification error:", err);
-                        toast.error("An error occurred during verification.");
+                        toast.error("Unable to verify payment");
                     }
                 },
                 prefill: {
@@ -291,7 +291,7 @@ export default function OrdersPage() {
             rzp.open();
         } catch (error) {
             console.error("Retry payment failed:", error);
-            toast.error("Could not initiate payment. Please try again later.");
+            toast.error("Unable to initiate payment");
         }
     };
 
@@ -303,7 +303,7 @@ export default function OrdersPage() {
             image: item.image,
             quantity: 1
         });
-        toast.success(`${item.name} added to cart!`);
+        toast.success("Item added to cart");
         router.push("/user/cart");
     };
 

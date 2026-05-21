@@ -52,7 +52,7 @@ export const useUserLogic = () => {
         } catch (error: unknown) {
             const err = error as { message?: string };
             console.error("Error updating user status:", err);
-            toast.error(err.message || "Failed to update user status", { id: loadingToast });
+            toast.error("Unable to update user status", { id: loadingToast });
         } finally {
             setUpdatingId(null);
         }

@@ -54,7 +54,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!user) {
-            toast.error("Please login to add a review");
+            toast.error("Please login to continue");
             return;
         }
 
@@ -66,7 +66,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
                     comment
                 });
                 if (data.success) {
-                    toast.success("Review updated successfully");
+                    toast.success("Review updated");
                     setEditingReviewId(null);
                     setComment("");
                     setRating(5);
@@ -80,7 +80,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
                     comment
                 });
                 if (data.success) {
-                    toast.success("Review added successfully");
+                    toast.success("Review added");
                     setComment("");
                     setRating(5);
                     window.location.reload();
@@ -88,7 +88,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
             }
         } catch (error: unknown) {
             const err = error as { response?: { data?: { message?: string } } };
-            toast.error(err.response?.data?.message || "Failed to submit review");
+            toast.error(err.response?.data?.message || "Unable to submit review");
         } finally {
             setSubmitting(false);
         }
@@ -105,7 +105,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
             }
         } catch (error: unknown) {
             const err = error as { response?: { data?: { message?: string } } };
-            toast.error(err.response?.data?.message || "Failed to delete review");
+            toast.error(err.response?.data?.message || "Unable to delete review");
         }
     };
 

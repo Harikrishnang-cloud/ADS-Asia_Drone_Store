@@ -28,12 +28,12 @@ export default function ContactPage() {
         try {
             const { data } = await api.post("/support/contact", formData);
             if (data.success) {
-                toast.success("Message sent successfully. Our team will contact you shortly.");
+                toast.success("Message sent successfully");
                 setFormData({ name: "", email: "", subject: "", message: "" });
             }
         } catch (error: unknown) {
             const err = error as { response?: { data?: { message?: string } } };
-            toast.error(err.response?.data?.message || "Failed to send message. Please try again.");
+            toast.error(err.response?.data?.message || "Unable to send message");
         } finally {
             setIsSubmitting(false);
         }

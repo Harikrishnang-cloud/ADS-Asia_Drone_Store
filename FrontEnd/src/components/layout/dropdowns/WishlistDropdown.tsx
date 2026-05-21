@@ -34,7 +34,7 @@ export function WishlistDropdown({ items = [] }: WishlistDropdownProps) {
       quantity: 1
     });
     removeItem(item.id);
-    toast.success(`${item.name} moved to cart!`);
+    toast.success("Item moved to cart");
   };
 
   return (

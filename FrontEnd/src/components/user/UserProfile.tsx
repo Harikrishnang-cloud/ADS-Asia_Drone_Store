@@ -89,7 +89,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                 }
             } catch (err: unknown) {
                 console.error("Failed to load profile:", err);
-                toast.error("Failed to load profile");
+                toast.error("Unable to load profile");
             } finally {
                 setLoading(false);
             }
@@ -145,7 +145,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
             isPrimary: formData.addresses.length === 0
         };
         setFormData({ ...formData, addresses: [...formData.addresses, newAddr] });
-        toast.success("New address form added!");
+        toast.success("Address form added");
     };
 
     const handleAddressChange = (id: string, field: keyof UserAddress, value: string | boolean | number) => {
@@ -172,7 +172,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
             updated[0].isPrimary = true;
         }
         setFormData({ ...formData, addresses: updated });
-        toast.success("Address removed!");
+        toast.success("Address removed");
     };
 
     const handleSetPrimary = (id: string) => {
@@ -181,14 +181,14 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
             isPrimary: addr.id === id
         }));
         setFormData({ ...formData, addresses: updated });
-        toast.success("Primary address updated!");
+        toast.success("Primary address updated");
     };
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!validate()) {
-            toast.error("Please fix the errors before saving");
+            toast.error("Please check the form for errors");
             return;
         }
 
@@ -209,11 +209,11 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
             const updatedUser = { ...user, ...finalData };
             localStorage.setItem("userData", JSON.stringify(updatedUser));
             setAuth(updatedUser);
-            toast.success("Profile updated!");
+            toast.success("Profile updated");
             router.push("/user/profile");
         } catch (err: unknown) {
             console.error("Update failed:", err);
-            toast.error("Update failed");
+            toast.error("Unable to save changes");
         } finally {
             setIsSaving(false);
         }
@@ -225,7 +225,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
 
         // Simple file type check
         if (!file.type.startsWith('image/')) {
-            toast.error("Please upload an image file");
+            toast.error("Please select a valid image");
             return;
         }
 
@@ -235,7 +235,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
 
         uploadTask.on('state_changed', null,
             () => {
-                toast.error("Upload failed");
+                toast.error("Unable to upload image");
                 setIsUploading(false);
             },
             async () => {
@@ -246,7 +246,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                 setUser(updatedUser);
                 localStorage.setItem("userData", JSON.stringify(updatedUser));
                 setAuth(updatedUser);
-                toast.success("Image updated!");
+                toast.success("Image updated");
                 setIsUploading(false);
             }
         );
@@ -267,7 +267,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
             toast.success("Account deleted");
         } catch (err: unknown) {
             console.error("Delete failed:", err);
-            toast.error("Delete failed");
+            toast.error("Unable to remove account");
         } finally {
             setIsDeleting(false);
             setIsDeleteModalOpen(false);

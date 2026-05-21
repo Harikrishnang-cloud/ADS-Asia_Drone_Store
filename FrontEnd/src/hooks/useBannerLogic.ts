@@ -70,17 +70,17 @@ export const useBannerLogic = () => {
 
             if (editingId) {
                 await updateDoc(doc(db, "banners", editingId), dataToSave);
-                toast.success("Banner updated successfully", { id: loadingToast });
+                toast.success("Banner updated", { id: loadingToast });
             } else {
                 await addDoc(collection(db, "banners"), { ...dataToSave, createdAt: Date.now() });
-                toast.success("Banner created successfully", { id: loadingToast });
+                toast.success("Banner created", { id: loadingToast });
             }
             resetForm();
             fetchBanners();
         } catch (error: unknown) {
             console.error("Error saving banner:", error);
             const err = error as { message?: string };
-            toast.error(err.message || "Failed to save banner", { id: loadingToast });
+            toast.error("Unable to save banner", { id: loadingToast });
         } finally {
             setIsSaving(false);
         }
@@ -93,13 +93,13 @@ export const useBannerLogic = () => {
         const loadingToast = toast.loading("Deleting banner...");
         try {
             await deleteDoc(doc(db, "banners", bannerToDelete));
-            toast.success("Banner deleted successfully", { id: loadingToast });
+            toast.success("Banner removed", { id: loadingToast });
             setBannerToDelete(null);
             fetchBanners();
         } catch (error: unknown) {
             console.error("Error deleting banner:", error);
             const err = error as { message?: string };
-            toast.error(err.message || "Failed to delete banner", { id: loadingToast });
+            toast.error("Unable to remove banner", { id: loadingToast });
         } finally {
             setIsDeleting(false);
         }

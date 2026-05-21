@@ -58,7 +58,7 @@ export default function RegisterPage() {
                     await signInWithCustomToken(auth, data.firebaseToken);
                 }
 
-                toast.success("Account created successfully! Please log in.");
+                toast.success("Account created successfully");
                 router.push("/auth/login");
             } else {
                 const errorMsg = data.message || "Registration failed";
@@ -67,7 +67,7 @@ export default function RegisterPage() {
             }
         } catch (err: unknown) {
             const errorObj = err as { response?: { data?: { message?: string } }, message?: string };
-            const errorMsg = errorObj.response?.data?.message || errorObj.message || "Network Error. Please try again.";
+            const errorMsg = errorObj.response?.data?.message || "Unable to complete the request right now";
             setError(errorMsg);
             toast.error(errorMsg);
         } finally {
@@ -88,16 +88,16 @@ export default function RegisterPage() {
             if (data.success) {
                 localStorage.setItem("userData", JSON.stringify(data.user));
                 setAuth(data.user);
-                toast.success("Signed in with Google!");
+                toast.success("Signed in with Google");
                 router.push("/");
             } else {
-                const errorMsg = data.message || "Google registration failed";
+                const errorMsg = data.message || "Unable to sign in with Google";
                 setError(errorMsg);
                 toast.error(errorMsg);
             }
         } catch (err: unknown) {
             const errorObj = err as { response?: { data?: { message?: string } }, message?: string };
-            const errorMsg = errorObj.response?.data?.message || errorObj.message || "Google registration failed";
+            const errorMsg = errorObj.response?.data?.message || "Unable to sign in with Google";
             setError(errorMsg);
             toast.error(errorMsg);
         } finally {

@@ -8,7 +8,7 @@ interface ModalProps {
     onClose: () => void;
     title?: string;
     children: React.ReactNode;
-    maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
+    maxWidth?: "sm-md" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
 }
 
 export default function Modal({
@@ -39,6 +39,7 @@ export default function Modal({
     if (!isOpen) return null;
 
     const maxWidthClasses = {
+        "sm-md": "w-[85vw] max-w-[320px] sm:w-full sm:max-w-md",
         sm: "max-w-sm",
         md: "max-w-md",
         lg: "max-w-lg",
@@ -55,17 +56,25 @@ export default function Modal({
             <div
                 ref={modalRef}
                 className={`relative w-full ${maxWidthClasses[maxWidth]} bg-white rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95 fade-in duration-300 shadow-slate-900/20 border border-white/20`}>
-                <div className="flex items-center justify-between p-6 border-b border-slate-100 bg-slate-50/50">
-                    {title && <h3 className="text-xl font-black text-slate-900 tracking-tight">{title}</h3>}
+                {title ? (
+                    <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-100 bg-slate-50/50">
+                        <h3 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">{title}</h3>
+                        <button
+                            onClick={onClose}
+                            className="p-2 hover:bg-slate-200/50 rounded-lg transition-colors text-slate-400 hover:text-slate-900 cursor-pointer">
+                            <X size={18} className="sm:w-5 sm:h-5" />
+                        </button>
+                    </div>
+                ) : (
                     <button
                         onClick={onClose}
-                        className="p-2 hover:bg-slate-200/50 rounded-lg transition-colors text-slate-400 hover:text-slate-900 cursor-pointer">
-                        <X size={20} />
+                        className="absolute top-2 right-2 sm:top-4 sm:right-4 p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-400 hover:text-slate-900 z-10 cursor-pointer">
+                        <X size={18} className="sm:w-5 sm:h-5" />
                     </button>
-                </div>
+                )}
 
                 {/* Body */}
-                <div className="p-6 max-h-[85vh] overflow-y-auto custom-scrollbar">
+                <div className={`p-5 sm:p-6 max-h-[85vh] overflow-y-auto custom-scrollbar ${!title ? 'pt-8 sm:pt-10' : ''}`}>
                     {children}
                 </div>
             </div>
