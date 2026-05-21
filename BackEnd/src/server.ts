@@ -2,6 +2,8 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import { globalLimiter } from "./Config/rateLimiter.ts";
 import { userRoutes } from "./Routes/user/userRoutes.ts";
 import { userController } from "./Controllers/user/userControllers.ts";
 import { userRepository } from "./Repository/user/userRepository.ts";
@@ -14,6 +16,12 @@ import { PaymentService } from "./Service/payment/PaymentService.ts";
 import { reviewRoutes } from "./Routes/review/reviewRoutes.ts";
 
 const app = express();
+
+// Apply security headers
+app.use(helmet());
+
+// Apply rate limiting
+app.use(globalLimiter);
 
 app.use(cors({
     origin: (origin, callback) => {

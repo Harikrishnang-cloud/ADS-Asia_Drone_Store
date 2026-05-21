@@ -2,6 +2,8 @@ import express from "express";
 import type { Request, Response } from "express";
 import { userController } from "../../Controllers/user/userControllers.ts";
 import { authMiddleware, userMiddleware } from "../../Middleware/authMiddleware.ts";
+import { validateRequest } from "../../Middleware/validateMiddleware.ts";
+import { registerSchema, loginSchema } from "../../Validations/user.validation.ts";
 
 export class userRoutes {
     private userController: userController;
@@ -15,10 +17,10 @@ export class userRoutes {
 
     private setRoutes() {
         // Public routes (no auth required)
-        this.userRoutes.post("/user/register", (req: Request, res: Response) => {
+        this.userRoutes.post("/user/register", validateRequest(registerSchema), (req: Request, res: Response) => {
             this.userController.userRegister(req, res);
         })
-        this.userRoutes.post("/user/login", (req: Request, res: Response) => {
+        this.userRoutes.post("/user/login", validateRequest(loginSchema), (req: Request, res: Response) => {
             this.userController.userLogin(req, res);
         })
         this.userRoutes.post("/user/refresh-token", (req: Request, res: Response) => {

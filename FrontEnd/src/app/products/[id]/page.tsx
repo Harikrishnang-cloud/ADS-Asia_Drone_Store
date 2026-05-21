@@ -260,7 +260,7 @@ export default function ProductDetailPage() {
                                         <span className="font-sans font-normal mr-0.5" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
                                         {Number(product.price).toLocaleString('en-IN')}
                                     </span>
-                                    {product.offerPercentage && (
+                                    {product.offerPercentage !== undefined && product.offerPercentage > 0 && (
                                         <span className="text-sm font-black uppercase tracking-wider bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-lg border border-emerald-200 shadow-sm shadow-emerald-500/20">
                                             {product.offerPercentage}% OFF
                                         </span>

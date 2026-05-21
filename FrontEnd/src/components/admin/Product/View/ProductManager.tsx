@@ -131,8 +131,7 @@ export default function ProductManager({ category }: { category?: string }) {
                                     <option value="All Products">Products</option>
                                     <option value="Spare Parts">Spare Parts</option>
                                     <option value="Accessories">Accessories</option>
-                                    {/* <option value="Drones">Drones</option>
-                                    <option value="FPV Gear">FPV Gear</option> */}
+                                    
                                 </select>
                             </div>
                             <div>
@@ -390,7 +389,7 @@ export default function ProductManager({ category }: { category?: string }) {
                                                         <span className="text-brand-orange">₹ {Number(product.offerPrice).toLocaleString('en-IN')}</span>
                                                         <div className="flex items-center gap-1.5 mt-0.5">
                                                             <span className="text-[10px] text-slate-400 line-through">₹ {Number(product.price).toLocaleString('en-IN')}</span>
-                                                            {product.offerPercentage && (
+                                                            {product.offerPercentage !== undefined && product.offerPercentage > 0 && (
                                                                 <span className="text-[9px] font-black bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-md">
                                                                     -{product.offerPercentage}%
                                                                 </span>

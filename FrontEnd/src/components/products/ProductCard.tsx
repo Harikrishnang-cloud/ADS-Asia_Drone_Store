@@ -116,7 +116,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                             <div className="flex flex-wrap items-baseline gap-1 sm:gap-2">
                                 <span className="text-sm sm:text-lg md:text-xl font-black text-brand-orange">₹{Number(product.offerPrice).toLocaleString('en-IN')}</span>
                                 <span className="text-[9px] sm:text-sm text-slate-400 font-medium line-through">₹{formattedPrice}</span>
-                                {product.offerPercentage && (
+                                {product.offerPercentage !== undefined && product.offerPercentage > 0 && (
                                     <span className="text-[7px] sm:text-[10px] font-black uppercase bg-emerald-50 text-emerald-700 px-1 py-0.5 rounded-xs mt-0.5 sm:mt-1">
                                         {product.offerPercentage}% OFF
                                     </span>

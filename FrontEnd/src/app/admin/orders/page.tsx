@@ -8,7 +8,7 @@ import {
     User, Mail, Phone, MapPin, Download
 } from "lucide-react";
 import { db } from "@/lib/firebase";
-import { collection, query, orderBy, getDocs, doc, updateDoc, Timestamp, deleteDoc } from "firebase/firestore";
+import { collection, query, orderBy, getDocs, doc, getDoc, updateDoc, Timestamp, deleteDoc } from "firebase/firestore";
 import toast from "react-hot-toast";
 import Button from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
@@ -47,6 +47,7 @@ interface Order {
     messageUpdatedAt?: number;
     deliveredAt?: number;
     returnedAt?: number;
+    stockReduced?: boolean;
 }
 
 export default function AdminOrdersPage() {
@@ -98,8 +99,44 @@ export default function AdminOrdersPage() {
             const orderRef = doc(db, "orders", orderId);
             const updateData: Partial<Order> = { status: newStatus };
 
+            const targetOrder = orders.find(o => o.id === orderId);
+
             if (newStatus === "Delivered") {
                 updateData.deliveredAt = Date.now();
+                
+                // If stock has not been reduced yet, do it now
+                if (targetOrder && !targetOrder.stockReduced) {
+                    for (const item of targetOrder.items) {
+                        const productRef = doc(db, "products", item.id);
+                        try {
+                            const productSnap = await getDoc(productRef);
+                            if (productSnap.exists()) {
+                                const currentStock = productSnap.data().stock || 0;
+                                const newStock = Math.max(0, currentStock - item.quantity);
+                                await updateDoc(productRef, { stock: newStock });
+                            }
+                        } catch (error) {
+                            console.error(`Failed to reduce stock for product ${item.id}:`, error);
+                        }
+                    }
+                    updateData.stockReduced = true;
+                }
+            } else if (targetOrder && targetOrder.stockReduced && newStatus === "Cancelled") {
+                // If the order was already marked as delivered/stockReduced, and is now cancelled, restore the stock
+                for (const item of targetOrder.items) {
+                    const productRef = doc(db, "products", item.id);
+                    try {
+                        const productSnap = await getDoc(productRef);
+                        if (productSnap.exists()) {
+                            const currentStock = productSnap.data().stock || 0;
+                            const newStock = currentStock + item.quantity;
+                            await updateDoc(productRef, { stock: newStock });
+                        }
+                    } catch (error) {
+                        console.error(`Failed to restore stock for product ${item.id}:`, error);
+                    }
+                }
+                updateData.stockReduced = false;
             }
 
             await updateDoc(orderRef, updateData);
