@@ -97,34 +97,34 @@ export default function VerifyOtpPage() {
             <div className="absolute -top-10 -left-10 w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] rounded-full bg-brand-blue/10 blur-[80px] pointer-events-none"></div>
             <div className="absolute -bottom-10 -right-10 w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] rounded-full bg-brand-orange/10 blur-[80px] pointer-events-none"></div>
 
-            <form onSubmit={handleSubmit} className="relative z-10 border border-slate-200 bg-white/80 backdrop-blur-xl p-8 sm:p-10 rounded-2xl w-full max-w-md shadow-xl">
-                <div className="flex flex-col items-center mb-8">
-                    <Logo width={160} height={160} className="w-32 md:w-[160px]" imageClassName="w-full h-auto" />
-                    <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-brand-orange -mt-2">OTP Verification</span>
-                </div>
+            <form onSubmit={handleSubmit} className="relative z-10 border border-white/50 bg-white/80 backdrop-blur-2xl p-5 sm:p-6 rounded-2xl w-full max-w-[340px] shadow-2xl animate-in fade-in zoom-in-95 duration-500 ease-out">
+                {/* <div className="flex flex-col items-center mb-6">
+                    <Logo width={120} height={120} className="w-24 md:w-[120px]" imageClassName="w-full h-auto" />
+                    <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-brand-orange -mt-2">OTP Verification</span>
+                </div> */}
 
 
-                <div className="mb-6 text-center">
-                    <p className="text-slate-500 text-sm mt-2 leading-relaxed">
+                <div className="mb-4 text-center">
+                    <p className="text-slate-500 text-xs mt-1 leading-relaxed">
                         Input the secure 6-digit flight clearance transmitted to
                         <br />
-                        <span className="font-semibold text-slate-900 mt-1 border border-slate-200 bg-slate-100/50 px-3 py-1 rounded inline-block">
+                        <span className="font-semibold text-slate-900 mt-1 border border-slate-200 bg-slate-100/50 px-2 py-0.5 rounded inline-block">
                             {contact}
                         </span>
                     </p>
                 </div>
 
-                {error && <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl mb-6 text-sm text-center font-medium animate-in fade-in">{error}</div>}
-                {success && <div className="bg-emerald-50 border border-emerald-200 text-emerald-600 p-3 rounded-xl mb-6 text-sm text-center font-medium animate-in fade-in">{success}</div>}
+                {error && <div className="bg-red-50 border border-red-200 text-red-600 p-2.5 rounded-xl mb-4 text-xs text-center font-medium animate-in fade-in">{error}</div>}
+                {success && <div className="bg-emerald-50 border border-emerald-200 text-emerald-600 p-2.5 rounded-xl mb-4 text-xs text-center font-medium animate-in fade-in">{success}</div>}
 
-                <div className="space-y-4">
+                <div className="space-y-3.5">
                     <div>
                         <input
                             type="text"
                             maxLength={6}
                             placeholder="••••••"
                             required
-                            className="bg-slate-50 border border-slate-200 text-brand-orange w-full p-4 rounded-xl focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-all text-center text-3xl font-black tracking-[0.7em] placeholder:text-slate-300 uppercase"
+                            className="bg-slate-50 border border-slate-200 text-brand-orange w-full py-3 rounded-xl focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-all text-center text-2xl font-black tracking-[0.5em] placeholder:text-slate-300 uppercase"
                             value={otp}
                             onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
                         />
@@ -133,24 +133,24 @@ export default function VerifyOtpPage() {
                     <button
                         type="submit"
                         disabled={loading || otp.length < 6}
-                        className="bg-gradient-to-r from-brand-orange to-brand-orange-dark hover:from-brand-orange-dark hover:to-orange-700 active:scale-[0.98] disabled:opacity-50 text-white font-semibold w-full p-4 rounded-xl transition-all shadow-lg shadow-brand-orange/20 mt-4 uppercase tracking-widest text-sm"
+                        className="bg-gradient-to-r from-brand-orange to-brand-orange-dark hover:from-brand-orange-dark hover:to-orange-700 active:scale-[0.98] disabled:opacity-50 text-white font-semibold text-sm w-full py-2.5 rounded-xl transition-all shadow-lg shadow-brand-orange/20 mt-2 uppercase tracking-widest"
                     >
-                        {loading ? "Verifying OTP..." : "Confirm OTP"}
+                        {loading ? "Verifying..." : "Confirm OTP"}
                     </button>
 
-                    <div className="text-center mt-6">
+                    <div className="text-center mt-5">
                         <button
                             type="button"
                             onClick={handleResend}
                             disabled={countdown > 0 || resendLoading}
-                            className={`text-xs font-semibold uppercase tracking-wider transition-colors ${countdown > 0 ? "text-slate-400 cursor-not-allowed" : "text-brand-orange hover:text-brand-orange-dark"}`}
+                            className={`text-[10px] font-semibold uppercase tracking-wider transition-colors ${countdown > 0 ? "text-slate-400 cursor-not-allowed" : "text-brand-orange hover:text-brand-orange-dark"}`}
                         >
-                            {resendLoading ? "Resend OTP..." : countdown > 0 ? `Resend OTP available in ${countdown}s` : "Request New OTP"}
+                            {resendLoading ? "Resend OTP..." : countdown > 0 ? `Resend available in ${countdown}s` : "Request New OTP"}
                         </button>
                     </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-slate-200 text-center text-xs text-slate-500 font-medium">
+                <div className="mt-6 pt-5 border-t border-slate-200 text-center text-[10px] text-slate-500 font-medium">
                     <Link href="/auth/forgot-password" className="text-slate-500 hover:text-slate-700 transition-colors uppercase tracking-widest">
                         &larr; Re-enter Contact Info
                     </Link>

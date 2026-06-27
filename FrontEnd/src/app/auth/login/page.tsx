@@ -104,48 +104,48 @@ export default function LoginPage() {
             <div className="absolute -top-10 -left-10 w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] rounded-full bg-brand-blue/10 blur-[80px] pointer-events-none"></div>
             <div className="absolute -bottom-10 -right-10 w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] rounded-full bg-brand-orange/10 blur-[80px] pointer-events-none"></div>
 
-            <form onSubmit={handleSubmit} className="relative z-10 border border-slate-200 bg-white/80 backdrop-blur-xl p-8 sm:p-10 rounded-2xl w-full max-w-md shadow-xl">
+            <form onSubmit={handleSubmit} className="relative z-10 border border-white/50 bg-white/80 backdrop-blur-2xl p-5 sm:p-6 rounded-2xl w-full max-w-[340px] shadow-2xl animate-in fade-in zoom-in-95 duration-500 ease-out">
                 {/* Brand Logo Area */}
-                {/* <div className="flex flex-col items-center mb-8">
-                    <Logo width={160} height={160} className="w-32 md:w-[160px]" imageClassName="w-full h-auto" />
-                    <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-brand-orange -mt-2">Fly Your Passion</span>
+                {/* <div className="flex flex-col items-center mb-6">
+                    <Logo width={120} height={120} className="w-24 md:w-[120px]" imageClassName="w-full h-auto" />
+                    <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-brand-orange -mt-2">Fly Your Passion</span>
                 </div> */}
 
 
-                <div className="mb-6 text-center">
-                    <h2 className="text-2xl font-semibold text-slate-900">Welcome Back</h2>
-                    <p className="text-slate-500 text-sm mt-1">Sign in to your dashboard</p>
+                <div className="mb-4 text-center">
+                    <h2 className="text-xl font-semibold text-slate-900">Welcome Back</h2>
+                    <p className="text-slate-500 text-xs mt-1">Sign in to your dashboard</p>
                 </div>
 
                 {error && (
-                    <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl mb-6 text-sm text-center font-medium animate-in fade-in slide-in-from-top-1">
+                    <div className="bg-red-50 border border-red-200 text-red-600 p-2.5 rounded-xl mb-4 text-xs text-center font-medium animate-in fade-in slide-in-from-top-1">
                         {error}
                     </div>
                 )}
 
-                <div className="space-y-5">
+                <div className="space-y-3.5">
                     <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Email Address</label>
+                        <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Email Address</label>
                         <input
                             type="email"
                             placeholder="Enter your email"
                             required
-                            className="bg-slate-50 border border-slate-200 text-slate-900 w-full p-3.5 rounded-xl focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all placeholder:text-slate-400"
+                            className="bg-slate-50 border border-slate-200 text-slate-900 w-full px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all placeholder:text-slate-400"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
                     <div>
-                        <div className="flex justify-between items-center mb-2">
-                            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500">Password</label>
-                            <Link href="/auth/forgot-password" className="text-xs text-brand-orange hover:text-brand-orange-dark font-medium transition-colors">
+                        <div className="flex justify-between items-center mb-1.5">
+                            <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500">Password</label>
+                            <Link href="/auth/forgot-password" className="text-[10px] text-brand-orange hover:text-brand-orange-dark font-medium transition-colors">
                                 Forgot Password?
                             </Link>
                         </div>
                         <PasswordInput
                             placeholder="Enter your password"
                             required
-                            className="bg-slate-50 border border-slate-200 text-slate-900 w-full p-3.5 rounded-xl focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all placeholder:text-slate-400"
+                            className="bg-slate-50 border border-slate-200 text-slate-900 w-full px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all placeholder:text-slate-400"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
@@ -153,14 +153,14 @@ export default function LoginPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="bg-gradient-to-r from-brand-orange to-brand-orange-dark hover:from-brand-orange-dark hover:to-orange-700 active:scale-[0.98] disabled:opacity-50 text-white font-semibold w-full p-3.5 rounded-xl transition-all mt-4 shadow-lg shadow-brand-orange/20"
+                        className="bg-gradient-to-r from-brand-orange to-brand-orange-dark hover:from-brand-orange-dark hover:to-orange-700 active:scale-[0.98] disabled:opacity-50 text-white font-semibold text-sm w-full py-2.5 rounded-xl transition-all mt-2 shadow-lg shadow-brand-orange/20"
                     >
                         {loading ? "Authenticating..." : "Sign In"}
                     </button>
 
-                    <div className="flex items-center my-6">
+                    <div className="flex items-center my-4">
                         <div className="flex-grow border-t border-slate-200"></div>
-                        <span className="flex-shrink-0 mx-4 text-slate-400 text-xs font-medium uppercase tracking-wider">or</span>
+                        <span className="flex-shrink-0 mx-3 text-slate-400 text-[10px] font-medium uppercase tracking-wider">or</span>
                         <div className="flex-grow border-t border-slate-200"></div>
                     </div>
 
@@ -168,9 +168,9 @@ export default function LoginPage() {
                         type="button"
                         onClick={loginWithGoogle}
                         disabled={loading}
-                        className="flex flex-row items-center justify-center gap-3 bg-white text-slate-700 hover:bg-slate-50 active:scale-[0.98] disabled:opacity-50 font-semibold w-full p-3.5 rounded-xl transition-all shadow-sm border border-slate-200 hover:border-slate-300"
+                        className="flex flex-row items-center justify-center gap-2 bg-white text-slate-700 hover:bg-slate-50 active:scale-[0.98] disabled:opacity-50 font-medium text-sm w-full py-2.5 rounded-xl transition-all shadow-sm border border-slate-200 hover:border-slate-300"
                     >
-                        <svg className="w-5 h-5" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4" viewBox="0 0 24 24">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
                             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
@@ -179,18 +179,18 @@ export default function LoginPage() {
                         Continue with Google
                     </button>
 
-                    <div className="mt-8 text-center">
+                    <div className="mt-5 text-center">
                         <Link
                             href="/products"
-                            className="text-slate-500 hover:text-brand-blue font-semibold text-sm transition-colors flex items-center justify-center gap-2 group"
+                            className="text-slate-500 hover:text-brand-blue font-semibold text-xs transition-colors flex items-center justify-center gap-1 group"
                         >
                             <span>Browse all products as guest</span>
-                            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </div>
                 </div>
 
-                <div className="mt-8 text-center text-sm text-slate-500 font-medium">
+                <div className="mt-5 text-center text-xs text-slate-500 font-medium">
                     New to ADS? <Link href="/auth/register" className="text-brand-orange hover:text-brand-orange-dark transition-colors">Create an account</Link>
                 </div>
             </form>
