@@ -20,7 +20,7 @@ export default function CompareBar() {
     if (!mounted || items.length === 0) return null;
 
     return (
-        <div className="fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] z-50 animate-in slide-in-from-bottom-full duration-500 pb-safe">
+        <div className="fixed bottom-[80px] md:bottom-0 left-0 w-full bg-white border-t border-slate-200 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] z-[90] animate-in slide-in-from-bottom-full duration-500 pb-safe md:pb-0">
             <div className="max-w-screen-2xl mx-auto px-4 md:px-8 py-3 md:py-4">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-4 md:gap-8 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 custom-scrollbar flex-1">

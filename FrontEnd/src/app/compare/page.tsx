@@ -81,7 +81,7 @@ export default function ComparePage() {
                 <table className="w-full min-w-[800px] text-left border-collapse">
                     <thead>
                         <tr>
-                            <th className="p-6 border-b border-r border-slate-100 w-1/4 bg-slate-50/50 align-top">
+                            <th className="p-6 border-b border-r border-slate-100 w-1/4 bg-slate-50/50 align-top sticky left-0 z-20 shadow-[4px_0_12px_rgba(0,0,0,0.02)]">
                                 <span className="text-sm font-black text-slate-400 uppercase tracking-widest">Product Details</span>
                             </th>
                             {compareProducts.map(product => (
@@ -132,14 +132,14 @@ export default function ComparePage() {
                     <tbody>
                         {/* Basic Info */}
                         <tr>
-                            <td className="p-4 md:p-6 border-b border-r border-slate-100 bg-slate-50/50 font-bold text-slate-600 text-sm">Category</td>
+                            <td className="p-4 md:p-6 border-b border-r border-slate-100 bg-slate-50/50 font-bold text-slate-600 text-sm sticky left-0 z-10 shadow-[4px_0_12px_rgba(0,0,0,0.02)]">Category</td>
                             {compareProducts.map(product => (
                                 <td key={product.id} className="p-4 md:p-6 border-b border-r border-slate-100 text-sm font-semibold text-slate-700">{product.category}</td>
                             ))}
                             {Array.from({ length: 3 - compareProducts.length }).map((_, i) => <td key={`empty-cat-${i}`} className="p-4 md:p-6 border-b border-r border-slate-100 bg-slate-50/30"></td>)}
                         </tr>
                         <tr>
-                            <td className="p-4 md:p-6 border-b border-r border-slate-100 bg-slate-50/50 font-bold text-slate-600 text-sm">Status</td>
+                            <td className="p-4 md:p-6 border-b border-r border-slate-100 bg-slate-50/50 font-bold text-slate-600 text-sm sticky left-0 z-10 shadow-[4px_0_12px_rgba(0,0,0,0.02)]">Status</td>
                             {compareProducts.map(product => (
                                 <td key={product.id} className="p-4 md:p-6 border-b border-r border-slate-100 text-sm">
                                     {product.status === 'active' ? (
@@ -158,11 +158,11 @@ export default function ComparePage() {
                         {allSpecKeys.length > 0 && (
                             <>
                                 <tr>
-                                    <td colSpan={4} className="p-4 border-b border-slate-100 bg-slate-100/50 font-black text-slate-800 text-sm uppercase tracking-wider">Specifications</td>
+                                    <td colSpan={4} className="p-4 border-b border-slate-100 bg-slate-100/50 font-black text-slate-800 text-sm uppercase tracking-wider sticky left-0 z-10">Specifications</td>
                                 </tr>
                                 {allSpecKeys.map(specKey => (
                                     <tr key={specKey} className="hover:bg-slate-50/50 transition-colors">
-                                        <td className="p-4 md:p-6 border-b border-r border-slate-100 bg-slate-50/30 font-bold text-slate-600 text-sm capitalize">{specKey}</td>
+                                        <td className="p-4 md:p-6 border-b border-r border-slate-100 bg-slate-50/90 font-bold text-slate-600 text-sm capitalize sticky left-0 z-10 shadow-[4px_0_12px_rgba(0,0,0,0.02)]">{specKey}</td>
                                         {compareProducts.map(product => {
                                             const specValue = product.specifications?.find(s => s.label === specKey)?.value;
                                             return (
@@ -179,10 +179,10 @@ export default function ComparePage() {
 
                         {/* Features */}
                         <tr>
-                            <td colSpan={4} className="p-4 border-b border-slate-100 bg-slate-100/50 font-black text-slate-800 text-sm uppercase tracking-wider">Features</td>
+                            <td colSpan={4} className="p-4 border-b border-slate-100 bg-slate-100/50 font-black text-slate-800 text-sm uppercase tracking-wider sticky left-0 z-10">Features</td>
                         </tr>
                         <tr>
-                            <td className="p-4 md:p-6 border-b border-r border-slate-100 bg-slate-50/50 font-bold text-slate-600 text-sm align-top">Highlights</td>
+                            <td className="p-4 md:p-6 border-b border-r border-slate-100 bg-slate-50/50 font-bold text-slate-600 text-sm align-top sticky left-0 z-10 shadow-[4px_0_12px_rgba(0,0,0,0.02)]">Highlights</td>
                             {compareProducts.map(product => (
                                 <td key={product.id} className="p-4 md:p-6 border-b border-r border-slate-100 text-sm align-top">
                                     {product.features && product.features.length > 0 ? (

@@ -1,0 +1,21 @@
+{
+  "name": "Asia Drone Store",
+  "short_name": "ADS",
+  "description": "Drone e-commerce platform by asia softlab",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#004b93",
+  "icons": [
+    {
+      "src": "/log-ads.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/log-ads.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
