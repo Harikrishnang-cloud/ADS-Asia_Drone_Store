@@ -13,7 +13,8 @@ export default function CompareBar() {
     const router = useRouter();
 
     useEffect(() => {
-        setMounted(true);
+        const timer = setTimeout(() => setMounted(true), 0);
+        return () => clearTimeout(timer);
     }, []);
 
     if (!mounted || items.length === 0) return null;

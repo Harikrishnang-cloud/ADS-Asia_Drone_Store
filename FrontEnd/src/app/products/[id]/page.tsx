@@ -341,7 +341,7 @@ export default function ProductDetailPage() {
                                 Add to Cart
                             </Button>
                         ) : (
-                            <Button className="flex-1 min-w-[140px] py-3 md:py-4 h-11 md:h-14 text-xs md:text-sm tracking-widest shadow-none bg-amber-500 hover:bg-amber-600 border-amber-500 text-white cursor-not-allowed opacity-80" icon={<Sparkles className="w-4 h-4 md:w-5 md:h-5" />} onClick={(e: any) => e.preventDefault()}>
+                            <Button className="flex-1 min-w-[140px] py-3 md:py-4 h-11 md:h-14 text-xs md:text-sm tracking-widest shadow-none bg-amber-500 hover:bg-amber-600 border-amber-500 text-white cursor-not-allowed opacity-80" icon={<Sparkles className="w-4 h-4 md:w-5 md:h-5" />} onClick={(e: React.MouseEvent) => e.preventDefault()}>
                                 Coming Soon
                             </Button>
                         )}

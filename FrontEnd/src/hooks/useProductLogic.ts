@@ -145,7 +145,7 @@ export const useProductLogic = (initialCategory?: string) => {
             fetchProducts();
         } catch (error: unknown) {
             console.error("Error saving product:", error);
-            const err = error as { message?: string };
+
             toast.error("Unable to save product", { id: loadingToast });
         } finally {
             setIsSaving(false);
@@ -164,7 +164,7 @@ export const useProductLogic = (initialCategory?: string) => {
             fetchProducts();
         } catch (error: unknown) {
             console.error("Error deleting product:", error);
-            const err = error as { message?: string };
+
             toast.error("Unable to remove product", { id: loadingToast });
         } finally {
             setIsDeleting(false);

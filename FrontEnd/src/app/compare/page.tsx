@@ -49,7 +49,7 @@ export default function ComparePage() {
                     <Info className="w-10 h-10 text-slate-400" />
                 </div>
                 <h1 className="text-2xl font-black text-slate-800 mb-2">Nothing to compare</h1>
-                <p className="text-slate-500 mb-8 max-w-md">You haven't selected any products to compare. Go back and add some products to see how they stack up against each other.</p>
+                <p className="text-slate-500 mb-8 max-w-md">You haven&apos;t selected any products to compare. Go back and add some products to see how they stack up against each other.</p>
                 <Link href="/products">
                     <Button variant="primary" icon={<ArrowLeft size={18} />}>Back to Products</Button>
                 </Link>

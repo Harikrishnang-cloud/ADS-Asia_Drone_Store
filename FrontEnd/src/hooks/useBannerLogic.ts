@@ -79,7 +79,7 @@ export const useBannerLogic = () => {
             fetchBanners();
         } catch (error: unknown) {
             console.error("Error saving banner:", error);
-            const err = error as { message?: string };
+
             toast.error("Unable to save banner", { id: loadingToast });
         } finally {
             setIsSaving(false);
@@ -98,7 +98,7 @@ export const useBannerLogic = () => {
             fetchBanners();
         } catch (error: unknown) {
             console.error("Error deleting banner:", error);
-            const err = error as { message?: string };
+
             toast.error("Unable to remove banner", { id: loadingToast });
         } finally {
             setIsDeleting(false);
