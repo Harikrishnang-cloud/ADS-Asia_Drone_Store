@@ -8,12 +8,13 @@ export interface Product {
     imageUrl: string;
     images: string[];
     stock: number;
-    status: 'active' | 'inactive';
+    status: 'active' | 'inactive' | 'coming_soon';
     createdAt: number;
     updatedAt?: number;
     offerPrice?: number;
     offerPercentage?: number;
     specifications?: { label: string; value: string }[];
+    features?: string[];
     rating?: number;
     averageRating?: number;
     reviews?: number;
@@ -35,9 +36,10 @@ export interface ProductFormData {
     imageUrl: string;
     images: string[];
     stock: number | string;
-    status: 'active' | 'inactive';
+    status: 'active' | 'inactive' | 'coming_soon';
     offerPrice?: number | string;
     specifications?: { label: string; value: string }[];
+    features?: string[];
     rating?: number;
     averageRating?: number;
     reviews?: number;

@@ -58,8 +58,8 @@ export default function ProductManager({ category }: { category?: string }) {
     return (
         <div className="space-y-10 animate-in fade-in duration-500 pb-20">
             <AdminHeader
-                title="Product Catalog"
-                description={`Currently managing ${products.length} products`}
+                title={category ? `${category.toUpperCase()} CATALOG` : "PRODUCT CATALOG"}
+                description={`Currently managing ${products.length} items`}
                 searchTerm={searchTerm}
                 onSearchChange={setSearchTerm}
                 searchPlaceholder="Search products..."
@@ -216,14 +216,20 @@ export default function ProductManager({ category }: { category?: string }) {
                                     <button
                                         type="button"
                                         onClick={() => setFormData({ ...formData, status: 'active' })}
-                                        className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-black uppercase transition-all rounded-lg ${formData.status === 'active' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
-                                        <CheckCircle2 size={14} /> Active
+                                        className={`flex-1 flex items-center justify-center gap-1 lg:gap-2 py-2 text-[10px] xl:text-xs font-black uppercase transition-all rounded-lg whitespace-nowrap cursor-pointer ${formData.status === 'active' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
+                                        <CheckCircle2 size={14} /> <span className="hidden sm:inline">Active</span><span className="sm:hidden">Active</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setFormData({ ...formData, status: 'coming_soon' })}
+                                        className={`flex-1 flex items-center justify-center gap-1 lg:gap-2 py-2 text-[10px] xl:text-xs font-black uppercase transition-all rounded-lg whitespace-nowrap cursor-pointer ${formData.status === 'coming_soon' ? 'bg-white text-amber-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
+                                        <Sparkles size={14} /> <span className="hidden sm:inline">Coming Soon</span><span className="sm:hidden">Soon</span>
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => setFormData({ ...formData, status: 'inactive' })}
-                                        className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-black uppercase transition-all rounded-lg ${formData.status === 'inactive' ? 'bg-white text-slate-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
-                                        <Archive size={14} /> Draft
+                                        className={`flex-1 flex items-center justify-center gap-1 lg:gap-2 py-2 text-[10px] xl:text-xs font-black uppercase transition-all rounded-lg whitespace-nowrap cursor-pointer ${formData.status === 'inactive' ? 'bg-white text-slate-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
+                                        <Archive size={14} /> <span className="hidden sm:inline">Draft</span><span className="sm:hidden">Draft</span>
                                     </button>
                                 </div>
                             </div>
@@ -267,6 +273,58 @@ export default function ProductManager({ category }: { category?: string }) {
                             className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold"
                             value={formData.description}
                             onChange={e => setFormData({ ...formData, description: e.target.value })} />
+                    </div>
+                    <div>
+                        <div className="flex justify-between items-center mb-2">
+                            <label className="text-xs font-black uppercase tracking-wider text-slate-500">Product Features</label>
+                            <button
+                                type="button"
+                                onClick={() => setFormData({ ...formData, features: [...(formData.features || []), ''] })}
+                                className="text-xs font-bold text-brand-orange hover:text-brand-orange-dark cursor-pointer flex items-center gap-1"
+                            >
+                                <Plus size={14} /> Add Feature
+                            </button>
+                        </div>
+                        <div className="space-y-3 mb-6">
+                            {formData.features?.map((feature, idx) => (
+                                <div key={idx} className="flex items-start gap-3">
+                                    <input
+                                        type="text"
+                                        placeholder="Feature (e.g. Extended Battery Life)"
+                                        className="flex-1 bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:border-brand-orange transition-all text-sm font-semibold"
+                                        value={feature}
+                                        onChange={e => {
+                                            const newFeatures = [...(formData.features || [])];
+                                            newFeatures[idx] = e.target.value;
+                                            setFormData({ ...formData, features: newFeatures });
+                                        }}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-all cursor-pointer"
+                                        title="Remove feature"
+                                        onClick={() => {
+                                            const newFeatures = formData.features?.filter((_, i) => i !== idx);
+                                            setFormData({ ...formData, features: newFeatures });
+                                        }}
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
+                            ))}
+                            {(!formData.features || formData.features.length === 0) && (
+                                <div className="text-center p-6 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50">
+                                    <p className="text-sm text-slate-400 font-semibold mb-3">No features added yet</p>
+                                    <button
+                                        type="button"
+                                        onClick={() => setFormData({ ...formData, features: [''] })}
+                                        className="text-xs font-bold text-brand-orange bg-brand-orange/10 px-4 py-2 rounded-lg hover:bg-brand-orange hover:text-white transition-all cursor-pointer"
+                                    >
+                                        Add Feature
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                     <div>
                         <div className="flex justify-between items-center mb-2">
@@ -407,12 +465,15 @@ export default function ProductManager({ category }: { category?: string }) {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-5 text-center">
-                                                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm border ${product.status === 'active'
+                                                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm border ${
+                                                    product.status === 'active'
                                                         ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                                                        : product.status === 'coming_soon'
+                                                        ? 'bg-amber-50 text-amber-600 border-amber-100'
                                                         : 'bg-slate-50 text-slate-500 border-slate-200'
                                                     }`}>
-                                                    {product.status === 'active' ? <CheckCircle2 size={12} /> : <Archive size={12} />}
-                                                    {product.status}
+                                                    {product.status === 'active' ? <CheckCircle2 size={12} /> : product.status === 'coming_soon' ? <Sparkles size={12} /> : <Archive size={12} />}
+                                                    {product.status.replace('_', ' ')}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-5 text-right">

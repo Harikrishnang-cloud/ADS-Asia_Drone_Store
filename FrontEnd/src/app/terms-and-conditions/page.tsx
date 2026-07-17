@@ -120,7 +120,7 @@ export default function TermsAndConditions() {
                         Please read these terms and conditions carefully before using our services. Your use of Asia Drone Store constitutes acceptance of these terms.
                     </p>
                     <div className="mt-8 text-slate-400 text-sm font-medium">
-                        Last Updated : April 14, 2026
+                        Last Updated : 17 July, 2026
                     </div>
                 </div>
             </div>

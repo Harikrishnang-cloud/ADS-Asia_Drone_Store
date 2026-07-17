@@ -4,10 +4,11 @@ import React, { useState } from "react";
 import { useFirestoreCollection } from "@/hooks/useFirestore";
 import { Product } from "@/types/product.types";
 import { useParams, useRouter } from "next/navigation";
-import { ChevronLeft, ChevronRight, X, Maximize2, ShoppingCart, Share2, Package, Heart, Star, CheckCircle2, Minus, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Maximize2, ShoppingCart, Share2, Package, Heart, Star, CheckCircle2, Minus, Plus, Sparkles, ArrowLeftRight } from "lucide-react";
 import Button from "@/components/ui/button";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
+import { useCompareStore } from "@/store/compareStore";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import dynamic from 'next/dynamic';
@@ -29,14 +30,18 @@ export default function ProductDetailPage() {
     const { data: products, loading } = useFirestoreCollection<Product>({ collectionName: "products" });
     const { addItem } = useCartStore();
     const { addItem: addWishlist, removeItem: removeWishlist, isInWishlist } = useWishlistStore();
+    const { addItem: addCompare, removeItem: removeCompare, isInCompare, items: compareItems } = useCompareStore();
 
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [quantity, setQuantity] = useState<number>(1);
 
     const product = React.useMemo(() => {
-        return products.find(p => p.id === id);
+        return products.find(p => p.id === id && (p.status === 'active' || p.status === 'coming_soon'));
     }, [products, id]);
+
+    const isWishlisted = product ? isInWishlist(product.id) : false;
+    const isCompared = product ? isInCompare(product.id) : false;
 
     // Keyboard controls for modal
     React.useEffect(() => {
@@ -61,7 +66,6 @@ export default function ProductDetailPage() {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [isModalOpen, selectedImage, product]);
 
-    const isWishlisted = product ? isInWishlist(product.id) : false;
     const handleAddToCart = () => {
         if (!product) return;
         addItem({
@@ -82,7 +86,6 @@ export default function ProductDetailPage() {
         if (!product) return;
         if (isWishlisted) {
             removeWishlist(product.id);
-
         } else {
             addWishlist({
                 id: product.id,
@@ -90,7 +93,27 @@ export default function ProductDetailPage() {
                 price: Number(product.offerPrice || product.price),
                 image: product.imageUrl
             });
+            toast.success("Added to wishlist");
+        }
+    };
 
+    const handleToggleCompare = () => {
+        if (!product) return;
+        if (isCompared) {
+            removeCompare(product.id);
+        } else {
+            if (compareItems.length >= 3) {
+                toast.error("You can only compare up to 3 items");
+                return;
+            }
+            addCompare({
+                id: product.id,
+                name: product.name,
+                price: Number(product.offerPrice || product.price),
+                image: product.imageUrl,
+                category: product.category
+            });
+            toast.success("Added to comparison");
         }
     };
 
@@ -272,9 +295,11 @@ export default function ProductDetailPage() {
                                     {Number(product.price).toLocaleString('en-IN')}
                                 </span>
                             )}
-                            <span className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border ${product.stock > 0 ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'
+                            <span className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border ${
+                                product.status === 'coming_soon' ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                                product.stock > 0 ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'
                                 }`}>
-                                {product.stock > 0 ? `${product.stock} In Stock` : 'Out of Stock'}
+                                {product.status === 'coming_soon' ? 'Coming Soon' : (product.stock > 0 ? `${product.stock} In Stock` : 'Out of Stock')}
                             </span>
                         </div>
 
@@ -282,7 +307,7 @@ export default function ProductDetailPage() {
 
                         {/* Highlights */}
                         <div className="grid grid-cols-2 gap-2 pt-1">
-                            {["High Precision Engineering", "Certified Components", "Extended Battery Life", "Smart Tracking & Analytics"].map((feature, idx) => (
+                            {(product.features?.length ? product.features : ["High Precision Engineering", "Certified Components", "Extended Battery Life", "Smart Tracking & Analytics"]).map((feature, idx) => (
                                 <div key={idx} className="flex items-center gap-2 text-slate-600 text-sm font-semibold">
                                     <CheckCircle2 size={16} className="text-brand-orange shrink-0" />
                                     <span>{feature}</span>
@@ -311,22 +336,23 @@ export default function ProductDetailPage() {
                                 <Plus className="w-4 h-4 md:w-[18px] md:h-[18px]" />
                             </button>
                         </div>
-                        <Button className="flex-1 min-w-[140px] py-3 md:py-4 h-11 md:h-14 text-xs md:text-sm tracking-widest shadow-xl shadow-brand-blue/20" icon={<ShoppingCart className="w-4 h-4 md:w-5 md:h-5" />} onClick={handleAddToCart}>
-                            Add to Cart
-                        </Button>
+                        {product.status !== 'coming_soon' ? (
+                            <Button className="flex-1 min-w-[140px] py-3 md:py-4 h-11 md:h-14 text-xs md:text-sm tracking-widest shadow-xl shadow-brand-blue/20" icon={<ShoppingCart className="w-4 h-4 md:w-5 md:h-5" />} onClick={handleAddToCart}>
+                                Add to Cart
+                            </Button>
+                        ) : (
+                            <Button className="flex-1 min-w-[140px] py-3 md:py-4 h-11 md:h-14 text-xs md:text-sm tracking-widest shadow-none bg-amber-500 hover:bg-amber-600 border-amber-500 text-white cursor-not-allowed opacity-80" icon={<Sparkles className="w-4 h-4 md:w-5 md:h-5" />} onClick={(e: any) => e.preventDefault()}>
+                                Coming Soon
+                            </Button>
+                        )}
                         <div className="flex gap-2.5 md:gap-3">
-                            <button
-                                onClick={handleToggleWishlist}
-                                className={`w-11 md:w-14 h-11 md:h-14 rounded-xl transition-all active:scale-95 shadow-sm flex items-center justify-center border cursor-pointer ${isWishlisted ? 'bg-red-50 text-red-500 border-red-100 hover:bg-red-100' : 'bg-white text-slate-400 border-slate-200 hover:bg-slate-50 hover:text-red-500'}`}
-                                title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-                            >
+                            <button onClick={handleToggleWishlist} className={`w-11 md:w-14 h-11 md:h-14 rounded-xl transition-all active:scale-95 shadow-sm flex items-center justify-center border cursor-pointer ${isWishlisted ? 'bg-red-50 text-red-500 border-red-100 hover:bg-red-100' : 'bg-white text-slate-400 border-slate-200 hover:bg-slate-50 hover:text-red-500'}`} title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}>
                                 <Heart className={`w-5 h-5 md:w-6 md:h-6 ${isWishlisted ? "fill-red-500" : ""}`} />
                             </button>
-                            <button
-                                onClick={handleShare}
-                                className="w-11 md:w-14 h-11 md:h-14 bg-white border border-slate-200 text-slate-400 rounded-xl hover:bg-slate-50 hover:text-brand-blue-dark transition-all active:scale-95 shadow-sm flex items-center justify-center cursor-pointer"
-                                title="Share this product"
-                            >
+                            <button onClick={handleToggleCompare} className={`w-11 md:w-14 h-11 md:h-14 rounded-xl transition-all active:scale-95 shadow-sm flex items-center justify-center border cursor-pointer ${isCompared ? 'bg-brand-blue/10 text-brand-blue border-brand-blue/20 hover:bg-brand-blue/20' : 'bg-white text-slate-400 border-slate-200 hover:bg-slate-50 hover:text-brand-blue'}`} title={isCompared ? "Remove from comparison" : "Compare this product"}>
+                                <ArrowLeftRight className="w-5 h-5 md:w-6 md:h-6" />
+                            </button>
+                            <button onClick={handleShare} className="w-11 md:w-14 h-11 md:h-14 bg-white border border-slate-200 text-slate-400 rounded-xl hover:bg-slate-50 hover:text-brand-blue-dark transition-all active:scale-95 shadow-sm flex items-center justify-center cursor-pointer" title="Share this product">
                                 <Share2 className="w-5 h-5 md:w-6 md:h-6" />
                             </button>
                         </div>

@@ -24,10 +24,12 @@ function ProductsContent() {
     });
 
     const products = useMemo(() => {
-        return rawProducts.map(p => ({
-            ...p,
-            category: p.category === "All Products" ? "Drones" : p.category
-        }));
+        return rawProducts
+            .filter(p => p.status === 'active' || p.status === 'coming_soon')
+            .map(p => ({
+                ...p,
+                category: p.category === "All Products" ? "Drones" : p.category
+            }));
     }, [rawProducts]);
 
     // States for non-URL filters (like price range and pagination)

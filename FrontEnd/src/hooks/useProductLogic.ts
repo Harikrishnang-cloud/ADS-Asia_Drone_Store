@@ -37,6 +37,7 @@ export const useProductLogic = (initialCategory?: string) => {
         imageUrl: "",
         images: [],
         specifications: [],
+        features: [],
         stock: "",
         status: "active",
         offerPrice: "",
@@ -56,6 +57,7 @@ export const useProductLogic = (initialCategory?: string) => {
             imageUrl: "",
             images: [],
             specifications: [],
+            features: [],
             stock: "",
             status: "active",
             offerPrice: "",
@@ -78,6 +80,7 @@ export const useProductLogic = (initialCategory?: string) => {
             imageUrl: product.imageUrl,
             images: product.images || [],
             specifications: product.specifications || [],
+            features: product.features || [],
             stock: product.stock,
             status: product.status,
             offerPrice: product.offerPrice || "",
@@ -114,6 +117,7 @@ export const useProductLogic = (initialCategory?: string) => {
                 ...formData,
                 images: formData.images ? formData.images.filter(img => img && img.trim() !== '') : [],
                 specifications: formData.specifications ? formData.specifications.filter(s => s.label.trim() !== '' && s.value.trim() !== '') : [],
+                features: formData.features ? formData.features.filter(f => f.trim() !== '') : [],
                 price: parsedPrice,
                 offerPrice: parsedOfferPrice,
                 offerPercentage: offerPercentage,
@@ -180,10 +184,10 @@ export const useProductLogic = (initialCategory?: string) => {
     }, [products, searchTerm, initialCategory]);
 
     const stats = useMemo(() => ({
-        total: products.length,
-        active: products.filter(p => p.status === 'active').length,
-        lowStock: products.filter(p => p.stock <= 5).length
-    }), [products]);
+        total: filteredProducts.length,
+        active: filteredProducts.filter(p => p.status === 'active').length,
+        lowStock: filteredProducts.filter(p => p.stock <= 5).length
+    }), [filteredProducts]);
 
     return {
         products: filteredProducts,

@@ -11,9 +11,10 @@ interface ProductGridProps {
     category?: string;
     limit?: number;
     title?: string;
+    className?: string;
 }
 
-export default function ProductGrid({ category, limit, title }: ProductGridProps) {
+export default function ProductGrid({ category, limit, title, className }: ProductGridProps) {
     const [hasHydrated, setHasHydrated] = useState(false);
     
     useEffect(() => {
@@ -30,10 +31,12 @@ export default function ProductGrid({ category, limit, title }: ProductGridProps
     });
 
     const products = React.useMemo(() => {
-        return rawProducts.map(p => ({
-            ...p,
-            category: p.category === "All Products" ? "Drones" : p.category
-        }));
+        return rawProducts
+            .filter(p => p.status === 'active' || p.status === 'coming_soon')
+            .map(p => ({
+                ...p,
+                category: p.category === "All Products" ? "Drones" : p.category
+            }));
     }, [rawProducts]);
 
 
@@ -78,19 +81,11 @@ export default function ProductGrid({ category, limit, title }: ProductGridProps
 
 
     if (displayProducts.length === 0) {
-        return (
-            <div className="py-20 flex flex-col items-center justify-center text-center opacity-50">
-                <div className="w-20 h-20 bg-slate-100 rounded-full mb-6 flex items-center justify-center pointer-events-none">
-                    <span className="text-4xl text-slate-300"></span>
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">No products found</h3>
-
-            </div>
-        );
+        return null;
     }
 
     return (
-        <section className="w-full">
+        <section className={`w-full ${className || ''}`}>
             {title && (
                 <div className="flex items-center justify-between mb-6 md:mb-8 w-full relative">
                     <div className="flex flex-col">

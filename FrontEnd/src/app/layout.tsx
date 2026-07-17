@@ -6,6 +6,7 @@ import { Poppins } from "next/font/google";
 import { CustomToaster } from "@/components/ui/CustomToaster";
 import { AuthProvider } from "@/context/AuthContext";
 import { PWAInstall } from "@/components/layout/PWAInstall";
+import CompareBar from "@/components/ui/CompareBar";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -58,6 +59,7 @@ export default function RootLayout({
           </main>
           <Footer />
           <MobileNav />
+          <CompareBar />
           <PWAInstall />
         </AuthProvider>
       </body>

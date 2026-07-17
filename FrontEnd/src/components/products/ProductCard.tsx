@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { ShoppingCart, Heart } from "lucide-react";
+import { ShoppingCart, Heart, ArrowLeftRight } from "lucide-react";
 import Image from "next/image";
 import { Product } from "@/types/product.types";
 import Link from "next/link";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
+import { useCompareStore } from "@/store/compareStore";
 import toast from "react-hot-toast";
 
 interface ProductCardProps {
@@ -18,6 +19,8 @@ export default function ProductCard({ product }: ProductCardProps) {
     const { addItem } = useCartStore();
     const { addItem: addWishlist, removeItem: removeWishlist, isInWishlist } = useWishlistStore();
     const isWishlisted = isInWishlist(product.id);
+    const { addItem: addCompare, removeItem: removeCompare, isInCompare, items: compareItems } = useCompareStore();
+    const isCompared = isInCompare(product.id);
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -50,13 +53,36 @@ export default function ProductCard({ product }: ProductCardProps) {
         }
     };
 
+    const handleToggleCompare = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isCompared) {
+            removeCompare(product.id);
+        } else {
+            if (compareItems.length >= 3) {
+                toast.error("You can only compare up to 3 items");
+                return;
+            }
+            addCompare({
+                id: product.id,
+                name: product.name,
+                price: Number(product.offerPrice || product.price),
+                image: product.imageUrl,
+                category: product.category
+            });
+            toast.success("Added to comparison");
+        }
+    };
+
     return (
         <div className="group bg-white border border-slate-100 rounded-xl sm:rounded-xl lg:rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-brand-blue/10 transition-all duration-500 flex flex-col h-full relative">
 
             <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-20">
-                <span className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-sm text-[8px] sm:text-[10px] font-black uppercase tracking-widest shadow-sm ${product.stock > 0 ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'
+                <span className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-sm text-[8px] sm:text-[10px] font-black uppercase tracking-widest shadow-sm ${
+                    product.status === 'coming_soon' ? 'bg-amber-500 text-white' :
+                    product.stock > 0 ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'
                     }`}>
-                    {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
+                    {product.status === 'coming_soon' ? 'Coming Soon' : (product.stock > 0 ? 'In Stock' : 'Out of Stock')}
                 </span>
             </div>
 
@@ -72,6 +98,17 @@ export default function ProductCard({ product }: ProductCardProps) {
                     />
                 </Link>
 
+                {/* Compare Action (Bottom Left) */}
+                <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 z-30 opacity-100 lg:opacity-0 lg:-translate-y-3 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 transition-all duration-500 ease-out">
+                    <button
+                        onClick={handleToggleCompare}
+                        className={`p-2 sm:p-2 rounded-full shadow-md transition-all active:scale-95 ${isCompared ? 'bg-brand-blue text-white' : 'bg-white/90 backdrop-blur-sm text-slate-400 hover:text-brand-blue hover:bg-white'}`}
+                        title="Toggle Compare"
+                    >
+                        <ArrowLeftRight size={18} />
+                    </button>
+                </div>
+
                 {/* Wishlist Action (Top Right) */}
                 <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-30 opacity-100 lg:opacity-0 lg:-translate-y-3 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 transition-all duration-500 ease-out">
                     <button
@@ -84,15 +121,17 @@ export default function ProductCard({ product }: ProductCardProps) {
                 </div>
 
                 {/* Add to Cart Action (Bottom Right) */}
-                <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 z-30 opacity-100 lg:opacity-0 lg:translate-y-3 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 transition-all duration-500 ease-out lg:delay-75">
-                    <button
-                        onClick={handleAddToCart}
-                        className="p-2 sm:p-2 bg-brand-orange/90 backdrop-blur-sm text-white rounded-lg shadow-md transition-all active:scale-95 hover:bg-brand-orange"
-                        title="Add to Cart"
-                    >
-                        <ShoppingCart size={18} />
-                    </button>
-                </div>
+                {product.status !== 'coming_soon' && (
+                    <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 z-30 opacity-100 lg:opacity-0 lg:translate-y-3 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 transition-all duration-500 ease-out lg:delay-75">
+                        <button
+                            onClick={handleAddToCart}
+                            className="p-2 sm:p-2 bg-brand-orange/90 backdrop-blur-sm text-white rounded-lg shadow-md transition-all active:scale-95 hover:bg-brand-orange"
+                            title="Add to Cart"
+                        >
+                            <ShoppingCart size={18} />
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Product Info */}
