@@ -45,7 +45,7 @@ export default function AboutPage() {
                         </h3>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
                         {[
                             {
                                 icon: ShieldCheck,
@@ -78,13 +78,13 @@ export default function AboutPage() {
                                 desc: "Crashes happen. Our in-house repair facility is equipped with OEM parts and trained engineers to get you back in the air quickly."
                             }
                         ].map((feature, idx) => (
-                            <div key={idx} className="bg-white p-10 rounded-2xl border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 hover:-translate-y-2 transition-all duration-500 group relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-24 h-24 bg-slate-50 rounded-bl-[100px] -mr-8 -mt-8 transition-all group-hover:bg-brand-blue/5"></div>
-                                <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center mb-8 border border-slate-100 group-hover:bg-brand-blue group-hover:border-brand-blue group-hover:scale-110 transition-all duration-300 shadow-inner">
-                                    <feature.icon className="text-slate-600 group-hover:text-white transition-colors" size={26} />
+                            <div key={idx} className="bg-white p-4 md:p-10 rounded-lg md:rounded-2xl border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 hover:-translate-y-2 transition-all duration-500 group relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-12 h-12 md:w-24 md:h-24 bg-slate-50 rounded-bl-[50px] md:rounded-bl-[100px] -mr-4 -mt-4 md:-mr-8 md:-mt-8 transition-all group-hover:bg-brand-blue/5"></div>
+                                <div className="w-10 h-10 md:w-14 md:h-14 bg-slate-50 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-8 border border-slate-100 group-hover:bg-brand-blue group-hover:border-brand-blue group-hover:scale-110 transition-all duration-300 shadow-inner">
+                                    <feature.icon className="w-5 h-5 md:w-[26px] md:h-[26px] text-slate-600 group-hover:text-white transition-colors" />
                                 </div>      
-                                <h4 className="text-xl font-black text-slate-900 mb-4 tracking-tight group-hover:text-brand-blue transition-colors">{feature.title}</h4>
-                                <p className="text-sm font-medium text-slate-500 leading-relaxed">
+                                <h4 className="text-[12px] md:text-xl font-black text-slate-900 mb-1.5 md:mb-4 tracking-tight group-hover:text-brand-blue transition-colors leading-tight">{feature.title}</h4>
+                                <p className="text-[10px] md:text-sm font-medium text-slate-500 leading-relaxed md:leading-relaxed">
                                     {feature.desc}
                                 </p>
                             </div>
@@ -102,14 +102,14 @@ export default function AboutPage() {
                     <p className="text-lg text-slate-500 font-medium max-w-xl mx-auto">
                         Join thousands of creators, professionals, and hobbyists who trust Asia Drone Store for all their aerial needs.
                     </p>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                        <Link href="/products" className="w-full sm:w-auto">
-                            <Button variant="orange" size="lg" className="w-full" icon={<ChevronRight size={18} />}>
-                                Shop Drones Now
+                    <div className="flex flex-row items-center justify-between gap-3 pt-4 w-full max-w-sm mx-auto sm:max-w-none sm:justify-center sm:gap-4">
+                        <Link href="/products" className="w-full sm:w-auto flex-1">
+                            <Button variant="orange" size="lg" className="w-full !text-[11px] !py-2.5 !px-2 md:!text-lg md:!py-4 md:!px-8" icon={<ChevronRight size={18} className="w-4 h-4 md:w-5 md:h-5" />}>
+                                Shop Drones
                             </Button>
                         </Link>
-                        <Link href="/contact" className="w-full sm:w-auto">
-                            <Button variant="secondary" size="lg" className="w-full">
+                        <Link href="/contact" className="w-full sm:w-auto flex-1">
+                            <Button variant="secondary" size="lg" className="w-full !text-[11px] !py-2.5 !px-2 md:!text-lg md:!py-4 md:!px-8">
                                 Speak to an Expert
                             </Button>
                         </Link>

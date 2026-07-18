@@ -42,6 +42,8 @@ function ProductsContent() {
     const selectedCategory = categoryParam;
     const sortBy = sortByParam;
 
+    const [showMobileFilters, setShowMobileFilters] = useState(false);
+
     useEffect(() => {
         const timeout = setTimeout(() => setHasMounted(true), 0);
         return () => clearTimeout(timeout);
@@ -147,15 +149,15 @@ function ProductsContent() {
     }, [filteredProducts, currentPage]);
 
     return (
-        <main className="mx-auto w-full px-4 sm:px-8 pt-10 pb-20 md:pt-10 relative z-10 ">
+        <main className="mx-auto w-full px-4 sm:px-8 pt-4 pb-20 md:pt-10 relative z-10 ">
             <div className="absolute inset-0 -z-10 pointer-events-none opacity-40"></div>
             {/* Page Header */}
-            <div className="flex flex-col mb-10 relative">
-                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-orange mb-3">Asia Drone Store Inventory</span>
-                <h1 className="text-5xl md:text-7xl lg:text-7xl font-black tracking-tighter mb-4">
-                    {search ? `Search Results for "${search}"` : <>Professional <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-orange">Drone Solutions</span></>}
+            <div className="flex flex-col mb-4 md:mb-10 relative">
+                <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.5em] text-brand-orange mb-1 md:mb-3">Asia Drone Store Inventory</span>
+                <h1 className="text-3xl md:text-5xl lg:text-7xl font-black tracking-tighter mb-2 md:mb-4 leading-tight">
+                    {search ? `Search Results for "${search}"` : <>Professional <br className="hidden md:block" /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-orange">Drone Solutions</span></>}
                 </h1>
-                <p className="text-slate-500 text-base md:text-lg leading-relaxed max-w-2xl">
+                <p className="text-slate-500 text-xs md:text-lg leading-relaxed max-w-2xl">
                     {search 
                         ? `Found ${filteredProducts.length} results matching your search.`
                         : "Browse our elite selection of UAVs, high-performance parts, and specialized accessories engineered for unique flight conditions."}
@@ -177,9 +179,9 @@ function ProductsContent() {
                 )}
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 w-full">
+            <div className="flex flex-col lg:flex-row gap-4 lg:gap-12 w-full">
                 {/* Sidebar Filters */}
-                <aside className="w-full lg:w-72 shrink-0">
+                <aside className={`w-full lg:w-72 shrink-0 ${showMobileFilters ? 'block' : 'hidden'} lg:block`}>
                     <div className="sticky top-24 bg-white border border-slate-100 p-6 rounded-lg shadow-sm shadow-brand-blue/5">
                         <div className="flex items-center gap-3 border-b border-slate-100 pb-4 mb-6">
                             <SlidersHorizontal size={20} className="text-brand-orange" />
@@ -242,20 +244,27 @@ function ProductsContent() {
                 {/* Main Product Grid Area */}
                 <div className="flex-1 flex flex-col">
                     {/* Toolbar (Sort & Results Count) */}
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white border border-slate-100 p-4 rounded-lg shadow-sm shadow-brand-blue/5 mb-8 w-full gap-4">
-                        <p className="text-sm font-bold text-slate-500">
+                    <div className="flex flex-row items-center justify-between bg-white border border-slate-100 p-2 md:p-4 rounded-lg shadow-sm shadow-brand-blue/5 mb-4 md:mb-8 w-full gap-2 md:gap-4">
+                        <p className="hidden sm:block text-xs md:text-sm font-bold text-slate-500">
                             Showing <span className="text-slate-900 font-black">
                                 {filteredProducts.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1}
                             </span> to <span className="text-slate-900 font-black">
                                 {Math.min(currentPage * ITEMS_PER_PAGE, filteredProducts.length)}
                             </span> of <span className="text-slate-900 font-black">{filteredProducts.length}</span> Products
                         </p>
+                        
+                        <button 
+                            onClick={() => setShowMobileFilters(!showMobileFilters)} 
+                            className="lg:hidden flex items-center justify-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-[11px] font-bold text-slate-700 flex-1"
+                        >
+                            <Filter size={14} /> {showMobileFilters ? "Hide Filters" : "Filters"}
+                        </button>
 
-                        <div className="flex items-center gap-3 relative group w-full sm:w-auto">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest shrink-0">Sort By:</label>
+                        <div className="flex items-center gap-2 relative group flex-1 sm:flex-none">
+                            <label className="hidden sm:block text-xs font-bold text-slate-400 uppercase tracking-widest shrink-0">Sort By:</label>
                             <div className="relative w-full sm:w-48">
                                 <select
-                                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-sm font-bold text-slate-700 py-2.5 pl-4 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-orange/20 cursor-pointer"
+                                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-[11px] md:text-sm font-bold text-slate-700 py-2 md:py-2.5 pl-3 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-orange/20 cursor-pointer"
                                     value={sortBy}
                                     onChange={(e) => updateFilters({ sortBy: e.target.value })}>
                                     <option value="newest">What&apos;s New</option>

@@ -110,8 +110,8 @@ export default function HelpCenter() {
             </section>
 
             {/* Categories Grid */}
-            <section className="container mx-auto px-6 py-20 -mt-10 relative z-20">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <section className="container mx-auto px-4 md:px-6 py-10 md:py-20 -mt-10 relative z-20">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
                     {CATEGORIES.map((category) => {
                         const isSelected = selectedCategory === category.name && selectedCategory === category.description;
                         const words = category.description.split(" ");
@@ -119,23 +119,22 @@ export default function HelpCenter() {
                         return (
                             <button key={category.name + category.description}
                                 onClick={() => setSelectedCategory(isSelected ? null : category.name + category.description)}
-                                className={`relative overflow-hidden p-8 rounded-xl border text-left transition-all duration-1000 group cursor-pointer hover:-translate-y-2 ${isSelected
-                                    ? "bg-white border-brand-orange shadow-2xl ring-4 ring-brand-orange/5"
+                                className={`relative overflow-hidden p-4 md:p-8 rounded-lg md:rounded-xl border text-left transition-all duration-1000 group cursor-pointer hover:-translate-y-2 ${isSelected
+                                    ? "bg-white border-brand-orange shadow-md md:shadow-2xl ring-2 md:ring-4 ring-brand-orange/5"
                                     : "bg-white border-slate-100 shadow-sm hover:shadow-xl"
                                     }`}>
                                 <div className={`absolute -bottom-1/4 -right-1/4 w-[150%] h-[150%] bg-brand-blue-dark transition-all duration-1000 ease-out rotate-12 translate-y-full group-hover:translate-y-0 group-hover:rotate-0 z-0 ${isSelected ? "opacity-0" : "opacity-100"
                                     }`} />
                                 <div className="relative z-10 h-full flex flex-col">
-                                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-8 transition-all duration-1000 ${isSelected ? "bg-brand-orange/10 shadow-inner" : "bg-slate-50 group-hover:bg-white/10 group-hover:shadow-lg"
+                                    <div className={`w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-8 transition-all duration-1000 ${isSelected ? "bg-brand-orange/10 shadow-inner" : "bg-slate-50 group-hover:bg-white/10 group-hover:shadow-lg"
                                         }`}>
                                         <category.icon
-                                            size={32}
-                                            className={`transition-all duration-500 ${isSelected ? "text-brand-orange scale-110" : `${category.color} group-hover:text-white group-hover:scale-110`}`} />
+                                            className={`w-5 h-5 md:w-8 md:h-8 transition-all duration-500 ${isSelected ? "text-brand-orange scale-110" : `${category.color} group-hover:text-white group-hover:scale-110`}`} />
                                     </div>
-                                    <h3 className={`text-2xl font-black mb-3 transition-colors duration-300 ${isSelected ? "text-brand-orange" : "text-brand-blue-dark group-hover:text-white"}`}>
+                                    <h3 className={`text-sm md:text-2xl font-black mb-1.5 md:mb-3 transition-colors duration-300 ${isSelected ? "text-brand-orange" : "text-brand-blue-dark group-hover:text-white"}`}>
                                         {category.name}
                                     </h3>
-                                    <p className={`flex flex-wrap gap-x-1.5 font-medium leading-relaxed transition-colors duration-300 ${isSelected ? "text-slate-500" : "text-slate-400 group-hover:text-white/80"
+                                    <p className={`flex flex-wrap gap-x-1.5 text-[10px] md:text-base font-medium leading-relaxed transition-colors duration-300 ${isSelected ? "text-slate-500" : "text-slate-400 group-hover:text-white/80"
                                         }`}>
                                         {words.map((word, i) => (
                                             <span key={word + i} className="inline-block transition-colors duration-300">
@@ -143,8 +142,8 @@ export default function HelpCenter() {
                                             </span>
                                         ))}
                                     </p>
-                                    <div className="mt-auto pt-8">
-                                        <div className={`h-1.5 rounded-full transition-all duration-500 ${isSelected ? "w-16 bg-brand-orange" : "w-0 group-hover:w-16 bg-brand-orange"
+                                    <div className="mt-auto pt-4 md:pt-8">
+                                        <div className={`h-1 md:h-1.5 rounded-full transition-all duration-500 ${isSelected ? "w-8 md:w-16 bg-brand-orange" : "w-0 group-hover:w-8 md:group-hover:w-16 bg-brand-orange"
                                             }`} />
                                     </div>
                                 </div>
@@ -207,85 +206,82 @@ export default function HelpCenter() {
                     <p className="text-slate-500 text-lg mb-16 max-w-2xl mx-auto font-medium">
                         Our expert support team is ready to help you with any technical issues or inquiries.
                     </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 cursor-pointer">
+                    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8 cursor-pointer">
                 
-                        <a href="/contact" className="block w-full relative p-8 rounded-xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-xl text-center">
+                        <a href="/contact" className="block w-full relative p-4 md:p-8 rounded-lg md:rounded-xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-xl text-center">
                             <div className="absolute -top-1/4 -right-1/4 w-[150%] h-[150%] bg-brand-blue-dark transition-all duration-1000 ease-out rotate-12 -translate-y-full group-hover:translate-y-0 group-hover:rotate-0 z-0" />
                             <div className="relative z-10 flex flex-col items-center">
-                                <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-slate-50 mb-8 transition-all duration-1000 group-hover:bg-white/10 group-hover:shadow-lg">
-                                    <MessageCircle className="text-brand-blue group-hover:text-white group-hover:scale-110 transition-all duration-1000" size={32} />
+                                <div className="w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center bg-slate-50 mb-3 md:mb-8 transition-all duration-1000 group-hover:bg-white/10 group-hover:shadow-lg">
+                                    <MessageCircle className="w-5 h-5 md:w-8 md:h-8 text-brand-blue group-hover:text-white group-hover:scale-110 transition-all duration-1000" />
                                 </div>
 
-                                <h4 className="text-2xl font-black mb-3 text-brand-blue-dark group-hover:text-white transition-colors duration-300">
+                                <h4 className="text-sm md:text-2xl font-black mb-1 md:mb-3 text-brand-blue-dark group-hover:text-white transition-colors duration-300">
                                     Live Chat
                                 </h4>
 
-                                <p className="text-slate-500 text-sm mb-8 group-hover:text-white/70 font-medium">Wait time: &lt; 2 mins</p>
-                                <span className="text-lg font-bold text-brand-blue flex items-center gap-2 group-hover:text-brand-orange transition-all duration-300">
-                                    Start Chat <ExternalLink size={18} />
+                                <p className="text-slate-500 text-[10px] md:text-sm mb-3 md:mb-8 group-hover:text-white/70 font-medium">Wait: &lt; 2 mins</p>
+                                <span className="text-[11px] md:text-lg font-bold text-brand-blue flex items-center gap-1 md:gap-2 group-hover:text-brand-orange transition-all duration-300">
+                                    Chat <ExternalLink size={14} className="md:w-[18px] md:h-[18px]" />
                                 </span>
 
-                                <div className="mt-8 h-1.5 w-0 group-hover:w-16 bg-brand-orange rounded-full transition-all duration-500" />
-                                <p className="text-slate-500 text-sm mb-8 group-hover:text-white/70 font-medium">The chat feature will be available after completing some updates. We appreciate your patience.</p>
+                                <div className="mt-4 md:mt-8 h-1 md:h-1.5 w-0 group-hover:w-8 md:group-hover:w-16 bg-brand-orange rounded-full transition-all duration-500" />
+                                <p className="text-slate-500 text-[9px] md:text-sm mt-3 mb-1 md:mb-8 group-hover:text-white/70 font-medium leading-tight">Currently updating chat.</p>
                             </div>
                         </a>
 
                         {/* Email Support */}
-                        <a href="mailto:asiadronestore@gmail.com" className="block w-full relative p-8 rounded-xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-1000 hover:-translate-y-2 hover:shadow-xl text-center">
+                        <a href="mailto:asiadronestore@gmail.com" className="block w-full relative p-4 md:p-8 rounded-lg md:rounded-xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-1000 hover:-translate-y-2 hover:shadow-xl text-center">
                             <div className="absolute -bottom-1/4 -right-1/4 w-[150%] h-[150%] bg-brand-blue-dark transition-all duration-1000 ease-out rotate-12 translate-y-full group-hover:translate-y-0 group-hover:rotate-0 z-0" />
                             <div className="relative z-10 flex flex-col items-center">
-                                <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-slate-50 mb-8 transition-all duration-1000 group-hover:bg-white/10 group-hover:shadow-lg">
-                                    <Mail className="text-brand-orange group-hover:text-white group-hover:scale-110 transition-all duration-1000" size={32} />
+                                <div className="w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center bg-slate-50 mb-3 md:mb-8 transition-all duration-1000 group-hover:bg-white/10 group-hover:shadow-lg">
+                                    <Mail className="w-5 h-5 md:w-8 md:h-8 text-brand-orange group-hover:text-white group-hover:scale-110 transition-all duration-1000" />
                                 </div>
-                                <h4 className="text-2xl font-black mb-3 text-brand-blue-dark group-hover:text-white transition-colors duration-300">Email Us</h4>
-                                <p className="text-slate-500 text-sm mb-8 group-hover:text-white/70 font-medium">Response: &lt; 24 hours</p>
-                                <span className="text-lg font-bold text-brand-orange flex items-center gap-2 group-hover:text-white transition-all duration-300">
-                                    Send Email <ArrowRight size={18} />
+                                <h4 className="text-sm md:text-2xl font-black mb-1 md:mb-3 text-brand-blue-dark group-hover:text-white transition-colors duration-300">Email Us</h4>
+                                <p className="text-slate-500 text-[10px] md:text-sm mb-3 md:mb-8 group-hover:text-white/70 font-medium">Wait: &lt; 24 hrs</p>
+                                <span className="text-[11px] md:text-lg font-bold text-brand-orange flex items-center gap-1 md:gap-2 group-hover:text-white transition-all duration-300">
+                                    Email <ArrowRight size={14} className="md:w-[18px] md:h-[18px]" />
                                 </span>
-                                <div className="mt-8 h-1.5 w-0 group-hover:w-16 bg-brand-orange rounded-full transition-all duration-500" />
-                                <p className="text-slate-500 text-sm mb-8 group-hover:text-white/70 font-medium"></p>
+                                <div className="mt-4 md:mt-8 h-1 md:h-1.5 w-0 group-hover:w-8 md:group-hover:w-16 bg-brand-orange rounded-full transition-all duration-500" />
                             </div>
                         </a>
 
                         {/* Phone Support */}
-                        <a href="tel:+917012147575" className="block w-full relative p-8 rounded-xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-1000 hover:-translate-y-2 hover:shadow-xl text-center">
-
+                        <a href="tel:+917012147575" className="block w-full relative p-4 md:p-8 rounded-lg md:rounded-xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-1000 hover:-translate-y-2 hover:shadow-xl text-center">
                             <div className="absolute -top-1/4 -right-1/4 w-[150%] h-[150%] bg-brand-blue-dark transition-all duration-1000 ease-out rotate-12 -translate-y-full group-hover:translate-y-0 group-hover:rotate-0 z-0" />
                             <div className="relative z-10 flex flex-col items-center">
-                                <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-slate-50 mb-8 transition-all duration-1000 group-hover:bg-white/10 group-hover:shadow-lg">
-                                    <Phone className="text-brand-blue group-hover:text-white group-hover:scale-110 transition-all duration-500" size={32} />
+                                <div className="w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center bg-slate-50 mb-3 md:mb-8 transition-all duration-1000 group-hover:bg-white/10 group-hover:shadow-lg">
+                                    <Phone className="w-5 h-5 md:w-8 md:h-8 text-brand-blue group-hover:text-white group-hover:scale-110 transition-all duration-500" />
                                 </div>
                                 
-                                <h4 className="text-2xl font-black mb-3 text-brand-blue-dark group-hover:text-white transition-colors duration-300">
-                                    Call Support
+                                <h4 className="text-sm md:text-2xl font-black mb-1 md:mb-3 text-brand-blue-dark group-hover:text-white transition-colors duration-300">
+                                    Call Us
                                 </h4>
-                                <p className="text-slate-500 text-sm mb-4 group-hover:text-white/70 font-medium">Response: &lt; 24 hours</p>
-                                <div className="text-sm mb-6 flex flex-col items-center text-slate-500 group-hover:text-white/80 font-medium leading-relaxed">
-                                    {["Monday - Saturday", "9:30 AM - 5:30 PM"].map((line, i) => (
+                                <div className="text-[9px] md:text-sm mb-2 md:mb-6 flex flex-col items-center text-slate-500 group-hover:text-white/80 font-medium leading-relaxed">
+                                    {["Mon-Sat", "9:30-17:30"].map((line, i) => (
                                         <span key={i} className="transition-all duration-500">
                                             {line}
                                         </span>
                                     ))}
                                 </div>
-                                <span className="text-lg font-bold text-brand-blue group-hover:text-brand-orange transition-all duration-300">
-                                    +91 70121 47575
+                                <span className="text-[11px] md:text-lg font-bold text-brand-blue group-hover:text-brand-orange transition-all duration-300">
+                                    Call
                                 </span>
-                                <div className="mt-8 h-1.5 w-0 group-hover:w-16 bg-brand-orange rounded-full transition-all duration-500" />
+                                <div className="mt-4 md:mt-8 h-1 md:h-1.5 w-0 group-hover:w-8 md:group-hover:w-16 bg-brand-orange rounded-full transition-all duration-500" />
                             </div>
                         </a>
                         {/* WhatsApp Support */}
-                        <a href="https://wa.me/917012147575" target="_blank" rel="noopener noreferrer" className="block w-full relative p-8 rounded-xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-1000 hover:-translate-y-2 hover:shadow-xl text-center">
+                        <a href="https://wa.me/917012147575" target="_blank" rel="noopener noreferrer" className="block w-full relative p-4 md:p-8 rounded-lg md:rounded-xl bg-white border border-slate-100 group overflow-hidden cursor-pointer transition-all duration-1000 hover:-translate-y-2 hover:shadow-xl text-center">
                             <div className="absolute -bottom-1/4 -right-1/4 w-[150%] h-[150%] bg-brand-blue-dark transition-all duration-1000 ease-out rotate-12 translate-y-full group-hover:translate-y-0 group-hover:rotate-0 z-0" />
                             <div className="relative z-10 flex flex-col items-center">
-                                <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-slate-50 mb-8 transition-all duration-1000 group-hover:bg-white/10 group-hover:shadow-lg">
-                                    <Whatsapp className="text-brand-orange group-hover:text-white group-hover:scale-110 transition-all duration-1000" size={32} />
+                                <div className="w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center bg-slate-50 mb-3 md:mb-8 transition-all duration-1000 group-hover:bg-white/10 group-hover:shadow-lg">
+                                    <Whatsapp className="w-5 h-5 md:w-8 md:h-8 text-brand-orange group-hover:text-white group-hover:scale-110 transition-all duration-1000" />
                                 </div>
-                                <h4 className="text-2xl font-black mb-3 text-brand-blue-dark group-hover:text-white transition-colors duration-300">WhatsApp</h4>
-                                <p className="text-slate-500 text-sm mb-8 group-hover:text-white/70 font-medium">Fast responses on mobile</p>
-                                <span className="text-lg font-bold text-brand-orange flex items-center gap-2 group-hover:text-white transition-all duration-300">
-                                    Message Us <ArrowRight size={18} />
+                                <h4 className="text-sm md:text-2xl font-black mb-1 md:mb-3 text-brand-blue-dark group-hover:text-white transition-colors duration-300">WhatsApp</h4>
+                                <p className="text-slate-500 text-[10px] md:text-sm mb-3 md:mb-8 group-hover:text-white/70 font-medium">Fast responses</p>
+                                <span className="text-[11px] md:text-lg font-bold text-brand-orange flex items-center gap-1 md:gap-2 group-hover:text-white transition-all duration-300">
+                                    Message <ArrowRight size={14} className="md:w-[18px] md:h-[18px]" />
                                 </span>
-                                <div className="mt-8 h-1.5 w-0 group-hover:w-16 bg-brand-orange rounded-full transition-all duration-500" />
+                                <div className="mt-4 md:mt-8 h-1 md:h-1.5 w-0 group-hover:w-8 md:group-hover:w-16 bg-brand-orange rounded-full transition-all duration-500" />
                             </div>
                         </a>
 
