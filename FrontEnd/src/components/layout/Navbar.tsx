@@ -247,14 +247,14 @@ export function Navbar() {
         <>
             <nav
                 className={`sticky top-0 z-50 transition-all duration-300 w-full ${isScrolled && isHomePage
-                    ? "bg-transparent backdrop-blur-md py-3"
-                    : "bg-white py-3 border-b border-slate-100 shadow-sm"
+                    ? "bg-transparent backdrop-blur-md py-2 md:py-3"
+                    : "bg-white py-2 md:py-3 border-b border-slate-100 shadow-sm"
                     }`}>
                 <div className="mx-auto px-4 md:px-8 flex justify-between items-center relative">
 
                     {/* Left Side: Logo */}
                     <div className="flex-shrink-0 z-50">
-                        <Logo width={160} height={160} className="w-[120px] md:w-[160px]" />
+                        <Logo width={140} height={140} className="w-[100px] md:w-[140px]" />
                     </div>
 
                     {/* Center: Navigation Menu (Desktop) */}
@@ -577,7 +577,7 @@ export function Navbar() {
 
             {/* Mobile Navigation Menu (Moved outside nav to prevent fixed containing block bugs) */}
             <div
-                className={`fixed inset-0 bg-white z-40 lg:hidden flex flex-col pt-28 px-6 overflow-y-auto transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+                className={`fixed inset-0 bg-white z-40 lg:hidden flex flex-col pt-20 px-4 overflow-y-auto transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
                     }`}>
                 <div className="flex flex-col space-y-2 text-center">
                     {navLinks.map((link) => (
@@ -586,7 +586,7 @@ export function Navbar() {
                             key={link.name}
                             href={link.path}
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className={`text-xl font-medium tracking-wide py-4 border-b border-slate-100 ${pathname === link.path ? "text-brand-orange" : "text-brand-blue-dark hover:text-brand-blue"
+                            className={`text-lg font-medium tracking-wide py-3 border-b border-slate-100 ${pathname === link.path ? "text-brand-orange" : "text-brand-blue-dark hover:text-brand-blue"
                                 }`}>
                             {link.name}
                         </Link>

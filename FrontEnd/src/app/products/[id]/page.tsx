@@ -256,9 +256,9 @@ export default function ProductDetailPage() {
 
                 {/* Product Info */}
                 <div className="w-full lg:w-1/2 space-y-4">
-                    <div className="space-y-2">
-                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-brand-orange bg-brand-orange/10 px-3 py-1.5 rounded-sm inline-block mb-2">{product.category}</span>
-                        <h1 className="text-4xl md:text-5xl font-black text-brand-blue-dark tracking-tight leading-tight">{product.name}</h1>
+                    <div className="space-y-1.5 md:space-y-2">
+                        <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] text-brand-orange bg-brand-orange/10 px-2 py-1 md:px-3 md:py-1.5 rounded-sm inline-block mb-1 md:mb-2">{product.category}</span>
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-brand-blue-dark tracking-tight leading-tight">{product.name}</h1>
 
                         <div className="flex items-center gap-4 mt-2">
                             <div className="flex items-center gap-1 shadow-sm border border-slate-100 bg-white px-3 py-1.5 rounded-full">
@@ -275,11 +275,11 @@ export default function ProductDetailPage() {
                         <div className="flex items-center gap-4 mt-4">
                             {product.offerPrice ? (
                                 <div className="flex flex-wrap items-center gap-3">
-                                    <span className="text-4xl font-black text-brand-orange">
+                                    <span className="text-2xl sm:text-3xl md:text-4xl font-black text-brand-orange">
                                         <span className="font-sans font-semibold mr-1" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
                                         {Number(product.offerPrice).toLocaleString('en-IN')}
                                     </span>
-                                    <span className="text-xl text-slate-400 font-bold line-through">
+                                    <span className="text-base sm:text-lg md:text-xl text-slate-400 font-bold line-through">
                                         <span className="font-sans font-normal mr-0.5" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
                                         {Number(product.price).toLocaleString('en-IN')}
                                     </span>
@@ -290,7 +290,7 @@ export default function ProductDetailPage() {
                                     )}
                                 </div>
                             ) : (
-                                <span className="text-4xl font-black text-brand-blue-dark">
+                                <span className="text-2xl sm:text-3xl md:text-4xl font-black text-brand-blue-dark">
                                     <span className="font-sans font-semibold mr-1" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
                                     {Number(product.price).toLocaleString('en-IN')}
                                 </span>
@@ -303,14 +303,13 @@ export default function ProductDetailPage() {
                             </span>
                         </div>
 
-                        <p className="text-slate-500 text-lg leading-relaxed pt-2 border-t border-slate-100">{product.description || "Experience the pinnacle of aerial technology. Designed for ultimate performance and reliability, this professional-grade drone solution is meticulously crafted to handle the most demanding environments across Asia seamlessly and securely."}</p>
+                        <p className="text-slate-500 text-sm md:text-base lg:text-lg leading-relaxed pt-2 border-t border-slate-100">{product.description || "Experience the pinnacle of aerial technology. Designed for ultimate performance and reliability, this professional-grade drone solution is meticulously crafted to handle the most demanding environments across Asia seamlessly and securely."}</p>
 
-                        {/* Highlights */}
-                        <div className="grid grid-cols-2 gap-2 pt-1">
+                        <div className="grid grid-cols-2 gap-2 pt-1 mt-2">
                             {(product.features?.length ? product.features : ["High Precision Engineering", "Certified Components", "Extended Battery Life", "Smart Tracking & Analytics"]).map((feature, idx) => (
-                                <div key={idx} className="flex items-center gap-2 text-slate-600 text-sm font-semibold">
-                                    <CheckCircle2 size={16} className="text-brand-orange shrink-0" />
-                                    <span>{feature}</span>
+                                <div key={idx} className="flex items-center gap-1.5 text-slate-600 text-[11px] md:text-sm font-semibold">
+                                    <CheckCircle2 size={14} className="text-brand-orange shrink-0 md:w-[16px] md:h-[16px]" />
+                                    <span className="leading-tight">{feature}</span>
                                 </div>
                             ))}
                         </div>

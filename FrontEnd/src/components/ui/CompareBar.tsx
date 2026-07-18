@@ -25,20 +25,20 @@ export default function CompareBar() {
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-4 md:gap-8 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 custom-scrollbar flex-1">
                         {items.map((item) => (
-                            <div key={item.id} className="flex items-center gap-3 bg-slate-50 p-2 md:p-3 rounded-xl border border-slate-100 min-w-[200px] md:min-w-[250px] relative group shrink-0">
-                                <div className="relative w-12 h-12 md:w-16 md:h-16 rounded-lg overflow-hidden shrink-0 bg-white border border-slate-100">
+                            <div key={item.id} className="flex items-center gap-2 md:gap-3 bg-slate-50 p-1.5 md:p-3 rounded-lg md:rounded-xl border border-slate-100 min-w-[140px] md:min-w-[250px] relative group shrink-0">
+                                <div className="relative w-8 h-8 md:w-16 md:h-16 rounded overflow-hidden shrink-0 bg-white border border-slate-100">
                                     <Image src={item.image} alt={item.name} fill className="object-cover" sizes="64px" />
                                 </div>
-                                <div className="flex flex-col flex-1 min-w-0 pr-6">
-                                    <span className="text-xs font-bold text-brand-orange uppercase tracking-wider truncate mb-0.5">{item.category}</span>
-                                    <span className="text-xs md:text-sm font-bold text-slate-800 truncate">{item.name}</span>
+                                <div className="flex flex-col flex-1 min-w-0 pr-4 md:pr-6">
+                                    <span className="text-[9px] md:text-xs font-bold text-brand-orange uppercase tracking-wider truncate mb-0.5">{item.category}</span>
+                                    <span className="text-[10px] md:text-sm font-medium md:font-bold text-slate-800 truncate">{item.name}</span>
                                 </div>
                                 <button
                                     onClick={() => removeItem(item.id)}
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                                    className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
                                     title="Remove"
                                 >
-                                    <X size={16} />
+                                    <X size={14} className="md:w-4 md:h-4" />
                                 </button>
                             </div>
                         ))}
@@ -59,8 +59,8 @@ export default function CompareBar() {
                         </button>
                         <Button
                             variant="primary"
-                            icon={<ArrowLeftRight size={18} />}
-                            className="min-w-[150px] md:min-w-[180px] h-10 md:h-12 shadow-lg shadow-brand-blue/20"
+                            icon={<ArrowLeftRight size={16} className="md:w-[18px] md:h-[18px]" />}
+                            className="min-w-[120px] md:min-w-[180px] h-8 md:h-12 shadow-md shadow-brand-blue/20 text-[11px] md:text-[14px] px-3 md:px-6"
                             onClick={() => router.push('/compare')}
                             disabled={items.length < 2}
                         >

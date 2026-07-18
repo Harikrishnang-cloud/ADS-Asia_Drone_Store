@@ -45,18 +45,18 @@ export default function ConfirmationModal({
                     {message}
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full mt-2">
                     <button
                         onClick={onClose}
                         disabled={isLoading}
-                        className="flex-1 px-4 sm:px-6 py-2.5 sm:py-3.5 rounded-lg text-sm sm:text-base font-bold text-slate-600 hover:bg-slate-100 transition-all cursor-pointer disabled:opacity-50"
+                        className="flex-1 px-4 h-[42px] sm:h-[48px] rounded-[10px] text-[14px] sm:text-[15px] font-bold text-slate-600 hover:bg-slate-100 transition-all cursor-pointer disabled:opacity-50"
                     >
                         {cancelText}
                     </button>
                     <button
                         onClick={onConfirm}
                         disabled={isLoading}
-                        className={`flex-1 px-4 sm:px-6 py-2.5 sm:py-3.5 rounded-lg text-sm sm:text-base font-bold text-white shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 ${getButtonStyle()}`}>
+                        className={`flex-1 px-4 h-[42px] sm:h-[48px] rounded-[10px] text-[14px] sm:text-[15px] font-bold text-white shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 ${getButtonStyle()}`}>
                         {isLoading && <Loader2 className="animate-spin" size={16} />}
                         {confirmText}
                     </button>

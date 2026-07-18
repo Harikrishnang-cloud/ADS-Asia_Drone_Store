@@ -282,9 +282,9 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
     return (
         <div className="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Main Profile Info Card */}
-            <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 h-full">
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-2xl font-bold">{isEdit ? "Edit Profile" : "My Profile"}</h1>
+            <div className="bg-white p-4 sm:p-6 md:p-8 rounded-[12px] shadow-sm border border-slate-100 h-full">
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-xl sm:text-2xl font-bold">{isEdit ? "Edit Profile" : "My Profile"}</h1>
                     {!isEdit && (
                         <Link
                             href="/user/profile/edit"
@@ -323,35 +323,35 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                     )}
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                     <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wide opacity-70">Email Address</label>
-                        <div className="flex items-center gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed">
-                            <Mail size={18} />
-                            <span className="font-medium">{user.email}</span>
+                        <label className="block text-[11px] md:text-[12px] font-semibold text-slate-700 mb-1 uppercase tracking-wide opacity-70">Email Address</label>
+                        <div className="flex items-center gap-3 px-3 h-[42px] bg-slate-50 border border-slate-200 rounded-[10px] text-slate-500 cursor-not-allowed">
+                            <Mail size={16} />
+                            <span className="font-medium text-[13px]">{user.email}</span>
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wide opacity-70">Full Name</label>
+                        <label className="block text-[11px] md:text-[12px] font-semibold text-slate-700 mb-1 uppercase tracking-wide opacity-70">Full Name</label>
                         {isEdit ? (
                             <div className="space-y-1">
                                 <input
                                     type="text"
-                                    className={`w-full p-4 border rounded-xl outline-none transition-all ${errors.name ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5'}`}
+                                    className={`w-full px-3 h-[42px] text-[14px] border rounded-[10px] outline-none transition-all ${errors.name ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/10'}`}
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     placeholder="Enter your full name"
                                 />
-                                {errors.name && <p className="text-red-500 text-xs font-medium ml-1">{errors.name}</p>}
+                                {errors.name && <p className="text-red-500 text-[10px] font-medium ml-1">{errors.name}</p>}
                             </div>
                         ) : (
-                            <p className="p-4 bg-white border border-slate-100 rounded-xl font-bold text-slate-800">{user.name || "Not set"}</p>
+                            <p className="px-3 h-[42px] flex items-center bg-white border border-slate-100 rounded-[10px] font-bold text-slate-800 text-[14px]">{user.name || "Not set"}</p>
                         )}
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wide opacity-70">Phone Number</label>
+                        <label className="block text-[11px] md:text-[12px] font-semibold text-slate-700 mb-1 uppercase tracking-wide opacity-70">Phone Number</label>
                         {isEdit ? (
                             <div className="space-y-1 phone-input-container">
                                 <PhoneInput
@@ -365,10 +365,10 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                                     }}
                                     containerClass={errors.phone ? 'error-phone' : ''}
                                 />
-                                {errors.phone && <p className="text-red-500 text-xs font-medium ml-1">{errors.phone}</p>}
+                                {errors.phone && <p className="text-red-500 text-[10px] font-medium ml-1">{errors.phone}</p>}
                             </div>
                         ) : (
-                            <div className="flex items-center gap-2 p-4 bg-white border border-slate-100 rounded-xl font-bold text-slate-800">
+                            <div className="flex items-center gap-2 px-3 h-[42px] bg-white border border-slate-100 rounded-[10px] font-bold text-slate-800 text-[14px]">
                                 <Phone size={16} className="text-slate-400" />
                                 <span>{formData.phone ? `+${formData.phone}` : "Not set"}</span>
                             </div>
@@ -408,7 +408,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                                                 <div className="col-span-2 space-y-1">
                                                     <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase">Type</label>
                                                     <select
-                                                        className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue bg-white text-sm"
+                                                        className="w-full px-3 h-[42px] border border-slate-200 rounded-[10px] outline-none focus:border-brand-blue bg-white text-[13px]"
                                                         value={addr.type}
                                                         onChange={(e) => handleAddressChange(addr.id, "type", e.target.value)}
                                                     >
@@ -421,7 +421,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                                                 <div className="col-span-2 space-y-1">
                                                     <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase">Full Address</label>
                                                     <textarea
-                                                        className={`w-full p-3 border rounded-xl outline-none transition-all text-sm min-h-[80px] ${errors[`address_${addr.id}`] ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue bg-white'}`}
+                                                        className={`w-full p-3 border rounded-[10px] outline-none transition-all text-[13px] min-h-[70px] ${errors[`address_${addr.id}`] ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue bg-white'}`}
                                                         placeholder="Building, street, area..."
                                                         value={addr.address}
                                                         onChange={(e) => handleAddressChange(addr.id, "address", e.target.value)}
@@ -431,7 +431,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                                                 <div className="space-y-1">
                                                     <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase">City</label>
                                                     <input
-                                                        className={`w-full p-3 border rounded-xl outline-none transition-all text-sm ${errors[`city_${addr.id}`] ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue bg-white'}`}
+                                                        className={`w-full px-3 h-[42px] border rounded-[10px] outline-none transition-all text-[13px] ${errors[`city_${addr.id}`] ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue bg-white'}`}
                                                         placeholder="City"
                                                         value={addr.city}
                                                         onChange={(e) => handleAddressChange(addr.id, "city", e.target.value)}
@@ -441,7 +441,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                                                 <div className="space-y-1">
                                                     <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase">State</label>
                                                     <input
-                                                        className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue bg-white text-sm"
+                                                        className="w-full px-3 h-[42px] border border-slate-200 rounded-[10px] outline-none focus:border-brand-blue bg-white text-[13px]"
                                                         placeholder="State"
                                                         value={addr.state}
                                                         onChange={(e) => handleAddressChange(addr.id, "state", e.target.value)}
@@ -450,7 +450,7 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                                                 <div className="space-y-1">
                                                     <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase">PIN Code</label>
                                                     <input
-                                                        className={`w-full p-3 border rounded-xl outline-none transition-all text-sm ${errors[`pin_${addr.id}`] ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue bg-white'}`}
+                                                        className={`w-full px-3 h-[42px] border rounded-[10px] outline-none transition-all text-[13px] ${errors[`pin_${addr.id}`] ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-blue bg-white'}`}
                                                         placeholder="PIN"
                                                         value={addr.pin}
                                                         onChange={(e) => handleAddressChange(addr.id, "pin", e.target.value)}
@@ -517,9 +517,9 @@ export default function UserProfile({ isEdit = false }: UserProfileProps) {
                             <button
                                 onClick={handleUpdate}
                                 disabled={isSaving}
-                                className="w-full bg-brand-blue text-white py-4 rounded-xl font-bold hover:bg-brand-blue-dark transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-brand-blue/20"
+                                className="w-full bg-brand-blue text-white h-[40px] text-[13px] rounded-[10px] font-bold hover:bg-brand-blue-dark transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-brand-blue/20"
                             >
-                                {isSaving ? <Loader2 className="animate-spin" size={20} /> : <><Save size={20} /> Save Information</>}
+                                {isSaving ? <Loader2 className="animate-spin" size={16} /> : <><Save size={16} /> Save Information</>}
                             </button>
 
                             <div className="pt-4 border-t border-slate-100">

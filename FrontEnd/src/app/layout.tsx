@@ -2,13 +2,13 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { Footer } from "@/components/layout/Footer";
-import { Poppins } from "next/font/google";
+import { Inter } from "next/font/google";
 import { CustomToaster } from "@/components/ui/CustomToaster";
 import { AuthProvider } from "@/context/AuthContext";
 import { PWAInstall } from "@/components/layout/PWAInstall";
 import CompareBar from "@/components/ui/CompareBar";
 
-const poppins = Poppins({
+const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
@@ -46,7 +46,7 @@ export default function RootLayout({
       <body
         suppressHydrationWarning
         className={`bg-slate-50 text-slate-800 relative overflow-x-hidden min-h-screen flex flex-col`}
-        style={{ fontFamily: `'RupeeSystem', ${poppins.style.fontFamily}` }}>
+        style={{ fontFamily: `'RupeeSystem', ${inter.style.fontFamily}` }}>
         <AuthProvider>
           <CustomToaster />
 

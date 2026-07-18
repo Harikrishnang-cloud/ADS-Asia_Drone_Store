@@ -57,8 +57,8 @@ export function MobileNav() {
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 right-0 z-[100] pointer-events-none">
-      <nav className="pointer-events-auto bg-white/90 backdrop-blur-2xl border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] rounded-sm overflow-hidden">
-        <div className="flex items-center justify-around h-20 sm:h-10 px-2">
+      <nav className="pointer-events-auto bg-white/95 backdrop-blur-2xl border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] overflow-hidden">
+        <div className="flex items-center justify-around py-3 px-1">
           {navItems.map((item) => {
             const isActive = pathname === item.path || (item.path !== "/" && pathname?.startsWith(item.path));
             const Icon = item.icon;
@@ -70,14 +70,14 @@ export function MobileNav() {
                 className="relative flex flex-col items-center justify-center w-full h-full transition-all duration-300"
               >
                 <div 
-                  className={`relative flex items-center justify-center p-2 rounded-lg transition-all duration-500 ${
+                  className={`relative flex items-center justify-center p-1.5 rounded-lg transition-all duration-500 ${
                     isActive 
                       ? "text-brand-orange bg-brand-orange/10" 
                       : "text-slate-600 hover:text-slate-500 active:scale-90"
                   }`}
                 >
                   <Icon 
-                    size={24} 
+                    size={22} 
                     strokeWidth={isActive ? 2.5 : 2} 
                     className={`transition-transform duration-500 ${isActive ? "scale-110" : "scale-100"}`}
                   />

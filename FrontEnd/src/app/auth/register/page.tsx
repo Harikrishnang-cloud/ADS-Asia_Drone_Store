@@ -130,35 +130,35 @@ export default function RegisterPage() {
                     </div>
                 )}
 
-                <div className="space-y-3.5">
+                <div className="space-y-3">
                     <div>
-                        <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Full Name</label>
+                        <label className="block text-[12px] md:text-[13px] font-semibold text-slate-700 mb-1">Full Name</label>
                         <input
                             type="text"
                             placeholder="Enter your name"
                             required
-                            className="bg-slate-50 border border-slate-200 text-slate-900 w-full px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all placeholder:text-slate-400"
+                            className="bg-slate-50 border border-slate-200 text-slate-900 w-full px-3 h-[42px] text-[14px] rounded-[10px] focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all placeholder:text-slate-400"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
                     </div>
                     <div>
-                        <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Email Address</label>
+                        <label className="block text-[12px] md:text-[13px] font-semibold text-slate-700 mb-1">Email Address</label>
                         <input
                             type="email"
                             placeholder="Enter your email"
                             required
-                            className="bg-slate-50 border border-slate-200 text-slate-900 w-full px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all placeholder:text-slate-400"
+                            className="bg-slate-50 border border-slate-200 text-slate-900 w-full px-3 h-[42px] text-[14px] rounded-[10px] focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all placeholder:text-slate-400"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
                     <div>
-                        <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Secure Password</label>
+                        <label className="block text-[12px] md:text-[13px] font-semibold text-slate-700 mb-1">Secure Password</label>
                         <PasswordInput
                             placeholder="Enter your password"
                             required
-                            className="bg-slate-50 border border-slate-200 text-slate-900 w-full px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all placeholder:text-slate-400"
+                            className="bg-slate-50 border border-slate-200 text-slate-900 w-full px-3 h-[42px] text-[14px] rounded-[10px] focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all placeholder:text-slate-400"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
@@ -166,7 +166,7 @@ export default function RegisterPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="bg-gradient-to-r from-brand-orange to-brand-orange-dark hover:from-brand-orange-dark hover:to-orange-700 active:scale-[0.98] disabled:opacity-50 text-white font-semibold text-sm w-full py-2.5 rounded-xl transition-all mt-2 shadow-lg shadow-brand-orange/20"
+                        className="bg-gradient-to-r from-brand-orange to-brand-orange-dark hover:from-brand-orange-dark hover:to-orange-700 active:scale-[0.98] disabled:opacity-50 text-white font-semibold text-[13px] w-full h-[40px] rounded-[10px] transition-all mt-3 shadow-lg shadow-brand-orange/20"
                     >
                         {loading ? "Registering..." : "Create Account"}
                     </button>
@@ -181,7 +181,7 @@ export default function RegisterPage() {
                         type="button"
                         onClick={loginWithGoogle}
                         disabled={loading}
-                        className="flex flex-row items-center justify-center gap-2 bg-white text-slate-700 hover:bg-slate-50 active:scale-[0.98] disabled:opacity-50 font-medium text-sm w-full py-2.5 rounded-xl transition-all shadow-sm border border-slate-200 hover:border-slate-300"
+                        className="flex flex-row items-center justify-center gap-2 bg-white text-slate-700 hover:bg-slate-50 active:scale-[0.98] disabled:opacity-50 font-medium text-[13px] w-full h-[40px] rounded-[10px] transition-all shadow-sm border border-slate-200 hover:border-slate-300"
                     >
                         <svg className="w-4 h-4" viewBox="0 0 24 24">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />

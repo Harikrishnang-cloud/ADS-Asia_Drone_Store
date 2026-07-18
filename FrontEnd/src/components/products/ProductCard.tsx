@@ -75,7 +75,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     };
 
     return (
-        <div className="group bg-white border border-slate-100 rounded-xl sm:rounded-xl lg:rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-brand-blue/10 transition-all duration-500 flex flex-col h-full relative">
+        <div className="group bg-white border border-slate-200 rounded-[8px] overflow-hidden flex flex-col h-full relative">
 
             <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-20">
                 <span className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-sm text-[8px] sm:text-[10px] font-black uppercase tracking-widest shadow-sm ${
@@ -135,10 +135,10 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
 
             {/* Product Info */}
-            <div className="p-2 sm:p-4 md:p-6 flex flex-col flex-1">
-                <div className="flex items-start justify-between gap-1 mb-1 md:mb-3">
+            <div className="p-2 md:p-3 flex flex-col flex-1">
+                <div className="flex items-start justify-between gap-1 mb-1 md:mb-2">
                     <Link href={`/products/${product.id}`} className="block flex-1 min-w-0">
-                        <h3 className="text-[11px] sm:text-base md:text-lg font-bold sm:font-extrabold text-slate-900 group-hover:text-brand-orange transition-colors duration-300 line-clamp-2 leading-tight">{product.name}</h3>
+                        <h3 className="text-[12px] sm:text-[13px] font-medium text-slate-800 group-hover:text-brand-orange transition-colors duration-300 line-clamp-2 leading-tight">{product.name}</h3>
                     </Link>
                     <div className="shrink-0">
                         <div className="flex items-center gap-0.5 sm:gap-1 bg-slate-50 border border-slate-100 px-1 py-0.5 md:px-2 md:py-0.5 rounded-sm shadow-sm">
@@ -148,21 +148,20 @@ export default function ProductCard({ product }: ProductCardProps) {
                     </div>
                 </div>
 
-                <div className="mt-auto pt-2 md:pt-4 border-t border-slate-100">
+                <div className="mt-auto pt-1">
                     <div className="flex flex-col">
-                        <span className="text-[7px] sm:text-[10px] font-bold text-slate-400 tracking-widest leading-none mb-1 hidden sm:block">STARTING FROM (Including GST)</span>
                         {product.offerPrice ? (
-                            <div className="flex flex-wrap items-baseline gap-1 sm:gap-2">
-                                <span className="text-sm sm:text-lg md:text-xl font-black text-brand-orange">₹{Number(product.offerPrice).toLocaleString('en-IN')}</span>
-                                <span className="text-[9px] sm:text-sm text-slate-400 font-medium line-through">₹{formattedPrice}</span>
+                            <div className="flex flex-wrap items-baseline gap-1.5">
+                                <span className="text-[14px] sm:text-[16px] font-bold text-slate-900">₹{Number(product.offerPrice).toLocaleString('en-IN')}</span>
+                                <span className="text-[11px] text-slate-400 line-through">₹{formattedPrice}</span>
                                 {product.offerPercentage !== undefined && product.offerPercentage > 0 && (
-                                    <span className="text-[7px] sm:text-[10px] font-black uppercase bg-emerald-50 text-emerald-700 px-1 py-0.5 rounded-xs mt-0.5 sm:mt-1">
-                                        {product.offerPercentage}% OFF
+                                    <span className="text-[10px] font-bold text-emerald-600">
+                                        {product.offerPercentage}% Off
                                     </span>
                                 )}
                             </div>
                         ) : (
-                            <span className="text-sm sm:text-lg md:text-xl font-black text-brand-blue-dark">₹{formattedPrice}</span>
+                            <span className="text-[14px] sm:text-[16px] font-bold text-slate-900">₹{formattedPrice}</span>
                         )}
                     </div>
                 </div>

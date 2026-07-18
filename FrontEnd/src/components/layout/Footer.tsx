@@ -68,13 +68,13 @@ export function Footer() {
     };
 
     return (
-        <footer className="bg-slate-900 text-white pt-20 pb-10 relative overflow-hidden">
+        <footer className="bg-slate-900 text-white pt-12 md:pt-20 pb-8 md:pb-10 relative overflow-hidden">
             {/* Background Decorative Elements */}
-            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-brand-orange/10 blur-[120px] rounded-full pointer-events-none"></div>
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-brand-blue/10 blur-[150px] rounded-full pointer-events-none"></div>
+            <div className="absolute top-0 right-0 w-[200px] md:w-[300px] h-[200px] md:h-[300px] bg-brand-orange/10 blur-[100px] md:blur-[120px] rounded-full pointer-events-none"></div>
+            <div className="absolute bottom-0 left-0 w-[300px] md:w-[400px] h-[300px] md:h-[400px] bg-brand-blue/10 blur-[120px] md:blur-[150px] rounded-full pointer-events-none"></div>
 
-            <div className="container mx-auto px-6 lg:px-12 relative z-10">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 lg:gap-8 mb-10 md:mb-16">
 
                     {/* Brand Info */}
                     <div className="space-y-6">
@@ -190,7 +190,7 @@ export function Footer() {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-8 md:gap-4">
+                <div className="pt-8 md:pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-4">
                     {/* Left: Copyright */}
                     <div className="flex-1 text-center md:text-left">
                         <p className="text-slate-400 text-sm whitespace-nowrap">
