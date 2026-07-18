@@ -77,7 +77,9 @@ export default function ProductDetailPage() {
             rating: product.rating,
             reviews: product.reviews,
             weight: product.weight,
-            dimensions: product.dimensions
+            dimensions: product.dimensions,
+            originalPrice: product.price,
+            offerPercentage: product.offerPercentage
         });
         toast.success("Item added to cart");
     };

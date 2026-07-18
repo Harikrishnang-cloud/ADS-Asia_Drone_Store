@@ -33,7 +33,9 @@ export default function ProductCard({ product }: ProductCardProps) {
             quantity: 1,
             rating: product.averageRating || product.rating,
             weight: product.weight,
-            dimensions: product.dimensions
+            dimensions: product.dimensions,
+            originalPrice: product.price,
+            offerPercentage: product.offerPercentage
         });
         toast.success("Item added to cart");
     };

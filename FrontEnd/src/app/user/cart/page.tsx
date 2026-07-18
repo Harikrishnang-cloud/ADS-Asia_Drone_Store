@@ -8,6 +8,12 @@ import Button from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import Pagination from "@/components/ui/Pagination";
 import toast from "react-hot-toast";
+import dynamic from 'next/dynamic';
+
+const ProductGrid = dynamic(() => import("@/components/products/ProductGrid"), {
+    loading: () => <div className="h-64 sm:h-96 animate-pulse bg-slate-50 rounded-xl" />,
+    ssr: false
+});
 
 export default function CartPage() {
     const { items, removeItem, updateQuantity, getTotalPrice, getItemCount } = useCartStore();
@@ -78,9 +84,9 @@ export default function CartPage() {
                             <div className="flex-1">
                                 <div className="grid grid-cols-2 md:grid-cols-1 gap-3 sm:gap-4 mb-8">
                                     {paginatedItems.map((item) => (
-                                        <div key={item.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:shadow-brand-blue/10 transition-all border border-slate-100 group flex flex-col md:flex-row md:items-center md:p-6 md:gap-6">
+                                        <div key={item.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-brand-blue/10 transition-all border border-slate-100 group flex flex-row items-center p-3 md:p-6 gap-3 md:gap-6 relative">
                                             {/* Image Section */}
-                                            <div className="aspect-square md:aspect-auto md:w-28 md:h-36 bg-slate-50 relative overflow-hidden flex-shrink-0">
+                                            <div className="w-20 h-24 sm:w-28 sm:h-32 md:w-28 md:h-36 bg-slate-50 relative rounded-lg overflow-hidden flex-shrink-0">
                                                 <Link href={`/products/${item.id}`} className="block w-full h-full">
                                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                                     <img
@@ -89,35 +95,49 @@ export default function CartPage() {
                                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                                     />
                                                 </Link>
-                                                <button
-                                                    onClick={() => setItemToDelete(item.id)}
-                                                    className="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm text-red-500 rounded-full shadow-md md:hidden z-10"
-                                                    title="Remove from cart"
-                                                >
-                                                    <Trash2 size={14} />
-                                                </button>
                                             </div>
 
                                             {/* Info Section */}
-                                            <div className="p-2 sm:p-5 flex flex-col flex-1 md:p-0">
-                                                <Link href={`/products/${item.id}`} className="block mb-1 sm:mb-2 flex-1">
-                                                    <h3 className="text-[11px] sm:text-base md:text-lg font-bold text-slate-900 group-hover:text-brand-orange transition-colors duration-300 line-clamp-2 leading-tight">
-                                                        {item.name}
-                                                    </h3>
-                                                </Link>
+                                            <div className="flex flex-col flex-1 py-1 md:p-0 min-w-0">
+                                                <div className="flex justify-between items-start gap-2 mb-1">
+                                                    <Link href={`/products/${item.id}`} className="block flex-1 min-w-0">
+                                                        <h3 className="text-[11px] sm:text-base md:text-lg font-bold text-slate-900 group-hover:text-brand-orange transition-colors duration-300 line-clamp-2 leading-tight">
+                                                            {item.name}
+                                                        </h3>
+                                                    </Link>
+                                                    <button
+                                                        onClick={() => setItemToDelete(item.id)}
+                                                        className="p-1.5 text-slate-300 hover:text-red-500 bg-slate-50 hover:bg-red-50 rounded-md transition-colors md:hidden shrink-0"
+                                                        title="Remove from cart"
+                                                    >
+                                                        <Trash2 size={12} />
+                                                    </button>
+                                                </div>
 
-                                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-1">
-                                                    <div className="font-black text-brand-blue text-sm sm:text-lg">
-                                                        <span className="font-sans font-semibold mr-0.5" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
-                                                        {Number(item.price).toLocaleString('en-IN')}
+                                                <div className="flex flex-col gap-1.5 md:gap-3 mt-1 md:mt-2">
+                                                    <div className="flex flex-wrap items-baseline gap-1.5">
+                                                        <span className="font-black text-brand-blue-dark text-sm sm:text-lg">
+                                                            <span className="font-sans font-semibold mr-0.5" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
+                                                            {Number(item.price).toLocaleString('en-IN')}
+                                                        </span>
+                                                        {item.originalPrice && item.originalPrice > item.price && (
+                                                            <span className="text-[9px] sm:text-xs text-slate-400 line-through">
+                                                                <span className="font-sans font-normal mr-0.5" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
+                                                                {Number(item.originalPrice).toLocaleString('en-IN')}
+                                                            </span>
+                                                        )}
+                                                        {item.offerPercentage !== undefined && item.offerPercentage > 0 && (
+                                                            <span className="text-[9px] sm:text-[10px] font-bold text-emerald-600">
+                                                                {item.offerPercentage}% Off
+                                                            </span>
+                                                        )}
                                                     </div>
 
-
                                                     {/* Quantity Control */}
-                                                    <div className="flex items-center gap-1.5 sm:gap-3 bg-slate-50 p-1 rounded-lg border border-slate-100 self-start">
+                                                    <div className="flex items-center gap-1 sm:gap-3 bg-slate-50 p-1 rounded-md border border-slate-100 self-start">
                                                         <button
                                                             onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                                                            className="w-6 h-6 flex items-center justify-center rounded-md bg-white text-slate-500 hover:text-brand-blue border-none shadow-sm cursor-pointer disabled:opacity-50"
+                                                            className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded bg-white text-slate-500 hover:text-brand-blue shadow-sm cursor-pointer disabled:opacity-50"
                                                             disabled={item.quantity <= 1}
                                                         >
                                                             <Minus size={10} strokeWidth={3} />
@@ -125,7 +145,7 @@ export default function CartPage() {
                                                         <span className="w-4 sm:w-8 text-center font-bold text-[10px] sm:text-sm text-slate-700">{item.quantity}</span>
                                                         <button
                                                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                                            className="w-6 h-6 flex items-center justify-center rounded-md bg-white text-slate-500 hover:text-brand-blue border-none shadow-sm cursor-pointer"
+                                                            className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded bg-white text-slate-500 hover:text-brand-blue shadow-sm cursor-pointer"
                                                         >
                                                             <Plus size={10} strokeWidth={3} />
                                                         </button>
@@ -167,54 +187,64 @@ export default function CartPage() {
 
                             {/* Order Summary */}
                             <div className="w-full lg:w-[400px]">
-                                <div className="bg-white rounded-lg p-6 md:p-8 shadow-sm border border-slate-100 sticky top-32">
-                                    <h3 className="text-xl font-black text-slate-900 mb-6">Order Summary</h3>
+                                <div className="bg-white rounded-lg p-4 md:p-8 shadow-sm border border-slate-100 sticky top-32">
+                                    <h3 className="text-base md:text-xl font-black text-slate-900 mb-4 md:mb-6">Order Summary</h3>
 
-                                    <div className="space-y-4 mb-6">
+                                    <div className="space-y-3 md:space-y-4 mb-4 md:mb-6">
                                         {/* Individual Items Breakdown */}
-                                        <div className="space-y-3 pb-4 border-b border-slate-100">
+                                        <div className="space-y-2 md:space-y-3 pb-3 md:pb-4 border-b border-slate-100">
                                             {items.map((item) => (
-                                                <div key={`summary-${item.id}`} className="flex items-start justify-between text-sm">
+                                                <div key={`summary-${item.id}`} className="flex items-start justify-between text-[11px] md:text-sm">
                                                     <span className="text-slate-600 flex-1 pr-4 line-clamp-2">
-                                                        {item.name} <span className="text-black-400 whitespace-nowrap ml-1">x {item.quantity}</span>
+                                                        {item.name} <span className="text-black-400 whitespace-nowrap ml-1 font-bold">x {item.quantity}</span>
                                                     </span>
                                                     <span className="font-bold text-slate-900 whitespace-nowrap">
-                                                        ₹{(item.price * item.quantity).toLocaleString('en-IN')}
+                                                        <span className="font-sans font-semibold mr-0.5" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
+                                                        {(item.price * item.quantity).toLocaleString('en-IN')}
                                                     </span>
                                                 </div>
                                             ))}
                                         </div>
 
                                         {/* Subtotals */}
-                                        <div className="flex items-center justify-between text-slate-600 pt-2">
+                                        <div className="flex items-center justify-between text-slate-600 pt-1 md:pt-2 text-xs md:text-base">
                                             <span>Subtotal ({getItemCount()} items)</span>
-                                            <span className="font-bold">₹{subtotal.toLocaleString('en-IN')}</span>
+                                            <span className="font-bold">
+                                                <span className="font-sans font-semibold mr-0.5" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
+                                                {subtotal.toLocaleString('en-IN')}
+                                            </span>
                                         </div>
                                         {subtotal < 10000 && (
-                                            <div className="flex items-center justify-between text-slate-600">
+                                            <div className="flex items-center justify-between text-slate-600 text-xs md:text-base">
                                                 <span>Shipping estimate</span>
                                                 <span className="font-bold text-emerald-500">Free</span>
                                             </div>
                                         )}
                                         {subtotal > 10000 && (
-                                            <div className="flex items-center justify-between text-slate-600">
+                                            <div className="flex items-center justify-between text-slate-600 text-xs md:text-base">
                                                 <span>Shipping estimate</span>
-                                                <span className="font-bold text-emerald-500">₹200</span>
+                                                <span className="font-bold text-emerald-500">
+                                                    <span className="font-sans font-semibold mr-0.5" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
+                                                    200
+                                                </span>
                                             </div>
                                         )}
-                                        <p className="text-xs text-slate-500 mt-2">Free shipping on orders above ₹10,000</p>
+                                        <p className="text-[9px] md:text-xs text-slate-400 mt-1 md:mt-2">Free shipping on orders above ₹10,000</p>
                                     </div>
 
-                                    <div className="border-t border-slate-100 pt-6 mb-8">
+                                    <div className="border-t border-slate-100 pt-4 md:pt-6 mb-6 md:mb-8">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-lg font-bold text-slate-900">Total</span>
-                                            <span className="text-2xl font-black text-brand-blue-dark">₹{subtotal.toLocaleString('en-IN')}</span>
+                                            <span className="text-sm md:text-lg font-bold text-slate-900">Total</span>
+                                            <span className="text-lg md:text-2xl font-black text-brand-blue-dark">
+                                                <span className="font-sans font-semibold mr-0.5" style={{ fontFamily: 'system-ui, Arial, sans-serif' }}>₹</span>
+                                                {subtotal.toLocaleString('en-IN')}
+                                            </span>
                                         </div>
-                                        <p className="text-xs text-slate-500 mt-2">Includes all taxes and duties</p>
+                                        <p className="text-[9px] md:text-xs text-slate-400 mt-1 md:mt-2">Includes all taxes and duties</p>
                                     </div>
 
-                                    <Link href="/user/checkout" className="block w-full">
-                                        <Button fullWidth icon={<ArrowRight size={20} />} className="py-4 text-base">
+                                    <Link href="/user/checkout" className="flex justify-end md:block w-full">
+                                        <Button icon={<ArrowRight className="w-3.5 h-3.5 md:w-5 md:h-5" />} className="w-auto md:w-full h-9 md:h-14 py-0 px-5 md:py-4 md:px-0 text-[11px] md:text-base tracking-wide md:tracking-normal">
                                             Proceed to Checkout
                                         </Button>
                                     </Link>
@@ -222,6 +252,10 @@ export default function CartPage() {
                             </div>
                         </div>
                     )}
+
+                    <div className="mt-12 md:mt-16 pt-8 border-t border-slate-100">
+                        <ProductGrid title="You May Also Like" limit={6} />
+                    </div>
                 </div>
             </div>
 

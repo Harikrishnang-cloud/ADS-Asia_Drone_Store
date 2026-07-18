@@ -15,6 +15,8 @@ export interface CartItem {
         width: number;
         height: number;
     };
+    originalPrice?: number;
+    offerPercentage?: number;
 }
 
 interface CartState {
