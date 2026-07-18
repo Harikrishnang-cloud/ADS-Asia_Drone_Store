@@ -70,38 +70,37 @@ export default function HelpCenter() {
     return (
         <div className="min-h-screen">
             {/* Hero Section */}
-            <section className="bg-brand-blue-dark pt-32 pb-10 md:pt-48 md:pb-20 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-brand-orange/10 blur-[100px] rounded-full"></div>
-                <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-blue/10 blur-[100px] rounded-full"></div>
+            <section className="bg-brand-blue-dark pt-24 pb-8 md:pt-48 md:pb-20 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-48 h-48 md:w-96 md:h-96 bg-brand-orange/10 blur-[50px] md:blur-[100px] rounded-full"></div>
+                <div className="absolute bottom-0 left-0 w-48 h-48 md:w-96 md:h-96 bg-brand-blue/10 blur-[50px] md:blur-[100px] rounded-full"></div>
 
-                <div className="container mx-auto px-6 relative z-10 text-center">
-                    <h1 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tighter">
+                <div className="container mx-auto px-4 sm:px-6 relative z-10 text-center">
+                    <h1 className="text-2xl sm:text-4xl md:text-6xl font-black text-white mb-4 md:mb-6 tracking-tighter">
                         How can we <span className="text-brand-orange italic underline decoration-white/20 underline-offset-8">help</span> you today?
                     </h1>
-                    <p className="text-blue-100/70 text-lg mb-10 max-w-2xl mx-auto font-medium">
+                    <p className="text-blue-100/70 text-xs sm:text-sm md:text-lg mb-6 md:mb-10 max-w-2xl mx-auto font-medium px-2">
                         Search our knowledge base or browse categories below to find answers to your questions.
                     </p>
 
                     <div className="max-w-2xl mx-auto relative group">
-                        <div className="absolute inset-0 bg-brand-orange/20 blur-xl group-focus-within:bg-brand-orange/30 transition-all rounded-2xl"></div>
-                        <div className="relative flex items-center bg-white rounded-md shadow-2xl p-2">
-                            <Search className="text-slate-400 ml-4" size={24} />
+                        <div className="absolute inset-0 bg-brand-orange/20 blur-xl group-focus-within:bg-brand-orange/30 transition-all rounded-xl md:rounded-2xl"></div>
+                        <div className="relative flex items-center bg-white rounded-md shadow-lg md:shadow-2xl p-1 md:p-2">
+                            <Search className="text-slate-400 ml-2 md:ml-4 w-4 h-4 md:w-6 md:h-6" />
                             <input type="text"
-                                placeholder="Search for troubleshooting, warranty, orders..."
-                                className="w-full px-4 py-4 text-slate-900 outline-none font-medium placeholder:text-slate-400"
+                                placeholder="Search troubleshooting, warranty..."
+                                className="w-full px-2 md:px-4 py-2 md:py-4 text-[11px] md:text-base text-slate-900 outline-none font-medium placeholder:text-slate-400"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)} />
-                            <button className="bg-brand-blue hover:bg-brand-blue-dark text-white px-8 py-4 rounded-lg font-bold transition-all flex items-center gap-2 group cursor-pointer">
+                            <button className="bg-brand-blue hover:bg-brand-blue-dark text-white text-[11px] md:text-base px-4 py-2 md:px-8 md:py-4 rounded-lg font-bold transition-all flex items-center gap-1 md:gap-2 group cursor-pointer">
                                 Search
-                                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                <ArrowRight className="group-hover:translate-x-1 transition-transform w-3 h-3 md:w-4 md:h-4" />
                             </button>
                         </div>
                     </div>
 
-                    <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-sm">
-                        <span className="text-blue-100/50 font-bold uppercase tracking-widest text-[10px]"></span>
+                    <div className="mt-6 md:mt-8 flex flex-wrap items-center justify-center gap-2 md:gap-4 text-[10px] md:text-sm">
                         {["Warranty", "Shipping", "Refunds", "Account"].map(tag => (
-                            <button key={tag} onClick={() => setSearchQuery(tag)} className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/20 hover:border-white/30 transition-all font-medium">
+                            <button key={tag} onClick={() => setSearchQuery(tag)} className="px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/20 hover:border-white/30 transition-all font-medium">
                                 {tag}
                             </button>
                         ))}
@@ -110,7 +109,7 @@ export default function HelpCenter() {
             </section>
 
             {/* Categories Grid */}
-            <section className="container mx-auto px-4 md:px-6 py-10 md:py-20 -mt-10 relative z-20">
+            <section className="container mx-auto px-4 md:px-6 pt-6 pb-10 md:py-20 -mt-2 md:-mt-10 relative z-20">
                 <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
                     {CATEGORIES.map((category) => {
                         const isSelected = selectedCategory === category.name && selectedCategory === category.description;
@@ -154,31 +153,30 @@ export default function HelpCenter() {
             </section>
 
             {/* FAQ Section */}
-            <section id="faq" className="container mx-auto px-6 py-8">
+            <section id="faq" className="container mx-auto px-4 md:px-6 py-8">
                 <div className="max-w-4xl mx-auto">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-4xl font-black text-brand-blue-dark mb-4">Frequently Asked Questions</h2>
-                        <div className="w-20 h-1.5 bg-brand-orange mx-auto rounded-full"></div>
+                    <div className="text-center mb-8 md:mb-16">
+                        <h2 className="text-xl sm:text-2xl md:text-4xl font-black text-brand-blue-dark mb-2 md:mb-4">Frequently Asked Questions</h2>
+                        <div className="w-12 h-1 md:w-20 md:h-1.5 bg-brand-orange mx-auto rounded-full"></div>
                     </div>
 
-                    <div className="space-y-4 cursor-pointer">
+                    <div className="space-y-3 md:space-y-4 cursor-pointer">
                         {filteredFaqs.length > 0 ? (
                             filteredFaqs.map((faq, index) => (
                                 <div
                                     key={index}
-                                    className="bg-white rounded-lg border border-slate-100 overflow-hidden transition-all shadow-sm hover:shadow-md">
+                                    className="bg-white rounded-lg md:rounded-xl border border-slate-100 overflow-hidden transition-all shadow-sm hover:shadow-md">
                                     <button
-                                        className="w-full px-8 py-6 flex items-center justify-between text-left group cursor-pointer"
+                                        className="w-full px-4 py-3 md:px-8 md:py-6 flex items-center justify-between text-left group cursor-pointer"
                                         onClick={() => setOpenFaq(openFaq === index ? null : index)}>
-                                        <span className={`text-lg font-bold transition-colors ${openFaq === index ? 'text-brand-orange' : 'text-brand-blue-dark group-hover:text-brand-blue'}`}>
+                                        <span className={`text-[11px] sm:text-sm md:text-lg font-bold pr-4 transition-colors ${openFaq === index ? 'text-brand-orange' : 'text-brand-blue-dark group-hover:text-brand-blue'}`}>
                                             {faq.question}
                                         </span>
                                         <ChevronDown
-                                            size={20}
-                                            className={`text-slate-400 transition-transform duration-300 ${openFaq === index ? 'rotate-180 text-brand-orange' : ''}`} />
+                                            className={`text-slate-400 flex-shrink-0 w-4 h-4 md:w-5 md:h-5 transition-transform duration-300 ${openFaq === index ? 'rotate-180 text-brand-orange' : ''}`} />
                                     </button>
-                                    <div className={`px-8 transition-all duration-300 ease-in-out ${openFaq === index ? 'max-h-96 pb-8' : 'max-h-0 overflow-hidden'}`}>
-                                        <p className="text-slate-600 leading-relaxed font-medium">
+                                    <div className={`px-4 md:px-8 transition-all duration-300 ease-in-out ${openFaq === index ? 'max-h-96 pb-4 md:pb-8' : 'max-h-0 overflow-hidden'}`}>
+                                        <p className="text-slate-600 leading-relaxed font-medium text-[10px] md:text-base">
                                             {faq.answer}
                                         </p>
                                     </div>

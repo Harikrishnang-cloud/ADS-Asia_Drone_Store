@@ -68,7 +68,7 @@ export function Footer() {
     };
 
     return (
-        <footer className="bg-slate-900 text-white pt-8 md:pt-20 pb-20 md:pb-10 relative overflow-hidden">
+        <footer className="bg-slate-900 text-white pt-8 md:pt-20 pb-24 md:pb-10 relative overflow-hidden">
             {/* Background Decorative Elements */}
             <div className="absolute top-0 right-0 w-[200px] md:w-[300px] h-[200px] md:h-[300px] bg-brand-orange/10 blur-[100px] md:blur-[120px] rounded-full pointer-events-none"></div>
             <div className="absolute bottom-0 left-0 w-[300px] md:w-[400px] h-[300px] md:h-[400px] bg-brand-blue/10 blur-[120px] md:blur-[150px] rounded-full pointer-events-none"></div>
@@ -190,7 +190,7 @@ export function Footer() {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="pt-6 md:pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-4">
+                <div className="pt-6 md:pt-10 pb-3 md:pb-0 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-4">
                     {/* Left: Copyright */}
                     <div className="flex-1 text-center md:text-left">
                         <p className="text-slate-400 text-xs md:text-sm whitespace-nowrap">
@@ -201,7 +201,7 @@ export function Footer() {
                     {/* Center: Credits */}
                     <div className="flex-1 text-center">
                         <p className="text-slate-500 text-[10px] md:text-sm">
-                            Developed by <span className="text-slate-400 hover:text-brand-orange transition-colors cursor-pointer font-medium">Asia Softlab</span>
+                            Developed by <span className="text-slate-400 hover:text-brand-orange transition-colors cursor-pointer font-medium">Asia Softlab Pvt. Ltd</span>
                         </p>
                     </div>
 

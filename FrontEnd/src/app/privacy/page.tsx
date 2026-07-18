@@ -66,20 +66,20 @@ export default function PrivacyPolicy() {
     return (
         <div className="min-h-screen bg-slate-50 pb-20">
             {/* Hero Section */}
-            <div className="bg-brand-blue-dark text-white py-20 relative overflow-hidden">
+            <div className="bg-brand-blue-dark text-white py-12 md:py-20 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-                    <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-blue rounded-full blur-[100px]"></div>
-                    <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-brand-orange rounded-full blur-[100px]"></div>
+                    <div className="absolute top-1/4 left-1/4 w-48 h-48 md:w-96 md:h-96 bg-brand-blue rounded-full blur-[50px] md:blur-[100px]"></div>
+                    <div className="absolute bottom-1/4 right-1/4 w-48 h-48 md:w-96 md:h-96 bg-brand-orange rounded-full blur-[50px] md:blur-[100px]"></div>
                 </div>
                 
-                <div className="container mx-auto px-6 relative z-10 text-center">
-                    <span className="text-brand-orange font-bold tracking-[0.3em] uppercase text-sm mb-4 block animate-in fade-in slide-in-from-bottom-4 duration-700">Legal Center</span>
-                    <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight animate-in fade-in slide-in-from-bottom-6 duration-1000">Privacy <span className="text-brand-orange">Policy</span></h1>
-                    <p className="text-slate-300 max-w-2xl mx-auto text-lg leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+                <div className="container mx-auto px-4 sm:px-6 relative z-10 text-center">
+                    <span className="text-brand-orange font-bold tracking-[0.2em] md:tracking-[0.3em] uppercase text-[10px] md:text-sm mb-2 md:mb-4 block animate-in fade-in slide-in-from-bottom-4 duration-700">Legal Center</span>
+                    <h1 className="text-2xl sm:text-4xl md:text-6xl font-black mb-4 md:mb-6 tracking-tight animate-in fade-in slide-in-from-bottom-6 duration-1000">Privacy <span className="text-brand-orange">Policy</span></h1>
+                    <p className="text-slate-300 max-w-2xl mx-auto text-xs sm:text-sm md:text-lg leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 px-2">
                         At Asia Drone Store, we are committed to protecting your personal data and your privacy. Learn how we handle your information with transparency.
                     </p>
-                    <div className="mt-8 text-slate-400 text-sm font-medium">
-                        Last Updated: April 13, 2026
+                    <div className="mt-6 md:mt-8 text-slate-400 text-[10px] md:text-sm font-medium">
+                        Last Updated: July 18, 2026
                     </div>
                 </div>
             </div>
@@ -123,21 +123,21 @@ export default function PrivacyPolicy() {
                     </div>
 
                     {/* Content Section */}
-                    <div className="w-full lg:w-3/4 space-y-12">
-                        <div className="bg-white rounded-xl p-8 md:p-12 shadow-2xl shadow-slate-200/50 border border-slate-100">
+                    <div className="w-full lg:w-3/4 space-y-6 md:space-y-12">
+                        <div className="bg-white rounded-xl p-4 sm:p-8 md:p-12 shadow-2xl shadow-slate-200/50 border border-slate-100">
                             {sections.map((section) => (
-                                <section key={section.id} id={section.id} className="mb-16 last:mb-0 transform transition-all duration-500">
-                                    <div className="flex items-center gap-4 mb-6">
-                                        <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">{section.title}</h2>
+                                <section key={section.id} id={section.id} className="mb-8 md:mb-16 last:mb-0 transform transition-all duration-500">
+                                    <div className="flex items-center gap-2 md:gap-4 mb-3 md:mb-6">
+                                        <h2 className="text-lg sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tight">{section.title}</h2>
                                     </div>
-                                    <p className="text-slate-600 leading-relaxed text-lg mb-6">
+                                    <p className="text-slate-600 leading-relaxed text-xs sm:text-sm md:text-lg mb-3 md:mb-6">
                                         {section.content}
                                     </p>
                                     {section.list && (
-                                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
                                             {section.list.map((item, index) => (
-                                                <li key={index} className="flex gap-3 bg-slate-50 p-4 rounded-xl border border-slate-100 text-slate-700 text-sm items-start">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-brand-orange mt-1.5 flex-shrink-0"></div>
+                                                <li key={index} className="flex gap-2 md:gap-3 bg-slate-50 p-2 sm:p-4 rounded-lg md:rounded-xl border border-slate-100 text-slate-700 text-[10px] sm:text-sm items-start">
+                                                    <div className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-brand-orange mt-1.5 flex-shrink-0"></div>
                                                     {item}
                                                 </li>
                                             ))}
@@ -146,43 +146,43 @@ export default function PrivacyPolicy() {
                                 </section>
                             ))}
 
-                            <div className="h-px bg-slate-100 my-16"></div>
+                            <div className="h-px bg-slate-100 my-8 md:my-16"></div>
 
                             {/* Contact Support Section in Content */}
-                            <section id="contact" className="bg-slate-900 rounded-xl p-8 md:p-10 text-white relative overflow-hidden">
-                                <div className="absolute -top-20 -right-20 w-64 h-64 bg-brand-orange/20 rounded-full blur-3xl"></div>
+                            <section id="contact" className="bg-slate-900 rounded-xl p-4 sm:p-8 md:p-10 text-white relative overflow-hidden">
+                                <div className="absolute -top-10 -right-10 md:-top-20 md:-right-20 w-32 h-32 md:w-64 md:h-64 bg-brand-orange/20 rounded-full blur-2xl md:blur-3xl"></div>
                                 
-                                <h2 className="text-3xl font-black mb-6 relative z-10">Still have questions?</h2>
-                                <p className="text-slate-400 mb-8 relative z-10 text-lg">
+                                <h2 className="text-lg sm:text-2xl md:text-3xl font-black mb-3 md:mb-6 relative z-10 flex items-center gap-2 md:gap-3">Still have questions?</h2>
+                                <p className="text-slate-400 mb-6 md:mb-8 relative z-10 text-[10px] sm:text-sm md:text-lg">
                                     If you have any questions about this Privacy Policy or our practices, please contact our legal team at:
                                 </p>
                                 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
-                                    <div className="flex items-center gap-4 group">
-                                        <div className="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center text-brand-orange group-hover:bg-brand-orange group-hover:text-white transition-all duration-300">
-                                            <Mail size={20} />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 relative z-10">
+                                    <div className="flex items-center gap-3 md:gap-4 group">
+                                        <div className="w-8 h-8 md:w-12 md:h-12 rounded-lg bg-slate-800 flex items-center justify-center text-brand-orange group-hover:bg-brand-orange group-hover:text-white transition-all duration-300">
+                                            <Mail className="w-4 h-4 md:w-5 md:h-5" />
                                         </div>
                                         <div>
-                                            <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Email Us</p>
-                                            <p className="text-slate-200 font-medium">asiadronestore@gmail.com</p>
+                                            <p className="text-[9px] md:text-xs text-slate-500 font-bold uppercase tracking-widest">Email Us</p>
+                                            <p className="text-[11px] md:text-base text-slate-200 font-medium">asiadronestore@gmail.com</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-4 group">
-                                        <div className="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center text-brand-orange group-hover:bg-brand-orange group-hover:text-white transition-all duration-300">
-                                            <Phone size={20} />
+                                    <div className="flex items-center gap-3 md:gap-4 group">
+                                        <div className="w-8 h-8 md:w-12 md:h-12 rounded-lg bg-slate-800 flex items-center justify-center text-brand-orange group-hover:bg-brand-orange group-hover:text-white transition-all duration-300">
+                                            <Phone className="w-4 h-4 md:w-5 md:h-5" />
                                         </div>
                                         <div>
-                                            <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Call Us</p>
-                                            <p className="text-slate-200 font-medium">+91 70121 47575</p>
+                                            <p className="text-[9px] md:text-xs text-slate-500 font-bold uppercase tracking-widest">Call Us</p>
+                                            <p className="text-[11px] md:text-base text-slate-200 font-medium">+91 70121 47575</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-start gap-4 group col-span-1 md:col-span-2">
-                                        <div className="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center text-brand-orange group-hover:bg-brand-orange group-hover:text-white transition-all duration-300 flex-shrink-0">
-                                            <MapPin size={20} />
+                                    <div className="flex items-start gap-3 md:gap-4 group col-span-1 md:col-span-2">
+                                        <div className="w-8 h-8 md:w-12 md:h-12 rounded-lg bg-slate-800 flex items-center justify-center text-brand-orange group-hover:bg-brand-orange group-hover:text-white transition-all duration-300 flex-shrink-0">
+                                            <MapPin className="w-4 h-4 md:w-5 md:h-5" />
                                         </div>
                                         <div>
-                                            <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Head Office</p>
-                                            <p className="text-slate-200 font-medium leading-relaxed">
+                                            <p className="text-[9px] md:text-xs text-slate-500 font-bold uppercase tracking-widest">Head Office</p>
+                                            <p className="text-[10px] md:text-base text-slate-200 font-medium leading-relaxed">
                                                 Asia Softlab Pvt Ltd, 1st Floor - MG Corporate Center, Ulloor, Thiruvananthapuram, Kerala, 695011
                                             </p>
                                         </div>
