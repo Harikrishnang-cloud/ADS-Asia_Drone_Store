@@ -63,8 +63,8 @@ export function Navbar() {
         if (!searchQuery.trim()) return [];
         const query = searchQuery.toLowerCase();
         return allProducts
-            .filter(p => 
-                p.name?.toLowerCase().includes(query) || 
+            .filter(p =>
+                p.name?.toLowerCase().includes(query) ||
                 p.category?.toLowerCase().includes(query)
             )
             .slice(0, 6);
@@ -337,7 +337,7 @@ export function Navbar() {
                                                     </div>
                                                 </div>
                                             ))}
-                                            <div 
+                                            <div
                                                 onClick={() => handleSearchSubmit(searchQuery)}
                                                 className="px-4 py-3 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between group/all cursor-pointer"
                                             >
@@ -603,7 +603,7 @@ export function Navbar() {
                             </span>
                         )}
                     </Link>
-                    
+
                     <Link suppressHydrationWarning href={hasHydrated && user ? "/user/notifications" : "/auth/login"} onClick={() => setIsMobileMenuOpen(false)} className="relative text-brand-blue-dark hover:text-brand-orange transition-colors" title="Notifications">
                         <Bell size={26} strokeWidth={2} />
                         {hasHydrated && notificationCount > 0 && (
@@ -618,9 +618,9 @@ export function Navbar() {
                     {hasHydrated && user ? (
                         <div className="w-full flex flex-col gap-4">
                             {/* Mobile Profile Header */}
-                            <Link 
-                                suppressHydrationWarning 
-                                href="/user/profile" 
+                            <Link
+                                suppressHydrationWarning
+                                href="/user/profile"
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="flex items-center gap-4 bg-slate-50 p-5 rounded-2xl w-full border border-slate-100 shadow-sm hover:bg-slate-100 transition-colors cursor-pointer group/profile"
                             >

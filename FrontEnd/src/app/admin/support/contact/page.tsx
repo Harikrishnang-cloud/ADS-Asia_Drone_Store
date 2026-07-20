@@ -101,12 +101,12 @@ export default function AdminContactPage() {
                                     </tr>
                                 ) : filteredMessages.length === 0 ? (
                                     <tr>
-                                        <td colSpan={4} className="px-6 py-16 text-center text-slate-500">
-                                            <div className="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                                <ShieldAlert className="text-slate-300" size={32} />
+                                        <td colSpan={4} className="px-4 md:px-6 py-10 md:py-16 text-center text-slate-500">
+                                            <div className="bg-slate-50 w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
+                                                <ShieldAlert className="w-8 h-8 md:w-10 md:h-10 text-slate-300" />
                                             </div>
-                                            <h3 className="text-lg font-bold text-slate-700 mb-1">No Messages Found</h3>
-                                            <p className="font-medium text-slate-500">Your inbox is currently empty.</p>
+                                            <h3 className="text-base md:text-lg font-bold text-slate-700 mb-1">No Messages Found</h3>
+                                            <p className="text-xs md:text-sm font-medium text-slate-500">Your inbox is currently empty.</p>
                                         </td>
                                     </tr>
                                 ) : (

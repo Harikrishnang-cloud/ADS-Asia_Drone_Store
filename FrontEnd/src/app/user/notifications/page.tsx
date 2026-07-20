@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/context/AuthContext";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
-import { Tag, Info, AlertCircle, ChevronRight } from "lucide-react";
+import { Tag, Info, AlertCircle, ChevronRight, Bell } from "lucide-react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Link from "next/link";
 
@@ -132,8 +132,12 @@ export default function NotificationsPage() {
                                 </div>
                             ))
                         ) : (
-                            <div className="py-20 bg-white border border-dashed border-slate-300 rounded-2xl text-center">
-                                <p className="text-slate-400 font-medium">No notifications to display.</p>
+                            <div className="bg-white rounded-lg md:rounded-2xl py-10 md:py-20 px-6 border border-dashed border-slate-300 flex flex-col items-center justify-center text-center mx-4 md:mx-0">
+                                <div className="w-16 h-16 md:w-20 md:h-20 bg-slate-50 rounded-full flex items-center justify-center mb-3 md:mb-4">
+                                    <Bell className="w-8 h-8 md:w-10 md:h-10 text-slate-300" />
+                                </div>
+                                <h3 className="text-base md:text-lg font-bold text-slate-700 mb-1">No Notifications</h3>
+                                <p className="text-xs md:text-sm font-medium text-slate-500">You don&apos;t have any notifications right now.</p>
                             </div>
                         )}
                     </div>

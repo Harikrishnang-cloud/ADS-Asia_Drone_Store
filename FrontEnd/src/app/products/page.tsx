@@ -247,27 +247,32 @@ function ProductsContent() {
             <div className="flex flex-col lg:flex-row gap-4 lg:gap-12 w-full">
                 {/* Sidebar Filters */}
                 <aside className={`w-full lg:w-72 shrink-0 ${showMobileFilters ? 'block' : 'hidden'} lg:block`}>
-                    <div className="sticky top-24 bg-white border border-slate-100 p-6 rounded-lg shadow-sm shadow-brand-blue/5">
-                        <div className="flex items-center gap-3 border-b border-slate-100 pb-4 mb-6">
-                            <SlidersHorizontal size={20} className="text-brand-orange" />
-                            <h2 className="text-lg font-black text-slate-900 uppercase tracking-wider">Filters</h2>
+                    <div className="sticky top-24 bg-white border border-slate-100 p-4 md:p-6 rounded-lg shadow-sm shadow-brand-blue/5">
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-3 md:pb-4 mb-4 md:mb-6">
+                            <div className="flex items-center gap-2 md:gap-3">
+                                <SlidersHorizontal className="text-brand-orange w-4 h-4 md:w-5 md:h-5" />
+                                <h2 className="text-base md:text-lg font-black text-slate-900 uppercase tracking-wider">Filters</h2>
+                            </div>
+                            <button onClick={() => setShowMobileFilters(false)} className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-brand-orange hover:text-brand-orange/80 bg-brand-orange/10 px-2 py-1 rounded">
+                                Close
+                            </button>
                         </div>
 
                         {/* Category Filter */}
-                        <div className="mb-8">
-                            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Categories</h3>
-                            <div className="flex flex-col gap-2">
+                        <div className="mb-6 md:mb-8">
+                            <h3 className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 md:mb-4">Categories</h3>
+                            <div className="flex flex-col gap-1 md:gap-2">
                                 {hasMounted ? categories.map(category => (
                                     <button
                                         key={category}
                                         onClick={() => updateFilters({ category: category })}
-                                        className={`text-left px-3 py-2 rounded-md text-sm font-semibold transition-all duration-300 cursor-pointer ${selectedCategory === category
+                                        className={`text-left px-2 py-1.5 md:px-3 md:py-2 rounded-md text-[11px] md:text-sm font-semibold transition-all duration-300 cursor-pointer ${selectedCategory === category
                                                 ? 'bg-brand-orange/10 text-brand-orange'
                                                 : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                                             }`}
                                     >
                                         {category}
-                                        <span className="float-right text-xs opacity-50 mt-0.5">
+                                        <span className="float-right text-[10px] md:text-xs opacity-50 mt-0.5 md:mt-0">
                                             {category === "All"
                                                 ? products.length
                                                 : products.filter(p => p.category === category).length}
@@ -285,9 +290,9 @@ function ProductsContent() {
 
                         {/* Price Range Filter */}
                         <div>
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-xs font-bold text-brand-blue-dark uppercase tracking-widest">Min Price</h3>
-                                <span className="text-sm font-black text-brand-blue-dark">₹{priceRange.toLocaleString('en-IN')}</span>
+                            <div className="flex items-center justify-between mb-3 md:mb-4">
+                                <h3 className="text-[10px] md:text-xs font-bold text-brand-blue-dark uppercase tracking-widest">Min Price</h3>
+                                <span className="text-[11px] md:text-sm font-black text-brand-blue-dark">₹{priceRange.toLocaleString('en-IN')}</span>
                             </div>
                             <input
                                 type="range"

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { useCartStore } from "@/store/cartStore";
-import { Trash2, ShoppingCart } from "lucide-react";
+import { Trash2, ShoppingCart, Heart } from "lucide-react";
 import Link from "next/link";
 import Button from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
@@ -83,12 +83,14 @@ export default function WishlistPage() {
                     </div>
 
                     {items.length === 0 ? (
-                        <div className="bg-white rounded-xl p-12 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
-
-                            <h2 className="text-xl font-bold text-slate-900 mb-2">Your wishlist is empty</h2>
-                            <p className="text-slate-500 mb-8 max-w-sm">Save your favorite drones and accessories here to easily find them later.</p>
+                        <div className="bg-white rounded-lg md:rounded-xl p-6 md:p-12 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center mx-4 md:mx-0">
+                            <div className="w-16 h-16 md:w-24 md:h-24 bg-slate-50 rounded-full flex items-center justify-center mb-4 md:mb-6">
+                                <Heart className="w-8 h-8 md:w-10 md:h-10 text-slate-300" />
+                            </div>
+                            <h2 className="text-base md:text-xl font-bold text-slate-900 mb-1 md:mb-2">Your wishlist is empty</h2>
+                            <p className="text-xs md:text-base text-slate-500 mb-6 md:mb-8 max-w-sm px-4">Save your favorite drones and accessories here to easily find them later.</p>
                             <Link href="/products">
-                                <Button>Start Browsing</Button>
+                                <Button className="text-xs md:text-sm h-9 md:h-11 px-4 md:px-8">Start Browsing</Button>
                             </Link>
                         </div>
                     ) : (

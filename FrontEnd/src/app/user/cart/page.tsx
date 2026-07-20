@@ -68,21 +68,21 @@ export default function CartPage() {
                     </h1>
 
                     {items.length === 0 ? (
-                        <div className="bg-white rounded-xl p-12 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
-                            <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6">
-                                <ShoppingBag size={40} className="text-slate-300" />
+                        <div className="bg-white rounded-lg md:rounded-xl p-6 md:p-12 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center mx-4 md:mx-0">
+                            <div className="w-16 h-16 md:w-24 md:h-24 bg-slate-50 rounded-full flex items-center justify-center mb-4 md:mb-6">
+                                <ShoppingBag className="w-8 h-8 md:w-10 md:h-10 text-slate-300" />
                             </div>
-                            <h2 className="text-xl font-bold text-slate-900 mb-2">Your cart is empty</h2>
-                            <p className="text-slate-500 mb-8 max-w-sm">Looks like you haven&apos;t added any premium drone products to your cart yet.</p>
+                            <h2 className="text-base md:text-xl font-bold text-slate-900 mb-1 md:mb-2">Your cart is empty</h2>
+                            <p className="text-xs md:text-base text-slate-500 mb-6 md:mb-8 max-w-sm px-4">Looks like you haven&apos;t added any premium drone products to your cart yet.</p>
                             <Link href="/products">
-                                <Button>Start Shopping</Button>
+                                <Button className="text-xs md:text-sm h-9 md:h-11 px-4 md:px-8">Start Shopping</Button>
                             </Link>
                         </div>
                     ) : (
                         <div className="flex flex-col lg:flex-row gap-8">
                             {/* Cart Items Grid/List */}
                             <div className="flex-1">
-                                <div className="grid grid-cols-2 md:grid-cols-1 gap-3 sm:gap-4 mb-8">
+                                <div className="grid grid-cols-1 gap-3 sm:gap-4 mb-8">
                                     {paginatedItems.map((item) => (
                                         <div key={item.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-brand-blue/10 transition-all border border-slate-100 group flex flex-row items-center p-3 md:p-6 gap-3 md:gap-6 relative">
                                             {/* Image Section */}

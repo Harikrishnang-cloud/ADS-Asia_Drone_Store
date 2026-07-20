@@ -38,7 +38,7 @@ export default function AboutPage() {
 
                 {/* Category SEO Text Block */}
                 <div className="max-w-screen-xl mx-auto px-4 md:px-8">
-                    <div className="bg-slate-50 rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8">
+                    <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-200 p-6 md:p-8">
                         <h2 className="text-base md:text-2xl font-bold text-slate-800 mb-4 text-center md:text-left">Discover the Perfect Drone for Every Industry</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                             <div>
@@ -66,19 +66,19 @@ export default function AboutPage() {
                         </p>
                     </div>
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
-                        <div className="bg-white p-4 md:p-6 rounded-xl text-center border border-slate-100 flex flex-col justify-center shadow-sm">
+                        <div className="bg-white p-4 md:p-6 rounded-lg text-center border border-slate-100 flex flex-col justify-center shadow-sm">
                             <h3 className="text-xs md:text-base font-bold text-slate-800 mb-1 md:mb-2">Genuine Products</h3>
                             <p className="text-[10px] md:text-xs text-slate-500 leading-tight">We stock only authentic drones, batteries, and drone cameras.</p>
                         </div>
-                        <div className="bg-white p-4 md:p-6 rounded-xl text-center border border-slate-100 flex flex-col justify-center shadow-sm">
+                        <div className="bg-white p-4 md:p-6 rounded-lg text-center border border-slate-100 flex flex-col justify-center shadow-sm">
                             <h3 className="text-xs md:text-base font-bold text-slate-800 mb-1 md:mb-2">Expert Support</h3>
                             <p className="text-[10px] md:text-xs text-slate-500 leading-tight">Our technical team is ready to assist you with setup and repair.</p>
                         </div>
-                        <div className="bg-white p-4 md:p-6 rounded-xl text-center border border-slate-100 flex flex-col justify-center shadow-sm">
+                        <div className="bg-white p-4 md:p-6 rounded-lg text-center border border-slate-100 flex flex-col justify-center shadow-sm">
                             <h3 className="text-xs md:text-base font-bold text-slate-800 mb-1 md:mb-2">Fast Shipping</h3>
                             <p className="text-[10px] md:text-xs text-slate-500 leading-tight">Enjoy secure delivery anywhere in India from our warehouse.</p>
                         </div>
-                        <div className="bg-white p-4 md:p-6 rounded-xl text-center border border-slate-100 flex flex-col justify-center shadow-sm">
+                        <div className="bg-white p-4 md:p-6 rounded-lg text-center border border-slate-100 flex flex-col justify-center shadow-sm">
                             <h3 className="text-xs md:text-base font-bold text-slate-800 mb-1 md:mb-2">Broad Range</h3>
                             <p className="text-[10px] md:text-xs text-slate-500 leading-tight">From replacement propellers to thermal drone payloads.</p>
                         </div>
@@ -104,37 +104,43 @@ export default function AboutPage() {
                             {
                                 icon: ShieldCheck,
                                 title: "Guaranteed Authenticity",
-                                desc: "Every drone we sell is 100% authentic, sourced directly from manufacturers with full warranty backing. No grey market imports."
+                                desc: "Every drone we sell is 100% authentic, sourced directly from manufacturers with full warranty backing. No grey market imports.",
+                                gradient: "from-blue-500 to-cyan-400"
                             },
                             {
                                 icon: Zap,
                                 title: "Cutting-Edge Selection",
-                                desc: "We curate our inventory. If a drone doesn&apos;t meet our strict standards for durability, camera quality, and flight stability, we don&apos;t stock it."
+                                desc: "We curate our inventory. If a drone doesn&apos;t meet our strict standards for durability, camera quality, and flight stability, we don&apos;t stock it.",
+                                gradient: "from-orange-500 to-amber-400"
                             },
                             {
                                 icon: Headphones,
                                 title: "Technical Support",
-                                desc: "Our team consists of certified drone pilots. Whether you need help with initial setup, firmware updates, or advanced flight maneuvers, we're here."
+                                desc: "Our team consists of certified drone pilots. Whether you need help with initial setup, firmware updates, or advanced flight maneuvers, we're here.",
+                                gradient: "from-purple-500 to-pink-500"
                             },
                             {
                                 icon: Globe,
                                 title: "Nationwide Free Shipping",
-                                desc: "Premium tech deserves premium delivery. We offer fully insured, expedited shipping on all orders over ₹50,000, right to your doorstep."
+                                desc: "Premium tech deserves premium delivery. We offer fully insured, expedited shipping on all orders over ₹50,000, right to your doorstep.",
+                                gradient: "from-emerald-500 to-teal-400"
                             },
                             {
                                 icon: Target,
                                 title: "Price Match Guarantee",
-                                desc: "We are committed to offering you the best value. Find a lower price from an authorized retailer, and we will match it instantly."
+                                desc: "We are committed to offering you the best value. Find a lower price from an authorized retailer, and we will match it instantly.",
+                                gradient: "from-rose-500 to-red-400"
                             },
                             {
                                 icon: Award,
                                 title: "Certified Repair Center",
-                                desc: "Crashes happen. Our in-house repair facility is equipped with OEM parts and trained engineers to get you back in the air quickly."
+                                desc: "Crashes happen. Our in-house repair facility is equipped with OEM parts and trained engineers to get you back in the air quickly.",
+                                gradient: "from-indigo-500 to-brand-blue"
                             }
                         ].map((feature, idx) => (
                             <div key={idx} className="bg-white p-4 md:p-10 rounded-lg md:rounded-2xl border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 hover:-translate-y-2 transition-all duration-500 group relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-12 h-12 md:w-24 md:h-24 bg-slate-50 rounded-bl-[50px] md:rounded-bl-[100px] -mr-4 -mt-4 md:-mr-8 md:-mt-8 transition-all group-hover:bg-brand-blue/5"></div>
-                                <div className="w-10 h-10 md:w-14 md:h-14 bg-slate-50 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-8 border border-slate-100 group-hover:bg-brand-blue group-hover:border-brand-blue group-hover:scale-110 transition-all duration-300 shadow-inner">
+                                <div className={`absolute top-0 right-0 w-12 h-12 md:w-24 md:h-24 rounded-bl-[50px] md:rounded-bl-[100px] -mr-4 -mt-4 md:-mr-8 md:-mt-8 transition-all duration-500 bg-gradient-to-br ${feature.gradient} opacity-80 group-hover:opacity-100 group-hover:scale-110`}></div>
+                                <div className="relative z-10 w-10 h-10 md:w-14 md:h-14 bg-slate-50 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-8 border border-slate-100 group-hover:bg-brand-blue group-hover:border-brand-blue group-hover:scale-110 transition-all duration-300 shadow-inner">
                                     <feature.icon className="w-5 h-5 md:w-[26px] md:h-[26px] text-slate-600 group-hover:text-white transition-colors" />
                                 </div>      
                                 <h4 className="text-[12px] md:text-xl font-black text-slate-900 mb-1.5 md:mb-4 tracking-tight group-hover:text-brand-blue transition-colors leading-tight">{feature.title}</h4>
@@ -158,12 +164,14 @@ export default function AboutPage() {
                     </p>
                     <div className="flex flex-row items-center justify-between gap-3 pt-4 w-full max-w-sm mx-auto sm:max-w-none sm:justify-center sm:gap-4">
                         <Link href="/products" className="w-full sm:w-auto flex-1">
-                            <Button variant="orange" size="lg" className="w-full !text-[11px] !py-2.5 !px-2 md:!text-lg md:!py-4 md:!px-8" icon={<ChevronRight size={18} className="w-4 h-4 md:w-5 md:h-5" />}>
+                            <Button variant="orange" size="lg" className="w-full !text-[11px] !py-2.5 !px-2 md:!text-lg md:!py-4 md:!px-8" 
+                            icon={<ChevronRight size={18} className="w-4 h-4 md:w-5 md:h-5" />}>
                                 Shop Drones
                             </Button>
                         </Link>
                         <Link href="/contact" className="w-full sm:w-auto flex-1">
-                            <Button variant="secondary" size="lg" className="w-full !text-[11px] !py-2.5 !px-2 md:!text-lg md:!py-4 md:!px-8">
+                            <Button variant="secondary" size="lg" className="w-full !text-[11px] !py-2.5 !px-2 md:!text-lg md:!py-4 md:!px-8"
+                            icon={<ChevronRight size={18} className="w-4 h-4 md:w-5 md:h-5" />}>
                                 Speak to an Expert
                             </Button>
                         </Link>
