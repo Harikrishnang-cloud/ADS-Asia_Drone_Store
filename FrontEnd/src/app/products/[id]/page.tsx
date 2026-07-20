@@ -185,8 +185,63 @@ export default function ProductDetailPage() {
         );
     }
 
+    const productSchema = {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": product.name,
+        "image": [product.imageUrl, ...(product.images || [])],
+        "description": product.description || `Buy ${product.name} at Asia Drone Store. Premium drone for professionals and enthusiasts.`,
+        "sku": product.id,
+        "brand": {
+            "@type": "Brand",
+            "name": "Asia Drone Store"
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": typeof window !== 'undefined' ? window.location.href : '',
+            "priceCurrency": "INR",
+            "price": product.offerPrice || product.price,
+            "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "itemCondition": "https://schema.org/NewCondition"
+        },
+        ...(product.rating ? {
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": product.rating,
+                "reviewCount": product.reviews || 1
+            }
+        } : {})
+    };
+
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://asiadronestore.com"
+        },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Products",
+            "item": "https://asiadronestore.com/products"
+        },{
+            "@type": "ListItem",
+            "position": 3,
+            "name": product.category || "Drones",
+            "item": `https://asiadronestore.com/products?category=${encodeURIComponent(product.category || "All")}`
+        },{
+            "@type": "ListItem",
+            "position": 4,
+            "name": product.name
+        }]
+    };
+
     return (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 md:pt-6 pb-6 relative z-10">
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
             <button onClick={() => router.back()}
                 className="flex items-center gap-2 text-slate-400 hover:text-brand-orange transition-colors font-bold uppercase text-[10px] tracking-widest mb-4 cursor-pointer">
                 <ChevronLeft size={16} /> Back
@@ -373,6 +428,44 @@ export default function ProductDetailPage() {
                                 <p className="text-slate-500 text-sm font-medium leading-relaxed">{spec.value}</p>
                             </div>
                         ))}
+                    </div>
+                </div>
+            )}
+
+            {/* SEO Extended Information Section */}
+            {product && (
+                <div className="mt-8 pt-8 border-t border-slate-100">
+                    <h2 className="text-2xl md:text-3xl font-black text-brand-blue-dark mb-6 tracking-tight">Why Choose {product.name} from Asia Drone Store?</h2>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                        <div className="bg-slate-50 p-6 md:p-8 rounded-2xl border border-slate-100">
+                            <h3 className="text-lg font-bold text-slate-800 mb-3">Applications & Usage Scenarios</h3>
+                            <p className="text-sm text-slate-500 leading-relaxed mb-4">
+                                The {product.name} is engineered for versatility. Whether you are conducting aerial surveys, capturing cinematic 4K footage across Kerala, or monitoring large agricultural tracts, this drone provides unmatched reliability and precision. Its robust build ensures stable flights even in challenging weather conditions common in India.
+                            </p>
+                            <h3 className="text-lg font-bold text-slate-800 mb-3 mt-6">Package Contents & Warranty</h3>
+                            <p className="text-sm text-slate-500 leading-relaxed">
+                                When you buy from Asia Drone Store, you receive the complete manufacturer package along with standard accessories. We provide a comprehensive warranty and dedicated technical support based right here in Thiruvananthapuram, India.
+                            </p>
+                        </div>
+
+                        <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-100 shadow-sm">
+                            <h3 className="text-lg font-bold text-slate-800 mb-4">Frequently Asked Questions</h3>
+                            <div className="space-y-4">
+                                <div>
+                                    <h4 className="text-sm font-semibold text-brand-blue-dark">Is the {product.name} suitable for beginners?</h4>
+                                    <p className="text-xs text-slate-500 mt-1">Yes, it features intuitive controls and advanced obstacle avoidance, making it safe for pilots of all skill levels.</p>
+                                </div>
+                                <div>
+                                    <h4 className="text-sm font-semibold text-brand-blue-dark">Do you ship to my location?</h4>
+                                    <p className="text-xs text-slate-500 mt-1">We offer fast and secure shipping from our Thiruvananthapuram warehouse to all locations across India.</p>
+                                </div>
+                                <div>
+                                    <h4 className="text-sm font-semibold text-brand-blue-dark">Are spare parts available?</h4>
+                                    <p className="text-xs text-slate-500 mt-1">Absolutely. As India&apos;s premium drone hub, we stock all essential spare parts and batteries for this model.</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

@@ -141,6 +141,66 @@ function ProductsContent() {
         return result;
     }, [products, selectedCategory, priceRange, sortBy, search]);
 
+    // SEO Data
+    const seoData: Record<string, { desc: string; faq: {q: string; a: string; link?: { text: string; url: string }}[] }> = {
+        "All": {
+            desc: "Browse our complete catalog of professional drones, agriculture UAVs, FPV drones, and premium accessories. Find exactly what you need at Asia Drone Store, Thiruvananthapuram.",
+            faq: [
+                { q: "Which drone is suitable for beginners?", a: "We recommend starting with consumer mini drones that have collision avoidance and intuitive controls." },
+                { 
+                    q: "Do I need DGCA registration in India?", 
+                    a: "Yes, drones over 250 grams must be registered with the DGCA in India.",
+                    link: { text: "For more details please visit:", url: "https://asiasoftlab.in/" }
+                }
+            ]
+        },
+        "Drones": {
+            desc: "Discover top-tier consumer and professional drones perfect for aerial photography, mapping, and videography. Experience crystal clear 4K imaging and advanced flight modes.",
+            faq: [
+                { q: "What is the best drone for photography?", a: "Professional drones with 1-inch or larger sensors offer the best low-light performance and dynamic range." }
+            ]
+        },
+        "Agriculture Drones": {
+            desc: "Maximize crop yield with our advanced agriculture drones. Perfect for precision spraying, multispectral imaging, and crop health monitoring across farms in India.",
+            faq: [
+                { q: "How much area can an agriculture drone cover?", a: "A standard agriculture drone can spray up to 2-3 acres per hour depending on tank capacity and battery life." }
+            ]
+        },
+        "Industrial UAVs": {
+            desc: "Robust industrial UAVs built for land surveying, structural inspection, and public safety missions. Featuring thermal cameras, RTK modules, and extended flight times.",
+            faq: [
+                { q: "Are industrial drones weatherproof?", a: "Many industrial models feature IP43 or higher ratings, allowing them to fly in light rain and dusty environments." }
+            ]
+        },
+        "Accessories": {
+            desc: "Enhance your drone's capabilities with our wide range of premium accessories, including ND filters, landing pads, carrying cases, and high-capacity batteries.",
+            faq: [
+                { q: "How do I choose the right battery?", a: "Always purchase genuine batteries matched to your specific drone model to ensure safety and warranty compliance." }
+            ]
+        },
+        "Spare Parts": {
+            desc: "Genuine spare parts for drone repair and maintenance. From replacement propellers to gimbal motors, keep your drone flying safely.",
+            faq: [
+                { q: "Can I buy drone spare parts separately?", a: "Yes, we stock a comprehensive inventory of genuine replacement parts for immediate shipping." }
+            ]
+        }
+    };
+
+    const currentSeo = seoData[selectedCategory] || seoData["All"];
+
+    const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": currentSeo.faq.map(f => ({
+            "@type": "Question",
+            "name": f.q,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": f.a + (f.link ? ` ${f.link.text} ${f.link.url}` : "")
+            }
+        }))
+    };
+
     // Paginate results
     const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
     const paginatedProducts = useMemo(() => {
@@ -178,6 +238,11 @@ function ProductsContent() {
                     </div>
                 )}
             </div>
+
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+            />
 
             <div className="flex flex-col lg:flex-row gap-4 lg:gap-12 w-full">
                 {/* Sidebar Filters */}
@@ -325,7 +390,37 @@ function ProductsContent() {
                         </div>
                     )}
                 </div>
+                
             </div>
+            {/* Category SEO Content */}
+                {!search && (
+                    <div className="mt-6 md:mt-8 p-6 bg-white border border-slate-100 rounded-xl shadow-sm">
+                        <h2 className="text-lg md:text-xl font-bold text-slate-800 mb-2">{selectedCategory === "All" ? "Explore Our Collection" : selectedCategory}</h2>
+                        <p className="text-sm md:text-base text-slate-500 leading-relaxed max-w-4xl">{currentSeo.desc}</p>
+                        
+                        <div className="mt-6 pt-4 border-t border-slate-100">
+                            <h3 className="text-sm font-bold text-slate-700 mb-4">Frequently Asked Questions</h3>
+                            <div className="flex flex-col gap-4">
+                                {currentSeo.faq.map((f, i) => (
+                                    <div key={i}>
+                                        <h4 className="text-sm font-semibold text-slate-800 mb-1">{f.q}</h4>
+                                        <p className="text-xs md:text-sm text-slate-500">
+                                            {f.a}
+                                            {f.link && (
+                                                <span className="ml-1">
+                                                    {f.link.text}{" "}
+                                                    <a href={f.link.url} target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:text-brand-orange hover:underline font-medium transition-colors">
+                                                        {f.link.url}
+                                                    </a>
+                                                </span>
+                                            )}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
         </main>
     );
 }

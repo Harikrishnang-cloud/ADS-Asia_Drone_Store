@@ -5,20 +5,19 @@ import { MetadataRoute } from "next";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://asiadronestore.com";
 
-  // Static routes
   const staticRoutes = [
-    "",
-    "/products",
-    "/about",
-    "/contact",
-    "/privacy",
-    "/terms-and-conditions",
-    "/help",
-  ].map((route) => ({
+    { route: "", priority: 1.0, freq: "daily" as const },
+    { route: "/products", priority: 0.9, freq: "daily" as const },
+    { route: "/about", priority: 0.8, freq: "monthly" as const },
+    { route: "/contact", priority: 0.8, freq: "monthly" as const },
+    { route: "/privacy", priority: 0.5, freq: "yearly" as const },
+    { route: "/terms-and-conditions", priority: 0.5, freq: "yearly" as const },
+    { route: "/help", priority: 0.7, freq: "monthly" as const },
+  ].map(({ route, priority, freq }) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: route === "" ? 1 : 0.8,
+    changeFrequency: freq,
+    priority: priority,
   }));
 
   // Dynamic product routes
@@ -48,8 +47,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       return {
         url: `${baseUrl}/products/${id}`,
         lastModified,
-        changeFrequency: "daily" as const,
-        priority: 0.6,
+        changeFrequency: "weekly" as const,
+        priority: 0.8,
       };
     });
   } catch (error) {
