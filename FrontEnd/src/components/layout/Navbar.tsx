@@ -247,14 +247,14 @@ export function Navbar() {
         <>
             <nav
                 className={`sticky top-0 z-50 transition-all duration-300 w-full ${isScrolled && isHomePage
-                    ? "bg-transparent backdrop-blur-md py-2 md:py-3"
-                    : "bg-white py-2 md:py-3 border-b border-slate-100 shadow-sm"
+                    ? "bg-transparent backdrop-blur-md py-1 md:py-1.5"
+                    : "bg-white py-1 md:py-1.5 border-b border-slate-100 shadow-sm"
                     }`}>
                 <div className="mx-auto px-4 md:px-8 flex justify-between items-center relative">
 
                     {/* Left Side: Logo */}
-                    <div className="flex-shrink-0 z-50">
-                        <Logo width={140} height={140} className="w-[100px] md:w-[140px]" />
+                    <div className="flex-shrink-0 z-50 py-1">
+                        <Logo width={160} height={160} className="w-[50px] md:w-[70px] scale-[1.8] md:scale-[2.2] origin-left" />
                     </div>
 
                     {/* Center: Navigation Menu (Desktop) */}
