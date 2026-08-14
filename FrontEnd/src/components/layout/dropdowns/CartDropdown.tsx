@@ -119,6 +119,9 @@ export function CartDropdown({ items = [], onClose }: CartDropdownProps) {
                       {item.offerPercentage && (
                         <span className="text-[9px] font-bold text-emerald-600 mt-0.5">{item.offerPercentage}% Off</span>
                       )}
+                      {item.additionalOfferPercentage && (
+                        <span className="text-[9px] font-bold text-brand-orange bg-brand-orange/10 px-1 py-0.5 rounded mt-0.5">+ {item.additionalOfferPercentage}% Extra Off</span>
+                      )}
                     </div>
                   </div>
                 </div>

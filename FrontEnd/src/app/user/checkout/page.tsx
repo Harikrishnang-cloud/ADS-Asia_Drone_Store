@@ -871,6 +871,11 @@ export default function CheckoutPage() {
                                                             {item.offerPercentage}% Off Applied
                                                         </span>
                                                     )}
+                                                    {item.additionalOfferPercentage && (
+                                                        <span className="inline-block mt-1 bg-brand-orange/10 text-brand-orange text-[9px] md:text-[10px] font-bold px-2 py-0.5 rounded flex-shrink-0 self-start ml-1">
+                                                            + {item.additionalOfferPercentage}% Extra Off
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 
                                             </div>

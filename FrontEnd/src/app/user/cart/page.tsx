@@ -131,6 +131,11 @@ export default function CartPage() {
                                                                 {item.offerPercentage}% Off
                                                             </span>
                                                         )}
+                                                        {item.additionalOfferPercentage !== undefined && item.additionalOfferPercentage > 0 && (
+                                                            <span className="text-[9px] sm:text-[10px] font-bold text-brand-orange bg-brand-orange/10 px-1.5 py-0.5 rounded">
+                                                                + {item.additionalOfferPercentage}% Extra Off
+                                                            </span>
+                                                        )}
                                                     </div>
 
                                                     {/* Quantity Control */}

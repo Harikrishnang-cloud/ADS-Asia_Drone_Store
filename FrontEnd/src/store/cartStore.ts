@@ -18,6 +18,7 @@ export interface CartItem {
     };
     originalPrice?: number;
     offerPercentage?: number;
+    additionalOfferPercentage?: number;
     stock?: number;
 }
 
