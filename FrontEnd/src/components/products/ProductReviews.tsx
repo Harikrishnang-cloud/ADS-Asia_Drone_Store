@@ -128,14 +128,14 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
     const hasUserReviewed = user && reviews.some(r => r.userId === user.id);
 
     return (
-        <div className="mt-15 border-t border-slate-100">
-            <h2 className="text-2xl md:text-3xl font-black text-brand-blue-dark mb-10">Customer Reviews</h2>
+        <div className="mt-10 md:mt-16 border-t border-slate-100">
+            <h2 className="text-2xl md:text-3xl font-black text-brand-blue-dark mb-6 md:mb-10">Customer Reviews</h2>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
                 {/* Review Stats */}
-                <div className="lg:col-span-1 border border-slate-100 rounded-lg p-8 bg-white h-fit shadow-lg shadow-slate-200/50">
-                    <div className="flex flex-col items-center justify-center text-center space-y-4">
-                        <div className="text-6xl font-black text-slate-800">{averageRating}</div>
+                <div className="lg:col-span-1 border border-slate-100 rounded-lg p-5 md:p-8 bg-white h-fit shadow-lg shadow-slate-200/50">
+                    <div className="flex flex-col items-center justify-center text-center space-y-3 md:space-y-4">
+                        <div className="text-5xl md:text-6xl font-black text-slate-800">{averageRating}</div>
                         <div className="flex items-center gap-1">
                             {[1, 2, 3, 4, 5].map((i) => (
                                 <Star
@@ -149,8 +149,8 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
                     </div>
 
                     {/* Form */}
-                    <div id="review-form" className="mt-10 border-t border-slate-100 pt-8">
-                        <h3 className="text-xl font-bold text-slate-800 mb-6">
+                    <div id="review-form" className="mt-8 md:mt-10 border-t border-slate-100 pt-6 md:pt-8">
+                        <h3 className="text-lg md:text-xl font-bold text-slate-800 mb-4 md:mb-6">
                             {editingReviewId ? "Update Review" : "Write a Review"}
                         </h3>
                         {!user ? (
@@ -221,28 +221,28 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
                 </div>
 
                 {/* Reviews List */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-4 md:space-y-6">
                     {loading ? (
-                        <div className="flex justify-center py-20">
+                        <div className="flex justify-center py-10 md:py-20">
                             <Loader2 size={40} className="text-slate-300 animate-spin" />
                         </div>
                     ) : reviews.length === 0 ? (
-                        <div className="bg-slate-50 border border-slate-100 rounded-lg p-12 text-center h-full flex flex-col items-center justify-center">
-                            <MessageSquare size={64} className="text-slate-200 mb-6" />
-                            <h4 className="text-xl font-bold text-slate-700 mb-2">No reviews yet</h4>
-                            <p className="text-slate-500">Be the first to review this product!</p>
+                        <div className="bg-slate-50 border border-slate-100 rounded-lg p-8 md:p-12 text-center h-full flex flex-col items-center justify-center">
+                            <MessageSquare className="text-slate-200 mb-4 md:mb-6 w-12 h-12 md:w-16 md:h-16" />
+                            <h4 className="text-lg md:text-xl font-bold text-slate-700 mb-2">No reviews yet</h4>
+                            <p className="text-slate-500 text-sm md:text-base">Be the first to review this product!</p>
                         </div>
                     ) : (
                         reviews.map((review) => (
-                            <div key={review.id} className="bg-white border border-slate-100 p-6 md:p-8 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-400">
-                                            <User size={24} />
+                            <div key={review.id} className="bg-white border border-slate-100 p-4 sm:p-5 md:p-8 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                                <div className="flex items-start justify-between mb-3 md:mb-4">
+                                    <div className="flex items-center gap-3 md:gap-4">
+                                        <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 flex-shrink-0">
+                                            <User size={20} className="md:w-6 md:h-6" />
                                         </div>
                                         <div>
-                                            <h5 className="font-bold text-slate-900">{review.userName || "Customer"}</h5>
-                                            <p className="text-xs text-slate-400 font-medium">{formatDate(review.createdAt)}</p>
+                                            <h5 className="font-bold text-sm md:text-base text-slate-900">{review.userName || "Customer"}</h5>
+                                            <p className="text-[10px] md:text-xs text-slate-400 font-medium">{formatDate(review.createdAt)}</p>
                                         </div>
                                     </div>
                                     <div className="flex flex-col items-end gap-2">
