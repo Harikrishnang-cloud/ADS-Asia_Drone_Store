@@ -614,7 +614,7 @@ export default function CheckoutPage() {
                         </div>
 
                         {/* Wallet Balance Summary Indicator */}
-                        <div className={`bg-white border p-3 md:px-6 md:py-4 rounded-xl md:rounded-2xl shadow-sm flex items-center gap-3 md:gap-4 animate-in fade-in slide-in-from-right-4 duration-700 ${!isWalletAvailable ? 'border-red-200 bg-red-50/10' : 'border-slate-200'}`}>
+                        {/* <div className={`bg-white border p-3 md:px-6 md:py-4 rounded-xl md:rounded-2xl shadow-sm flex items-center gap-3 md:gap-4 animate-in fade-in slide-in-from-right-4 duration-700 ${!isWalletAvailable ? 'border-red-200 bg-red-50/10' : 'border-slate-200'}`}>
                             <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl flex items-center justify-center ${!isWalletAvailable ? 'bg-red-100 text-red-500' : 'bg-brand-blue/10 text-brand-blue'}`}>
                                 <Wallet size={24} className="w-5 h-5 md:w-6 md:h-6" />
                             </div>
@@ -628,7 +628,7 @@ export default function CheckoutPage() {
                                     <Link href="/user/profile" className="text-[9px] md:text-[10px] font-bold text-brand-blue hover:text-brand-orange underline underline-offset-2">Top Up</Link>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
@@ -861,7 +861,18 @@ export default function CheckoutPage() {
                                             </div>
                                             <div className="flex-1 min-w-0 flex flex-col justify-center">
                                                 <h4 className="text-xs md:text-sm font-bold text-slate-900 line-clamp-2 mb-0.5 md:mb-1">{item.name}</h4>
-                                                <p className="text-brand-blue font-bold text-xs md:text-sm">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <p className="text-brand-blue font-bold text-xs md:text-sm">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
+                                                    {item.originalPrice && item.price < item.originalPrice && (
+                                                        <p className="text-slate-400 text-[10px] md:text-xs line-through">₹{(item.originalPrice * item.quantity).toLocaleString('en-IN')}</p>
+                                                    )}
+                                                    {item.offerPercentage && (
+                                                        <span className="inline-block mt-1 bg-emerald-100 text-emerald-700 text-[9px] md:text-[10px] font-bold px-2 py-0.5 rounded flex-shrink-0 self-start">
+                                                            {item.offerPercentage}% Off Applied
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                
                                             </div>
                                         </div>
                                     ))}
@@ -899,7 +910,7 @@ export default function CheckoutPage() {
                                     Place Order Securely
                                 </Button>
                                 <p className="text-[10px] md:text-xs text-center text-slate-500 mt-4 leading-relaxed">
-                                    By placing your order, you agree to our <Link href="/support/terms" className="text-brand-blue hover:underline">Terms of Service</Link> and <Link href="/support/privacy" className="text-brand-blue hover:underline">Privacy Policy</Link>.
+                                    By placing your order, you agree to our <Link href="/terms-and-conditions" className="text-brand-blue hover:underline">Terms of Service</Link> and <Link href="/privacy" className="text-brand-blue hover:underline">Privacy Policy</Link>.
                                 </p>
                             </div>
                         </div>

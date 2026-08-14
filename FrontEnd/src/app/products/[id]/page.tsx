@@ -12,6 +12,7 @@ import { useCompareStore } from "@/store/compareStore";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import dynamic from 'next/dynamic';
+import SpecialOffers from "@/components/ui/SpecialOffers";
 
 const ProductGrid = dynamic(() => import("@/components/products/ProductGrid"), {
     loading: () => <div className="h-96 animate-pulse bg-slate-50 rounded-xl" />,
@@ -79,7 +80,8 @@ export default function ProductDetailPage() {
             weight: product.weight,
             dimensions: product.dimensions,
             originalPrice: product.price,
-            offerPercentage: product.offerPercentage
+            offerPercentage: product.offerPercentage,
+            stock: product.stock
         });
         toast.success("Item added to cart");
     };
@@ -221,17 +223,17 @@ export default function ProductDetailPage() {
             "position": 1,
             "name": "Home",
             "item": "https://asiadronestore.com"
-        },{
+        }, {
             "@type": "ListItem",
             "position": 2,
             "name": "Products",
             "item": "https://asiadronestore.com/products"
-        },{
+        }, {
             "@type": "ListItem",
             "position": 3,
             "name": product.category || "Drones",
             "item": `https://asiadronestore.com/products?category=${encodeURIComponent(product.category || "All")}`
-        },{
+        }, {
             "@type": "ListItem",
             "position": 4,
             "name": product.name
@@ -352,9 +354,8 @@ export default function ProductDetailPage() {
                                     {Number(product.price).toLocaleString('en-IN')}
                                 </span>
                             )}
-                            <span className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border ${
-                                product.status === 'coming_soon' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                                product.stock > 0 ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'
+                            <span className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border ${product.status === 'coming_soon' ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                                    product.stock > 0 ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'
                                 }`}>
                                 {product.status === 'coming_soon' ? 'Coming Soon' : (product.stock > 0 ? `${product.stock} In Stock` : 'Out of Stock')}
                             </span>
@@ -416,6 +417,10 @@ export default function ProductDetailPage() {
                 </div>
             </div>
 
+            <div className="mt-12">
+                <SpecialOffers product={product} />
+            </div>
+
             {/* Product Specifications Section */}
             {product.specifications && product.specifications.length > 0 && (
                 <div className="mt-8 pt-4 border-t border-slate-100">
@@ -436,7 +441,7 @@ export default function ProductDetailPage() {
             {product && (
                 <div className="mt-8 pt-8 border-t border-slate-100">
                     <h2 className="text-2xl md:text-3xl font-black text-brand-blue-dark mb-6 tracking-tight">Why Choose {product.name} from Asia Drone Store?</h2>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                         <div className="bg-slate-50 p-6 md:p-8 rounded-2xl border border-slate-100">
                             <h3 className="text-lg font-bold text-slate-800 mb-3">Applications & Usage Scenarios</h3>

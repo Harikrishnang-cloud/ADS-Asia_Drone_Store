@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import toast from 'react-hot-toast';
 
 export interface CartItem {
     id: string;
@@ -17,6 +18,7 @@ export interface CartItem {
     };
     originalPrice?: number;
     offerPercentage?: number;
+    stock?: number;
 }
 
 interface CartState {
@@ -50,8 +52,27 @@ export const useCartStore = create<CartState>()(
                 set({ items: get().items.filter((i) => i.id !== id) });
             },
             updateQuantity: (id, quantity) => {
+                const currentItems = get().items;
+                const item = currentItems.find((i) => i.id === id);
+                
+                if (item && item.stock !== undefined) {
+                    const productId = item.id.split('-combo-')[0];
+                    if (quantity > item.quantity) {
+                        const totalQty = currentItems
+                            .filter(i => i.id.startsWith(productId))
+                            .reduce((sum, i) => sum + i.quantity, 0);
+                            
+                        const diff = quantity - item.quantity;
+                        
+                        if (totalQty + diff > item.stock) {
+                            toast.error(`Cannot add more. Only ${item.stock} items available in stock.`);
+                            return;
+                        }
+                    }
+                }
+
                 set({
-                    items: get().items.map((i) =>
+                    items: currentItems.map((i) =>
                         i.id === id ? { ...i, quantity: Math.max(1, quantity) } : i
                     ),
                 });

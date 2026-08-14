@@ -6,15 +6,7 @@ import { ShoppingCart, ArrowRight, Trash2, Plus, Minus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import toast from "react-hot-toast";
-import { useCartStore } from "@/store/cartStore";
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  quantity: number;
-}
+import { useCartStore, type CartItem } from "@/store/cartStore";
 
 interface CartDropdownProps {
   items?: CartItem[];
@@ -119,7 +111,15 @@ export function CartDropdown({ items = [], onClose }: CartDropdownProps) {
                         <Plus size={10} />
                       </button>
                     </div>
-                    <p className="text-sm font-bold text-brand-blue">₹{(item.price * item.quantity).toFixed(2)}</p>
+                    <div className="flex flex-col items-end">
+                      <p className="text-sm font-bold text-brand-blue">₹{(item.price * item.quantity).toFixed(2)}</p>
+                      {item.originalPrice && item.price < item.originalPrice && (
+                        <p className="text-[10px] text-slate-400 line-through">₹{(item.originalPrice * item.quantity).toFixed(2)}</p>
+                      )}
+                      {item.offerPercentage && (
+                        <span className="text-[9px] font-bold text-emerald-600 mt-0.5">{item.offerPercentage}% Off</span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
